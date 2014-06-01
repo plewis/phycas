@@ -1,0 +1,13 @@
+#NEXUS 
+[fragment of Rokas et al. 2003 ]
+Begin data;
+	Dimensions ntax=4 nchar=25;
+	Format datatype=dna;
+	Matrix
+	[----+----|----+----|----+]
+Scer TCTTTATTGACGTGTATGGACAATT
+Spar TCTTTGTTAACGTGCATGGACAATT
+Smik TCCTTGCTAACATGCATGGACAATT
+Skud TCTTTGCTAACGTGCATGGATAATT
+	;
+End;

@@ -1,0 +1,24 @@
+Third-party source code used in Phycas
+--------------------------------------
+
+Phycas makes use of a small number of third-party source code
+files. 
+
+DCDFLIB is used for numerical integration of probability distributions. The
+library can be obtained from 
+
+  http://www.csit.fsu.edu/~burkardt/cpp_src/dcdflib/dcdflib.html 
+
+num_util was used for interfacing with numarray. The numarray library is
+no longer used in Phycas, and if this functionality is eventually restored, 
+NumPy will be used rather than numarray. This version of num_util 
+does not appear to be available anymore, but the new version can be obtained
+from 
+
+  http://www.eos.ubc.ca/research/clouds/software/pythonlibs/num_util/num_util_release2/
+
+The pyconversions.h file from HippoDraw is currently used for converting C++ arrays
+and vectors to Python lists/tuples (and vice versa). We will eventually replace this
+with our own code. The contents of this file can be obtained independently from 
+
+  http://www.slac.stanford.edu/grp/ek/hippodraw/lib/pyconversions_8h-source.html

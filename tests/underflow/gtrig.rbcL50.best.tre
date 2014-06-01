@@ -1,0 +1,65 @@
+#nexus
+
+begin trees;
+translate
+ 1 Nephroselmis_minuta_U30286.1,
+ 2 Volvox_globator_D86836.1,
+ 3 Pediastrum_duplex_AB084333.1,
+ 4 Codium_fragile_M67453.1,
+ 5 Nitella_translucens_L13482.1,
+ 6 Conocephalum_conicum_U87066.1,
+ 7 Marchantia_polymorpha_U87079.1,
+ 8 Mnium_hornum_AF226820.1,
+ 9 Takakia_lepidozioides_AY312936.1,
+ 10 Anthoceros_formosae_D43696.1,
+ 11 Azolla_caroliniana_U24185.1,
+ 12 Matteuccia_struthiopteris_U05930.1,
+ 13 Marsilea_quadrifolia_L13480.1,
+ 14 Osmunda_cinnamomea_D14882.1_Cinnamon_Fern,
+ 15 Equisetum_arvense_L11053.1_Horsetail_Scouring_Rush,
+ 16 Zamia_floridana_D10736.1,
+ 17 Ginkgo_biloba_AJ235804.1,
+ 18 Ephedra_sinica_D10732.1,
+ 19 Gnetum_gnemon_L12680.2,
+ 20 Welwitschia_mirabilis_AJ235814.1,
+ 21 Picea_pungens_AF456382.1_Blue_Spruce,
+ 22 Pinus_radiata_AY497250.1_Monterrey_Pine,
+ 23 Abies_magnifica_X58391.1_Red_Fir,
+ 24 Taxodium_distichum_S75127.1_Bald_Cypress,
+ 25 Victoria_cruziana_M77036.1_Victoria_Lily,
+ 26 Nepeta_cataria_Z37421.1_Catnip,
+ 27 Coffea_arabica_X83631.1_Coffee,
+ 28 Cinnamomum_camphora_L12641.2_Cinnamon,
+ 29 Amborella_trichopoda_L12628.2,
+ 30 Cocos_nucifera_AY012507.1_Coconut_Palm,
+ 31 Ceratonia_siliqua_Z70165.1_Carob,
+ 32 Taraxacum_officinale_AY395562.1_Dandelion,
+ 33 Carya_glabra_L12637.2_Hickory,
+ 34 Humulus_lupulus_AF206777.1_Hops,
+ 35 Oryza_sativa_DQ167807.1_Rice,
+ 36 Camellia_sinensis_AF380037.1_Tea,
+ 37 Theobroma_cacao_AF022125.1_Chocolate,
+ 38 Dionaea_muscipula_L01904.2_Venus_Flytrap,
+ 39 Spinacia_oleracea_V00168.1_Spinach,
+ 40 Glycyrrhiza_glabra_Z70171.1_Licorice,
+ 41 Acer_saccharum_L01881.2_Sugar_Maple,
+ 42 Toxicodendron_radicans_U39271.2_Poison_Ivy,
+ 43 Passiflora_quadrangularis_L01940.2_Passionflower,
+ 44 Carica_papaya_M95671.1_Papaya,
+ 45 Fagopyrum_esculentum_D86285.1_Buckwheat,
+ 46 Zea_mays_Z11973.1_Corn,
+ 47 Rosmarinus_officinalis_Z37435.1_Rosemary,
+ 48 Origanum_vulgare_Z37427.1_Oregano,
+ 49 Lycopersicon_esculentum_AM087200.2_Tomato,
+ 50 Pistacia_vera_AJ235786.1_Pistachio;
+[NOTE: GARLI Run was terminated before termination condition was reached!
+Likelihood scores, topologies and model estimates obtained may not be fully optimal!]
+tree best = [&U][!GarliScore -18117.830737][!GarliModel  r 1.144048 5.419204 0.454958 1.766404 5.546350 e 0.339271 0.154491 0.134649 0.371589 a 0.906291 p 0.442154 ](1:0.48845769,(4:0.43435523,(5:0.18998204,((10:0.12055581,(9:0.10277302,(((12:0.11584452,(11:0.09136358,13:0.08985332):0.03419557):0.07627847,(15:0.22702090,14:0.07342796):0.00975926):0.06912178,((16:0.04166563,(17:0.02297364,(24:0.07781970,((23:0.01129867,(21:0.00800821,22:0.01884087):0.00664469):0.01925445,(18:0.09724594,(19:0.07893239,20:0.05760361):0.02699719):0.08490788):0.01389578):0.01160744):0.00631798):0.01131829,(((((36:0.02689400,((27:0.03999960,((26:0.01245540,(48:0.00476746,47:0.00251443):0.00614462):0.04002032,49:0.04831073):0.00382913):0.01336025,32:0.04872909):0.00772383):0.00533686,(39:0.06744953,(38:0.06051826,45:0.06828543):0.00784768):0.02636695):0.00078757,((44:0.04206112,(37:0.03022183,(41:0.03061900,(50:0.01193805,42:0.00596828):0.01663634):0.02402220):0.00806926):0.00438897,((((40:0.04131734,31:0.01016711):0.01515051,33:0.02485418):0.00299224,34:0.04909014):0.00468048,43:0.06319198):0.00374045):0.00753114):0.03130697,((30:0.01664343,(35:0.01578731,46:0.03305843):0.09985910):0.03521231,28:0.02260539):0.00118733):0.01126087,(29:0.03388624,25:0.03725597):0.00659969):0.06151886):0.05441547):0.03830070):0.03595485):0.02460815,(8:0.09633705,(6:0.04125441,7:0.05945483):0.10696638):0.03669988):0.13815994):0.16217501):0.13463870,(3:0.13099984,2:0.21255943):0.08403533);
+end;
+begin paup;
+clear;
+gett file=gtrig.rbcL50.best.tre storebr;
+lset userbr nst=6 rmat=(1.144048 5.419204 0.454958 1.766404 5.546350) base=( 0.339271 0.154491 0.134649) rates=gamma shape=0.906291 ncat=4 pinv=0.442154;
+end;
+[!****NOTE: GARLI Run was terminated before termination condition was reached!
+Likelihood scores, topologies and model estimates obtained may not be fully optimal!****]

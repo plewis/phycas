@@ -1,0 +1,297 @@
+# This is the Jamroot file used by the Boost.Build v2 system
+# for building the Python extensions that constitute Phycas
+
+# Grab the path to the Boost project from the BOOST_ROOT environmental variable
+import os ;
+local BOOST_ROOT = [ os.environ BOOST_ROOT ] ;
+use-project boost : $(BOOST_ROOT) ;
+
+# Grab the path to the NLC project from the NCL_INSTALL_DIR environmental variable
+local NCL_INSTALL_DIR = [ os.environ NCL_INSTALL_DIR ] ;
+local NCL_ALREADY_INSTALLED = [ os.environ NCL_ALREADY_INSTALLED ] ;
+local OSTYPE = [ os.environ OSTYPE ] ;
+local OS = [ os.environ OS ] ;
+
+# Tool-specific settings
+echo "---------------------------------------------------------" ;
+echo "Trying to identify the correct toolset." ;
+echo "If the incorrect toolset is chosen, you will need to edit" ;
+echo "the Tool-specific settings section of the Jamroot file..." ;
+
+if $(NCL_ALREADY_INSTALLED) {
+    if $(OS) = "Windows_NT" {
+        echo "Sorry you cannot use the NCL_ALREADY_INSTALLED option on Windows (yet)" ;
+        exit ;
+    }
+
+    echo "Assuming that you have built and installed NCL 2.1 to $NCL_INSTALL_DIR" ;
+
+    if $(OSTYPE) = "linux" {
+      echo "  Looks like this is Linux, so using toolset gcc" ;
+      echo "  Looking for NCL libraries in $(NCL_INSTALL_DIR)/lib/ncl " ;
+      alias tool_specific_requirements : : : : <toolset>gcc <cxxflags>"-include src/cpp/std_force_include.hpp -I$(NCL_INSTALL_DIR)/include" <linkflags>"-L$(NCL_INSTALL_DIR)/lib/ncl -lncl" ;
+    }
+    else {
+        if $(OSTYPE) = "darwin" {
+            echo "  Looks like this is a Mac, so using toolset darwin" ;
+            using darwin ;
+            alias tool_specific_requirements : : : : <toolset>darwin  <cflags>"${CFLAGS}" <cxxflags>"-g -include src/cpp/std_force_include.hpp $CXXFLAGS -I$NCL_INSTALL_DIR/include" <linkflags>"-L$NCL_INSTALL_DIR/lib/ncl -lncl ${LDFLAGS}" ;
+        }
+        else {
+			if $(OSTYPE) = "clang" {
+				echo "  Looks like this is a Mac using the LLVM compiler only, so using toolset clang" ;
+				using clang ;
+				alias tool_specific_requirements : : : : <toolset>clang  <cflags>"${CFLAGS}" <cxxflags>"-g -include src/cpp/std_force_include.hpp $CXXFLAGS -I$NCL_INSTALL_DIR/include" <linkflags>"-L$NCL_INSTALL_DIR/lib/ncl -lncl ${LDFLAGS} -v" ;
+			}
+			else {
+				echo "  Could not identify platform.  Expecting an environmental variable:" ;
+				echo "  for Linux:   OSTYPE=linux" ;
+				echo "  for Mac:   OSTYPE=darwin" ;
+				echo "  for Windows:   OS=Windows_NT" ;
+				echo "  Going with toolset gcc just in case that works" ;
+				alias tool_specific_requirements : : : : <toolset>gcc <cxxflags>"-include src/cpp/std_force_include.hpp" ;
+			}
+		}
+    }
+
+    echo "---------------------------------------------------------" ;
+    project phycas
+      : requirements
+          <library>/boost/python//boost_python
+          <library>/boost/thread//boost_thread
+          <include>.
+          <include>./src/cpp
+          <link>shared ;
+
+}
+else {
+    echo "Will build NCL using $NCL_INSTALL_DIR/Jamroot" ;
+    use-project ncl : $(NCL_INSTALL_DIR) ;
+
+    if $(OSTYPE) = "linux" {
+        echo "  Looks like this is Linux, so using toolset gcc" ;
+        alias tool_specific_requirements : : : : <toolset>gcc <cxxflags>"-include src/cpp/std_force_include.hpp -I$NCL_INSTALL_DIR" ;
+    }
+    else {
+        if $(OSTYPE) = "darwin" {
+            echo "  Looks like this is a Mac, so using toolset darwin" ;
+            using darwin ;
+            alias tool_specific_requirements : : : : <toolset>darwin <cxxflags>"-include src/cpp/std_force_include.hpp -I$NCL_INSTALL_DIR" ;
+        }
+		else {
+			if $(OSTYPE) = "clang" {
+				echo "  Looks like this is a Mac using the LLVM compiler only, so using toolset clang" ;
+				using clang ;
+				alias tool_specific_requirements : : : : <toolset>clang  <cflags>"${CFLAGS}" <cxxflags>"-g -include src/cpp/std_force_include.hpp $CXXFLAGS -I$NCL_INSTALL_DIR/include" <linkflags>"-L$NCL_INSTALL_DIR/lib/ncl -lncl ${LDFLAGS}" ;
+			}
+			else {
+				if $(OS) = "Windows_NT" {
+					echo "  Looks like this is Windows, so using toolset msvc" ;
+					alias tool_specific_requirements : : : : <toolset>msvc <cxxflags>"-FI std_force_include.hpp" ;
+				}
+				else {
+					echo "  Could not identify platform.  Expecting an environmental variable:" ;
+					echo "  for Linux:   OSTYPE=linux" ;
+					echo "  for Mac:   OSTYPE=darwin" ;
+					echo "  for Windows:   OS=Windows_NT" ;
+					echo "  Going with toolset gcc just in case that works" ;
+					alias tool_specific_requirements : : : : <toolset>gcc <cxxflags>"-include src/cpp/std_force_include.hpp" ;
+				}
+			}
+        }
+    }
+
+    echo "---------------------------------------------------------" ;
+	#<library-path>$(BOOST_ROOT)/stage/lib
+    project phycas
+      : requirements
+          <library>/boost/python//boost_python
+          <library>/boost/thread//boost_thread
+          <library>/ncl//ncl
+          <threading>multi
+          <include>.
+          <include>./src/cpp
+          <link>shared ;
+}
+
+# The following is a custom command that (re)generates the file phycas/svnver.txt, which
+# contains one line that is the SVN revision number. This file is read by phycas/__init__.py
+# upon import so that the revision number can be incorporated into the splash text.
+# Note that the target name supplied to make is not the same as the file generated, which
+# ensures that this command will be run every time Jamroot is executed.
+# See http://boost.sourceforge.net/boost-build2/doc/html/bbv2/builtins/raw.html
+##### make svnversion : phycasver.txt : @svnversion ;
+##### actions svnversion
+##### {
+#####     python svnver.py $(>)
+##### }
+##### #install phycas : svnversion.txt ;
+
+# The rule python-extension is defined in <top-of-boost-build-system>/tools/python.jam
+# The boost-build.jam file in this directory points bjam to <top-of-boost-build-system>
+import python ;
+
+# Build and install the Conversions extension
+alias conversions_sources
+  : src/cpp/conversions_pymod.cpp
+    src/cpp/boost_assertion_failed.cpp
+    src/cpp/basic_tree.cpp
+    src/cpp/basic_lot.cpp
+    src/cpp/tree_manip.cpp
+    src/cpp/basic_tree_node.cpp
+    src/cpp/split.cpp
+    src/cpp/phycas_string.cpp
+    tool_specific_requirements ;
+python-extension _ConversionsExt : conversions_sources ;
+install Conversions
+  : _ConversionsExt
+  : <location>phycas/Conversions
+    <install-dependencies>on
+    <install-type>LIB ;  # note: tried using <dll-path> but it seemed to have no effect
+
+# Build and install the PDFGen extension
+# Note: commented out because currently no C++ code is used in generating PDF files from phycas
+#       It is anticipated, however, that in the future we will want to have such capability
+#       on both the C++ and Python side. The basic framework is now in place for this.
+#alias pdfgen_sources
+#  : src/cpp/pdfgen_pymod.cpp
+#    src/cpp/boost_assertion_failed.cpp
+#    src/cpp/pdfgen.cpp
+#    tool_specific_requirements ;
+#python-extension _PDFGen : pdfgen_sources ;
+#install PDFGen : _PDFGen : <location>phycas/PDFGen ;
+
+# Build and install the ProbDist extension
+alias probdist_sources
+  : src/cpp/probdist_pymod.cpp
+    src/cpp/boost_assertion_failed.cpp
+    src/cpp/phycas_string.cpp
+    src/cpp/basic_cdf.cpp
+    src/cpp/basic_lot.cpp
+    src/cpp/linalg.c
+    src/cpp/stop_watch.cpp
+    src/cpp/rectangular_matrix.cpp
+    src/cpp/square_matrix.cpp
+    src/cpp/lognormal.cpp
+    src/cpp/thirdparty/dcdflib/src/dcdflib.c
+    src/cpp/thirdparty/dcdflib/src/ipmpar.c
+    src/cpp/mvnormal_distribution.cpp
+    src/cpp/probability_distribution.cpp
+    src/cpp/dirichlet_distribution.cpp
+    src/cpp/relative_rate_distribution.cpp
+    src/cpp/slice_sampler.cpp
+    src/cpp/subset_proportions.cpp
+    tool_specific_requirements ;
+python-extension _ProbDistExt : probdist_sources ;
+install ProbDist : _ProbDistExt : <location>phycas/ProbDist ;
+
+# Build and install the DataMatrix extension
+alias datamatrix_sources
+  : src/cpp/data_matrix_pymod.cpp
+    src/cpp/boost_assertion_failed.cpp
+    tool_specific_requirements ;
+python-extension _DataMatrixExt : datamatrix_sources ;
+install DataMatrix : _DataMatrixExt : <location>phycas/DataMatrix ;
+
+# Build and install the Likelihood extension
+alias likelihood_sources
+  : src/cpp/tree_likelihood.cpp
+    src/cpp/prior_distribution.cpp
+    src/cpp/numsum.cpp
+    src/cpp/joint_prior_manager.cpp
+    src/cpp/basic_cdf.cpp
+    src/cpp/basic_lot.cpp
+    src/cpp/basic_tree.cpp
+    src/cpp/basic_tree_node.cpp
+    src/cpp/boost_assertion_failed.cpp
+    src/cpp/bush_move.cpp
+    src/cpp/codon_model.cpp
+    src/cpp/cond_likelihood.cpp
+    src/cpp/cond_likelihood_storage.cpp
+    src/cpp/discrete_gamma_shape_param.cpp
+    src/cpp/thirdparty/dcdflib/src/dcdflib.c
+    src/cpp/edgelen_master_param.cpp
+    src/cpp/edge_move.cpp
+    src/cpp/gtr.cpp
+    src/cpp/gtr_rate_param.cpp
+    src/cpp/hky.cpp
+    src/cpp/hyperprior_param.cpp
+    src/cpp/jc.cpp
+    src/cpp/kappa_param.cpp
+    src/cpp/internal_data.cpp
+    src/cpp/binary_model.cpp
+    src/cpp/irreversible_model.cpp
+    src/cpp/thirdparty/dcdflib/src/ipmpar.c
+    src/cpp/larget_simon_move.cpp
+    src/cpp/likelihood_loops.cpp
+    src/cpp/model.cpp
+    src/cpp/likelihood_pymod.cpp
+    src/cpp/linalg.c
+    src/cpp/lognormal.cpp
+    src/cpp/model_pymod.cpp
+    src/cpp/mcmc_chain_manager.cpp
+    src/cpp/mcmc_param.cpp
+    src/cpp/mcmc_updater.cpp
+    src/cpp/omega_param.cpp
+    src/cpp/phycas_string.cpp
+    src/cpp/pinvar_param.cpp
+    src/cpp/thirdparty/praxis/dls_brent.c
+    src/cpp/probability_distribution.cpp
+    src/cpp/dirichlet_distribution.cpp
+    src/cpp/rectangular_matrix.cpp
+    src/cpp/relative_rate_distribution.cpp
+    src/cpp/q_matrix.cpp
+    src/cpp/sim_data.cpp
+    src/cpp/slice_sampler.cpp
+    src/cpp/split.cpp
+    src/cpp/square_matrix.cpp
+    src/cpp/dirichlet_move.cpp
+    src/cpp/state_freq_move.cpp
+    src/cpp/rel_rates_move.cpp
+    src/cpp/subset_relrates_move.cpp
+    src/cpp/state_freq_param.cpp
+    src/cpp/subset_proportions.cpp
+    src/cpp/tip_data.cpp
+    src/cpp/topo_prior_calculator.cpp
+    src/cpp/partition_model.cpp
+    src/cpp/tree_length_distribution.cpp
+    src/cpp/tree_scaler_move.cpp
+    src/cpp/underflow_manager.cpp
+    src/cpp/updater_pymod.cpp
+    [ obj likelihood_tree_manip_obj : src/cpp/tree_manip.cpp tool_specific_requirements ]
+    tool_specific_requirements ;
+python-extension _LikelihoodExt : likelihood_sources ;
+install Likelihood : _LikelihoodExt : <location>phycas/Likelihood ;
+
+# Build and install the Phylogeny extension
+alias phylogeny_sources
+  : src/cpp/phylogeny_pymod.cpp
+    src/cpp/boost_assertion_failed.cpp
+    src/cpp/basic_tree.cpp
+    src/cpp/basic_tree_node.cpp
+    [ obj phylogeny_tree_manip_obj : src/cpp/tree_manip.cpp tool_specific_requirements ]
+    src/cpp/basic_cdf.cpp
+    src/cpp/basic_lot.cpp
+    src/cpp/split.cpp
+    src/cpp/thirdparty/dcdflib/src/dcdflib.c
+    src/cpp/thirdparty/dcdflib/src/ipmpar.c
+    src/cpp/phycas_string.cpp
+    tool_specific_requirements ;
+python-extension _PhylogenyExt : phylogeny_sources ;
+install Phylogeny : _PhylogenyExt : <location>phycas/Phylogeny ;
+
+# Build and install the ReadNexus extension
+alias readnexus_sources
+  : src/cpp/basic_cdf.cpp
+    src/cpp/char_super_matrix.cpp
+    src/cpp/nxs_file_path.cpp
+    src/cpp/phycas_nexus_reader.cpp
+    src/cpp/read_nexus_pymod.cpp
+    src/cpp/boost_assertion_failed.cpp
+    src/cpp/probability_distribution.cpp
+    src/cpp/basic_lot.cpp
+    src/cpp/thirdparty/dcdflib/src/dcdflib.c
+    src/cpp/thirdparty/dcdflib/src/ipmpar.c
+    tool_specific_requirements ;
+python-extension _ReadNexusExt : readnexus_sources ;
+install ReadNexus : _ReadNexusExt : <location>phycas/ReadNexus ;

@@ -1,0 +1,159 @@
+#nexus
+
+begin paup;
+  set nowarnroot;
+  [variable output ] exe 'C:\Synchronized\Projects\phycastmp\phycas\Tests\Data\nyldna4.nex';
+end;
+
+
+begin paup;
+  set criterion=likelihood storebrlen;
+end;
+
+begin trees;
+  translate
+    1 Synergus,
+    2 Periclistus,
+    3 Aylax,
+    4 Ibalia;
+  utree t = (1:0.1,2:0.15,(3:0.025,4:0.15):0.05);
+end;
+
+begin paup;
+log file=paup.log start replace;
+
+[!
+***** GTR+G+I (estimate everything) *****]
+lset nst=6 basefreq=estimate rmatrix=estimate rates=gamma shape=estimate pinvar=estimate;
+lscores 1 / userbrlen;
+
+[!
+***** GTR+G+I (using GTRModel) *****]
+lset nst=6 basefreq=(0.1 0.2 0.3) rmatrix=(1.8 4.0 1.5 1.2 5.0) rates=gamma shape=1.2 pinvar=0.3;
+lscores 1 / userbrlen;
+[!Phycas GTR+G+I lnL = -7710.49182]
+
+[!
+***** GTR+I (using GTRModel) *****]
+lset nst=6 basefreq=(0.1 0.2 0.3) rmatrix=(1.8 4.0 1.5 1.2 5.0) rates=equal pinvar=0.3;
+lscores 1 / userbrlen;
+[!Phycas GTR+I lnL = -7810.94573]
+
+[!
+***** GTR+G (using GTRModel) *****]
+lset nst=6 basefreq=(0.1 0.2 0.3) rmatrix=(1.8 4.0 1.5 1.2 5.0) rates=gamma shape=1.2 pinvar=0.0;
+lscores 1 / userbrlen;
+[!Phycas GTR+G lnL = -7795.64516]
+
+[!
+***** GTR (using GTRModel) *****]
+lset nst=6 basefreq=(0.1 0.2 0.3) rmatrix=(1.8 4.0 1.5 1.2 5.0) rates=equal pinvar=0.0;
+lscores 1 / userbrlen;
+[!Phycas GTR lnL = -7923.07342]
+
+[!
+***** HKY+G+I (using HKYModel) *****]
+lset nst=2 variant=hky basefreq=(0.1 0.2 0.3) tratio=1.8333333 rates=gamma shape=1.2 pinvar=0.3;
+lscores 1 / userbrlen;
+[!Phycas HKY+G+I lnL = -7745.95234]
+
+[!
+***** HKY+I (using HKYModel) *****]
+lset nst=2 variant=hky basefreq=(0.1 0.2 0.3) tratio=1.8333333 rates=equal pinvar=0.3;
+lscores 1 / userbrlen;
+[!Phycas HKY+I lnL = -7847.80488]
+
+[!
+***** HKY+G (using HKYModel) *****]
+lset nst=2 variant=hky basefreq=(0.1 0.2 0.3) tratio=1.8333333 rates=gamma shape=1.2 pinvar=0.0;
+lscores 1 / userbrlen;
+[!Phycas HKY+G lnL = -7831.39334]
+
+[!
+***** HKY (using HKYModel) *****]
+lset nst=2 variant=hky basefreq=(0.1 0.2 0.3) tratio=1.8333333 rates=equal pinvar=0.0;
+lscores 1 / userbrlen;
+[!Phycas HKY lnL = -7957.17738]
+[!
+***** F81+G+I (using HKYModel) *****]
+lset nst=1 basefreq=(0.1 0.2 0.3) rates=gamma shape=1.2 pinvar=0.3;
+lscores 1 / userbrlen;
+[!Phycas F81+G+I lnL = -7751.62193]
+[!
+***** F81+I (using HKYModel) *****]
+lset nst=1 basefreq=(0.1 0.2 0.3) rates=equal pinvar=0.3;
+lscores 1 / userbrlen;
+[!Phycas F81+I lnL = -7843.21652]
+[!
+***** F81+G (using HKYModel) *****]
+lset nst=1 basefreq=(0.1 0.2 0.3) rates=gamma shape=1.2 pinvar=0.0;
+lscores 1 / userbrlen;
+[!Phycas F81+G lnL = -7827.50356]
+[!
+***** F81 (using HKYModel) *****]
+lset nst=1 basefreq=(0.1 0.2 0.3) rates=equal pinvar=0.0;
+lscores 1 / userbrlen;
+[!Phycas F81 lnL = -7939.14280]
+[!
+***** K80+G+I (using HKYModel) *****]
+lset nst=2 basefreq=equal tratio=2.0 rates=gamma shape=1.2 pinvar=0.3;
+lscores 1 / userbrlen;
+[!Phycas K80+G+I lnL = -7338.58357]
+[!
+***** K80+I (using HKYModel) *****]
+lset nst=2 basefreq=equal tratio=2.0 rates=equal pinvar=0.3;
+lscores 1 / userbrlen;
+[!Phycas K80+I lnL = -7430.36453]
+[!
+***** K80+G (using HKYModel) *****]
+lset nst=2 basefreq=equal tratio=2.0 rates=gamma shape=1.2 pinvar=0.0;
+lscores 1 / userbrlen;
+[!Phycas K80+G lnL = -7413.85076]
+[!
+***** K80 (using HKYModel) *****]
+lset nst=2 basefreq=equal tratio=2.0 rates=equal pinvar=0.0;
+lscores 1 / userbrlen;
+[!Phycas K80 lnL = -7520.62596]
+[!
+***** JC+G+I (using HKYModel) *****]
+lset nst=1 basefreq=equal rates=gamma shape=1.2 pinvar=0.3;
+lscores 1 / userbrlen;
+[!Phycas JC+G+I lnL = -7340.00127]
+[!
+***** JC+I (using HKYModel) *****]
+lset nst=1 basefreq=equal rates=equal pinvar=0.3;
+lscores 1 / userbrlen;
+[!Phycas JC+I lnL = -7424.10919]
+[!
+***** JC+G (using HKYModel) *****]
+lset nst=1 basefreq=equal rates=gamma shape=1.2 pinvar=0.0;
+lscores 1 / userbrlen;
+[!Phycas JC+G lnL = -7409.01228]
+[!
+***** JC (using HKYModel) *****]
+lset nst=1 basefreq=equal rates=equal pinvar=0.0;
+lscores 1 / userbrlen;
+[!Phycas JC lnL = -7508.84633]
+[!
+***** JC+G+I (using JCModel) *****]
+lset nst=1 basefreq=equal rates=gamma shape=1.2 pinvar=0.3;
+lscores 1 / userbrlen;
+[!Phycas JC+G+I lnL = -7340.00127]
+[!
+***** JC+I (using JCModel) *****]
+lset nst=1 basefreq=equal rates=equal pinvar=0.3;
+lscores 1 / userbrlen;
+[!Phycas JC+I lnL = -7424.10919]
+[!
+***** JC+G (using JCModel) *****]
+lset nst=1 basefreq=equal rates=gamma shape=1.2 pinvar=0.0;
+lscores 1 / userbrlen;
+[!Phycas JC+G lnL = -7409.01228]
+[!
+***** JC (using JCModel) *****]
+lset nst=1 basefreq=equal rates=equal pinvar=0.0;
+lscores 1 / userbrlen;
+[!Phycas JC lnL = -7508.84633]
+
+log stop;
+end;

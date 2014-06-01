@@ -1,0 +1,23 @@
+#nexus
+
+begin trees;
+	translate
+		1 Oedogonium_cardiacum,
+		2 Volvox_carteri,
+		3 Chlamydomonas_reinhardtii,
+		4 Tetraspora_sp,
+		5 Chlamydomonas_baca,
+		6 Heterochlamydomonas_inaequalis1705,
+		7 Heterochlamydomonas_rugosa4586,
+		8 Heterochlamydomonas_lobata728,
+		9 Carteria_radiosa,
+		0 Carteria_obtusa,
+		1 Spongiochloris_spongiosa,
+		2 Chlamydopodium_vacuolatum,
+		3 Haematococcus_sp,
+		4 Chlamydomonas_moewusii,
+		5 Chlamydomonas_noctigama,
+		6 Lobochlamys_segnis,
+		7 Carteria_crucifera;
+	tree newick = [&U](1:0.410329685453,2:0.011567198026,((((8:0.034241171604,9:0.077668116898):0.008126995525,12:0.037772941738,13:0.062030166326):0.013331329345,(4:0.095515061313,((15:0.262364961138,(10:0.295485659338,17:0.064792205427):0.027955539060):0.016305314501,(14:0.133367156476,(((5:0.176691458114,11:0.124830088463):0.041661301516,16:0.074593520698):0.005957566546,(6:0.019613978116,7:0.004081567767):0.132025813899):0.041676292356):0.009316970049):0.089470715884):0.109897828102):0.017676535944,3:0.001791279878):0.069038654788);
+end;
