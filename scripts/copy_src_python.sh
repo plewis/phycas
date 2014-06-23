@@ -13,159 +13,159 @@ cd phycas
 cp ../src/python/__init__.py .
 
 ###############################################
-# Copy python files for Conversions extension #
+# Copy python files for conversions extension #
 ###############################################
 
-if [ ! -e "Conversions" ]; then
-    echo $0 expected to find a directory named "Conversions" inside `pwd`
+if [ ! -e "conversions" ]; then
+    echo $0 expected to find a directory named "conversions" inside `pwd`
     exit 1
 fi
 
-cd Conversions
+cd conversions
 rm -f *.py
 cp ../../src/python/conversions/*.py .
 cd ..
 
 ##############################################
-# Copy python files for DataMatrix extension #
+# Copy python files for datamatrix extension #
 ##############################################
 
-if [ ! -e "DataMatrix" ]; then
-    echo $0 expected to find a directory named "DataMatrix" inside `pwd`
+if [ ! -e "datamatrix" ]; then
+    echo $0 expected to find a directory named "datamatrix" inside `pwd`
     exit 1
 fi
 
-cd DataMatrix
+cd datamatrix
 rm -f *.py
 cp ../../src/python/datamatrix/*.py .
 cd ..
 
 ##############################################
-# Copy python files for Likelihood extension #
+# Copy python files for likelihood extension #
 ##############################################
 
-if [ ! -e "Likelihood" ]; then
-    echo $0 expected to find a directory named "Likelihood" inside `pwd`
+if [ ! -e "likelihood" ]; then
+    echo $0 expected to find a directory named "likelihood" inside `pwd`
     exit 1
 fi
 
-cd Likelihood
+cd likelihood
 rm -f *.py
 cp ../../src/python/likelihood/*.py .
 cd ..
 
 ##############################################
-# Copy python files for Likelihood extension #
+# Copy python files for phylogeny extension #
 ##############################################
 
-if [ ! -e "Phylogeny" ]; then
-    echo $0 expected to find a directory named "Phylogeny" inside `pwd`
+if [ ! -e "phylogeny" ]; then
+    echo $0 expected to find a directory named "phylogeny" inside `pwd`
     exit 1
 fi
 
-cd Phylogeny
+cd phylogeny
 rm -f *.py
 cp ../../src/python/phylogeny/*.py .
 cd ..
 
 ############################################
-# Copy python files for ProbDist extension #
+# Copy python files for probdist extension #
 ############################################
 
-if [ ! -e "ProbDist" ]; then
-    echo $0 expected to find a directory named "ProbDist" inside `pwd`
+if [ ! -e "probdist" ]; then
+    echo $0 expected to find a directory named "probdist" inside `pwd`
     exit 1
 fi
 
-cd ProbDist
+cd probdist
 rm -f *.py
 cp ../../src/python/probdist/*.py .
 cd ..
 
 #############################################
-# Copy python files for ReadNexus extension #
+# Copy python files for readnexus extension #
 #############################################
 
-if [ ! -e "ReadNexus" ]; then
-    echo $0 expected to find a directory named "ReadNexus" inside `pwd`
+if [ ! -e "readnexus" ]; then
+    echo $0 expected to find a directory named "readnexus" inside `pwd`
     exit 1
 fi
 
-cd ReadNexus
+cd readnexus
 rm -f *.py
 cp ../../src/python/readnexus/*.py .
 cd ..
 
 #######################################
-# Copy python files for PDFGen module #
+# Copy python files for pdfgen module #
 #######################################
 
-if [ -e "PDFGen" ]; then
-    rm -rf PDFGen
+if [ -e "pdfgen" ]; then
+    rm -rf pdfgen
 fi
 
-mkdir PDFGen
+mkdir pdfgen
 if [ $? -ne 0 ]; then
-	echo $0 could not create PDFGen directory inside `pwd`
+	echo $0 could not create pdfgen directory inside `pwd`
     exit 1
 fi
 
-cd PDFGen
+cd pdfgen
 cp ../../src/python/pdfgen/*.py .
 cp -r ../../src/python/pdfgen/AFM .
 cd ..
 
 ###########################################
-# Copy python files for TreeViewer module #
+# Copy python files for treeviewer module #
 ###########################################
 
-if [ -e "TreeViewer" ]; then
-    rm -rf TreeViewer
+if [ -e "treeviewer" ]; then
+    rm -rf treeviewer
 fi
 
-mkdir TreeViewer
+mkdir treeviewer
 if [ $? -ne 0 ]; then
-	echo $0 could not create TreeViewer directory inside `pwd`
+	echo $0 could not create treeviewer directory inside `pwd`
     exit 1
 fi
 
-cd TreeViewer
+cd treeviewer
 cp ../../src/python/treeviewer/*.py .
 cd ..
 
 ##########################################
-# Copy python files for Utilities module #
+# Copy python files for utilities module #
 ##########################################
 
-if [ -e "Utilities" ]; then
-    rm -rf Utilities
+if [ -e "utilities" ]; then
+    rm -rf utilities
 fi
 
-mkdir Utilities
+mkdir utilities
 if [ $? -ne 0 ]; then
-	echo $0 could not create Utilities directory inside `pwd`
+	echo $0 could not create utilities directory inside `pwd`
     exit 1
 fi
 
-cd Utilities
+cd utilities
 cp ../../src/python/utilities/*.py .
 cd ..
 
 #########################################
-# Copy python files for Commands module #
+# Copy python files for commands module #
 #########################################
 
-if [ -e "Commands" ]; then
-    rm -rf Commands
+if [ -e "commands" ]; then
+    rm -rf commands
 fi
 
-mkdir Commands
+mkdir commands
 if [ $? -ne 0 ]; then
-	echo $0 could not create Commands directory inside `pwd`
+	echo $0 could not create commands directory inside `pwd`
     exit 1
 fi
 
-cd Commands
+cd commands
 cp ../../src/python/commands/*.py .
 cd ..
 
@@ -173,17 +173,17 @@ cd ..
 # Copy tests #
 ##############
 
-if [ -e "Tests" ]; then
-    rm -rf Tests
+if [ -e "tests" ]; then
+    rm -rf tests
 fi
 
-mkdir Tests
+mkdir tests
 if [ $? -ne 0 ]; then
-	echo $0 could not create Tests directory inside `pwd`
+	echo $0 could not create tests directory inside `pwd`
     exit 1
 fi
 
-cd Tests
+cd tests
 cp -r ../../tests/* .
 cd ..
 
@@ -191,17 +191,17 @@ cd ..
 # Copy examples #
 #################
 
-if [ -e "Examples" ]; then
-    rm -rf Examples
+if [ -e "examples" ]; then
+    rm -rf examples
 fi
 
-mkdir Examples
+mkdir examples
 if [ $? -ne 0 ]; then
-	echo $0 could not create Examples directory inside `pwd`
+	echo $0 could not create examples directory inside `pwd`
     exit 1
 fi
 
-cd Examples
+cd examples
 cp -r ../../examples/* .
 cd ..
 

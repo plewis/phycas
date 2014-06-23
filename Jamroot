@@ -131,7 +131,7 @@ else {
 # The boost-build.jam file in this directory points bjam to <top-of-boost-build-system>
 import python ;
 
-# Build and install the Conversions extension
+# Build and install the conversions extension
 alias conversions_sources
   : src/cpp/conversions_pymod.cpp
     src/cpp/boost_assertion_failed.cpp
@@ -143,13 +143,13 @@ alias conversions_sources
     src/cpp/phycas_string.cpp
     tool_specific_requirements ;
 python-extension _ConversionsExt : conversions_sources ;
-install Conversions
+install conversions
   : _ConversionsExt
-  : <location>phycas/Conversions
+  : <location>phycas/conversions
     <install-dependencies>on
     <install-type>LIB ;  # note: tried using <dll-path> but it seemed to have no effect
 
-# Build and install the PDFGen extension
+# Build and install the pdfgen extension
 # Note: commented out because currently no C++ code is used in generating PDF files from phycas
 #       It is anticipated, however, that in the future we will want to have such capability
 #       on both the C++ and Python side. The basic framework is now in place for this.
@@ -159,9 +159,9 @@ install Conversions
 #    src/cpp/pdfgen.cpp
 #    tool_specific_requirements ;
 #python-extension _PDFGen : pdfgen_sources ;
-#install PDFGen : _PDFGen : <location>phycas/PDFGen ;
+#install pdfgen : _PDFGen : <location>phycas/pdfgen ;
 
-# Build and install the ProbDist extension
+# Build and install the probdist extension
 alias probdist_sources
   : src/cpp/probdist_pymod.cpp
     src/cpp/boost_assertion_failed.cpp
@@ -183,17 +183,17 @@ alias probdist_sources
     src/cpp/subset_proportions.cpp
     tool_specific_requirements ;
 python-extension _ProbDistExt : probdist_sources ;
-install ProbDist : _ProbDistExt : <location>phycas/ProbDist ;
+install probdist : _ProbDistExt : <location>phycas/probdist ;
 
-# Build and install the DataMatrix extension
+# Build and install the datamatrix extension
 alias datamatrix_sources
   : src/cpp/data_matrix_pymod.cpp
     src/cpp/boost_assertion_failed.cpp
     tool_specific_requirements ;
 python-extension _DataMatrixExt : datamatrix_sources ;
-install DataMatrix : _DataMatrixExt : <location>phycas/DataMatrix ;
+install datamatrix : _DataMatrixExt : <location>phycas/datamatrix ;
 
-# Build and install the Likelihood extension
+# Build and install the likelihood extension
 alias likelihood_sources
   : src/cpp/tree_likelihood.cpp
     src/cpp/prior_distribution.cpp
@@ -261,9 +261,9 @@ alias likelihood_sources
     [ obj likelihood_tree_manip_obj : src/cpp/tree_manip.cpp tool_specific_requirements ]
     tool_specific_requirements ;
 python-extension _LikelihoodExt : likelihood_sources ;
-install Likelihood : _LikelihoodExt : <location>phycas/Likelihood ;
+install likelihood : _LikelihoodExt : <location>phycas/likelihood ;
 
-# Build and install the Phylogeny extension
+# Build and install the phylogeny extension
 alias phylogeny_sources
   : src/cpp/phylogeny_pymod.cpp
     src/cpp/boost_assertion_failed.cpp
@@ -278,9 +278,9 @@ alias phylogeny_sources
     src/cpp/phycas_string.cpp
     tool_specific_requirements ;
 python-extension _PhylogenyExt : phylogeny_sources ;
-install Phylogeny : _PhylogenyExt : <location>phycas/Phylogeny ;
+install phylogeny : _PhylogenyExt : <location>phycas/phylogeny ;
 
-# Build and install the ReadNexus extension
+# Build and install the readnexus extension
 alias readnexus_sources
   : src/cpp/basic_cdf.cpp
     src/cpp/char_super_matrix.cpp
@@ -294,4 +294,4 @@ alias readnexus_sources
     src/cpp/thirdparty/dcdflib/src/ipmpar.c
     tool_specific_requirements ;
 python-extension _ReadNexusExt : readnexus_sources ;
-install ReadNexus : _ReadNexusExt : <location>phycas/ReadNexus ;
+install readnexus : _ReadNexusExt : <location>phycas/readnexus ;
