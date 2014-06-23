@@ -1,0 +1,1045 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		D1777BB9193C14DF000719F1 /* basic_cdf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B0D193C14DF000719F1 /* basic_cdf.cpp */; };
+		D1777BBA193C14DF000719F1 /* basic_lot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B0F193C14DF000719F1 /* basic_lot.cpp */; };
+		D1777BBB193C14DF000719F1 /* basic_tree_node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B11193C14DF000719F1 /* basic_tree_node.cpp */; };
+		D1777BBC193C14DF000719F1 /* basic_tree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B13193C14DF000719F1 /* basic_tree.cpp */; };
+		D1777BBD193C14DF000719F1 /* binary_model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B15193C14DF000719F1 /* binary_model.cpp */; };
+		D1777BBE193C14DF000719F1 /* boost_assertion_failed.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B16193C14DF000719F1 /* boost_assertion_failed.cpp */; };
+		D1777BBF193C14DF000719F1 /* brent_praxis.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B17193C14DF000719F1 /* brent_praxis.cpp */; };
+		D1777BC0193C14DF000719F1 /* bush_move.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B19193C14DF000719F1 /* bush_move.cpp */; };
+		D1777BC1193C14DF000719F1 /* char_super_matrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B1B193C14DF000719F1 /* char_super_matrix.cpp */; };
+		D1777BC2193C14DF000719F1 /* codon_model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B1D193C14DF000719F1 /* codon_model.cpp */; };
+		D1777BC3193C14DF000719F1 /* cond_likelihood_storage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B1F193C14DF000719F1 /* cond_likelihood_storage.cpp */; };
+		D1777BC4193C14DF000719F1 /* cond_likelihood.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B21193C14DF000719F1 /* cond_likelihood.cpp */; };
+		D1777BC5193C14DF000719F1 /* conversions_pymod.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B23193C14DF000719F1 /* conversions_pymod.cpp */; };
+		D1777BC6193C14DF000719F1 /* data_matrix_pymod.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B24193C14DF000719F1 /* data_matrix_pymod.cpp */; };
+		D1777BC7193C14DF000719F1 /* dirichlet_distribution.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B25193C14DF000719F1 /* dirichlet_distribution.cpp */; };
+		D1777BC8193C14DF000719F1 /* dirichlet_move.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B27193C14DF000719F1 /* dirichlet_move.cpp */; };
+		D1777BC9193C14DF000719F1 /* discrete_gamma_shape_param.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B29193C14DF000719F1 /* discrete_gamma_shape_param.cpp */; };
+		D1777BCA193C14DF000719F1 /* edge_move.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B2D193C14DF000719F1 /* edge_move.cpp */; };
+		D1777BCB193C14DF000719F1 /* edgelen_master_param.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B2F193C14DF000719F1 /* edgelen_master_param.cpp */; };
+		D1777BCC193C14DF000719F1 /* gtr_rate_param.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B30193C14DF000719F1 /* gtr_rate_param.cpp */; };
+		D1777BCD193C14DF000719F1 /* gtr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B31193C14DF000719F1 /* gtr.cpp */; };
+		D1777BCE193C14DF000719F1 /* hky.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B33193C14DF000719F1 /* hky.cpp */; };
+		D1777BCF193C14DF000719F1 /* hyperprior_param.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B35193C14DF000719F1 /* hyperprior_param.cpp */; };
+		D1777BD0193C14DF000719F1 /* internal_data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B36193C14DF000719F1 /* internal_data.cpp */; };
+		D1777BD1193C14DF000719F1 /* irreversible_model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B38193C14DF000719F1 /* irreversible_model.cpp */; };
+		D1777BD2193C14DF000719F1 /* jc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B39193C14DF000719F1 /* jc.cpp */; };
+		D1777BD3193C14DF000719F1 /* joint_prior_manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B3B193C14DF000719F1 /* joint_prior_manager.cpp */; };
+		D1777BD4193C14DF000719F1 /* kappa_param.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B3D193C14DF000719F1 /* kappa_param.cpp */; };
+		D1777BD5193C14DF000719F1 /* larget_simon_move.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B3E193C14DF000719F1 /* larget_simon_move.cpp */; };
+		D1777BD6193C14DF000719F1 /* likelihood_loops.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B40193C14DF000719F1 /* likelihood_loops.cpp */; };
+		D1777BD7193C14DF000719F1 /* likelihood_pymod.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B41193C14DF000719F1 /* likelihood_pymod.cpp */; };
+		D1777BD8193C14DF000719F1 /* linalg.c in Sources */ = {isa = PBXBuildFile; fileRef = D1777B42193C14DF000719F1 /* linalg.c */; };
+		D1777BD9193C14DF000719F1 /* linalg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B43193C14DF000719F1 /* linalg.cpp */; };
+		D1777BDA193C14DF000719F1 /* lognormal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B45193C14DF000719F1 /* lognormal.cpp */; };
+		D1777BDB193C14DF000719F1 /* mcmc_chain_manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B47193C14DF000719F1 /* mcmc_chain_manager.cpp */; };
+		D1777BDC193C14DF000719F1 /* mcmc_param.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B4A193C14DF000719F1 /* mcmc_param.cpp */; };
+		D1777BDD193C14DF000719F1 /* mcmc_updater.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B4C193C14DF000719F1 /* mcmc_updater.cpp */; };
+		D1777BDE193C14DF000719F1 /* model_pymod.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B4F193C14DF000719F1 /* model_pymod.cpp */; };
+		D1777BDF193C14DF000719F1 /* model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B50193C14DF000719F1 /* model.cpp */; };
+		D1777BE0193C14DF000719F1 /* mvnormal_distribution.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B53193C14DF000719F1 /* mvnormal_distribution.cpp */; };
+		D1777BE1193C14DF000719F1 /* ncl_pymod.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B55193C14DF000719F1 /* ncl_pymod.cpp */; };
+		D1777BE2193C14DF000719F1 /* numsum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B57193C14DF000719F1 /* numsum.cpp */; };
+		D1777BE3193C14DF000719F1 /* nxs_file_path.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B59193C14DF000719F1 /* nxs_file_path.cpp */; };
+		D1777BE4193C14DF000719F1 /* omega_param.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B5B193C14DF000719F1 /* omega_param.cpp */; };
+		D1777BE5193C14DF000719F1 /* partition_model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B5C193C14DF000719F1 /* partition_model.cpp */; };
+		D1777BE6193C14DF000719F1 /* pdfgen_pymod.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B5E193C14DF000719F1 /* pdfgen_pymod.cpp */; };
+		D1777BE7193C14DF000719F1 /* pdfgen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B5F193C14DF000719F1 /* pdfgen.cpp */; };
+		D1777BE8193C14DF000719F1 /* phycas_nexus_reader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B62193C14DF000719F1 /* phycas_nexus_reader.cpp */; };
+		D1777BE9193C14DF000719F1 /* phycas_string.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B64193C14DF000719F1 /* phycas_string.cpp */; };
+		D1777BEA193C14DF000719F1 /* phylogeny_pymod.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B67193C14DF000719F1 /* phylogeny_pymod.cpp */; };
+		D1777BEB193C14DF000719F1 /* pinvar_param.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B68193C14DF000719F1 /* pinvar_param.cpp */; };
+		D1777BEC193C14DF000719F1 /* prior_distribution.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B69193C14DF000719F1 /* prior_distribution.cpp */; };
+		D1777BED193C14DF000719F1 /* probability_distribution.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B6B193C14DF000719F1 /* probability_distribution.cpp */; };
+		D1777BEE193C14DF000719F1 /* probdist_pymod.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B6D193C14DF000719F1 /* probdist_pymod.cpp */; };
+		D1777BEF193C14DF000719F1 /* q_matrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B6E193C14DF000719F1 /* q_matrix.cpp */; };
+		D1777BF0193C14DF000719F1 /* read_nexus_pymod.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B70193C14DF000719F1 /* read_nexus_pymod.cpp */; };
+		D1777BF1193C14DF000719F1 /* rectangular_matrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B71193C14DF000719F1 /* rectangular_matrix.cpp */; };
+		D1777BF2193C14DF000719F1 /* rel_rates_move.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B73193C14DF000719F1 /* rel_rates_move.cpp */; };
+		D1777BF3193C14DF000719F1 /* relative_rate_distribution.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B75193C14DF000719F1 /* relative_rate_distribution.cpp */; };
+		D1777BF4193C14DF000719F1 /* sim_data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B77193C14DF000719F1 /* sim_data.cpp */; };
+		D1777BF5193C14DF000719F1 /* slice_sampler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B79193C14DF000719F1 /* slice_sampler.cpp */; };
+		D1777BF6193C14DF000719F1 /* split.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B7C193C14DF000719F1 /* split.cpp */; };
+		D1777BF7193C14DF000719F1 /* square_matrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B7E193C14DF000719F1 /* square_matrix.cpp */; };
+		D1777BF8193C14DF000719F1 /* state_freq_move.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B80193C14DF000719F1 /* state_freq_move.cpp */; };
+		D1777BF9193C14DF000719F1 /* state_freq_param.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B82193C14DF000719F1 /* state_freq_param.cpp */; };
+		D1777BFA193C14DF000719F1 /* stop_watch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B85193C14DF000719F1 /* stop_watch.cpp */; };
+		D1777BFB193C14DF000719F1 /* subset_proportions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B87193C14DF000719F1 /* subset_proportions.cpp */; };
+		D1777BFC193C14DF000719F1 /* subset_relrates_move.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B89193C14DF000719F1 /* subset_relrates_move.cpp */; };
+		D1777BFD193C14DF000719F1 /* dcdflib.c in Sources */ = {isa = PBXBuildFile; fileRef = D1777B94193C14DF000719F1 /* dcdflib.c */; };
+		D1777BFE193C14DF000719F1 /* dcdflib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B95193C14DF000719F1 /* dcdflib.cpp */; };
+		D1777BFF193C14DF000719F1 /* ipmpar.c in Sources */ = {isa = PBXBuildFile; fileRef = D1777B96193C14DF000719F1 /* ipmpar.c */; };
+		D1777C00193C14DF000719F1 /* ipmpar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B97193C14DF000719F1 /* ipmpar.cpp */; };
+		D1777C01193C14DF000719F1 /* num_util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B99193C14DF000719F1 /* num_util.cpp */; };
+		D1777C02193C14DF000719F1 /* dls_brent.c in Sources */ = {isa = PBXBuildFile; fileRef = D1777B9C193C14DF000719F1 /* dls_brent.c */; };
+		D1777C03193C14DF000719F1 /* minfit.c in Sources */ = {isa = PBXBuildFile; fileRef = D1777BA0193C14DF000719F1 /* minfit.c */; };
+		D1777C04193C14DF000719F1 /* praxis.c in Sources */ = {isa = PBXBuildFile; fileRef = D1777BA1193C14DF000719F1 /* praxis.c */; };
+		D1777C05193C14DF000719F1 /* tip_data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777BA4193C14DF000719F1 /* tip_data.cpp */; };
+		D1777C06193C14DF000719F1 /* topo_prior_calculator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777BA6193C14DF000719F1 /* topo_prior_calculator.cpp */; };
+		D1777C07193C14DF000719F1 /* tree_length_distribution.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777BA9193C14DF000719F1 /* tree_length_distribution.cpp */; };
+		D1777C08193C14DF000719F1 /* tree_likelihood.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777BAB193C14DF000719F1 /* tree_likelihood.cpp */; };
+		D1777C09193C14DF000719F1 /* tree_manip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777BAD193C14DF000719F1 /* tree_manip.cpp */; };
+		D1777C0A193C14DF000719F1 /* tree_scaler_move.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777BAF193C14DF000719F1 /* tree_scaler_move.cpp */; };
+		D1777C0B193C14DF000719F1 /* underflow_manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777BB2193C14DF000719F1 /* underflow_manager.cpp */; };
+		D1777C0C193C14DF000719F1 /* updater_pymod.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777BB4193C14DF000719F1 /* updater_pymod.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		D16818FF193B7102004AAAD5 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		D1521FDC193B756F007ADBB5 /* __init__.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = __init__.py; path = src/python/commands/__init__.py; sourceTree = PHYCAS_ROOT; };
+		D1521FDD193B756F007ADBB5 /* Commands.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = Commands.py; path = src/python/commands/Commands.py; sourceTree = PHYCAS_ROOT; };
+		D1521FDE193B756F007ADBB5 /* CPO.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = CPO.py; path = src/python/commands/CPO.py; sourceTree = PHYCAS_ROOT; };
+		D1521FDF193B756F007ADBB5 /* CPOImpl.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = CPOImpl.py; path = src/python/commands/CPOImpl.py; sourceTree = PHYCAS_ROOT; };
+		D1521FE0193B756F007ADBB5 /* GG.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = GG.py; path = src/python/commands/GG.py; sourceTree = PHYCAS_ROOT; };
+		D1521FE1193B756F007ADBB5 /* GGImpl.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = GGImpl.py; path = src/python/commands/GGImpl.py; sourceTree = PHYCAS_ROOT; };
+		D1521FE2193B756F007ADBB5 /* Like.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = Like.py; path = src/python/commands/Like.py; sourceTree = PHYCAS_ROOT; };
+		D1521FE3193B756F007ADBB5 /* LikeImpl.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = LikeImpl.py; path = src/python/commands/LikeImpl.py; sourceTree = PHYCAS_ROOT; };
+		D1521FE4193B756F007ADBB5 /* LikelihoodCore.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = LikelihoodCore.py; path = src/python/commands/LikelihoodCore.py; sourceTree = PHYCAS_ROOT; };
+		D1521FE5193B756F007ADBB5 /* MarkovChain.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = MarkovChain.py; path = src/python/commands/MarkovChain.py; sourceTree = PHYCAS_ROOT; };
+		D1521FE6193B756F007ADBB5 /* MCMC.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = MCMC.py; path = src/python/commands/MCMC.py; sourceTree = PHYCAS_ROOT; };
+		D1521FE7193B756F007ADBB5 /* MCMCImpl.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = MCMCImpl.py; path = src/python/commands/MCMCImpl.py; sourceTree = PHYCAS_ROOT; };
+		D1521FE8193B756F007ADBB5 /* MCMCManager.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = MCMCManager.py; path = src/python/commands/MCMCManager.py; sourceTree = PHYCAS_ROOT; };
+		D1521FE9193B756F007ADBB5 /* Model.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = Model.py; path = src/python/commands/Model.py; sourceTree = PHYCAS_ROOT; };
+		D1521FEA193B756F007ADBB5 /* Partition.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = Partition.py; path = src/python/commands/Partition.py; sourceTree = PHYCAS_ROOT; };
+		D1521FEB193B756F007ADBB5 /* Phycas.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = Phycas.py; path = src/python/commands/Phycas.py; sourceTree = PHYCAS_ROOT; };
+		D1521FEC193B756F007ADBB5 /* RandomTree.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = RandomTree.py; path = src/python/commands/RandomTree.py; sourceTree = PHYCAS_ROOT; };
+		D1521FED193B756F007ADBB5 /* RandomTreeImpl.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = RandomTreeImpl.py; path = src/python/commands/RandomTreeImpl.py; sourceTree = PHYCAS_ROOT; };
+		D1521FEE193B756F007ADBB5 /* RefDist.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = RefDist.py; path = src/python/commands/RefDist.py; sourceTree = PHYCAS_ROOT; };
+		D1521FEF193B756F007ADBB5 /* RefDistImpl.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = RefDistImpl.py; path = src/python/commands/RefDistImpl.py; sourceTree = PHYCAS_ROOT; };
+		D1521FF0193B756F007ADBB5 /* ScriptGen.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = ScriptGen.py; path = src/python/commands/ScriptGen.py; sourceTree = PHYCAS_ROOT; };
+		D1521FF1193B756F007ADBB5 /* ScriptGenImpl.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = ScriptGenImpl.py; path = src/python/commands/ScriptGenImpl.py; sourceTree = PHYCAS_ROOT; };
+		D1521FF2193B756F007ADBB5 /* Sim.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = Sim.py; path = src/python/commands/Sim.py; sourceTree = PHYCAS_ROOT; };
+		D1521FF3193B756F007ADBB5 /* SimImpl.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = SimImpl.py; path = src/python/commands/SimImpl.py; sourceTree = PHYCAS_ROOT; };
+		D1521FF4193B756F007ADBB5 /* SS.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = SS.py; path = src/python/commands/SS.py; sourceTree = PHYCAS_ROOT; };
+		D1521FF5193B756F007ADBB5 /* SumP.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = SumP.py; path = src/python/commands/SumP.py; sourceTree = PHYCAS_ROOT; };
+		D1521FF6193B756F007ADBB5 /* SumPImpl.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = SumPImpl.py; path = src/python/commands/SumPImpl.py; sourceTree = PHYCAS_ROOT; };
+		D1521FF7193B756F007ADBB5 /* SumT.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = SumT.py; path = src/python/commands/SumT.py; sourceTree = PHYCAS_ROOT; };
+		D1521FF8193B756F007ADBB5 /* SumTImpl.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = SumTImpl.py; path = src/python/commands/SumTImpl.py; sourceTree = PHYCAS_ROOT; };
+		D1521FFA193B756F007ADBB5 /* __init__.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = __init__.py; path = src/python/conversions/__init__.py; sourceTree = PHYCAS_ROOT; };
+		D1521FFC193B756F007ADBB5 /* __init__.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = __init__.py; path = src/python/datamatrix/__init__.py; sourceTree = PHYCAS_ROOT; };
+		D1521FFD193B756F007ADBB5 /* _DataMatrix.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _DataMatrix.py; path = src/python/datamatrix/_DataMatrix.py; sourceTree = PHYCAS_ROOT; };
+		D1521FFF193B756F007ADBB5 /* __init__.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = __init__.py; path = src/python/likelihood/__init__.py; sourceTree = PHYCAS_ROOT; };
+		D1522000193B756F007ADBB5 /* _MCMCChainManager.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _MCMCChainManager.py; path = src/python/likelihood/_MCMCChainManager.py; sourceTree = PHYCAS_ROOT; };
+		D1522001193B756F007ADBB5 /* _Model.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _Model.py; path = src/python/likelihood/_Model.py; sourceTree = PHYCAS_ROOT; };
+		D1522002193B756F007ADBB5 /* _QMatrix.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _QMatrix.py; path = src/python/likelihood/_QMatrix.py; sourceTree = PHYCAS_ROOT; };
+		D1522003193B756F007ADBB5 /* _SimData.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _SimData.py; path = src/python/likelihood/_SimData.py; sourceTree = PHYCAS_ROOT; };
+		D1522004193B756F007ADBB5 /* _TopoPriorCalculator.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _TopoPriorCalculator.py; path = src/python/likelihood/_TopoPriorCalculator.py; sourceTree = PHYCAS_ROOT; };
+		D1522005193B756F007ADBB5 /* _TreeLengthDist.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _TreeLengthDist.py; path = src/python/likelihood/_TreeLengthDist.py; sourceTree = PHYCAS_ROOT; };
+		D1522006193B756F007ADBB5 /* _TreeLikelihood.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _TreeLikelihood.py; path = src/python/likelihood/_TreeLikelihood.py; sourceTree = PHYCAS_ROOT; };
+		D1522008193B756F007ADBB5 /* __init__.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = __init__.py; path = src/python/pdfgen/__init__.py; sourceTree = PHYCAS_ROOT; };
+		D1522009193B756F007ADBB5 /* _PDFGenerator.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _PDFGenerator.py; path = src/python/pdfgen/_PDFGenerator.py; sourceTree = PHYCAS_ROOT; };
+		D152201C193B756F007ADBB5 /* __init__.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = __init__.py; path = src/python/phylogeny/__init__.py; sourceTree = PHYCAS_ROOT; };
+		D152201D193B756F007ADBB5 /* _Split.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _Split.py; path = src/python/phylogeny/_Split.py; sourceTree = PHYCAS_ROOT; };
+		D152201E193B756F007ADBB5 /* _Tree.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _Tree.py; path = src/python/phylogeny/_Tree.py; sourceTree = PHYCAS_ROOT; };
+		D152201F193B756F007ADBB5 /* _TreeManip.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _TreeManip.py; path = src/python/phylogeny/_TreeManip.py; sourceTree = PHYCAS_ROOT; };
+		D1522020193B756F007ADBB5 /* _TreeNode.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _TreeNode.py; path = src/python/phylogeny/_TreeNode.py; sourceTree = PHYCAS_ROOT; };
+		D1522022193B756F007ADBB5 /* __init__.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = __init__.py; path = src/python/probdist/__init__.py; sourceTree = PHYCAS_ROOT; };
+		D1522023193B756F007ADBB5 /* _BernoulliDist.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _BernoulliDist.py; path = src/python/probdist/_BernoulliDist.py; sourceTree = PHYCAS_ROOT; };
+		D1522024193B756F007ADBB5 /* _BetaDist.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _BetaDist.py; path = src/python/probdist/_BetaDist.py; sourceTree = PHYCAS_ROOT; };
+		D1522025193B756F007ADBB5 /* _BetaPrimeDist.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _BetaPrimeDist.py; path = src/python/probdist/_BetaPrimeDist.py; sourceTree = PHYCAS_ROOT; };
+		D1522026193B756F007ADBB5 /* _BinomialDist.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _BinomialDist.py; path = src/python/probdist/_BinomialDist.py; sourceTree = PHYCAS_ROOT; };
+		D1522027193B756F007ADBB5 /* _DirichletDist.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _DirichletDist.py; path = src/python/probdist/_DirichletDist.py; sourceTree = PHYCAS_ROOT; };
+		D1522028193B756F007ADBB5 /* _ExponentialDist.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _ExponentialDist.py; path = src/python/probdist/_ExponentialDist.py; sourceTree = PHYCAS_ROOT; };
+		D1522029193B756F007ADBB5 /* _GammaDist.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _GammaDist.py; path = src/python/probdist/_GammaDist.py; sourceTree = PHYCAS_ROOT; };
+		D152202A193B756F007ADBB5 /* _ImproperUniformDist.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _ImproperUniformDist.py; path = src/python/probdist/_ImproperUniformDist.py; sourceTree = PHYCAS_ROOT; };
+		D152202B193B756F007ADBB5 /* _InverseGammaDist.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _InverseGammaDist.py; path = src/python/probdist/_InverseGammaDist.py; sourceTree = PHYCAS_ROOT; };
+		D152202C193B756F007ADBB5 /* _LognormalDist.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _LognormalDist.py; path = src/python/probdist/_LognormalDist.py; sourceTree = PHYCAS_ROOT; };
+		D152202D193B756F007ADBB5 /* _Lot.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _Lot.py; path = src/python/probdist/_Lot.py; sourceTree = PHYCAS_ROOT; };
+		D152202E193B756F007ADBB5 /* _MVNormalDist.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _MVNormalDist.py; path = src/python/probdist/_MVNormalDist.py; sourceTree = PHYCAS_ROOT; };
+		D152202F193B756F007ADBB5 /* _NormalDist.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _NormalDist.py; path = src/python/probdist/_NormalDist.py; sourceTree = PHYCAS_ROOT; };
+		D1522030193B756F007ADBB5 /* _PyDistributionBase.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _PyDistributionBase.py; path = src/python/probdist/_PyDistributionBase.py; sourceTree = PHYCAS_ROOT; };
+		D1522031193B756F007ADBB5 /* _RectangularMatrix.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _RectangularMatrix.py; path = src/python/probdist/_RectangularMatrix.py; sourceTree = PHYCAS_ROOT; };
+		D1522032193B756F007ADBB5 /* _RelRateDist.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _RelRateDist.py; path = src/python/probdist/_RelRateDist.py; sourceTree = PHYCAS_ROOT; };
+		D1522033193B756F007ADBB5 /* _SliceSampler.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _SliceSampler.py; path = src/python/probdist/_SliceSampler.py; sourceTree = PHYCAS_ROOT; };
+		D1522034193B756F007ADBB5 /* _SquareMatrix.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _SquareMatrix.py; path = src/python/probdist/_SquareMatrix.py; sourceTree = PHYCAS_ROOT; };
+		D1522035193B756F007ADBB5 /* _StopWatch.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _StopWatch.py; path = src/python/probdist/_StopWatch.py; sourceTree = PHYCAS_ROOT; };
+		D1522036193B756F007ADBB5 /* _UniformDist.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _UniformDist.py; path = src/python/probdist/_UniformDist.py; sourceTree = PHYCAS_ROOT; };
+		D1522038193B756F007ADBB5 /* __init__.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = __init__.py; path = src/python/readnexus/__init__.py; sourceTree = PHYCAS_ROOT; };
+		D1522039193B756F007ADBB5 /* _NexusReader.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = _NexusReader.py; path = src/python/readnexus/_NexusReader.py; sourceTree = PHYCAS_ROOT; };
+		D152203B193B756F007ADBB5 /* __init__.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = __init__.py; path = src/python/treeviewer/__init__.py; sourceTree = PHYCAS_ROOT; };
+		D152203C193B756F007ADBB5 /* TreeViewer.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = TreeViewer.py; path = src/python/treeviewer/TreeViewer.py; sourceTree = PHYCAS_ROOT; };
+		D152203E193B756F007ADBB5 /* __init__.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = __init__.py; path = src/python/utilities/__init__.py; sourceTree = PHYCAS_ROOT; };
+		D152203F193B756F007ADBB5 /* CommonFunctions.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = CommonFunctions.py; path = src/python/utilities/CommonFunctions.py; sourceTree = PHYCAS_ROOT; };
+		D1522040193B756F007ADBB5 /* DefaultData.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = DefaultData.py; path = src/python/utilities/DefaultData.py; sourceTree = PHYCAS_ROOT; };
+		D1522041193B756F007ADBB5 /* enotify.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = enotify.py; path = src/python/utilities/enotify.py; sourceTree = PHYCAS_ROOT; };
+		D1522042193B756F007ADBB5 /* GlobalState.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = GlobalState.py; path = src/python/utilities/GlobalState.py; sourceTree = PHYCAS_ROOT; };
+		D1522043193B756F007ADBB5 /* io.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = io.py; path = src/python/utilities/io.py; sourceTree = PHYCAS_ROOT; };
+		D1522044193B756F007ADBB5 /* kappa2tratio.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = kappa2tratio.py; path = src/python/utilities/kappa2tratio.py; sourceTree = PHYCAS_ROOT; };
+		D1522045193B756F007ADBB5 /* PDFTree.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = PDFTree.py; path = src/python/utilities/PDFTree.py; sourceTree = PHYCAS_ROOT; };
+		D1522046193B756F007ADBB5 /* PhycasCommand.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = PhycasCommand.py; path = src/python/utilities/PhycasCommand.py; sourceTree = PHYCAS_ROOT; };
+		D1522047193B756F007ADBB5 /* PhycasUpdateCheck.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = PhycasUpdateCheck.py; path = src/python/utilities/PhycasUpdateCheck.py; sourceTree = PHYCAS_ROOT; };
+		D1522048193B756F007ADBB5 /* summary_stats.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = summary_stats.py; path = src/python/utilities/summary_stats.py; sourceTree = PHYCAS_ROOT; };
+		D1522049193B756F007ADBB5 /* tratio2kappa.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = tratio2kappa.py; path = src/python/utilities/tratio2kappa.py; sourceTree = PHYCAS_ROOT; };
+		D1681901193B7102004AAAD5 /* phycas */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = phycas; sourceTree = BUILT_PRODUCTS_DIR; };
+		D1777B0C193C11C1000719F1 /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = __init__.py; path = src/python/__init__.py; sourceTree = PHYCAS_ROOT; };
+		D1777B0D193C14DF000719F1 /* basic_cdf.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = basic_cdf.cpp; sourceTree = "<group>"; };
+		D1777B0E193C14DF000719F1 /* basic_cdf.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = basic_cdf.hpp; sourceTree = "<group>"; };
+		D1777B0F193C14DF000719F1 /* basic_lot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = basic_lot.cpp; sourceTree = "<group>"; };
+		D1777B10193C14DF000719F1 /* basic_lot.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = basic_lot.hpp; sourceTree = "<group>"; };
+		D1777B11193C14DF000719F1 /* basic_tree_node.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = basic_tree_node.cpp; sourceTree = "<group>"; };
+		D1777B12193C14DF000719F1 /* basic_tree_node.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = basic_tree_node.hpp; sourceTree = "<group>"; };
+		D1777B13193C14DF000719F1 /* basic_tree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = basic_tree.cpp; sourceTree = "<group>"; };
+		D1777B14193C14DF000719F1 /* basic_tree.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = basic_tree.hpp; sourceTree = "<group>"; };
+		D1777B15193C14DF000719F1 /* binary_model.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = binary_model.cpp; sourceTree = "<group>"; };
+		D1777B16193C14DF000719F1 /* boost_assertion_failed.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = boost_assertion_failed.cpp; sourceTree = "<group>"; };
+		D1777B17193C14DF000719F1 /* brent_praxis.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = brent_praxis.cpp; sourceTree = "<group>"; };
+		D1777B18193C14DF000719F1 /* brent_praxis.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = brent_praxis.hpp; sourceTree = "<group>"; };
+		D1777B19193C14DF000719F1 /* bush_move.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bush_move.cpp; sourceTree = "<group>"; };
+		D1777B1A193C14DF000719F1 /* bush_move.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = bush_move.hpp; sourceTree = "<group>"; };
+		D1777B1B193C14DF000719F1 /* char_super_matrix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = char_super_matrix.cpp; sourceTree = "<group>"; };
+		D1777B1C193C14DF000719F1 /* char_super_matrix.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = char_super_matrix.hpp; sourceTree = "<group>"; };
+		D1777B1D193C14DF000719F1 /* codon_model.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = codon_model.cpp; sourceTree = "<group>"; };
+		D1777B1E193C14DF000719F1 /* codon_model.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = codon_model.hpp; sourceTree = "<group>"; };
+		D1777B1F193C14DF000719F1 /* cond_likelihood_storage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cond_likelihood_storage.cpp; sourceTree = "<group>"; };
+		D1777B20193C14DF000719F1 /* cond_likelihood_storage.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = cond_likelihood_storage.hpp; sourceTree = "<group>"; };
+		D1777B21193C14DF000719F1 /* cond_likelihood.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cond_likelihood.cpp; sourceTree = "<group>"; };
+		D1777B22193C14DF000719F1 /* cond_likelihood.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = cond_likelihood.hpp; sourceTree = "<group>"; };
+		D1777B23193C14DF000719F1 /* conversions_pymod.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = conversions_pymod.cpp; sourceTree = "<group>"; };
+		D1777B24193C14DF000719F1 /* data_matrix_pymod.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = data_matrix_pymod.cpp; sourceTree = "<group>"; };
+		D1777B25193C14DF000719F1 /* dirichlet_distribution.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dirichlet_distribution.cpp; sourceTree = "<group>"; };
+		D1777B26193C14DF000719F1 /* dirichlet_distribution.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = dirichlet_distribution.hpp; sourceTree = "<group>"; };
+		D1777B27193C14DF000719F1 /* dirichlet_move.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dirichlet_move.cpp; sourceTree = "<group>"; };
+		D1777B28193C14DF000719F1 /* dirichlet_move.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = dirichlet_move.hpp; sourceTree = "<group>"; };
+		D1777B29193C14DF000719F1 /* discrete_gamma_shape_param.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = discrete_gamma_shape_param.cpp; sourceTree = "<group>"; };
+		D1777B2A193C14DF000719F1 /* dls.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dls.h; sourceTree = "<group>"; };
+		D1777B2B193C14DF000719F1 /* edge_endpoints.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = edge_endpoints.hpp; sourceTree = "<group>"; };
+		D1777B2C193C14DF000719F1 /* edge_iterators.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = edge_iterators.hpp; sourceTree = "<group>"; };
+		D1777B2D193C14DF000719F1 /* edge_move.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = edge_move.cpp; sourceTree = "<group>"; };
+		D1777B2E193C14DF000719F1 /* edge_move.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = edge_move.hpp; sourceTree = "<group>"; };
+		D1777B2F193C14DF000719F1 /* edgelen_master_param.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = edgelen_master_param.cpp; sourceTree = "<group>"; };
+		D1777B30193C14DF000719F1 /* gtr_rate_param.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gtr_rate_param.cpp; sourceTree = "<group>"; };
+		D1777B31193C14DF000719F1 /* gtr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gtr.cpp; sourceTree = "<group>"; };
+		D1777B32193C14DF000719F1 /* gtr.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = gtr.hpp; sourceTree = "<group>"; };
+		D1777B33193C14DF000719F1 /* hky.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hky.cpp; sourceTree = "<group>"; };
+		D1777B34193C14DF000719F1 /* hky.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = hky.hpp; sourceTree = "<group>"; };
+		D1777B35193C14DF000719F1 /* hyperprior_param.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hyperprior_param.cpp; sourceTree = "<group>"; };
+		D1777B36193C14DF000719F1 /* internal_data.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = internal_data.cpp; sourceTree = "<group>"; };
+		D1777B37193C14DF000719F1 /* internal_data.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = internal_data.hpp; sourceTree = "<group>"; };
+		D1777B38193C14DF000719F1 /* irreversible_model.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = irreversible_model.cpp; sourceTree = "<group>"; };
+		D1777B39193C14DF000719F1 /* jc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = jc.cpp; sourceTree = "<group>"; };
+		D1777B3A193C14DF000719F1 /* jc.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = jc.hpp; sourceTree = "<group>"; };
+		D1777B3B193C14DF000719F1 /* joint_prior_manager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = joint_prior_manager.cpp; sourceTree = "<group>"; };
+		D1777B3C193C14DF000719F1 /* joint_prior_manager.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = joint_prior_manager.hpp; sourceTree = "<group>"; };
+		D1777B3D193C14DF000719F1 /* kappa_param.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = kappa_param.cpp; sourceTree = "<group>"; };
+		D1777B3E193C14DF000719F1 /* larget_simon_move.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = larget_simon_move.cpp; sourceTree = "<group>"; };
+		D1777B3F193C14DF000719F1 /* larget_simon_move.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = larget_simon_move.hpp; sourceTree = "<group>"; };
+		D1777B40193C14DF000719F1 /* likelihood_loops.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = likelihood_loops.cpp; sourceTree = "<group>"; };
+		D1777B41193C14DF000719F1 /* likelihood_pymod.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = likelihood_pymod.cpp; sourceTree = "<group>"; };
+		D1777B42193C14DF000719F1 /* linalg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = linalg.c; sourceTree = "<group>"; };
+		D1777B43193C14DF000719F1 /* linalg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = linalg.cpp; sourceTree = "<group>"; };
+		D1777B44193C14DF000719F1 /* linalg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = linalg.h; sourceTree = "<group>"; };
+		D1777B45193C14DF000719F1 /* lognormal.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lognormal.cpp; sourceTree = "<group>"; };
+		D1777B46193C14DF000719F1 /* lognormal.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = lognormal.hpp; sourceTree = "<group>"; };
+		D1777B47193C14DF000719F1 /* mcmc_chain_manager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mcmc_chain_manager.cpp; sourceTree = "<group>"; };
+		D1777B48193C14DF000719F1 /* mcmc_chain_manager.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = mcmc_chain_manager.hpp; sourceTree = "<group>"; };
+		D1777B49193C14DF000719F1 /* mcmc_move.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = mcmc_move.hpp; sourceTree = "<group>"; };
+		D1777B4A193C14DF000719F1 /* mcmc_param.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mcmc_param.cpp; sourceTree = "<group>"; };
+		D1777B4B193C14DF000719F1 /* mcmc_param.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = mcmc_param.hpp; sourceTree = "<group>"; };
+		D1777B4C193C14DF000719F1 /* mcmc_updater.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mcmc_updater.cpp; sourceTree = "<group>"; };
+		D1777B4D193C14DF000719F1 /* mcmc_updater.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = mcmc_updater.hpp; sourceTree = "<group>"; };
+		D1777B4E193C14DF000719F1 /* memchk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = memchk.h; sourceTree = "<group>"; };
+		D1777B4F193C14DF000719F1 /* model_pymod.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_pymod.cpp; sourceTree = "<group>"; };
+		D1777B50193C14DF000719F1 /* model.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model.cpp; sourceTree = "<group>"; };
+		D1777B51193C14DF000719F1 /* model.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = model.hpp; sourceTree = "<group>"; };
+		D1777B52193C14DF000719F1 /* multivariate_probability_distribution.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = multivariate_probability_distribution.hpp; sourceTree = "<group>"; };
+		D1777B53193C14DF000719F1 /* mvnormal_distribution.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mvnormal_distribution.cpp; sourceTree = "<group>"; };
+		D1777B54193C14DF000719F1 /* mvnormal_distribution.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = mvnormal_distribution.hpp; sourceTree = "<group>"; };
+		D1777B55193C14DF000719F1 /* ncl_pymod.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ncl_pymod.cpp; sourceTree = "<group>"; };
+		D1777B56193C14DF000719F1 /* nopython_force_include.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = nopython_force_include.hpp; sourceTree = "<group>"; };
+		D1777B57193C14DF000719F1 /* numsum.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = numsum.cpp; sourceTree = "<group>"; };
+		D1777B58193C14DF000719F1 /* numsum.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = numsum.hpp; sourceTree = "<group>"; };
+		D1777B59193C14DF000719F1 /* nxs_file_path.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = nxs_file_path.cpp; sourceTree = "<group>"; };
+		D1777B5A193C14DF000719F1 /* nxs_file_path.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = nxs_file_path.hpp; sourceTree = "<group>"; };
+		D1777B5B193C14DF000719F1 /* omega_param.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = omega_param.cpp; sourceTree = "<group>"; };
+		D1777B5C193C14DF000719F1 /* partition_model.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = partition_model.cpp; sourceTree = "<group>"; };
+		D1777B5D193C14DF000719F1 /* partition_model.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = partition_model.hpp; sourceTree = "<group>"; };
+		D1777B5E193C14DF000719F1 /* pdfgen_pymod.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pdfgen_pymod.cpp; sourceTree = "<group>"; };
+		D1777B5F193C14DF000719F1 /* pdfgen.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pdfgen.cpp; sourceTree = "<group>"; };
+		D1777B60193C14DF000719F1 /* pdfgen.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = pdfgen.hpp; sourceTree = "<group>"; };
+		D1777B61193C14DF000719F1 /* phycas_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = phycas_config.h; sourceTree = "<group>"; };
+		D1777B62193C14DF000719F1 /* phycas_nexus_reader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = phycas_nexus_reader.cpp; sourceTree = "<group>"; };
+		D1777B63193C14DF000719F1 /* phycas_nexus_reader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = phycas_nexus_reader.hpp; sourceTree = "<group>"; };
+		D1777B64193C14DF000719F1 /* phycas_string.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = phycas_string.cpp; sourceTree = "<group>"; };
+		D1777B65193C14DF000719F1 /* phycas_string.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = phycas_string.hpp; sourceTree = "<group>"; };
+		D1777B66193C14DF000719F1 /* phycas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = phycas.h; sourceTree = "<group>"; };
+		D1777B67193C14DF000719F1 /* phylogeny_pymod.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = phylogeny_pymod.cpp; sourceTree = "<group>"; };
+		D1777B68193C14DF000719F1 /* pinvar_param.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pinvar_param.cpp; sourceTree = "<group>"; };
+		D1777B69193C14DF000719F1 /* prior_distribution.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = prior_distribution.cpp; sourceTree = "<group>"; };
+		D1777B6A193C14DF000719F1 /* prior_distribution.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = prior_distribution.hpp; sourceTree = "<group>"; };
+		D1777B6B193C14DF000719F1 /* probability_distribution.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = probability_distribution.cpp; sourceTree = "<group>"; };
+		D1777B6C193C14DF000719F1 /* probability_distribution.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = probability_distribution.hpp; sourceTree = "<group>"; };
+		D1777B6D193C14DF000719F1 /* probdist_pymod.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = probdist_pymod.cpp; sourceTree = "<group>"; };
+		D1777B6E193C14DF000719F1 /* q_matrix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = q_matrix.cpp; sourceTree = "<group>"; };
+		D1777B6F193C14DF000719F1 /* q_matrix.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = q_matrix.hpp; sourceTree = "<group>"; };
+		D1777B70193C14DF000719F1 /* read_nexus_pymod.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = read_nexus_pymod.cpp; sourceTree = "<group>"; };
+		D1777B71193C14DF000719F1 /* rectangular_matrix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rectangular_matrix.cpp; sourceTree = "<group>"; };
+		D1777B72193C14DF000719F1 /* rectangular_matrix.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = rectangular_matrix.hpp; sourceTree = "<group>"; };
+		D1777B73193C14DF000719F1 /* rel_rates_move.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rel_rates_move.cpp; sourceTree = "<group>"; };
+		D1777B74193C14DF000719F1 /* rel_rates_move.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = rel_rates_move.hpp; sourceTree = "<group>"; };
+		D1777B75193C14DF000719F1 /* relative_rate_distribution.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = relative_rate_distribution.cpp; sourceTree = "<group>"; };
+		D1777B76193C14DF000719F1 /* relative_rate_distribution.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = relative_rate_distribution.hpp; sourceTree = "<group>"; };
+		D1777B77193C14DF000719F1 /* sim_data.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sim_data.cpp; sourceTree = "<group>"; };
+		D1777B78193C14DF000719F1 /* sim_data.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = sim_data.hpp; sourceTree = "<group>"; };
+		D1777B79193C14DF000719F1 /* slice_sampler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = slice_sampler.cpp; sourceTree = "<group>"; };
+		D1777B7A193C14DF000719F1 /* slice_sampler.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = slice_sampler.hpp; sourceTree = "<group>"; };
+		D1777B7B193C14DF000719F1 /* split_prior.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = split_prior.hpp; sourceTree = "<group>"; };
+		D1777B7C193C14DF000719F1 /* split.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = split.cpp; sourceTree = "<group>"; };
+		D1777B7D193C14DF000719F1 /* split.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = split.hpp; sourceTree = "<group>"; };
+		D1777B7E193C14DF000719F1 /* square_matrix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = square_matrix.cpp; sourceTree = "<group>"; };
+		D1777B7F193C14DF000719F1 /* square_matrix.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = square_matrix.hpp; sourceTree = "<group>"; };
+		D1777B80193C14DF000719F1 /* state_freq_move.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = state_freq_move.cpp; sourceTree = "<group>"; };
+		D1777B81193C14DF000719F1 /* state_freq_move.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = state_freq_move.hpp; sourceTree = "<group>"; };
+		D1777B82193C14DF000719F1 /* state_freq_param.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = state_freq_param.cpp; sourceTree = "<group>"; };
+		D1777B83193C14DF000719F1 /* states_patterns.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = states_patterns.hpp; sourceTree = "<group>"; };
+		D1777B84193C14DF000719F1 /* std_force_include.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = std_force_include.hpp; sourceTree = "<group>"; };
+		D1777B85193C14DF000719F1 /* stop_watch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stop_watch.cpp; sourceTree = "<group>"; };
+		D1777B86193C14DF000719F1 /* stop_watch.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = stop_watch.hpp; sourceTree = "<group>"; };
+		D1777B87193C14DF000719F1 /* subset_proportions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = subset_proportions.cpp; sourceTree = "<group>"; };
+		D1777B88193C14DF000719F1 /* subset_proportions.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = subset_proportions.hpp; sourceTree = "<group>"; };
+		D1777B89193C14DF000719F1 /* subset_relrates_move.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = subset_relrates_move.cpp; sourceTree = "<group>"; };
+		D1777B8A193C14DF000719F1 /* subset_relrates_move.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = subset_relrates_move.hpp; sourceTree = "<group>"; };
+		D1777B8E193C14DF000719F1 /* dcdflib.chs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dcdflib.chs; sourceTree = "<group>"; };
+		D1777B8F193C14DF000719F1 /* dcdflib.fdoc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dcdflib.fdoc; sourceTree = "<group>"; };
+		D1777B90193C14DF000719F1 /* dcdflib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dcdflib.h; sourceTree = "<group>"; };
+		D1777B91193C14DF000719F1 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
+		D1777B93193C14DF000719F1 /* cdflib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cdflib.h; sourceTree = "<group>"; };
+		D1777B94193C14DF000719F1 /* dcdflib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dcdflib.c; sourceTree = "<group>"; };
+		D1777B95193C14DF000719F1 /* dcdflib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dcdflib.cpp; sourceTree = "<group>"; };
+		D1777B96193C14DF000719F1 /* ipmpar.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ipmpar.c; sourceTree = "<group>"; };
+		D1777B97193C14DF000719F1 /* ipmpar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ipmpar.cpp; sourceTree = "<group>"; };
+		D1777B99193C14DF000719F1 /* num_util.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = num_util.cpp; sourceTree = "<group>"; };
+		D1777B9A193C14DF000719F1 /* num_util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = num_util.h; sourceTree = "<group>"; };
+		D1777B9C193C14DF000719F1 /* dls_brent.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dls_brent.c; sourceTree = "<group>"; };
+		D1777B9D193C14DF000719F1 /* dls_brent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dls_brent.h; sourceTree = "<group>"; };
+		D1777B9E193C14DF000719F1 /* dls_core.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dls_core.h; sourceTree = "<group>"; };
+		D1777B9F193C14DF000719F1 /* machine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = machine.h; sourceTree = "<group>"; };
+		D1777BA0193C14DF000719F1 /* minfit.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = minfit.c; sourceTree = "<group>"; };
+		D1777BA1193C14DF000719F1 /* praxis.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = praxis.c; sourceTree = "<group>"; };
+		D1777BA2193C14DF000719F1 /* pyconversions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pyconversions.h; sourceTree = "<group>"; };
+		D1777BA3193C14DF000719F1 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
+		D1777BA4193C14DF000719F1 /* tip_data.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tip_data.cpp; sourceTree = "<group>"; };
+		D1777BA5193C14DF000719F1 /* tip_data.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tip_data.hpp; sourceTree = "<group>"; };
+		D1777BA6193C14DF000719F1 /* topo_prior_calculator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = topo_prior_calculator.cpp; sourceTree = "<group>"; };
+		D1777BA7193C14DF000719F1 /* topo_prior_calculator.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = topo_prior_calculator.hpp; sourceTree = "<group>"; };
+		D1777BA8193C14DF000719F1 /* tree_iterators.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tree_iterators.hpp; sourceTree = "<group>"; };
+		D1777BA9193C14DF000719F1 /* tree_length_distribution.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tree_length_distribution.cpp; sourceTree = "<group>"; };
+		D1777BAA193C14DF000719F1 /* tree_length_distribution.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tree_length_distribution.hpp; sourceTree = "<group>"; };
+		D1777BAB193C14DF000719F1 /* tree_likelihood.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tree_likelihood.cpp; sourceTree = "<group>"; };
+		D1777BAC193C14DF000719F1 /* tree_likelihood.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tree_likelihood.hpp; sourceTree = "<group>"; };
+		D1777BAD193C14DF000719F1 /* tree_manip.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tree_manip.cpp; sourceTree = "<group>"; };
+		D1777BAE193C14DF000719F1 /* tree_manip.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tree_manip.hpp; sourceTree = "<group>"; };
+		D1777BAF193C14DF000719F1 /* tree_scaler_move.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tree_scaler_move.cpp; sourceTree = "<group>"; };
+		D1777BB0193C14DF000719F1 /* tree_scaler_move.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tree_scaler_move.hpp; sourceTree = "<group>"; };
+		D1777BB1193C14DF000719F1 /* tree_score.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = tree_score.hpp; sourceTree = "<group>"; };
+		D1777BB2193C14DF000719F1 /* underflow_manager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = underflow_manager.cpp; sourceTree = "<group>"; };
+		D1777BB3193C14DF000719F1 /* underflow_manager.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = underflow_manager.hpp; sourceTree = "<group>"; };
+		D1777BB4193C14DF000719F1 /* updater_pymod.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = updater_pymod.cpp; sourceTree = "<group>"; };
+		D1777BB5193C14DF000719F1 /* xlikelihood.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xlikelihood.hpp; sourceTree = "<group>"; };
+		D1777BB6193C14DF000719F1 /* xphycas.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xphycas.hpp; sourceTree = "<group>"; };
+		D1777BB7193C14DF000719F1 /* xphylogeny.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xphylogeny.hpp; sourceTree = "<group>"; };
+		D1777BB8193C14DF000719F1 /* xprobdist.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xprobdist.hpp; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D16818FE193B7102004AAAD5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		D1521FDB193B756F007ADBB5 /* commands */ = {
+			isa = PBXGroup;
+			children = (
+				D1521FDC193B756F007ADBB5 /* __init__.py */,
+				D1521FDD193B756F007ADBB5 /* Commands.py */,
+				D1521FDE193B756F007ADBB5 /* CPO.py */,
+				D1521FDF193B756F007ADBB5 /* CPOImpl.py */,
+				D1521FE0193B756F007ADBB5 /* GG.py */,
+				D1521FE1193B756F007ADBB5 /* GGImpl.py */,
+				D1521FE2193B756F007ADBB5 /* Like.py */,
+				D1521FE3193B756F007ADBB5 /* LikeImpl.py */,
+				D1521FE4193B756F007ADBB5 /* LikelihoodCore.py */,
+				D1521FE5193B756F007ADBB5 /* MarkovChain.py */,
+				D1521FE6193B756F007ADBB5 /* MCMC.py */,
+				D1521FE7193B756F007ADBB5 /* MCMCImpl.py */,
+				D1521FE8193B756F007ADBB5 /* MCMCManager.py */,
+				D1521FE9193B756F007ADBB5 /* Model.py */,
+				D1521FEA193B756F007ADBB5 /* Partition.py */,
+				D1521FEB193B756F007ADBB5 /* Phycas.py */,
+				D1521FEC193B756F007ADBB5 /* RandomTree.py */,
+				D1521FED193B756F007ADBB5 /* RandomTreeImpl.py */,
+				D1521FEE193B756F007ADBB5 /* RefDist.py */,
+				D1521FEF193B756F007ADBB5 /* RefDistImpl.py */,
+				D1521FF0193B756F007ADBB5 /* ScriptGen.py */,
+				D1521FF1193B756F007ADBB5 /* ScriptGenImpl.py */,
+				D1521FF2193B756F007ADBB5 /* Sim.py */,
+				D1521FF3193B756F007ADBB5 /* SimImpl.py */,
+				D1521FF4193B756F007ADBB5 /* SS.py */,
+				D1521FF5193B756F007ADBB5 /* SumP.py */,
+				D1521FF6193B756F007ADBB5 /* SumPImpl.py */,
+				D1521FF7193B756F007ADBB5 /* SumT.py */,
+				D1521FF8193B756F007ADBB5 /* SumTImpl.py */,
+			);
+			name = commands;
+			path = ../../src/python/commands;
+			sourceTree = "<group>";
+		};
+		D1521FF9193B756F007ADBB5 /* conversions */ = {
+			isa = PBXGroup;
+			children = (
+				D1521FFA193B756F007ADBB5 /* __init__.py */,
+			);
+			name = conversions;
+			path = ../../src/python/conversions;
+			sourceTree = "<group>";
+		};
+		D1521FFB193B756F007ADBB5 /* datamatrix */ = {
+			isa = PBXGroup;
+			children = (
+				D1521FFC193B756F007ADBB5 /* __init__.py */,
+				D1521FFD193B756F007ADBB5 /* _DataMatrix.py */,
+			);
+			name = datamatrix;
+			path = ../../src/python/datamatrix;
+			sourceTree = "<group>";
+		};
+		D1521FFE193B756F007ADBB5 /* likelihood */ = {
+			isa = PBXGroup;
+			children = (
+				D1521FFF193B756F007ADBB5 /* __init__.py */,
+				D1522000193B756F007ADBB5 /* _MCMCChainManager.py */,
+				D1522001193B756F007ADBB5 /* _Model.py */,
+				D1522002193B756F007ADBB5 /* _QMatrix.py */,
+				D1522003193B756F007ADBB5 /* _SimData.py */,
+				D1522004193B756F007ADBB5 /* _TopoPriorCalculator.py */,
+				D1522005193B756F007ADBB5 /* _TreeLengthDist.py */,
+				D1522006193B756F007ADBB5 /* _TreeLikelihood.py */,
+			);
+			name = likelihood;
+			path = ../../src/python/likelihood;
+			sourceTree = "<group>";
+		};
+		D1522007193B756F007ADBB5 /* pdfgen */ = {
+			isa = PBXGroup;
+			children = (
+				D1522008193B756F007ADBB5 /* __init__.py */,
+				D1522009193B756F007ADBB5 /* _PDFGenerator.py */,
+			);
+			name = pdfgen;
+			path = ../../src/python/pdfgen;
+			sourceTree = "<group>";
+		};
+		D152201B193B756F007ADBB5 /* phylogeny */ = {
+			isa = PBXGroup;
+			children = (
+				D152201C193B756F007ADBB5 /* __init__.py */,
+				D152201D193B756F007ADBB5 /* _Split.py */,
+				D152201E193B756F007ADBB5 /* _Tree.py */,
+				D152201F193B756F007ADBB5 /* _TreeManip.py */,
+				D1522020193B756F007ADBB5 /* _TreeNode.py */,
+			);
+			name = phylogeny;
+			path = ../../src/python/phylogeny;
+			sourceTree = "<group>";
+		};
+		D1522021193B756F007ADBB5 /* probdist */ = {
+			isa = PBXGroup;
+			children = (
+				D1522022193B756F007ADBB5 /* __init__.py */,
+				D1522023193B756F007ADBB5 /* _BernoulliDist.py */,
+				D1522024193B756F007ADBB5 /* _BetaDist.py */,
+				D1522025193B756F007ADBB5 /* _BetaPrimeDist.py */,
+				D1522026193B756F007ADBB5 /* _BinomialDist.py */,
+				D1522027193B756F007ADBB5 /* _DirichletDist.py */,
+				D1522028193B756F007ADBB5 /* _ExponentialDist.py */,
+				D1522029193B756F007ADBB5 /* _GammaDist.py */,
+				D152202A193B756F007ADBB5 /* _ImproperUniformDist.py */,
+				D152202B193B756F007ADBB5 /* _InverseGammaDist.py */,
+				D152202C193B756F007ADBB5 /* _LognormalDist.py */,
+				D152202D193B756F007ADBB5 /* _Lot.py */,
+				D152202E193B756F007ADBB5 /* _MVNormalDist.py */,
+				D152202F193B756F007ADBB5 /* _NormalDist.py */,
+				D1522030193B756F007ADBB5 /* _PyDistributionBase.py */,
+				D1522031193B756F007ADBB5 /* _RectangularMatrix.py */,
+				D1522032193B756F007ADBB5 /* _RelRateDist.py */,
+				D1522033193B756F007ADBB5 /* _SliceSampler.py */,
+				D1522034193B756F007ADBB5 /* _SquareMatrix.py */,
+				D1522035193B756F007ADBB5 /* _StopWatch.py */,
+				D1522036193B756F007ADBB5 /* _UniformDist.py */,
+			);
+			name = probdist;
+			path = ../../src/python/probdist;
+			sourceTree = "<group>";
+		};
+		D1522037193B756F007ADBB5 /* readnexus */ = {
+			isa = PBXGroup;
+			children = (
+				D1522038193B756F007ADBB5 /* __init__.py */,
+				D1522039193B756F007ADBB5 /* _NexusReader.py */,
+			);
+			name = readnexus;
+			path = ../../src/python/readnexus;
+			sourceTree = "<group>";
+		};
+		D152203A193B756F007ADBB5 /* treeviewer */ = {
+			isa = PBXGroup;
+			children = (
+				D152203B193B756F007ADBB5 /* __init__.py */,
+				D152203C193B756F007ADBB5 /* TreeViewer.py */,
+			);
+			name = treeviewer;
+			path = ../../src/python/treeviewer;
+			sourceTree = "<group>";
+		};
+		D152203D193B756F007ADBB5 /* utilities */ = {
+			isa = PBXGroup;
+			children = (
+				D152203E193B756F007ADBB5 /* __init__.py */,
+				D152203F193B756F007ADBB5 /* CommonFunctions.py */,
+				D1522040193B756F007ADBB5 /* DefaultData.py */,
+				D1522041193B756F007ADBB5 /* enotify.py */,
+				D1522042193B756F007ADBB5 /* GlobalState.py */,
+				D1522043193B756F007ADBB5 /* io.py */,
+				D1522044193B756F007ADBB5 /* kappa2tratio.py */,
+				D1522045193B756F007ADBB5 /* PDFTree.py */,
+				D1522046193B756F007ADBB5 /* PhycasCommand.py */,
+				D1522047193B756F007ADBB5 /* PhycasUpdateCheck.py */,
+				D1522048193B756F007ADBB5 /* summary_stats.py */,
+				D1522049193B756F007ADBB5 /* tratio2kappa.py */,
+			);
+			name = utilities;
+			path = ../../src/python/utilities;
+			sourceTree = "<group>";
+		};
+		D16818F8193B7102004AAAD5 = {
+			isa = PBXGroup;
+			children = (
+				D1681903193B7102004AAAD5 /* Python sources */,
+				D168190D193B730E004AAAD5 /* C++ sources */,
+				D1681902193B7102004AAAD5 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D1681902193B7102004AAAD5 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D1681901193B7102004AAAD5 /* phycas */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D1681903193B7102004AAAD5 /* Python sources */ = {
+			isa = PBXGroup;
+			children = (
+				D1777B0C193C11C1000719F1 /* __init__.py */,
+				D1521FDB193B756F007ADBB5 /* commands */,
+				D1521FF9193B756F007ADBB5 /* conversions */,
+				D1521FFB193B756F007ADBB5 /* datamatrix */,
+				D1521FFE193B756F007ADBB5 /* likelihood */,
+				D1522007193B756F007ADBB5 /* pdfgen */,
+				D152201B193B756F007ADBB5 /* phylogeny */,
+				D1522021193B756F007ADBB5 /* probdist */,
+				D1522037193B756F007ADBB5 /* readnexus */,
+				D152203A193B756F007ADBB5 /* treeviewer */,
+				D152203D193B756F007ADBB5 /* utilities */,
+			);
+			name = "Python sources";
+			path = /Users/plewis/Documents/libraries/pydbg/../../software/phycas/xcode/phycas;
+			sourceTree = "<absolute>";
+		};
+		D168190D193B730E004AAAD5 /* C++ sources */ = {
+			isa = PBXGroup;
+			children = (
+				D1777B0D193C14DF000719F1 /* basic_cdf.cpp */,
+				D1777B0E193C14DF000719F1 /* basic_cdf.hpp */,
+				D1777B0F193C14DF000719F1 /* basic_lot.cpp */,
+				D1777B10193C14DF000719F1 /* basic_lot.hpp */,
+				D1777B11193C14DF000719F1 /* basic_tree_node.cpp */,
+				D1777B12193C14DF000719F1 /* basic_tree_node.hpp */,
+				D1777B13193C14DF000719F1 /* basic_tree.cpp */,
+				D1777B14193C14DF000719F1 /* basic_tree.hpp */,
+				D1777B15193C14DF000719F1 /* binary_model.cpp */,
+				D1777B16193C14DF000719F1 /* boost_assertion_failed.cpp */,
+				D1777B17193C14DF000719F1 /* brent_praxis.cpp */,
+				D1777B18193C14DF000719F1 /* brent_praxis.hpp */,
+				D1777B19193C14DF000719F1 /* bush_move.cpp */,
+				D1777B1A193C14DF000719F1 /* bush_move.hpp */,
+				D1777B1B193C14DF000719F1 /* char_super_matrix.cpp */,
+				D1777B1C193C14DF000719F1 /* char_super_matrix.hpp */,
+				D1777B1D193C14DF000719F1 /* codon_model.cpp */,
+				D1777B1E193C14DF000719F1 /* codon_model.hpp */,
+				D1777B1F193C14DF000719F1 /* cond_likelihood_storage.cpp */,
+				D1777B20193C14DF000719F1 /* cond_likelihood_storage.hpp */,
+				D1777B21193C14DF000719F1 /* cond_likelihood.cpp */,
+				D1777B22193C14DF000719F1 /* cond_likelihood.hpp */,
+				D1777B23193C14DF000719F1 /* conversions_pymod.cpp */,
+				D1777B24193C14DF000719F1 /* data_matrix_pymod.cpp */,
+				D1777B25193C14DF000719F1 /* dirichlet_distribution.cpp */,
+				D1777B26193C14DF000719F1 /* dirichlet_distribution.hpp */,
+				D1777B27193C14DF000719F1 /* dirichlet_move.cpp */,
+				D1777B28193C14DF000719F1 /* dirichlet_move.hpp */,
+				D1777B29193C14DF000719F1 /* discrete_gamma_shape_param.cpp */,
+				D1777B2A193C14DF000719F1 /* dls.h */,
+				D1777B2B193C14DF000719F1 /* edge_endpoints.hpp */,
+				D1777B2C193C14DF000719F1 /* edge_iterators.hpp */,
+				D1777B2D193C14DF000719F1 /* edge_move.cpp */,
+				D1777B2E193C14DF000719F1 /* edge_move.hpp */,
+				D1777B2F193C14DF000719F1 /* edgelen_master_param.cpp */,
+				D1777B30193C14DF000719F1 /* gtr_rate_param.cpp */,
+				D1777B31193C14DF000719F1 /* gtr.cpp */,
+				D1777B32193C14DF000719F1 /* gtr.hpp */,
+				D1777B33193C14DF000719F1 /* hky.cpp */,
+				D1777B34193C14DF000719F1 /* hky.hpp */,
+				D1777B35193C14DF000719F1 /* hyperprior_param.cpp */,
+				D1777B36193C14DF000719F1 /* internal_data.cpp */,
+				D1777B37193C14DF000719F1 /* internal_data.hpp */,
+				D1777B38193C14DF000719F1 /* irreversible_model.cpp */,
+				D1777B39193C14DF000719F1 /* jc.cpp */,
+				D1777B3A193C14DF000719F1 /* jc.hpp */,
+				D1777B3B193C14DF000719F1 /* joint_prior_manager.cpp */,
+				D1777B3C193C14DF000719F1 /* joint_prior_manager.hpp */,
+				D1777B3D193C14DF000719F1 /* kappa_param.cpp */,
+				D1777B3E193C14DF000719F1 /* larget_simon_move.cpp */,
+				D1777B3F193C14DF000719F1 /* larget_simon_move.hpp */,
+				D1777B40193C14DF000719F1 /* likelihood_loops.cpp */,
+				D1777B41193C14DF000719F1 /* likelihood_pymod.cpp */,
+				D1777B42193C14DF000719F1 /* linalg.c */,
+				D1777B43193C14DF000719F1 /* linalg.cpp */,
+				D1777B44193C14DF000719F1 /* linalg.h */,
+				D1777B45193C14DF000719F1 /* lognormal.cpp */,
+				D1777B46193C14DF000719F1 /* lognormal.hpp */,
+				D1777B47193C14DF000719F1 /* mcmc_chain_manager.cpp */,
+				D1777B48193C14DF000719F1 /* mcmc_chain_manager.hpp */,
+				D1777B49193C14DF000719F1 /* mcmc_move.hpp */,
+				D1777B4A193C14DF000719F1 /* mcmc_param.cpp */,
+				D1777B4B193C14DF000719F1 /* mcmc_param.hpp */,
+				D1777B4C193C14DF000719F1 /* mcmc_updater.cpp */,
+				D1777B4D193C14DF000719F1 /* mcmc_updater.hpp */,
+				D1777B4E193C14DF000719F1 /* memchk.h */,
+				D1777B4F193C14DF000719F1 /* model_pymod.cpp */,
+				D1777B50193C14DF000719F1 /* model.cpp */,
+				D1777B51193C14DF000719F1 /* model.hpp */,
+				D1777B52193C14DF000719F1 /* multivariate_probability_distribution.hpp */,
+				D1777B53193C14DF000719F1 /* mvnormal_distribution.cpp */,
+				D1777B54193C14DF000719F1 /* mvnormal_distribution.hpp */,
+				D1777B55193C14DF000719F1 /* ncl_pymod.cpp */,
+				D1777B56193C14DF000719F1 /* nopython_force_include.hpp */,
+				D1777B57193C14DF000719F1 /* numsum.cpp */,
+				D1777B58193C14DF000719F1 /* numsum.hpp */,
+				D1777B59193C14DF000719F1 /* nxs_file_path.cpp */,
+				D1777B5A193C14DF000719F1 /* nxs_file_path.hpp */,
+				D1777B5B193C14DF000719F1 /* omega_param.cpp */,
+				D1777B5C193C14DF000719F1 /* partition_model.cpp */,
+				D1777B5D193C14DF000719F1 /* partition_model.hpp */,
+				D1777B5E193C14DF000719F1 /* pdfgen_pymod.cpp */,
+				D1777B5F193C14DF000719F1 /* pdfgen.cpp */,
+				D1777B60193C14DF000719F1 /* pdfgen.hpp */,
+				D1777B61193C14DF000719F1 /* phycas_config.h */,
+				D1777B62193C14DF000719F1 /* phycas_nexus_reader.cpp */,
+				D1777B63193C14DF000719F1 /* phycas_nexus_reader.hpp */,
+				D1777B64193C14DF000719F1 /* phycas_string.cpp */,
+				D1777B65193C14DF000719F1 /* phycas_string.hpp */,
+				D1777B66193C14DF000719F1 /* phycas.h */,
+				D1777B67193C14DF000719F1 /* phylogeny_pymod.cpp */,
+				D1777B68193C14DF000719F1 /* pinvar_param.cpp */,
+				D1777B69193C14DF000719F1 /* prior_distribution.cpp */,
+				D1777B6A193C14DF000719F1 /* prior_distribution.hpp */,
+				D1777B6B193C14DF000719F1 /* probability_distribution.cpp */,
+				D1777B6C193C14DF000719F1 /* probability_distribution.hpp */,
+				D1777B6D193C14DF000719F1 /* probdist_pymod.cpp */,
+				D1777B6E193C14DF000719F1 /* q_matrix.cpp */,
+				D1777B6F193C14DF000719F1 /* q_matrix.hpp */,
+				D1777B70193C14DF000719F1 /* read_nexus_pymod.cpp */,
+				D1777B71193C14DF000719F1 /* rectangular_matrix.cpp */,
+				D1777B72193C14DF000719F1 /* rectangular_matrix.hpp */,
+				D1777B73193C14DF000719F1 /* rel_rates_move.cpp */,
+				D1777B74193C14DF000719F1 /* rel_rates_move.hpp */,
+				D1777B75193C14DF000719F1 /* relative_rate_distribution.cpp */,
+				D1777B76193C14DF000719F1 /* relative_rate_distribution.hpp */,
+				D1777B77193C14DF000719F1 /* sim_data.cpp */,
+				D1777B78193C14DF000719F1 /* sim_data.hpp */,
+				D1777B79193C14DF000719F1 /* slice_sampler.cpp */,
+				D1777B7A193C14DF000719F1 /* slice_sampler.hpp */,
+				D1777B7B193C14DF000719F1 /* split_prior.hpp */,
+				D1777B7C193C14DF000719F1 /* split.cpp */,
+				D1777B7D193C14DF000719F1 /* split.hpp */,
+				D1777B7E193C14DF000719F1 /* square_matrix.cpp */,
+				D1777B7F193C14DF000719F1 /* square_matrix.hpp */,
+				D1777B80193C14DF000719F1 /* state_freq_move.cpp */,
+				D1777B81193C14DF000719F1 /* state_freq_move.hpp */,
+				D1777B82193C14DF000719F1 /* state_freq_param.cpp */,
+				D1777B83193C14DF000719F1 /* states_patterns.hpp */,
+				D1777B84193C14DF000719F1 /* std_force_include.hpp */,
+				D1777B85193C14DF000719F1 /* stop_watch.cpp */,
+				D1777B86193C14DF000719F1 /* stop_watch.hpp */,
+				D1777B87193C14DF000719F1 /* subset_proportions.cpp */,
+				D1777B88193C14DF000719F1 /* subset_proportions.hpp */,
+				D1777B89193C14DF000719F1 /* subset_relrates_move.cpp */,
+				D1777B8A193C14DF000719F1 /* subset_relrates_move.hpp */,
+				D1777B8B193C14DF000719F1 /* thirdparty */,
+				D1777BA4193C14DF000719F1 /* tip_data.cpp */,
+				D1777BA5193C14DF000719F1 /* tip_data.hpp */,
+				D1777BA6193C14DF000719F1 /* topo_prior_calculator.cpp */,
+				D1777BA7193C14DF000719F1 /* topo_prior_calculator.hpp */,
+				D1777BA8193C14DF000719F1 /* tree_iterators.hpp */,
+				D1777BA9193C14DF000719F1 /* tree_length_distribution.cpp */,
+				D1777BAA193C14DF000719F1 /* tree_length_distribution.hpp */,
+				D1777BAB193C14DF000719F1 /* tree_likelihood.cpp */,
+				D1777BAC193C14DF000719F1 /* tree_likelihood.hpp */,
+				D1777BAD193C14DF000719F1 /* tree_manip.cpp */,
+				D1777BAE193C14DF000719F1 /* tree_manip.hpp */,
+				D1777BAF193C14DF000719F1 /* tree_scaler_move.cpp */,
+				D1777BB0193C14DF000719F1 /* tree_scaler_move.hpp */,
+				D1777BB1193C14DF000719F1 /* tree_score.hpp */,
+				D1777BB2193C14DF000719F1 /* underflow_manager.cpp */,
+				D1777BB3193C14DF000719F1 /* underflow_manager.hpp */,
+				D1777BB4193C14DF000719F1 /* updater_pymod.cpp */,
+				D1777BB5193C14DF000719F1 /* xlikelihood.hpp */,
+				D1777BB6193C14DF000719F1 /* xphycas.hpp */,
+				D1777BB7193C14DF000719F1 /* xphylogeny.hpp */,
+				D1777BB8193C14DF000719F1 /* xprobdist.hpp */,
+			);
+			name = "C++ sources";
+			path = src/cpp;
+			sourceTree = PHYCAS_ROOT;
+		};
+		D1777B8B193C14DF000719F1 /* thirdparty */ = {
+			isa = PBXGroup;
+			children = (
+				D1777B8C193C14DF000719F1 /* dcdflib */,
+				D1777B98193C14DF000719F1 /* num_util */,
+				D1777B9B193C14DF000719F1 /* praxis */,
+				D1777BA2193C14DF000719F1 /* pyconversions.h */,
+				D1777BA3193C14DF000719F1 /* README */,
+			);
+			path = thirdparty;
+			sourceTree = "<group>";
+		};
+		D1777B8C193C14DF000719F1 /* dcdflib */ = {
+			isa = PBXGroup;
+			children = (
+				D1777B8D193C14DF000719F1 /* doc */,
+				D1777B91193C14DF000719F1 /* README */,
+				D1777B92193C14DF000719F1 /* src */,
+			);
+			path = dcdflib;
+			sourceTree = "<group>";
+		};
+		D1777B8D193C14DF000719F1 /* doc */ = {
+			isa = PBXGroup;
+			children = (
+				D1777B8E193C14DF000719F1 /* dcdflib.chs */,
+				D1777B8F193C14DF000719F1 /* dcdflib.fdoc */,
+				D1777B90193C14DF000719F1 /* dcdflib.h */,
+			);
+			path = doc;
+			sourceTree = "<group>";
+		};
+		D1777B92193C14DF000719F1 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				D1777B93193C14DF000719F1 /* cdflib.h */,
+				D1777B94193C14DF000719F1 /* dcdflib.c */,
+				D1777B95193C14DF000719F1 /* dcdflib.cpp */,
+				D1777B96193C14DF000719F1 /* ipmpar.c */,
+				D1777B97193C14DF000719F1 /* ipmpar.cpp */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		D1777B98193C14DF000719F1 /* num_util */ = {
+			isa = PBXGroup;
+			children = (
+				D1777B99193C14DF000719F1 /* num_util.cpp */,
+				D1777B9A193C14DF000719F1 /* num_util.h */,
+			);
+			path = num_util;
+			sourceTree = "<group>";
+		};
+		D1777B9B193C14DF000719F1 /* praxis */ = {
+			isa = PBXGroup;
+			children = (
+				D1777B9C193C14DF000719F1 /* dls_brent.c */,
+				D1777B9D193C14DF000719F1 /* dls_brent.h */,
+				D1777B9E193C14DF000719F1 /* dls_core.h */,
+				D1777B9F193C14DF000719F1 /* machine.h */,
+				D1777BA0193C14DF000719F1 /* minfit.c */,
+				D1777BA1193C14DF000719F1 /* praxis.c */,
+			);
+			path = praxis;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D1681900193B7102004AAAD5 /* phycas */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D168190A193B7102004AAAD5 /* Build configuration list for PBXNativeTarget "phycas" */;
+			buildPhases = (
+				D16818FD193B7102004AAAD5 /* Sources */,
+				D16818FE193B7102004AAAD5 /* Frameworks */,
+				D16818FF193B7102004AAAD5 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = phycas;
+			productName = phycas;
+			productReference = D1681901193B7102004AAAD5 /* phycas */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D16818F9193B7102004AAAD5 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = "Paul O. Lewis";
+			};
+			buildConfigurationList = D16818FC193B7102004AAAD5 /* Build configuration list for PBXProject "phycas" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = D16818F8193B7102004AAAD5;
+			productRefGroup = D1681902193B7102004AAAD5 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D1681900193B7102004AAAD5 /* phycas */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D16818FD193B7102004AAAD5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D1777BD2193C14DF000719F1 /* jc.cpp in Sources */,
+				D1777BDE193C14DF000719F1 /* model_pymod.cpp in Sources */,
+				D1777BE2193C14DF000719F1 /* numsum.cpp in Sources */,
+				D1777C0C193C14DF000719F1 /* updater_pymod.cpp in Sources */,
+				D1777BE6193C14DF000719F1 /* pdfgen_pymod.cpp in Sources */,
+				D1777C04193C14DF000719F1 /* praxis.c in Sources */,
+				D1777C00193C14DF000719F1 /* ipmpar.cpp in Sources */,
+				D1777C06193C14DF000719F1 /* topo_prior_calculator.cpp in Sources */,
+				D1777BCD193C14DF000719F1 /* gtr.cpp in Sources */,
+				D1777BD1193C14DF000719F1 /* irreversible_model.cpp in Sources */,
+				D1777BFE193C14DF000719F1 /* dcdflib.cpp in Sources */,
+				D1777BEC193C14DF000719F1 /* prior_distribution.cpp in Sources */,
+				D1777BBC193C14DF000719F1 /* basic_tree.cpp in Sources */,
+				D1777C09193C14DF000719F1 /* tree_manip.cpp in Sources */,
+				D1777BF8193C14DF000719F1 /* state_freq_move.cpp in Sources */,
+				D1777BEE193C14DF000719F1 /* probdist_pymod.cpp in Sources */,
+				D1777BE3193C14DF000719F1 /* nxs_file_path.cpp in Sources */,
+				D1777BC8193C14DF000719F1 /* dirichlet_move.cpp in Sources */,
+				D1777BC9193C14DF000719F1 /* discrete_gamma_shape_param.cpp in Sources */,
+				D1777BD7193C14DF000719F1 /* likelihood_pymod.cpp in Sources */,
+				D1777BFC193C14DF000719F1 /* subset_relrates_move.cpp in Sources */,
+				D1777BDA193C14DF000719F1 /* lognormal.cpp in Sources */,
+				D1777BDD193C14DF000719F1 /* mcmc_updater.cpp in Sources */,
+				D1777BEA193C14DF000719F1 /* phylogeny_pymod.cpp in Sources */,
+				D1777BC5193C14DF000719F1 /* conversions_pymod.cpp in Sources */,
+				D1777C08193C14DF000719F1 /* tree_likelihood.cpp in Sources */,
+				D1777C05193C14DF000719F1 /* tip_data.cpp in Sources */,
+				D1777BBA193C14DF000719F1 /* basic_lot.cpp in Sources */,
+				D1777BCF193C14DF000719F1 /* hyperprior_param.cpp in Sources */,
+				D1777BFB193C14DF000719F1 /* subset_proportions.cpp in Sources */,
+				D1777BD3193C14DF000719F1 /* joint_prior_manager.cpp in Sources */,
+				D1777C0A193C14DF000719F1 /* tree_scaler_move.cpp in Sources */,
+				D1777BF3193C14DF000719F1 /* relative_rate_distribution.cpp in Sources */,
+				D1777BF7193C14DF000719F1 /* square_matrix.cpp in Sources */,
+				D1777BD5193C14DF000719F1 /* larget_simon_move.cpp in Sources */,
+				D1777BBD193C14DF000719F1 /* binary_model.cpp in Sources */,
+				D1777BBF193C14DF000719F1 /* brent_praxis.cpp in Sources */,
+				D1777BE8193C14DF000719F1 /* phycas_nexus_reader.cpp in Sources */,
+				D1777C02193C14DF000719F1 /* dls_brent.c in Sources */,
+				D1777BF2193C14DF000719F1 /* rel_rates_move.cpp in Sources */,
+				D1777BDC193C14DF000719F1 /* mcmc_param.cpp in Sources */,
+				D1777BF1193C14DF000719F1 /* rectangular_matrix.cpp in Sources */,
+				D1777BD9193C14DF000719F1 /* linalg.cpp in Sources */,
+				D1777BFA193C14DF000719F1 /* stop_watch.cpp in Sources */,
+				D1777BC3193C14DF000719F1 /* cond_likelihood_storage.cpp in Sources */,
+				D1777BB9193C14DF000719F1 /* basic_cdf.cpp in Sources */,
+				D1777BD8193C14DF000719F1 /* linalg.c in Sources */,
+				D1777BCE193C14DF000719F1 /* hky.cpp in Sources */,
+				D1777BE4193C14DF000719F1 /* omega_param.cpp in Sources */,
+				D1777BDF193C14DF000719F1 /* model.cpp in Sources */,
+				D1777BFD193C14DF000719F1 /* dcdflib.c in Sources */,
+				D1777BBB193C14DF000719F1 /* basic_tree_node.cpp in Sources */,
+				D1777BEB193C14DF000719F1 /* pinvar_param.cpp in Sources */,
+				D1777BDB193C14DF000719F1 /* mcmc_chain_manager.cpp in Sources */,
+				D1777BF6193C14DF000719F1 /* split.cpp in Sources */,
+				D1777C03193C14DF000719F1 /* minfit.c in Sources */,
+				D1777BF5193C14DF000719F1 /* slice_sampler.cpp in Sources */,
+				D1777BE5193C14DF000719F1 /* partition_model.cpp in Sources */,
+				D1777BC7193C14DF000719F1 /* dirichlet_distribution.cpp in Sources */,
+				D1777BE1193C14DF000719F1 /* ncl_pymod.cpp in Sources */,
+				D1777BC1193C14DF000719F1 /* char_super_matrix.cpp in Sources */,
+				D1777BD6193C14DF000719F1 /* likelihood_loops.cpp in Sources */,
+				D1777BC0193C14DF000719F1 /* bush_move.cpp in Sources */,
+				D1777BD0193C14DF000719F1 /* internal_data.cpp in Sources */,
+				D1777BCB193C14DF000719F1 /* edgelen_master_param.cpp in Sources */,
+				D1777BE7193C14DF000719F1 /* pdfgen.cpp in Sources */,
+				D1777BF4193C14DF000719F1 /* sim_data.cpp in Sources */,
+				D1777BD4193C14DF000719F1 /* kappa_param.cpp in Sources */,
+				D1777BC6193C14DF000719F1 /* data_matrix_pymod.cpp in Sources */,
+				D1777C0B193C14DF000719F1 /* underflow_manager.cpp in Sources */,
+				D1777C07193C14DF000719F1 /* tree_length_distribution.cpp in Sources */,
+				D1777C01193C14DF000719F1 /* num_util.cpp in Sources */,
+				D1777BE9193C14DF000719F1 /* phycas_string.cpp in Sources */,
+				D1777BBE193C14DF000719F1 /* boost_assertion_failed.cpp in Sources */,
+				D1777BF9193C14DF000719F1 /* state_freq_param.cpp in Sources */,
+				D1777BFF193C14DF000719F1 /* ipmpar.c in Sources */,
+				D1777BCA193C14DF000719F1 /* edge_move.cpp in Sources */,
+				D1777BC2193C14DF000719F1 /* codon_model.cpp in Sources */,
+				D1777BEF193C14DF000719F1 /* q_matrix.cpp in Sources */,
+				D1777BF0193C14DF000719F1 /* read_nexus_pymod.cpp in Sources */,
+				D1777BE0193C14DF000719F1 /* mvnormal_distribution.cpp in Sources */,
+				D1777BED193C14DF000719F1 /* probability_distribution.cpp in Sources */,
+				D1777BC4193C14DF000719F1 /* cond_likelihood.cpp in Sources */,
+				D1777BCC193C14DF000719F1 /* gtr_rate_param.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		D1681908193B7102004AAAD5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		D1681909193B7102004AAAD5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		D168190B193B7102004AAAD5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		D168190C193B7102004AAAD5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D16818FC193B7102004AAAD5 /* Build configuration list for PBXProject "phycas" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D1681908193B7102004AAAD5 /* Debug */,
+				D1681909193B7102004AAAD5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D168190A193B7102004AAAD5 /* Build configuration list for PBXNativeTarget "phycas" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D168190B193B7102004AAAD5 /* Debug */,
+				D168190C193B7102004AAAD5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D16818F9193B7102004AAAD5 /* Project object */;
+}
