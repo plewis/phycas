@@ -24,7 +24,7 @@
 #include <exception>
 
 /*----------------------------------------------------------------------------------------------------------------------
-|	Exception class for transmitting exceptions originating within the ProbDist module from C++ to Python. The attached
+|	Exception class for transmitting exceptions originating within the probdist module from C++ to Python. The attached
 |	message should be meaningful if caught and displayed in a Python environment.
 */
 class XProbDist : public std::exception
@@ -68,12 +68,12 @@ inline XProbDist::~XProbDist() throw ()
 	}
 
 /*----------------------------------------------------------------------------------------------------------------------
-|	If `msg' is empty, returns string "ProbDist module"; otherwise returns string stored by `msg'. Overrides the virtual
+|	If `msg' is empty, returns string "probdist module"; otherwise returns string stored by `msg'. Overrides the virtual
 |	function in the base class (std::exception).
 */
 inline const char *XProbDist::what () const throw ()
 	{
-	return msg.empty() ? "ProbDist module" : msg.c_str();
+	return msg.empty() ? "probdist module" : msg.c_str();
 	}
 
 #endif

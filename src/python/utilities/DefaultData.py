@@ -1,4 +1,4 @@
-from phycas.Utilities.io import TreeCollection, DataSource
+from phycas.utilities.io import TreeCollection, DataSource
 class DefaultData:
     "Bundle of references most loaded taxa, trees, and character matrices."
     _default_data = None

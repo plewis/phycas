@@ -45,7 +45,7 @@ class PolytomyTopoPriorCalculator(PolytomyTopoPriorCalculatorBase):
     >>> import math
     >>> from phycas import *
     >>> 
-    >>> tpc = Likelihood.PolytomyTopoPriorCalculator()
+    >>> tpc = likelihood.PolytomyTopoPriorCalculator()
     >>> tpc.setNTax(17)
     >>> tpc.chooseUnrooted()
     >>> 

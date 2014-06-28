@@ -13,7 +13,7 @@ class Binomial(BinomialDistBase, PyDistributionBase):
         Specify the number of trials n and the probability p of a success on
         any given trial when initializing a Binomial object. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Binomial(10, 0.1)
         >>> print d.getMean()
         1.0
@@ -51,7 +51,7 @@ class Binomial(BinomialDistBase, PyDistributionBase):
         Returns a string that could be used to initialize another Binomial
         object identical to this one. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Binomial(10, 0.1)
         >>> print d.__str__()
         Binomial(10, 0.10000)
@@ -65,7 +65,7 @@ class Binomial(BinomialDistBase, PyDistributionBase):
         Returns a string that could be used to initialize another Binomial
         object identical to this one. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Binomial(10, 0.1)
         >>> print d.__repr__()
         Binomial(10, 0.10000)
@@ -111,7 +111,7 @@ class Binomial(BinomialDistBase, PyDistributionBase):
         seed! If you have already called setLot, you probably want to call
         the setSeed function of that Lot ojbect. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Binomial(10, 0.1)
         >>> d.setSeed(1537)
         >>> d.sample()
@@ -143,7 +143,7 @@ class Binomial(BinomialDistBase, PyDistributionBase):
         (i.e., it will not change if sample is called to generate samples
         from this distribution).
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Binomial(10, 0.1)
         >>> print d.getMean()
         1.0
@@ -158,7 +158,7 @@ class Binomial(BinomialDistBase, PyDistributionBase):
         variance (i.e., it will not change if sample is called to generate
         samples from this distribution).
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Binomial(10, 0.1)
         >>> print d.getVar()
         0.9
@@ -173,7 +173,7 @@ class Binomial(BinomialDistBase, PyDistributionBase):
         theoretical standard deviation (i.e., it will not change if sample is
         called to generate samples from this distribution).
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Binomial(10, 0.1)
         >>> print d.getStdDev()
         0.948683298051
@@ -188,7 +188,7 @@ class Binomial(BinomialDistBase, PyDistributionBase):
         x. This is the sum of the probabilities of all positive whole
         numbers from 0 up to the value x.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Binomial(10, 0.1)
         >>> print d.getCDF(3)
         0.9872048016
@@ -203,7 +203,7 @@ class Binomial(BinomialDistBase, PyDistributionBase):
         this Binomial object. Python list comprehensions can be used to
         store many simulated samples for use in subsequent calculations.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Binomial(10, 0.1)
         >>> d.setSeed(97531)
         >>> print [d.sample()] * 3
@@ -218,7 +218,7 @@ class Binomial(BinomialDistBase, PyDistributionBase):
         Evaluates the probability of the supplied value x. Returns the natural
         logarithm of the probability of x. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Binomial(10, 0.1)
         >>> print d.getLnPDF(3)
         -2.8577871458
@@ -251,7 +251,7 @@ class Binomial(BinomialDistBase, PyDistributionBase):
         normalized density value (i.e. from a density function that integrates
         to 1.0)
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Binomial(10, 0.1)
         >>> print d.getRelativeLnPDF(3)
         -7.64527888859
@@ -284,7 +284,7 @@ class Binomial(BinomialDistBase, PyDistributionBase):
         variance is for compatibility with functions of the same name in
         other distributions.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Binomial(10, 0.1)
         >>> print d.getMean()
         1.0

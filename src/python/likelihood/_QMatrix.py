@@ -111,7 +111,7 @@ class QMatrix(QMatrixBase):
     #    >>> import numarray
     #    >>> from phycas import *
     #    >>> 
-    #    >>> qmatrix = Likelihood.QMatrix()
+    #    >>> qmatrix = likelihood.QMatrix()
     #    >>> 
     #    >>> rr = [1.0,4.0,1.0,1.0,4.0,1.0]
     #    >>> qmatrix.setRelativeRates(rr)
@@ -161,7 +161,7 @@ class QMatrix(QMatrixBase):
         >>> import math
         >>> from phycas import *
         >>> 
-        >>> qmatrix = Likelihood.QMatrix()
+        >>> qmatrix = likelihood.QMatrix()
         >>> 
         >>> rr = [1.0,4.0,1.0,1.0,4.0,1.0]
         >>> qmatrix.setRelativeRates(rr)

@@ -18,7 +18,7 @@ class ImproperUniform(ImproperUniformDistBase, PyDistributionBase):
         parameters, so use an empty set of parentheses after the name when
         creating one. 
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = ImproperUniform()
         >>> print d.getRelativeLnPDF(1.5)
         0.0
@@ -57,7 +57,7 @@ class ImproperUniform(ImproperUniformDistBase, PyDistributionBase):
         Returns a string that could be used to initialize another
         ImproperUniform object identical to this one. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = ImproperUniform()
         >>> print d.__str__()
         ImproperUniform()
@@ -71,7 +71,7 @@ class ImproperUniform(ImproperUniformDistBase, PyDistributionBase):
         Returns a string that could be used to initialize another
         ImproperUniform object identical to this one. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = ImproperUniform()
         >>> print d.__repr__()
         ImproperUniform()
@@ -176,7 +176,7 @@ class ImproperUniform(ImproperUniformDistBase, PyDistributionBase):
         probability density can be any constant; the value 1.0 is chosen here,
         the logarithm of which is 0.0.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = ImproperUniform()
         >>> print d.getRelativeLnPDF(1.5)
         0.0

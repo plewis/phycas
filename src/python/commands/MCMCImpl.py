@@ -1,10 +1,10 @@
 import os,sys,math,random
 from phycas import *
-from phycas.Utilities.PhycasCommand import *
-from phycas.Utilities.CommonFunctions import CommonFunctions
+from phycas.utilities.PhycasCommand import *
+from phycas.utilities.CommonFunctions import CommonFunctions
 from MCMCManager import MCMCManager
-from phycas.ProbDist import StopWatch
-from phycas.ReadNexus import NexusReader
+from phycas.probdist import StopWatch
+from phycas.readnexus import NexusReader
 
 class MCMCImpl(CommonFunctions):
     #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
@@ -30,7 +30,7 @@ class MCMCImpl(CommonFunctions):
         self.heat_vector            = None      # Leave set to None unless you are implementing some ad hoc heating scheme. This vector ordinarily computed using nchains and self.heating_lambda
         self.stopwatch              = StopWatch()
         self.sim_model_tree         = None      # Will hold the model tree used by simulateDNA
-        self.starting_tree          = []        # starting_tree[i] will contain reference to Phylogeny.Tree object for chain i
+        self.starting_tree          = []        # starting_tree[i] will contain reference to phylogeny.Tree object for chain i
         self.warn_tip_numbers       = False     # True only if tip numbers were not able to be created using the tip names in the tree description (always False if starting_tree_source == 'random' because BuildTreeFromString is not called in this case)
         self.ntax                   = 0         # Will hold the actual number of taxa after data file read
         self.nchar                  = 0         # Will hold the actual number of characters after data file has been read
@@ -523,7 +523,7 @@ class MCMCImpl(CommonFunctions):
     def exploreWorkingPrior(self, cycle):   # GENERALIZED-STEPPING-STONE
         chain_index = 0
         cold_chain = self.mcmc_manager.getColdChain()
-        tm = Phylogeny.TreeManip(cold_chain.tree)
+        tm = phylogeny.TreeManip(cold_chain.tree)
         jpm = cold_chain.chain_manager.getJointPriorManager()
 
         nmodels = cold_chain.partition_model.getNumSubsets()
@@ -766,7 +766,7 @@ class MCMCImpl(CommonFunctions):
     def explorePrior(self, cycle):
         chain_index = 0
         chain = self.mcmc_manager.getColdChain()
-        tm = Phylogeny.TreeManip(chain.tree)
+        tm = phylogeny.TreeManip(chain.tree)
         if self.opts.debugging:
             tmpf = file('debug_info.txt', 'a')
             tmpf.write('************** cycle=%d, chain=%d\n' % (cycle,chain_index))
@@ -1278,7 +1278,7 @@ class MCMCImpl(CommonFunctions):
 
         # Instantiate tree topology probability calculator, which is used to generate trees
         # from the topology reference distribution
-        topo_ref_dist_calculator = Likelihood.FocalTreeTopoProbCalculatorBase(focal_tree)
+        topo_ref_dist_calculator = likelihood.FocalTreeTopoProbCalculatorBase(focal_tree)
 
         # Inform tree topology probability calculator of edge length reference distributions
         prefix = 'split_'
@@ -1291,7 +1291,7 @@ class MCMCImpl(CommonFunctions):
                     assert(default_edge_len is None)
                     topo_ref_dist_calculator.setDefaultEdgeLenDist(v)
                 else:
-                    s = Phylogeny.SplitBase()
+                    s = phylogeny.SplitBase()
                     s.createFromPattern(split_rep)
                     print split_rep, v, s.createPatternRepresentation()
                     topo_ref_dist_calculator.setEdgeLenDist(s, v)
@@ -1374,7 +1374,7 @@ class MCMCImpl(CommonFunctions):
             cum_area = 0.0
             lower_boundary = 0.0
             self.ss_sampled_betas = [0.0]
-            betadist = ProbDist.Beta(self.opts.ssobj.shape1, self.opts.ssobj.shape2)
+            betadist = probdist.Beta(self.opts.ssobj.shape1, self.opts.ssobj.shape2)
             for i in range(self.opts.ssobj.nstones - 1):
                 cum_area += segment_area
                 upper_boundary = betadist.getQuantile(cum_area)

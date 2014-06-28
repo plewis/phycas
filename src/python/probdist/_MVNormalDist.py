@@ -15,7 +15,7 @@ class MVNormal(MVNormalDistBase, PyDistributionBase):
         If called with no arguments, constructs a default object representing
         a bivariate standard normal distribution. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = MVNormal()
         >>> print d.getDistName()
         Bivariate Normal
@@ -28,7 +28,7 @@ class MVNormal(MVNormalDistBase, PyDistributionBase):
         matrix should be square, symmetric and have a dimension that matches
         the mean vector. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> m = (1,2,3)
         >>> v = ((2,1,1),(1,2,1),(1,1,2))
         >>> d = MVNormal(m, v)
@@ -129,7 +129,7 @@ class MVNormal(MVNormalDistBase, PyDistributionBase):
         Returns the string 'Bivariate Normal' if the number of dimensions is
         2, otherwise returns 'Multivariate Normal'
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> m = (0,0)
         >>> v = ((1,0),(0,1))
         >>> d = MVNormal(m, v)
@@ -150,7 +150,7 @@ class MVNormal(MVNormalDistBase, PyDistributionBase):
         Returns a string that could be used to initialize another MVNorm
         object identical to this one. Same as __repr__() function.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> m = (1,2,3)
         >>> v = ((1,0,0),(0,1,0),(0,0,1))
         >>> d = MVNormal(m,v)
@@ -176,7 +176,7 @@ class MVNormal(MVNormalDistBase, PyDistributionBase):
         Returns a string that could be used to initialize another MVNorm
         object identical to this one. Same as __str__() function.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> m = (1,2,3)
         >>> v = ((1,0,0),(0,1,0),(0,0,1))
         >>> d = MVNormal(m,v)
@@ -243,7 +243,7 @@ class MVNormal(MVNormalDistBase, PyDistributionBase):
         seed! If you have already called setLot, you probably want to call
         the setSeed function of that Lot ojbect instead.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = MVNormal((0,0,0),((1,0,0),(0,1,0),(0,0,1)))
         >>> d.setSeed(135)
         >>> for x in d.sample():
@@ -283,7 +283,7 @@ class MVNormal(MVNormalDistBase, PyDistributionBase):
         Returns the mean of the distribution. Because this is a multivariate 
         distribution, the object returned is a tuple.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = MVNormal(m=(1,2,3),v=((1,0,0),(0,1,0),(0,0,1)))
         >>> for x in d.getMean():
         ...     print '%.5f ' % x
@@ -300,7 +300,7 @@ class MVNormal(MVNormalDistBase, PyDistributionBase):
         Returns the variance/covariance matrix of the distribution as a two-
         dimensional tuple.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = MVNormal(m=(1,2,3),v=((1,2,3),(2,3,4),(3,4,5)))
         >>> print d.getVar()
         ((1.0, 2.0, 3.0), (2.0, 3.0, 4.0), (3.0, 4.0, 5.0))
@@ -326,7 +326,7 @@ class MVNormal(MVNormalDistBase, PyDistributionBase):
         square root is applied to each element of the variance/covariance
         matrix. The result is returned as a two-dimensional tuple.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = MVNormal(m=(1,2,3),v=((1,2,3),(2,3,4),(3,4,5)))
         >>> sd = d.getStdDev()
         >>> for i in range(3):
@@ -357,7 +357,7 @@ class MVNormal(MVNormalDistBase, PyDistributionBase):
         Draws a single sampled value from the multivariate normal distribution
         specified by this MVNormal object.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = MVNormal(m=(10,20,30,40),v=((1,0,0,0),(0,1,0,0),(0,0,1,0),(0,0,0,1)))
         >>> d.setSeed(97531)
         >>> for x in d.sample():
@@ -382,7 +382,7 @@ class MVNormal(MVNormalDistBase, PyDistributionBase):
         equal to the number of parameters of the MVNormal distribution. If x
         has length different than k, a RuntimeException will be raised. 
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = MVNormal()
         >>> d.setSeed(1357)
         >>> print d.approxCDF((0.0,0.0))
@@ -401,7 +401,7 @@ class MVNormal(MVNormalDistBase, PyDistributionBase):
         Evaluates the probability density function at the supplied value x.
         Returns the natural logarithm of the density at x. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = MVNormal()
         >>> print d.getLnPDF((0.0, 0.0))
         -1.83787706641
@@ -473,7 +473,7 @@ class MVNormal(MVNormalDistBase, PyDistributionBase):
         Returns variance-covariance matrix in the form of a two-dimensional
         tuple.
         
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = MVNormal(m=(1,2,3), v=((1,2,3),(2,3,4),(3,4,5)))
         >>> v = d.getVarCovarMatrix()
         >>> for i in range(3):

@@ -263,7 +263,7 @@ class PDFGenerator(object):
 
         >>> from phycas import *
         >>> inch = 72.0
-        >>> pdf = PDFGen.PDFGenerator(8.5, 11.0)
+        >>> pdf = pdfgen.PDFGenerator(8.5, 11.0)
         >>> pdf.overwrite = True
         >>> pdf.newPage()
         >>> pdf.addText(3.0*inch, 6.0*inch, 'Times-Italic', 36, 'Hello, World!')

@@ -1,8 +1,8 @@
-from phycas.Utilities.PhycasCommand import *
-from phycas.Utilities.CommonFunctions import CommonFunctions
+from phycas.utilities.PhycasCommand import *
+from phycas.utilities.CommonFunctions import CommonFunctions
 from phycas import model, partition, randomtree, P
-from phycas.Commands.MCMCImpl import MCMCImpl
-#from phycas.ProbDist import Beta, Exponential, InverseGamma
+from phycas.commands.MCMCImpl import MCMCImpl
+#from phycas.probdist import Beta, Exponential, InverseGamma
 import copy
 
 class MCMC(PhycasCommand):

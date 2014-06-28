@@ -1,7 +1,7 @@
 import warnings
 warnings.filterwarnings('ignore', '.*second conversion method ignored.*', RuntimeWarning)
 
-from phycas.Conversions import *
+from phycas.conversions import *
 from _LikelihoodExt import *
 from _TreeLikelihood import *
 from _Model import *
@@ -11,7 +11,7 @@ from _TopoPriorCalculator import *
 from _QMatrix import *
 from _TreeLengthDist import *
 
-#print 'importing Likelihood...'
+#print 'importing likelihood...'
 
 def testExamples(verbose = False):
     import doctest

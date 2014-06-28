@@ -1,7 +1,7 @@
 import warnings
 warnings.filterwarnings('ignore', '.*second conversion method ignored.*', RuntimeWarning)
 
-from phycas.Conversions import *
+from phycas.conversions import *
 #from _PDFGen import *
 from _PDFGenerator import *
 

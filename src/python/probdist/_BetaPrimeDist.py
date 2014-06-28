@@ -14,7 +14,7 @@ class BetaPrime(BetaPrimeDistBase, PyDistributionBase):
         """
         Specify the a and b parameters of the BetaPrime object. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = BetaPrime(2, 3)
         >>> print d.getMean()
         1.0
@@ -27,7 +27,7 @@ class BetaPrime(BetaPrimeDistBase, PyDistributionBase):
         """
         Creates a copy of this BetaPrime distribution.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d1 = BetaPrime(2, 3)
         >>> print d1.getMean()
         1.0
@@ -63,7 +63,7 @@ class BetaPrime(BetaPrimeDistBase, PyDistributionBase):
         Returns a string that could be used to initialize another BetaPrime
         object identical to this one. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = BetaPrime(2, 3)
         >>> print d.__str__()
         BetaPrime(2.00000, 3.00000)
@@ -77,7 +77,7 @@ class BetaPrime(BetaPrimeDistBase, PyDistributionBase):
         Returns a string that could be used to initialize another BetaPrime
         object identical to this one. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = BetaPrime(2, 3)
         >>> print d.__repr__()
         BetaPrime(2.00000, 3.00000)
@@ -123,7 +123,7 @@ class BetaPrime(BetaPrimeDistBase, PyDistributionBase):
         seed! If you have already called setLot, you probably want to call
         the setSeed function of that Lot ojbect. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = BetaPrime(2, 3)
         >>> d.setSeed(135)
         >>> print "%.12f" % d.sample()
@@ -156,7 +156,7 @@ class BetaPrime(BetaPrimeDistBase, PyDistributionBase):
         from this distribution). The formula for the mean is a/(b-1). Note
         that the mean of this distribution is undefined if b <= 1.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = BetaPrime(2, 3)
         >>> print d.getMean()
         1.0
@@ -173,7 +173,7 @@ class BetaPrime(BetaPrimeDistBase, PyDistributionBase):
         a*(a+b-1)/[(b-2)*(b-1)^2]. Note that the variance of this distribution 
         is undefined if b <= 2.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = BetaPrime(2, 3)
         >>> print d.getVar()
         2.0
@@ -188,7 +188,7 @@ class BetaPrime(BetaPrimeDistBase, PyDistributionBase):
         theoretical standard deviation (i.e., it will not change if sample is
         called to generate samples from this distribution).
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = BetaPrime(2, 3)
         >>> print '%.3f' % d.getStdDev()
         1.414
@@ -203,7 +203,7 @@ class BetaPrime(BetaPrimeDistBase, PyDistributionBase):
         x. This is the integral of the probability density function from 0.0
         up to the value x.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = BetaPrime(1, 1)
         >>> print '%.3f' % d.getCDF(1.0)
         0.500
@@ -217,7 +217,7 @@ class BetaPrime(BetaPrimeDistBase, PyDistributionBase):
         Given p, the integral of the probability density function from 0.0
         up to a value x, returns x.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = BetaPrime(1, 1)
         >>> print '%.3f' % d.getQuantile(0.5)
         1.000
@@ -233,7 +233,7 @@ class BetaPrime(BetaPrimeDistBase, PyDistributionBase):
         used to store many simulated samples for use in subsequent 
         calculations.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = BetaPrime(2, 3)
         >>> d.setSeed(97531)
         >>> print round(d.sample(), 8)
@@ -252,7 +252,7 @@ class BetaPrime(BetaPrimeDistBase, PyDistributionBase):
         Evaluates the probability density function at the supplied value x.
         Returns the natural logarithm of the density at x. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = BetaPrime(2, 3)
         >>> print '%.6f' % d.getLnPDF(0.35)
         -0.065438
@@ -285,7 +285,7 @@ class BetaPrime(BetaPrimeDistBase, PyDistributionBase):
         correctly normalized density value (i.e. from a density function that
         integrates to 1.0)
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = BetaPrime(2, 3)
         >>> print '%.6f' % d.getRelativeLnPDF(0.35)
         -2.250240
@@ -328,7 +328,7 @@ class BetaPrime(BetaPrimeDistBase, PyDistributionBase):
                 = 2*4/[1*4]
                 = 2
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = BetaPrime(2, 3)
         >>> print d.getMean()
         1.0

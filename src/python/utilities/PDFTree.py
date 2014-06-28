@@ -1,8 +1,8 @@
 import math, types
-from phycas.PDFGen import *
-from phycas.Utilities.CommonFunctions import CommonFunctions
-from phycas.Utilities.GlobalState import readFile
-from phycas.Phylogeny import Tree
+from phycas.pdfgen import *
+from phycas.utilities.CommonFunctions import CommonFunctions
+from phycas.utilities.GlobalState import readFile
+from phycas.phylogeny import Tree
 
 class PDFTree(CommonFunctions):
     def __init__(self):
@@ -46,8 +46,8 @@ class PDFTree(CommonFunctions):
     def pdftree(self):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
-        Creates a PDF file containing a single tree (if pdf_newick is 
-        specified) or a collection of trees (if pdf_treefile is specified). 
+        Creates a PDF file containing a single tree (if pdf_newick is
+        specified) or a collection of trees (if pdf_treefile is specified).
         If a collection of trees is specified, scales all trees the same (i.e
         the scalebar is identical in size for all trees plotted).
         """
@@ -55,7 +55,7 @@ class PDFTree(CommonFunctions):
         simple_outgroup = type(self.pdf_outgroup_taxon) == types.StringType
         self.phycassert(simple_outgroup, 'Phycas cannot yet deal with pdf_outgroup_taxon containing more than one outgroup taxon')
         self.phycassert((self.pdf_treefile and not self.pdf_newick) or (self.pdf_newick and not self.pdf_treefile), 'set either pdf_newick or pdf_treefile, but not both')
-        
+
         # If pdf_edge_support_file has been specified, read splits table from the file
         # and store the splits in the pdf_splits_to_plot dictionary
         if self.pdf_edge_support_file and os.path.exists(self.pdf_edge_support_file):
@@ -67,25 +67,25 @@ class PDFTree(CommonFunctions):
             self.pdf_splits_to_plot = {}
             for p,f in matches:
                 self.pdf_splits_to_plot[p] = float(f)
-                
+
         # Fork depending on whether user wants to print just one tree (pdf_newick specified)
         # or an entire collection of trees (pdf_treefile specified)
-        if self.pdf_newick:        
+        if self.pdf_newick:
             # Build tree the newick description of which is in self.newick
             tree = self.pdf_newick.buildTree()
-            
+
             if self.pdf_outgroup_taxon:
                 num = tree.findTipByName(self.pdf_outgroup_taxon)
                 self.phycassert(num is not None, 'could not root tree using specified outgroup: no tip having name "%s" could be found' % self.pdf_outgroup_taxon)
                 tree.rerootAtTip(num)
-                
+
             if self.pdf_ladderize:
                 if self.pdf_ladderize == 'right':
                     tree.ladderizeRight()
                 else:
                     tree.ladderizeLeft()
 
-            # Save tree in PDF  
+            # Save tree in PDF
             pdf = PDFGenerator(self.pdf_page_width, self.pdf_page_height)
             pdf.overwrite = True
             pdf.newPage()
@@ -112,7 +112,7 @@ class PDFTree(CommonFunctions):
                 #tlen = tree.edgeLenSum()
                 #print 'tlen =',tlen,', height =',h
 
-            # Build each tree again and save in PDF file            
+            # Build each tree again and save in PDF file
             pdf = PDFGenerator(self.pdf_page_width, self.pdf_page_height)
             pdf.overwrite = True
             for tree_def in contents.trees:
@@ -130,10 +130,10 @@ class PDFTree(CommonFunctions):
                 pdf.newPage()
                 self.tree2pdf(pdf, tree, None, max_height)
             pdf.saveDocument(self.pdf_filename)
-            
+
         # Prevent unintentional spillover
         self.pdf_splits_to_plot = None
-        
+
     def tree2pdf(self, pdf, tree, title = None, xscalemax = 0.0, show_support = False):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
@@ -146,7 +146,7 @@ class PDFTree(CommonFunctions):
         xscalemax is specified, it will be used to determine the scalebar, and
         the scalebar will remain the same size for all trees printed with the
         same xcalemax value.
-        
+
         """
         # TODO: max_label_points should be calculated outside this function and passed in as an argument
         inch = 72.0
@@ -166,7 +166,7 @@ class PDFTree(CommonFunctions):
 
         if self.pdf_splits_to_plot:
             tree.recalcAllSplits(tree.getNObservables())
-            
+
         # Record information about the tip serving as the root
         nd = tree.getFirstPreorder()
         assert nd.isRoot(), 'first preorder node should be the root'
@@ -174,7 +174,7 @@ class PDFTree(CommonFunctions):
             nodes.append(nd)
         subroot = nd.getLeftChild()
         height = subroot.getEdgeLen()
-        nd.setX(height) 
+        nd.setX(height)
         if self.pdf_ladderize and self.pdf_ladderize == 'left':
             last_tip_index = float(tree.getNObservables() - 1)
             nd.setY(last_tip_index) #--> Y is irrelevant if rooted
@@ -186,14 +186,14 @@ class PDFTree(CommonFunctions):
             else:
                 ntips = 1.0
         max_height = height
-        
-        # Determine the width (in points) occupied by the longest taxon label 
+
+        # Determine the width (in points) occupied by the longest taxon label
         if self.pdf_tip_label_font and not rooted_tree:
             taxon_label = nd.getNodeName()
             label_width = float(self.pdf_tip_label_height)*pdf.calcStringWidth(self.pdf_tip_label_font, taxon_label)
             if label_width > max_label_points:
                 max_label_points = label_width
-        
+
         # Record information about the internal node serving as the subroot
         nd = nd.getNextPreorder()
         assert nd.getParent().isRoot(), 'second preorder node should be the subroot'
@@ -201,7 +201,7 @@ class PDFTree(CommonFunctions):
         nd.setX(0.0)
         nd.setY(0.0)
         subroot = nd
-        
+
         # Record information about the remaining nodes in the tree
         while True:
             nd = nd.getNextPreorder()
@@ -325,7 +325,7 @@ class PDFTree(CommonFunctions):
             tip_font_points = self.pdf_tip_label_height*max_height/xscalemax
         else:
             tip_font_points = self.pdf_tip_label_height
-        
+
         # Perform a postorder traversal:
         # 1) scale each x-value
         # 2) calculate y-value of each internal node as the average y-value of its children

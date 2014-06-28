@@ -1,12 +1,12 @@
 import copy
-from phycas.Utilities.CommonFunctions import CommonFunctions
-from phycas.Utilities.PhycasCommand import *
-from phycas.ProbDist import Beta, Exponential, InverseGamma, Dirichlet
-from phycas.Likelihood import TreeLengthDist
+from phycas.utilities.CommonFunctions import CommonFunctions
+from phycas.utilities.PhycasCommand import *
+from phycas.probdist import Beta, Exponential, InverseGamma, Dirichlet
+from phycas.likelihood import TreeLengthDist
 
 class Model(PhycasCommand):
     def __init__(self):
-        args = ( 
+        args = (
                 ("type",                       'hky',                                "Can be 'jc', 'hky', 'gtr' or 'codon'", EnumArgValidate(['jc', 'hky', 'gtr', 'codon'])),
                 ("relrate_prior",              Dirichlet([1.0,1.0,1.0,1.0,1.0,1.0]), "The joint prior distribution for all six GTR relative rate parameters. Used only if update_relrates_separately is False."),
                 ("relrate_param_prior",        Exponential(1.0),                     "The prior distribution for individual GTR relative rate parameters.  Used only if update_relrates_separately is true."),
@@ -50,7 +50,7 @@ class Model(PhycasCommand):
         # to prevent users from adding new data members (to prevent accidental misspellings from causing problems)
         self.__dict__["update_freqs_separately"]    = False     # If True, state frequencies will be individually updated using slice sampling; if False, they will be updated jointly using a Metropolis-Hastings move (generally both faster and better).
         self.__dict__["update_relrates_separately"] = False     # If True, GTR relative rates will be individually updated using slice sampling; if False, they will be updated jointly using a Metropolis-Hastings move (generally both faster and better).
-        
+
     def checkPriorSupport(self):
         """
         Called from MCMCImpl.setup() to check whether priors defined by user have support
@@ -69,61 +69,61 @@ class Model(PhycasCommand):
         beta_like.extend(['BetaDistBase'])
         beta_support = 'univariate with support 0 to 1'
         msg = '%s was assigned a(n) %s prior, but prior for this parameter should be %s'
-                
-        # edgelen_hyperprior 
+
+        # edgelen_hyperprior
         if self.edgelen_hyperprior is not None:
             if self.edgelen_hyperprior.__class__.__name__ not in gamma_like:
                 bad_priors.append(msg % ('edgelen_hyperprior', self.edgelen_hyperprior.__class__.__name__, gamma_support))
 
-        # internal_edgelen_prior 
+        # internal_edgelen_prior
         if self.internal_edgelen_prior.__class__.__name__ not in gamma_like:
             bad_priors.append(msg % ('internal_edgelen_prior', self.internal_edgelen_prior.__class__.__name__, gamma_support))
-        
-        # external_edgelen_prior 
+
+        # external_edgelen_prior
         if self.external_edgelen_prior.__class__.__name__ not in gamma_like:
             bad_priors.append(msg % ('external_edgelen_prior', self.external_edgelen_prior.__class__.__name__, gamma_support))
-        
-        # edgelen_prior 
+
+        # edgelen_prior
         if self.edgelen_prior is not None:
             if self.edgelen_prior.__class__.__name__ not in gamma_like:
                 bad_priors.append(msg % ('edgelen_prior', self.edgelen_prior.__class__.__name__, gamma_support))
-                    
+
         # tree_length_prior
         if self.tree_length_prior is not None and self.tree_length_prior.__class__.__name__ != 'TreeLengthDist':
             bad_priors.append(msg % ('tree_length_prior', self.tree_length_prior.__class__.__name__, 'TreeLengthDist'))
-        
-        # relrate_prior 
+
+        # relrate_prior
         if self.relrate_prior.__class__.__name__ not in dirichlet_like:
             bad_priors.append(msg % ('relrate_prior', self.relrate_prior.__class__.__name__, dirichlet_support))
-        
-        # relrate_param_prior 
+
+        # relrate_param_prior
         if self.relrate_param_prior.__class__.__name__ not in gamma_like:
             bad_priors.append(msg % ('relrate_param_prior', self.relrate_param_prior.__class__.__name__, gamma_support))
-        
-        # kappa_prior 
+
+        # kappa_prior
         if self.kappa_prior.__class__.__name__ not in gamma_like:
             bad_priors.append(msg % ('kappa_prior', self.kappa_prior.__class__.__name__, gamma_support))
-        
-        # omega_prior 
+
+        # omega_prior
         if self.omega_prior.__class__.__name__ not in gamma_like:
             bad_priors.append(msg % ('omega_prior', self.omega_prior.__class__.__name__, gamma_support))
-        
+
         # gamma_shape_prior
         if self.gamma_shape_prior.__class__.__name__ not in gamma_like:
             bad_priors.append(msg % ('gamma_shape_prior', self.gamma_shape_prior.__class__.__name__, gamma_support))
-        
-        # pinvar_prior 
+
+        # pinvar_prior
         if self.pinvar_prior.__class__.__name__ not in beta_like:
             bad_priors.append(msg % ('pinvar_prior', self.pinvar_prior.__class__.__name__, beta_support))
-        
-        # state_freq_prior 
+
+        # state_freq_prior
         if self.state_freq_prior.__class__.__name__ not in dirichlet_like:
             bad_priors.append(msg % ('state_freq_prior', self.state_freq_prior.__class__.__name__, dirichlet_support))
-        
-        # state_freq_param_prior 
+
+        # state_freq_param_prior
         if self.state_freq_param_prior.__class__.__name__ not in gamma_like:
             bad_priors.append(msg % ('state_freq_param_prior', self.state_freq_param_prior.__class__.__name__, gamma_support))
-        
+
         return bad_priors
 
     def saveas(self):
@@ -166,7 +166,7 @@ class Model(PhycasCommand):
 
         new_model.edgelen_hyperprior            = copy.deepcopy(self.edgelen_hyperprior, memo)
         new_model.edgelen_hyperparam            = copy.deepcopy(self.edgelen_hyperparam, memo)
-        
+
         #new_model.separate_edgelen_hyper        = copy.deepcopy(self.separate_edgelen_hyper, memo)
 
         new_model.relrates                      = copy.deepcopy(self.relrates, memo)
@@ -182,20 +182,20 @@ class Model(PhycasCommand):
         new_model.fix_shape                     = copy.deepcopy(self.fix_shape, memo)
         new_model.fix_pinvar                    = copy.deepcopy(self.fix_pinvar, memo)
         new_model.fix_freqs                     = copy.deepcopy(self.fix_freqs, memo)
-        
+
         new_model.fix_edgelens                  = copy.deepcopy(self.fix_edgelens, memo)
         new_model.fix_edgelen_hyperparam        = copy.deepcopy(self.fix_edgelen_hyperparam, memo)
 
         memo[self] = new_model
         return new_model
-        
+
     def __call__(self, **kwargs):
         cf = CommonFunctions(self)
         cf.phycassert(not self.update_freqs_separately, 'update_freqs_separately is no longer allowed')
         cf.phycassert(not self.update_relrates_separately, 'update_freqs_separately is no longer allowed')
         self.set(**kwargs)
         return self.saveas()
-        
+
 
 
 

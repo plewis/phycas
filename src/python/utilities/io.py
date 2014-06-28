@@ -1,7 +1,7 @@
 import os, sys, subprocess
-from phycas.ReadNexus._NexusReader import FileFormats
-from phycas.Utilities.CommonFunctions import getDefaultOutputter
-from phycas import Phylogeny, Newick
+from phycas.readnexus._NexusReader import FileFormats
+from phycas.utilities.CommonFunctions import getDefaultOutputter
+from phycas import phylogeny, Newick
 _phycas_dir = None
 
 def getPhycasDir():
@@ -55,7 +55,7 @@ def readData(filepath, format=FileFormats.NEXUS, out=None):
     this will be generalized to read other formats and return the
     supermatrix of all data matrices in the file."""
     _readFileSanityCheck(filepath, format, out)
-    from phycas.ReadNexus import NexusReader
+    from phycas.readnexus import NexusReader
     reader = NexusReader()
     reader.readFile(filepath)
     return reader.getLastDiscreteMatrix(True)
@@ -68,7 +68,7 @@ def readTrees(filepath, format=FileFormats.NEXUS, out=None):
     supermatrix of all data matrices in the file."""
 
     _readFileSanityCheck(filepath, format, out)
-    from phycas.ReadNexus import NexusReader
+    from phycas.readnexus import NexusReader
     reader = NexusReader()
     reader.readFile(filepath)
     return reader.taxa, reader.getTrees()
@@ -87,7 +87,7 @@ class TreeCollection(object):
         edge lengths).
         taxon_labels provide names for the numbers used in a newick description (alternatively,
         taxon labels can be provided directly in the newick string)
-        trees is an iterable collection of Phylogeny.Tree objects.
+        trees is an iterable collection of phylogeny.Tree objects.
         title is a label for the collection.
         """
         self.reset()
@@ -106,7 +106,7 @@ class TreeCollection(object):
             if newick:
                 if not isinstance(newick, Newick):
                     newick = Newick(newick)
-                tree = Phylogeny.Tree()
+                tree = phylogeny.Tree()
                 # by default the tree is read as 1-based (as in NEXUS trees)
                 newick.buildTree(tree)
                 self.trees = [tree]
@@ -142,7 +142,7 @@ class TreeCollection(object):
             self.trees = []
             for td in tree_descriptions:
                 n = td.getNewickFromC()
-                t = Phylogeny.Tree(newick=n, rooted=td.rooted)
+                t = phylogeny.Tree(newick=n, rooted=td.rooted)
                 self.trees.append(t)
             self._checkActiveTaxa()
         if self._needToRelabel:

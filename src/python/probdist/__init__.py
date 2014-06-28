@@ -1,7 +1,7 @@
 import warnings
 warnings.filterwarnings('ignore', '.*second conversion method ignored.*', RuntimeWarning)
 
-from phycas.Conversions import *
+from phycas.conversions import *
 from _PyDistributionBase import PyDistributionBase
 from _ProbDistExt import *
 from _Lot import *
@@ -24,7 +24,7 @@ from _RelRateDist import *
 from _SquareMatrix import *
 from _RectangularMatrix import *
 
-#print 'importing ProbDist...'
+#print 'importing probdist...'
 
 def testExamples(verbose = False):
     import doctest

@@ -1,5 +1,5 @@
 from _PhylogenyExt import *
-from phycas.ReadNexus._NexusReader import TreeDescription
+from phycas.readnexus._NexusReader import TreeDescription
 
 class Tree(TreeBase):
     #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
@@ -22,7 +22,7 @@ class Tree(TreeBase):
         definition comes from the newick string and `zero_based` is used to 
         indicate whether the taxa indices start at 0 or 1.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> t1 = Tree()
         >>> print t1.getNNodes()
         0
@@ -56,7 +56,7 @@ class Tree(TreeBase):
         in the the variable `tree`
         Returns the `tree` instance."""
         if tree is None:
-            return Phylogeny.Tree(newick=self.newick, taxon_labels=list(self.taxon_labels))
+            return phylogeny.Tree(newick=self.newick, taxon_labels=list(self.taxon_labels))
         # makeNumberedNewick returns a one-based number
         tree.buildFromString(self.makeNumberedNewick(), False) 
         return tree
@@ -71,7 +71,7 @@ class Tree(TreeBase):
         first in the example below because the tree is rooted at the first
         tip node for "unrooted" trees.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> tree = Tree()
         >>> tree.buildFromString('(a,b,(c,(d,e)x)y)z')
         >>> for nd in tree:
@@ -92,7 +92,7 @@ class Tree(TreeBase):
         Returns nodes that have edges, which is all nodes in an unrooted tree
         except the root node. The nodes are visited in preorder sequence.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> tree = Tree()
         >>> tree.buildFromString('(a,b,(c,(d,e)x)y)z')
         >>> for nd in tree.nodesWithEdges():
@@ -115,7 +115,7 @@ class Tree(TreeBase):
         node (including the root node) that is of degree one (i.e. has only
         one edge attached to it). The nodes are visited in preorder sequence.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> tree = Tree()
         >>> tree.buildFromString('(a,b,(c,(d,e)x)y)z')
         >>> for nd in tree.iterTipNodes():
@@ -139,7 +139,7 @@ class Tree(TreeBase):
         three edges attached to it). The nodes are visited in preorder
         sequence.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> tree = Tree()
         >>> tree.buildFromString('(a,b,(c,(d,e)x)y)z')
         >>> for nd in tree.iterInternalNodes():
@@ -164,7 +164,7 @@ class Tree(TreeBase):
         Before returning, roots tree at first tip node. Raises an XPhylogeny
         exception if a problem is encountered.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> t2 = Tree()
         >>> t2.buildFromString('(c,d,(a, b))')
         >>> print t2.walkPreorder()
@@ -178,7 +178,7 @@ class Tree(TreeBase):
         """
         Returns object to just-constructed state.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> t3 = Tree()
         >>> t3.buildFromString('(c,d,(a, b))')
         >>> t3.getNNodes()
@@ -213,7 +213,7 @@ class Tree(TreeBase):
         tree, and n-1 for a fully-resolved rooted tree. Calls
         refreshNodeCounts() if node counts have been invalidated.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> t4 = Tree()
         >>> t4.buildFromString('(fish,shark,(bird, mammal))')
         >>> print t4.getNNodes()
@@ -235,7 +235,7 @@ class Tree(TreeBase):
         is a leaf node but not a taxon. Calls refreshNodeCounts() if node
         counts have been invalidated.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> t5 = Tree()
         >>> t5.buildFromString('(fish,shark,(bird, mammal))')
         >>> print t5.getNNodes()
@@ -257,7 +257,7 @@ class Tree(TreeBase):
         node exists but is not identical to one of the tips. Calls
         refreshNodeCounts() if node counts have been invalidated.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> t6 = Tree()
         >>> t6.buildFromString('(fish,shark,(bird, mammal))')
         >>> print t6.getNNodes()
@@ -272,7 +272,7 @@ class Tree(TreeBase):
         Returns True if tree is rooted, or False if the root is actually a
         tip.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> t7 = Tree()
         >>> t7.buildFromString('(fish,shark,(bird, mammal))')
         >>> print t7.isRooted()
@@ -296,7 +296,7 @@ class Tree(TreeBase):
         Returns True if tree has edge lengths defined, False if edge lengths
         have not yet been set.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> t8 = Tree()
         >>> t8.buildFromString('(fish,shark,(bird, mammal))')
         >>> print t8.hasEdgeLens()
@@ -320,7 +320,7 @@ class Tree(TreeBase):
         name is used instead of the node number, both for internal and leaf
         nodes.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> t9 = Tree()
         >>> t9.buildFromString('(fish,shark,(bird, mammal))')
         >>> print t9.walkPreorder()
@@ -341,7 +341,7 @@ class Tree(TreeBase):
         name is used instead of the node number, both for internal and leaf
         nodes.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> tA = Tree()
         >>> tA.buildFromString('(fish,shark,(bird, mammal))')
         >>> print tA.walkPostorder()
@@ -363,7 +363,7 @@ class Tree(TreeBase):
         Reroots the tree at the leaf node numbered num. An XPhylogeny
         exception is raised if a leaf node having number num cannot be found.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> tC = Tree()
         >>> tC.buildFromString('((a,b),c,(d,e))')
         >>> print tC.walkPreorder()
@@ -385,7 +385,7 @@ class Tree(TreeBase):
         Sums all edge lengths in the tree. Raises an Exception if edge lengths
         were never provided for the tree.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> tB = Tree()
         >>> tB.buildFromString('(fish,shark,(bird, mammal))')
         >>> print tB.edgeLenSum()
@@ -417,7 +417,7 @@ class Tree(TreeBase):
         tree description. Tip nodes are represented by node numbers if they
         do not have a name. If edge lengths are present, they will be shown.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> t = Tree()
         >>> t.buildFromString('((a:0.11,b:0.12)x:0.10,c:0.21,(d:0.31,e:0.32)y:0.30)z')
         >>> print t.makeNewick()
@@ -434,7 +434,7 @@ class Tree(TreeBase):
         tree description. Tip nodes are represented by node numbers if they
         do not have a name. If edge lengths are present, they will be shown.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> t = Tree()
         >>> t.buildFromString('((a:0.11,b:0.12)x:0.10,c:0.21,(d:0.31,e:0.32)y:0.30)z')
         >>> print t.makeNumberedNewick()
@@ -450,7 +450,7 @@ class Tree(TreeBase):
         the supplied object taxon_names, which should be a list or tuple of
         taxon names.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> t = Tree()
         >>> t.buildFromString('((a,b),c,(d,e))')
         >>> print t.walkPreorder(verbosity=1)
@@ -470,7 +470,7 @@ class Tree(TreeBase):
         taxon_names, which should be a list or tuple of taxon names. The node
         numbers are treated as indices into the taxon_names list.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> t = Tree()
         >>> t.buildFromString('((a,b),c,(d,e))')
         >>> print t.walkPreorder(verbosity=1)

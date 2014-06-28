@@ -78,8 +78,8 @@ class IrreversibleModel(IrreversibleModelBase):
         (1.0,0.0) or (0.0,1.0) for this model depending on whether 0 or 1
         is the root state, respectively.
         
-        >>> import phycas.Likelihood
-        >>> model = phycas.Likelihood.IrreversibleModel()
+        >>> import phycas.likelihood
+        >>> model = phycas.likelihood.IrreversibleModel()
         >>> print model.getStateFreqs()
         (0.0,1.0)
         
@@ -226,8 +226,8 @@ class BinaryModel(BinaryModelBase):
         """
         Returns a tuple comprising the 2 state frequencies. 
         
-        >>> import phycas.Likelihood
-        >>> model = phycas.Likelihood.BinaryModel()
+        >>> import phycas.likelihood
+        >>> model = phycas.likelihood.BinaryModel()
         >>> print model.getStateFreqs()
         (0.5,0.5)
         
@@ -305,8 +305,8 @@ class JCModel(JCModelBase):
             Returns a tuple comprising the 4 state frequencies. Always
             (0.25, 0.25, 0.25, 0.25) for this model.
             
-            >>> import phycas.Likelihood
-            >>> model = phycas.Likelihood.JCModel()
+            >>> import phycas.likelihood
+            >>> model = phycas.likelihood.JCModel()
             >>> print model.getStateFreqs()
             (0.25, 0.25, 0.25, 0.25)
             
@@ -662,7 +662,7 @@ class GTRModel(GTRModelBase):
 
         Example:
         >>> from phycas import *
-        >>> model = Likelihood.GTRModel()
+        >>> model = likelihood.GTRModel()
         >>> model.setRelRates([1.0, 4.0, 1.0, 1.0, 4.0, 1.0])
         >>> model.setNucleotideFreqs(0.25, 0.25, 0.25, 0.25)
         >>> print model.calcTRatio()

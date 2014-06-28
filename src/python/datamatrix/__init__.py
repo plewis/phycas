@@ -1,11 +1,11 @@
 import warnings
 warnings.filterwarnings('ignore', '.*second conversion method ignored.*', RuntimeWarning)
 
-#from phycas.Conversions import *
+#from phycas.conversions import *
 from _DataMatrixExt import *
 from _DataMatrix import *
 
-#print 'importing DataMatrix...'
+#print 'importing datamatrix...'
 
 def testExamples():
     import doctest

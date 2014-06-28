@@ -1,7 +1,7 @@
 from phycas import P
-from phycas.Utilities.PhycasCommand import *
-from phycas.Commands.RandomTreeImpl import TreeSimulator
-from phycas.ProbDist import Exponential
+from phycas.utilities.PhycasCommand import *
+from phycas.commands.RandomTreeImpl import TreeSimulator
+from phycas.probdist import Exponential
 import copy
 class RandomTree(PhycasCommand):
     def __init__(self):

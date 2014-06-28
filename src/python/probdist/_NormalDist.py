@@ -13,7 +13,7 @@ class Normal(NormalDistBase, PyDistributionBase):
         Specify the mean and standard deviation when creating a new Normal
         object. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Normal(2, 3)
         >>> print d.getMean()
         2.0
@@ -53,7 +53,7 @@ class Normal(NormalDistBase, PyDistributionBase):
         Returns a string that could be used to initialize another Normal
         object identical to this one. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Normal(2, 3)
         >>> print d.__str__()
         Normal(2.00000, 3.00000)
@@ -67,7 +67,7 @@ class Normal(NormalDistBase, PyDistributionBase):
         Returns a string that could be used to initialize another Normal
         object identical to this one. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Normal(2, 3)
         >>> print d.__repr__()
         Normal(2.00000, 3.00000)
@@ -115,7 +115,7 @@ class Normal(NormalDistBase, PyDistributionBase):
         seed! If you have already called setLot, you probably want to call
         the setSeed function of that Lot ojbect. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Normal(2, 3)
         >>> d.setSeed(135)
         >>> print "%.12f" % d.sample()
@@ -147,7 +147,7 @@ class Normal(NormalDistBase, PyDistributionBase):
         (i.e., it will not change if sample is called to generate samples
         from this distribution).
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Normal(2, 3)
         >>> print d.getMean()
         2.0
@@ -162,7 +162,7 @@ class Normal(NormalDistBase, PyDistributionBase):
         variance (i.e., it will not change if sample is called to generate
         samples from this distribution).
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Normal(2, 3)
         >>> print d.getVar()
         9.0
@@ -177,7 +177,7 @@ class Normal(NormalDistBase, PyDistributionBase):
         theoretical standard deviation (i.e., it will not change if sample is
         called to generate samples from this distribution).
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Normal(2, 3)
         >>> print d.getStdDev()
         3.0
@@ -192,7 +192,7 @@ class Normal(NormalDistBase, PyDistributionBase):
         x. This is the integral of the probability density function from 
         negative infinity up to the value x.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Normal(0, 3)
         >>> print d.getCDF(0.0)
         0.5
@@ -207,7 +207,7 @@ class Normal(NormalDistBase, PyDistributionBase):
         by this Normal object. Python list comprehensions can be used to
         store many simulated samples for use in subsequent calculations.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Normal(0, 3)
         >>> d.setSeed(97531)
         >>> samples = [d.sample() for i in range(3)]
@@ -226,7 +226,7 @@ class Normal(NormalDistBase, PyDistributionBase):
         Evaluates the probability density function at the supplied value x.
         Returns the natural logarithm of the density at x. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Normal(0, 3)
         >>> ln_pdf = d.getLnPDF(1.0)
         >>> print '%.9f' % ln_pdf
@@ -272,7 +272,7 @@ class Normal(NormalDistBase, PyDistributionBase):
         """
         Sets the mean and variance of this distribution. 
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Normal(2, 3)
         >>> print d.getMean()
         2.0

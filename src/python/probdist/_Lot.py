@@ -22,7 +22,7 @@ class Lot(LotBase):
         number seed. If seed is the default value (0), the actual seed used
         is taken from the system clock.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> r1 = Lot(3157)
         >>> print r1.getInitSeed()
         3157
@@ -38,7 +38,7 @@ class Lot(LotBase):
         a sequence of pseudorandom numbers identical to a sequence that you
         have previously generated.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> lot = Lot()
         >>> lot.setSeed(1357)
         >>> lot.getSeed()
@@ -64,7 +64,7 @@ class Lot(LotBase):
         Lot object using the system clock or, if setSeed has been called,
         returns the seed specified in the most recent call to setSeed.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> lot = Lot()
         >>> lot.setSeed(1357)
         >>> lot.getInitSeed()

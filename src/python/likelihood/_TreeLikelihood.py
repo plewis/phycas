@@ -16,10 +16,10 @@ class TreeLikelihood(TreeLikelihoodBase):
 
     >>> from phycas import *
     >>> import time
-    >>> reader = ReadNexus.NexusReader()
+    >>> reader = readnexus.NexusReader()
     >>> reader.readFile(getPhycasTestData('nyldna4.nex'))
     >>> data_matrix =  reader.getLastDiscreteMatrix()
-    >>> model = Likelihood.HKYModel()
+    >>> model = likelihood.HKYModel()
     >>> model.setStateFreqUnnorm(0, 1.0)
     >>> model.setStateFreqUnnorm(1, 2.0)
     >>> model.setStateFreqUnnorm(2, 3.0)
@@ -33,9 +33,9 @@ class TreeLikelihood(TreeLikelihoodBase):
     >>> model.setKappaFromTRatio(2.0)
     >>> print "%.5f" % model.getKappa()
     4.36364
-    >>> partition_model = Likelihood.PartitionModelBase()
+    >>> partition_model = likelihood.PartitionModelBase()
     >>> partition_model.addModel(model)
-    >>> likelihood = Likelihood.TreeLikelihood(partition_model)
+    >>> likelihood = likelihood.TreeLikelihood(partition_model)
     >>> likelihood.copyDataFromDiscreteMatrix(data_matrix, partition.getSiteModelVector())
     >>> for t in reader.getTrees():
     ...     tree = Phylogeny.Tree(t)
@@ -59,7 +59,7 @@ class TreeLikelihood(TreeLikelihoodBase):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
         Copies data from a discrete data matrix object (such as that returned
-        by the function ReadNexus.NexusReader.getLastDiscreteMatrix). The contents of
+        by the function readnexus.NexusReader.getLastDiscreteMatrix). The contents of
         data_matrix are compressed into data patterns and their counts.
         
         """
@@ -280,15 +280,15 @@ class TreeLikelihood(TreeLikelihoodBase):
         
         >>> from phycas import *
         >>> 
-        >>> m = Likelihood.JCModel()
+        >>> m = likelihood.JCModel()
         >>>
         >>> # First example shows high rate heterogeneity
         >>> 
         >>> m.setShape(0.2)
         >>> m.setNGammaRates(4)
-        >>> partition_model = Likelihood.PartitionModelBase()
+        >>> partition_model = likelihood.PartitionModelBase()
         >>> partition_model.addModel(m)
-        >>> t = Likelihood.TreeLikelihood(partition_model)
+        >>> t = likelihood.TreeLikelihood(partition_model)
         >>> t.setNoData()
         >>> mean  = t.getRateMeans(0)
         >>> lower = t.getCategoryLowerBoundaries(0)

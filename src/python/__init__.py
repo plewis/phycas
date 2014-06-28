@@ -2,13 +2,13 @@ _phycas_revision = '2.0.0'
 
 '''Root of the phycas package.'''
 #__all__ = [
-#    'Conversions',
-#    'DataMatrix',
-#    'Likelihood',
-#    'PDFGen',
-#    'Phylogeny',
-#    'ProbDist',
-#    'ReadNexus',
+#    'conversions',
+#    'datamatrix',
+#    'likelihood',
+#    'pdfgen',
+#    'phylogeny',
+#    'probdist',
+#    'readnexus',
 #    ]
 
 import os
@@ -97,7 +97,7 @@ class Newick(object):
         in the the variable `tree`
         Returns the `tree` instance."""
         if tree is None:
-            tree = Phylogeny.Tree()
+            tree = phylogeny.Tree()
         tree.buildFromString(self.newick, self.naming == Newick.ZERO_BASED_TAXA_NUMBERS) # tree descriptions from NCL are 1-based not 0-based
         return tree
     def __str__(self):
@@ -138,19 +138,19 @@ if not _user_ini_checked:
 def useWxPhycas():
     return _use_wx_phycas
 
-from phycas.Utilities.io import getPhycasDir, getPhycasTestData, _runRegressionTests, FileFormats, TreeCollection, DataSource
-import Conversions
-from DataMatrix._DataMatrix import DataMatrix
-import Likelihood
-from Likelihood import TreeLengthDist,NumSumBase
-import PDFGen
-import Phylogeny
-import ProbDist
-from ProbDist import RectangularMatrix, SquareMatrix, Bernoulli, Beta, BetaPrime, Binomial, Dirichlet, SubsetProportionsBase, RelativeRateDistribution, Exponential, Gamma, ImproperUniform, InverseGamma, Normal, Lognormal, Uniform, Lot
-import ReadNexus
+from utilities.io import getPhycasDir, getPhycasTestData, _runRegressionTests, FileFormats, TreeCollection, DataSource
+import conversions
+from datamatrix._DataMatrix import DataMatrix
+import likelihood
+from likelihood import TreeLengthDist,NumSumBase
+import pdfgen
+import phylogeny
+import probdist
+from probdist import RectangularMatrix, SquareMatrix, Bernoulli, Beta, BetaPrime, Binomial, Dirichlet, SubsetProportionsBase, RelativeRateDistribution, Exponential, Gamma, ImproperUniform, InverseGamma, Normal, Lognormal, Uniform, Lot
+import readnexus
 import sys, os
-from Utilities.PhycasCommand import REPLACE, APPEND, ADD_NUMBER, SKIP, phycas_help
-from phycas.Utilities.DefaultData import DefaultData
+from utilities.PhycasCommand import REPLACE, APPEND, ADD_NUMBER, SKIP, phycas_help
+from utilities.DefaultData import DefaultData
 
 P = DefaultData.getInstance()
 
@@ -175,57 +175,57 @@ try:
 except:
     pass
 
-from Commands.RandomTree import RandomTree
+from commands.RandomTree import RandomTree
 randomtree = RandomTree()
 
-from Commands.Model import Model
+from commands.Model import Model
 model = Model()
 
-from Commands.Partition import Partition,Subset
+from commands.Partition import Partition,Subset
 partition = Partition()
 
 # note: Subset is not derived from PhycasCommand, it exists only to make defining partition subsets clearer for those familiar with Nexus
 subset = Subset()
 
-from Commands.RefDist import RefDist
+from commands.RefDist import RefDist
 refdist = RefDist()
 
-from Commands.SumT import SumT
+from commands.SumT import SumT
 sumt = SumT()
 
-from Commands.SumP import SumP
+from commands.SumP import SumP
 sump = SumP()
 
-from Commands.MCMC import MCMC
+from commands.MCMC import MCMC
 mcmc = MCMC()
 
-from Commands.Commands import Commands
+from commands.Commands import Commands
 commands = Commands()
 
-from Commands.Sim import Sim
+from commands.Sim import Sim
 sim  = Sim()
 
-from Commands.Like import Like
+from commands.Like import Like
 like = Like()
 
-from Commands.SS import SS
+from commands.SS import SS
 ss = SS()
 
-from Commands.CPO import CPO
+from commands.CPO import CPO
 cpo = CPO()
 
-from Commands.GG import GG
+from commands.GG import GG
 gg = GG()
 
-from Commands.ScriptGen import ScriptGen
+from commands.ScriptGen import ScriptGen
 scriptgen = ScriptGen()
 
 def setMasterSeed(x):
-    from phycas.Utilities.CommonFunctions import CommonFunctions
+    from utilities.CommonFunctions import CommonFunctions
     cf = CommonFunctions(object())
     cf.output("Setting master pseudorandom number seed to %g" % x)
 
-    r = ProbDist.Lot()
+    r = probdist.Lot()
     r.setSeed(x)
     randomtree.rng = r
     mcmc.rng = r
@@ -242,7 +242,7 @@ def runTests():
     _runRegressionTests(output_stream)
 
 if _check_for_updates and sys.argv and not sys.argv[0]:
-    import Utilities.PhycasUpdateCheck as PhycasUpdateCheck
+    import utilities.PhycasUpdateCheck as PhycasUpdateCheck
     #output_stream = OutputFilter(getDefaultOutFilter(), phycas.output)
     output_stream = OutputFilter(getDefaultOutFilter(), simpleOutputter)
     PhycasUpdateCheck.runPhycasUpdateChecker(output_stream, _phycas_update_url, _phycas_branch, _phycas_revision)
@@ -262,7 +262,7 @@ def at(addr):
         if id(o) == addr:
             return o
     return None
-from phycas.Utilities.GlobalState import readFile
+from utilities.GlobalState import readFile
 
 RNG = Lot
 

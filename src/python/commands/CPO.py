@@ -1,6 +1,6 @@
-from phycas.Utilities.PhycasCommand import *
-from phycas.Utilities.CommonFunctions import CommonFunctions
-from phycas.Commands.CPOImpl import CPOImpl
+from phycas.utilities.PhycasCommand import *
+from phycas.utilities.CommonFunctions import CommonFunctions
+from phycas.commands.CPOImpl import CPOImpl
 from phycas import mcmc
 
 class CPO(PhycasCommand):

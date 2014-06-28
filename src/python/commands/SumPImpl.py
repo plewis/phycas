@@ -1,20 +1,20 @@
 import os,sys,math,random
 from phycas import *
-from phycas.Utilities.PhycasCommand import *
-from phycas.Utilities.CommonFunctions import CommonFunctions
+from phycas.utilities.PhycasCommand import *
+from phycas.utilities.CommonFunctions import CommonFunctions
 
 class VarianceZeroError(Exception):
     def __init__(self):
         self.msg = 'Cannot calculate autocorrelation because variance is zero'
     def __str__(self):
         return self.msg
-    
+
 class VarianceUndefinedError(Exception):
     def __init__(self):
         self.msg = 'Cannot calculate standard deviation because sample size is less than 2'
     def __str__(self):
         return self.msg
-    
+
 class InvalidNumberOfColumnsError(Exception):
     def __init__(self, nparts, nexpected, line_num):
         self.msg = 'Number of values (%d) on line %d inconsistent with number of column headers (%d)' % (nparts, line_num, nexpected)
@@ -25,65 +25,65 @@ class ParamSummarizer(CommonFunctions):
     #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
     """
     Summarizes parameter sample contained in the param file, which is one
-    of the two files output from an mcmc analysis (the other being the 
+    of the two files output from an mcmc analysis (the other being the
     tree file).
-    
+
     """
     def __init__(self, opts):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
         Initializes ParamSummarizer object.
-        
+
         """
         CommonFunctions.__init__(self, opts)
 
     def interpolate(self, xx, x, y):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
-        Given x and y, which define three reference points, (x[0],y[0]), 
-        (x[1],y[1]) and (x[2],y[2]), find the point on the interpolating 
+        Given x and y, which define three reference points, (x[0],y[0]),
+        (x[1],y[1]) and (x[2],y[2]), find the point on the interpolating
         polynomial corresponding to x-coordinate xx (scalar).
-        
+
         """
         term0 = (xx - x[1])*(xx - x[2])/((x[0] - x[1])*(x[0] - x[2]))
         term1 = (xx - x[0])*(xx - x[2])/((x[1] - x[0])*(x[1] - x[2]))
         term2 = (xx - x[0])*(xx - x[1])/((x[2] - x[0])*(x[2] - x[1]))
         retval = term0*y[0] + term1*y[1] + term2*y[2]
         return retval
-        
+
     def cumLagrange(self, which, x, y):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
-        Given x and y, which define three reference points, (x[0],y[0]), 
+        Given x and y, which define three reference points, (x[0],y[0]),
         (x[1],y[1]) and (x[2],y[2]), find the integral under the interpolating
         polynomial for the first (which=1) or both (which=2) segments.
-        
+
         """
         xx = x[which]
-        
+
         x0 = x[0]
         x1 = x[1]
         x2 = x[2]
-        
+
         y0 = y[0]
         y1 = y[1]
         y2 = y[2]
-        
+
         psi0 = (x0 - x1)*(x0 - x2)
         psi1 = (x1 - x0)*(x1 - x2)
         psi2 = (x2 - x0)*(x2 - x1)
-        
+
         xterm0 = (xx**3.0 - x0**3.0)/3.0
         xterm1 = (xx**2.0 - x0**2.0)/2.0
         xterm2 = xx - x0
-        
+
         term0 = xterm0*(y0/psi0 + y1/psi1 + y2/psi2)
         term1 = xterm1*(y0*(x1 + x2)/psi0 + y1*(x0 + x2)/psi1 + y2*(x0 + x1)/psi2)
         term2 = xterm2*(y0*x1*x2/psi0 + y1*x0*x2/psi1 + y2*x0*x1/psi2)
-        
+
         cum = term0 - term1 + term2
         return -cum
-        
+
     def ss_simpsons(self, betas, means):
         """
         This approach uses Simpson's method to interpolate between beta values using the
@@ -93,7 +93,7 @@ class ParamSummarizer(CommonFunctions):
         This approach provides two estimates for the integral corresponding to each segment
         except for the first and last. We use the simple average of the two estimates when
         they are available.
-        
+
         """
         nbetas = len(betas)
         if nbetas < 3:
@@ -148,7 +148,7 @@ class ParamSummarizer(CommonFunctions):
         (straight line interpolation). This is the method advocated by in the
         Lartillot and Phillippe (2006) paper that introduced the thermodynamic
         integration method to phylogenetics.
-        
+
         """
         nbetas = len(betas)
         marginal_like = 0.0
@@ -167,17 +167,17 @@ class ParamSummarizer(CommonFunctions):
             #print 'mean %d = %f (diff = %f)' % (i, means[i], diff)
             marginal_like += means[i]*diff/2.0
         self.output(' %.8f Path sampling method (using trapezoid rule)' % (marginal_like))
-                
+
     def ss(self, betas, likes):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
-        This method estimates the marginal likelihood using the product of 
+        This method estimates the marginal likelihood using the product of
         ratios (the stepping stones) bridging the gap between the posterior
         and the prior. Each ratio is estimated using importance sampling, with
-        the importance distribution being the power posterior defined by 
+        the importance distribution being the power posterior defined by
         the smaller of the two beta values in the ratio. See Xie et al. (2009;
         Systematic Biology; submitted Jan. 2009) for details.
-        
+
         """
         # Calculate marginal likelihood using Stepping Stone method
         # betas is a list of beta values ordered from the first sampled to the last sampled
@@ -195,12 +195,12 @@ class ParamSummarizer(CommonFunctions):
             blarger = betas[i - 1]
             bsmaller = betas[i]
             beta_incr = blarger - bsmaller
-            
+
             # find the maximum loglike
             loglikes = likes[bsmaller]
             n = len(loglikes)
             Lmax = max(loglikes)
-            
+
             # find the log of the ratio of normalizing constants for ratio i
             tmp = 0.0
             for lnL in loglikes:
@@ -208,7 +208,7 @@ class ParamSummarizer(CommonFunctions):
             tmp /= float(n)
             lnRk = beta_incr*Lmax + math.log(tmp)
             lnR += lnRk
-        
+
             # standard error calculation
             tmp1 = 0.0
             for lnL in loglikes:
@@ -218,7 +218,7 @@ class ParamSummarizer(CommonFunctions):
         seR /= math.pow(float(n), 2.0)
         self.output(' %.8f Stepping-stone (SS) method using prior as reference distribution (se = %.8f)' % (lnR, seR))
         return lnR
-        
+
     def _betasSortedCorrectly(self, betas):
         # beta values should not start at 1 (if so, probably using a file from former version of phycas)
         if betas[0] == 1.0:
@@ -234,24 +234,24 @@ class ParamSummarizer(CommonFunctions):
             if curr_beta > prev_beta:
                 return False
         return True
-        
+
     def gss(self, betas, p):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
-        This generalized Stepping Stone (SS) method estimates the 
-        marginal likelihood using the product of ratios (the stepping stones) 
-        bridging the gap between the posterior and the prior. Each ratio is 
+        This generalized Stepping Stone (SS) method estimates the
+        marginal likelihood using the product of ratios (the stepping stones)
+        bridging the gap between the posterior and the prior. Each ratio is
         estimated using importance sampling, with the importance distribution
         being the power posterior defined by the smaller of the two beta
-        values in the ratio. It differs from original SS in making use of 
+        values in the ratio. It differs from original SS in making use of
         a reference distribution that may not be equivalent to the prior.
-        
+
         """
         # Calculate marginal likelihood using Stepping Stone method.
         # betas is a list of beta values ordered from the first sampled to the last sampled.
         # likes is a map: i.e. likes[b] holds list of log-likelihoods sampled for beta value b.
         # priors is a map: i.e. priors[b] holds list of log-priors sampled for beta value b.
-        # ref_dists is a map: i.e. ref_dists[b] holds list of log-working-priors 
+        # ref_dists is a map: i.e. ref_dists[b] holds list of log-working-priors
         # sampled for beta value b. Assumes that betas[0] = 1.0 and betas[-1] = 0.0.
         likes = p['lnL']
         priors = p['lnPrior']
@@ -262,11 +262,11 @@ class ParamSummarizer(CommonFunctions):
             #if betas[0] != 1.0 or betas[-1] != 0.0:
             #raise Exception('Stepping Stone method requires beta values to be ordered from 1.0 (first) to 0.0 (last)')
             raise Exception('Stepping Stone method requires beta values to be sorted from highest to lowest (0.0)')
-            
+
         self.output(' %10s %10s %10s %15s %15s' % ('b_(k-1)','beta_incr','n','lnRk','lnR(cum)'))
         for i in range(0,nbetas):
             #self.output('\nk = %d:' % i)
-            
+
             # find the difference between the two beta values for ratio i
             if i > 0:
                 blarger = betas[i - 1]
@@ -274,14 +274,14 @@ class ParamSummarizer(CommonFunctions):
                 blarger = 1.0
             bsmaller = betas[i]
             beta_incr = blarger - bsmaller
-            
+
             # find the maximum term (lnL + lnp - lnwp)
             loglikes = likes[bsmaller]
             logpriors = priors[bsmaller]
             logwpriors = ref_dists[bsmaller]
             n = len(loglikes)
             etak = max([(lnL + lnp - lnwp) for lnL,lnp,lnwp in zip(loglikes,logpriors,logwpriors)])
-            
+
             # find the log of the ratio of normalizing constants for ratio i
             tmp = 0.0
             for lnL,lnp,lnwp in zip(loglikes,logpriors,logwpriors):
@@ -292,30 +292,30 @@ class ParamSummarizer(CommonFunctions):
             lnRk = beta_incr*etak + math.log(tmp)
             lnR += lnRk
             self.output(' %10.3f %10.3f %10d %15.6f %15.6f' % (bsmaller, beta_incr, n, lnRk, lnR))
-        
+
         self.output(' %.8f Generalized Stepping Stone method' % lnR)
         return lnR
-        
+
     def autocorr_ess(self, values):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
         Computes the lag-1 autocorrelation (r) for the supplied values list.
-        Also computes the effective sample size (ess). Returns the tuple 
+        Also computes the effective sample size (ess). Returns the tuple
         (r,ess).
-        
+
         """
         nvalues = len(values)
         n = float(nvalues)
-        
+
         # calculate the mean
         m = sum(values)/n
-        
+
         # calculate the variance
         ss = 0.0
         for x in values:
             ss += x**2.0
         var = (ss - n*m*m)/(n - 1.0)
-        
+
         # calculate the covariance
         cov = 0.0
         for i in range(nvalues - 1):
@@ -328,24 +328,24 @@ class ParamSummarizer(CommonFunctions):
         r = cov/var
         ess = n*(1.0 - r)/(1.0 + r)
         return (r,ess)
-    
+
     def marginal_likelihood(self, headers, lines, burnin):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
         Estimates the marginal likelihood for the Stepping Stone/Thermodynamic
-        Integration case and outputs the autocorrelation and effective sample 
-        size for each parameter/beta combination. The supplied list headers 
+        Integration case and outputs the autocorrelation and effective sample
+        size for each parameter/beta combination. The supplied list headers
         holds the column headers from the param file. The parameter names are
         taken from this. The supplied lines is a list of lines from the param
-        file. The supplied burnin indicates the number of initial lines to 
-        ignore (usually will be 1 because the starting values of all 
+        file. The supplied burnin indicates the number of initial lines to
+        ignore (usually will be 1 because the starting values of all
         parameters is always output and should always be skipped).
-        
+
         """
         marglike = None
-        
+
         # Create params dictionary of dictionaries such that, for example,
-        # params['lnL'][1.0] is a list of all log-likelihood values sampled for 
+        # params['lnL'][1.0] is a list of all log-likelihood values sampled for
         # beta = 1.0 (in the order in which they were sampled)
         betas = []
         params = {}
@@ -355,11 +355,11 @@ class ParamSummarizer(CommonFunctions):
         curr_beta = None
         for i,line in enumerate(lines[row_start:]):
             parts = line.split()
-            
+
             # each line (except first, ID, line) should have the same number of items
             if len(parts) != len(headers):
                 raise InvalidNumberOfColumnsError(len(parts), len(headers), i + row_start + 1)
-                
+
             # expecting beta to be the second item on each line (cycle is first item on each line)
             beta = float(parts[1])
             if curr_beta is None or curr_beta != beta:
@@ -372,7 +372,7 @@ class ParamSummarizer(CommonFunctions):
                 # continuing previous beta value
                 for h,x in zip(headers,parts):
                     params[h][beta].append(float(x))
-                                        
+
         # Output first-order autocorrelation for each parameter (as well as the log-likelihood,
         # prior and, if present, the working prior) for each beta value separately
         self.output('\nAutocorrelations (lag 1):\n')
@@ -417,9 +417,9 @@ class ParamSummarizer(CommonFunctions):
                 else:
                     s.append('%12.1f%s' % (ess,asterisk))
             self.output('%15s%s' % (h,' '.join(s)))
-            
+
         if sample_size_discrepancy:
-            self.warning('* indicates discrepancy between actual sample size for lnL and at least one other parameter')         
+            self.warning('* indicates discrepancy between actual sample size for lnL and at least one other parameter')
 
         if headers[4] == 'lnRefDens':
             # Estimate marginal likelihood using generalized Stepping Stone (SS) method
@@ -431,7 +431,7 @@ class ParamSummarizer(CommonFunctions):
         else:
             # Estimate marginal likelihood using Thermodynamic Integration (TI) and classical
             # Stepping Stone (SS) method.
-            
+
             # Compute means of log-likelihoods for each beta value (used for ps calculation)
             means = []
             for b in betas:
@@ -462,13 +462,13 @@ class ParamSummarizer(CommonFunctions):
             #except Exception,e:
             #    self.output(' %s' % e.message)
         return marglike
-                    
+
     def harmonic_mean(self, v):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
-        Calculate marginal likelihood using the harmonic mean method using 
+        Calculate marginal likelihood using the harmonic mean method using
         log-likelihoods supplied in v.
-        
+
         """
         nignored = 0
         n = len(v)
@@ -485,27 +485,27 @@ class ParamSummarizer(CommonFunctions):
             self.warning('ignoring %d sampled log-likelihoods in harmonic mean calculation' % nignored)
         self.output('Log of marginal likelihood (harmonic mean method) = %f' % log_harmonic_mean)
         return log_harmonic_mean
-            
+
     def summary_stats(self, v, cutoff=95):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
         Computes the following summary statistics for the supplied vector v:
-        first-order autocorrelation (lag=1), effective sample size, lower 
-        credible interval bound, upper credible interval bound, minimum, 
-        maximum, sample mean, and sample standard deviation (i.e. divide by 
+        first-order autocorrelation (lag=1), effective sample size, lower
+        credible interval bound, upper credible interval bound, minimum,
+        maximum, sample mean, and sample standard deviation (i.e. divide by
         n-1). The value of cutoff is the percentage to use for the credible
         interval. If v is None, returns tuple of header strings. If v is not
         None, returns tuple of summary statistics.
-        
+
         """
         if v is None:
             h = ('autocorr', 'ess', 'lower %d%%' % int(cutoff), 'upper %d%%' % int(cutoff), 'min', 'max', 'mean', 'stddev')
             return h
-            
+
         if len(v) < 2:
             raise VarianceUndefinedError()
         s = []
-        
+
         # compute autocorr and ess
         try:
             r,ess = self.autocorr_ess(v)
@@ -513,7 +513,7 @@ class ParamSummarizer(CommonFunctions):
             raise VarianceZeroError()
         else:
             s.extend((r,ess))
-            
+
         # compute lower and upper
         v.sort()
         n = float(len(v))
@@ -523,34 +523,34 @@ class ParamSummarizer(CommonFunctions):
         lower = v[lower_at]
         upper = v[upper_at]
         s.extend((lower, upper))
-        
+
         # compute min and max
         s.extend((v[0], v[-1]))
-        
+
         # compute mean and stddev
         mean = sum(v)/n
         ss = sum([x**2 for x in v])
         var = (ss - n*mean**2)/(n - 1.0)
         sd = math.sqrt(var)
         s.extend((mean, sd))
-        
+
         return tuple(s)
-    
+
     def std_summary(self, headers, lines, burnin):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
         Produces a table of summary statistics for each parameter using the
         data in a param file. This is the companion to marginal_likelihood for
-        the standard mcmc case. The supplied list headers holds the column 
+        the standard mcmc case. The supplied list headers holds the column
         headers from the param file. The parameter names are taken from this.
-        The supplied lines is a list of lines from the param file. The 
-        supplied burnin indicates the number of initial lines to ignore 
-        (usually will be 1 because the starting values of all parameters is 
+        The supplied lines is a list of lines from the param file. The
+        supplied burnin indicates the number of initial lines to ignore
+        (usually will be 1 because the starting values of all parameters is
         always output and should always be skipped). See documentation for
         the summary_stats function for a list of summary statistics computed.
-        
+
         """
-        # Create params dictionary such that, for example, params['lnL'] is a list of 
+        # Create params dictionary such that, for example, params['lnL'] is a list of
         # all log-likelihood values (in the order in which they were sampled)
         params = {}
         for h in headers:
@@ -583,7 +583,7 @@ class ParamSummarizer(CommonFunctions):
         self.output()
         marglike = self.harmonic_mean(params['lnL'])
         return marglike
-        
+
     def calcLogHM(self, vect_of_log_values):
 
         logn = math.log(float(len(vect_of_log_values)))
@@ -592,12 +592,12 @@ class ParamSummarizer(CommonFunctions):
         for logx in vect_of_log_values:
             sum_log_diffs += math.exp(logLmin - logx)
         loghm = logn + logLmin - math.log(sum_log_diffs)
-    
+
         return loghm
 
     def _cpoOpenRFile(self):
         if self._cpoRFile is None:
-            sp = self.optsout.cpoplot 
+            sp = self.optsout.cpoplot
             self._cpoRFilename = sp._getFilename()
             self._cpoRFile = sp.open(self.stdout)
         return self._cpoRFile
@@ -616,10 +616,10 @@ class ParamSummarizer(CommonFunctions):
             (Conditional Predictive Ordinates). This plot has site position as the
             x-coordinate and site CPO as the y-coordinate. The title of the plot
             contains the summary measure (sum of CPO over all sites).
-            
+
             """
         self.output('\nCPO analysis')
-        
+
         # Each line in lines comprises nsites log-site-likelihood values (one sample from the chain)
         nsites = len(lines[0].split())
 
@@ -633,7 +633,7 @@ class ParamSummarizer(CommonFunctions):
 
         # Create the default partition if none has been defined
         partition.validate(nsites)
-        
+
         # Compute the log-CPO measure for each site, and the sum over all sites
         # Sites that have been excluded will have lognm = 0.0 and thus will not
         # contribute to total_cpo
@@ -652,10 +652,10 @@ class ParamSummarizer(CommonFunctions):
                 total_cpo += loghm
                 cpovect[k] = loghm
                 cpomap[i] = loghm
-                k += 1 
+                k += 1
 
         self.output('LPML (Log PseudoMarginal Likelihood) = %.5f' % total_cpo)
-        
+
         # Identify the worst sites in terms of CPO, placing these in cpo_worst
         # The list cpo_worst lists sites by partition subset, not in original order
         cpo_worst = []
@@ -666,7 +666,7 @@ class ParamSummarizer(CommonFunctions):
         nincluded = len(cpo_worst)
         last_of_worst = int(math.ceil(self.opts.cpo_cutoff*nincluded))
         cpo_worst[last_of_worst:] = []
-        
+
         # Identify the worst sites again, placing these in the list cpo_worst_orig
         # The list cpo_worst_orig lists sites in their original order, not by partition subset
         # Sites with cpo higher than best_of_the_worst will have value None
@@ -675,7 +675,7 @@ class ParamSummarizer(CommonFunctions):
         for i in cpomap.keys():
             if cpomap[i] <= best_of_the_worst:
                 cpo_worst_orig[i-1] = cpomap[i]
-        
+
         # Create a mask showing which sites are in the worst category
         # This mask string can be aligned to the original data matrix making it easy to identify the worst sites
         mask = ['-']*nsites
@@ -697,7 +697,7 @@ class ParamSummarizer(CommonFunctions):
             try:
                 # Create CPO info file
                 self._cpoOpenInfoFile()
-                
+
                 # Write mask
                 self._cpoInfoFile.write('Mask showing worst (lowest %.1f%% CPO values) sites as *\n' % (100.0*self.opts.cpo_cutoff,))
                 self._cpoInfoFile.write('  (order of sites is that of the original data matrix)\n')
@@ -709,17 +709,17 @@ class ParamSummarizer(CommonFunctions):
                 for i in range(nsubsets):
                     subset_logCPOs.append([])
                 tally = [0]*nsubsets
-                
+
                 # Write table of log(CPO) values
                 self._cpoInfoFile.write('\nBEGIN_LOG_CPO_TABLE\n')
                 self._cpoInfoFile.write('%12s\t%12s\t%12s\t%12s\n' % ('site', 'log(CPO)', 'subset', 'worst'))
                 for site_index in range(nsites):
                     site_number = site_index+1
-                    
+
                     inworst = 0
                     if cpo_worst_orig[site_index] is not None:
                         inworst = 1
-                    
+
                     which_subset = None
                     for subset_index in range(nsubsets):
                         if site_number in subset_sitelists[subset_index]:
@@ -742,9 +742,9 @@ class ParamSummarizer(CommonFunctions):
                     log_mean = max_logCPO + math.log(sum_diffs) - math.log(n)
                     self._cpoInfoFile.write('%12s\t%12d\t%12d\t%12.5f\t%12.5f\n' % (subset_names[i], n, tally[i], mean_log, log_mean))
                 self._cpoInfoFile.write('END_SUBSET_SUMMARY\n')
-                
+
                 self._cpoInfoFile.close()
-                
+
                 #numWorst = len(cpo_worst)
                 #meanLogCPOWorst = 0.0
                 #for i in range(numWorst):
@@ -762,19 +762,19 @@ class ParamSummarizer(CommonFunctions):
                 self._cpoRFile.write('z = c(%s)\n' % ','.join(['%d' % (zz[0]+1) for zz in cpo_worst]))
                 self._cpoRFile.write('colvec[z] = "red"\n')
                 self._cpoRFile.write("plot(x, y, type='h', col=colvec, main='Overall CPO = %.5f', xlab='Site', ylab = 'CPO')\n" % total_cpo)
-                
+
                 cum = 0
                 self._cpoRFile.write('abline(v=1)\n')
                 for subset_index,(subset_name,subset_sitelist,subset_model) in enumerate(partition.subset):
                     cum += len(subset_sitelist)
                     self._cpoRFile.write('abline(v=%d)\n' % cum)
-            
+
             finally:
                 if self._cpoRFile:
                     self.optsout.cpoplot.close()
                 if self._cpoInfoFile:
                     self.optsout.cpoinfo.close()
-    
+
     def cpo_summary_obsolete(self, lines, burnin):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
@@ -782,10 +782,10 @@ class ParamSummarizer(CommonFunctions):
         (Conditional Predictive Ordinates). This plot has site position as the
         x-coordinate and site CPO as the y-coordinate. The title of the plot
         contains the summary measure (sum of CPO over all sites).
-        
+
         """
         self.output('\nCPO analysis')
-        
+
         # Each line in lines comprises nsites log-site-likelihood values (one sample from the chain)
         nsites = len(lines[0].split())
         loglikes = [[] for i in range(nsites)]
@@ -795,7 +795,7 @@ class ParamSummarizer(CommonFunctions):
             parts = line.split()
             for i,logx in enumerate(parts):
                 loglikes[i].append(float(logx))
-            
+
         # Compute the log-CPO measure for each site, and the sum over all sites
         # Sites that have been excluded will have lognm = 0.0 and thus will not
         # contribute to total_cpo
@@ -806,7 +806,7 @@ class ParamSummarizer(CommonFunctions):
             total_cpo += loghm
             yvect.append(loghm)
         self.output('Model CPO = %.5f' % total_cpo)
-        
+
         # Identify the worst sites in terms of CPO, placing these in cpo_worst
         cpo_worst = []
         for i in range(nsites):
@@ -816,7 +816,7 @@ class ParamSummarizer(CommonFunctions):
         nincluded = len(cpo_worst)
         last_of_worst = int(math.ceil(self.opts.cpo_cutoff*nincluded))
         cpo_worst[last_of_worst:] = []
-        
+
         # Create a mask showing which sites are in the worst category
         mask = ['-']*nsites
         for i,j in cpo_worst:
@@ -828,7 +828,7 @@ class ParamSummarizer(CommonFunctions):
         # begin again here: need to print out maskstr in output...
 
         # Use nearest neighbor smoother to produce a more easily-interpreted plot
-        
+
         # Smoothing algorithm:
         #
         #    ysmoothed[i] = (sum_j w_j y_j) / (sum_j w_j)
@@ -839,8 +839,8 @@ class ParamSummarizer(CommonFunctions):
         # note: setting m to nsites seems to work pretty well, so might as well
         #       just use this vale of m and save the user having yet another
         #       setting to worry about.
-        
-        m = nsites  # m is the number of neighbors to each side of site i 
+
+        m = nsites  # m is the number of neighbors to each side of site i
         sd = self.opts.cposmooth    # use standard deviation sd for Gaussian weights
         var = math.pow(sd,2.0)
         denom = 2.0*var
@@ -859,7 +859,7 @@ class ParamSummarizer(CommonFunctions):
             wy = [w*y for w,y in zip(weights,yvalues)]
             yavg = sum(wy)/sum(weights)
             ysmoothed.append(yavg)
-            
+
         self._cpoRFilename = None
         self._cpoRFile = None
 
@@ -886,7 +886,7 @@ class ParamSummarizer(CommonFunctions):
             finally:
                 if self._cpoRFile:
                     self.optsout.cpoplot.close()
-        
+
     def handleFile(self, fn):
         burnin = self.opts.burnin
         lines = open(fn, 'r').readlines()
@@ -903,7 +903,7 @@ class ParamSummarizer(CommonFunctions):
             else:
                 marglike = self.std_summary(headers, lines, burnin)
         return marglike
-                
+
     def handleCPOFile(self, cpofn):
         burnin = self.opts.burnin
         lines = open(cpofn, 'r').readlines()
@@ -911,16 +911,16 @@ class ParamSummarizer(CommonFunctions):
             self.output("File '%s' does not look like a site likelihood file (too few lines)" % cpofn)
         else:
             self.cpo_summary(lines, burnin)
-        
+
     def run(self):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
-        Reads the contents of the param file and decides whether to use the 
+        Reads the contents of the param file and decides whether to use the
         marginal_likelihood or std_summary functions to summarize the data
         therein. The marginal_likelihood function is called if the second
         header is "beta"; otherwise, std_summary is called. If a cpofile
         name has been specified, computes conditional predictive ordinates.
-        
+
         """
         fn = self.opts.file
         cpofn = self.opts.cpofile

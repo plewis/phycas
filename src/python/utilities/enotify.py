@@ -2,11 +2,11 @@
 # One way this can be used is at the end of a Phycas Python script running on a remote server. After
 # your analysis is finished, the following line will send a bodyless email to bunsen.honeydew@muppet.org
 # with the sumject "Your Phycas run has finished":
-# 
-# from phycas.Utilities.enotify import sendemail
+#
+# from phycas.utilities.enotify import sendemail
 # sendemail(smtphost='smtp.muppet.org', toaddr='bunsen.honeydew@muppet.org', subject='Your Phycas run has finished')
 #
-# Notes: 
+# Notes:
 # - some STMP servers will reject an email if an invalid fromaddr (e.g. 'nobody') is specified
 # - at this time, only one toaddr may be specified
 
@@ -33,5 +33,5 @@ def sendemail(smtphost, toaddr, subject, msgbody='', fromaddr='nobody'):
             os.remove('smtperror.txt')
     else:
         open('smtperror.txt', 'w').write('From=%s\nTo=%s\nSubject=%s\nBody=%s\nSMTPhost=%s\nError=%s\n' % (fromaddr, toaddr, subject, msgbody, smtphost, errmsg))
-        
+
     server.quit()

@@ -1,8 +1,8 @@
-import os,sys,math,random,re 
-#from phycas.TreeViewer import *
+import os,sys,math,random,re
+#from phycas.treeviewer import *
 from phycas import *
-from phycas.Utilities.PhycasCommand import *
-from phycas.Utilities.CommonFunctions import CommonFunctions
+from phycas.utilities.PhycasCommand import *
+from phycas.utilities.CommonFunctions import CommonFunctions
 
 class InvalidNumberOfColumnsError(Exception):
     def __init__(self, nparts, nexpected, line_num):
@@ -19,15 +19,15 @@ class NoTreesWarning(Exception):
 class RefDistImpl(CommonFunctions):
     #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
     """
-    Creates reference distribution for Stepping-stone anayses based on 
+    Creates reference distribution for Stepping-stone anayses based on
     a previous MCMC sample from the posterior distribution.
-    
+
     """
     def __init__(self, opts):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
         Initializes RefDistImpl object.
-        
+
         """
         CommonFunctions.__init__(self, opts)
         self.burnin = None
@@ -37,12 +37,12 @@ class RefDistImpl(CommonFunctions):
         self.rooted_trees = False
         self.out_refdist_file_name = None
         self.min_sample_size = 1
-        
+
     def _openRefDistFile(self):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
         Opens the reference distribution definition file.
-        
+
         """
         self.phycassert(self.refdistf is None, 'Attempt made to open reference distribution definition file, but it is already open!')
         self.out_refdist_file_name = self.opts.out.refdistfile._getFilename()
@@ -53,22 +53,22 @@ class RefDistImpl(CommonFunctions):
 
         if self.refdistf:
             print 'Reference distribution definition file was opened successfully'
-    
+
     def _closeRefDistFile(self):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
         Closes the reference distribution definition file.
-        
+
         """
         self.phycassert(self.refdistf is not None, 'Attempt made to close reference distribution definition file, but it is not open!')
         self.refdistf.close()
         self.refdistf = None
-        
+
     def _fitLognormalRefDist(self, x):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
         Creates a Lognormal reference distribution for a univariate sample x.
-        
+
         """
         self.phycassert(len(x) > self.min_sample_size, 'sample size (%d) must be at least %d to create a Lognormal reference distribution' % (len(x), self.min_sample_size))
         n = len(x)
@@ -84,13 +84,13 @@ class RefDistImpl(CommonFunctions):
         logsd = math.sqrt(logvar)
         d = Lognormal(logmean, logsd)
         return d.__str__()
-        
+
     def _fitInverseGammaRefDist(self, x):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
         Creates an InverseGamma reference distribution for a univariate sample
         x.
-        
+
         """
         self.phycassert(len(x) > self.min_sample_size, 'sample size (%d) must be at least %d to create an InverseGamma reference distribution' % (len(x), self.min_sample_size))
         n = len(x)
@@ -99,19 +99,19 @@ class RefDistImpl(CommonFunctions):
         for v in x:
             sum_of_values += v
             sum_of_squares += v*v
-            
+
         mean = sum_of_values/float(n)
         variance = (sum_of_squares - float(n)*mean*mean)/float(n-1)
         shape = math.pow(mean, 2.0)/variance + 2.0
         inverse_scale = math.pow(mean, 3.0)/variance + mean
         d = InverseGamma(shape, 1.0/inverse_scale)
         return d.__str__()
-        
+
     def _fitGammaRefDist(self, x):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
         Creates a Gamma reference distribution for a univariate sample x.
-        
+
         """
         self.phycassert(len(x) > self.min_sample_size, 'sample size (%d) must be at least %d to create a Gamma reference distribution' % (len(x), self.min_sample_size))
         n = len(x)
@@ -120,7 +120,7 @@ class RefDistImpl(CommonFunctions):
         for v in x:
             sum_of_values += v
             sum_of_squares += v*v
-            
+
         mean = sum_of_values/float(n)
         variance = (sum_of_squares - float(n)*mean*mean)/float(n-1)
         scale = variance/mean
@@ -128,7 +128,7 @@ class RefDistImpl(CommonFunctions):
         shape = mean/scale
         d = Gamma(shape, scale)
         return d.__str__()
-        
+
     def _fitBetaRefDist(self, x):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
@@ -141,7 +141,7 @@ class RefDistImpl(CommonFunctions):
         Letting z = mean*(1-mean)/variance,
         phi can be estimated as z - 1
         Now, a = mean*phi and b = (1-mean)*phi
-        
+
         """
         self.phycassert(len(x) > self.min_sample_size, 'sample size (%d) must be at least %d to create a Beta reference distribution' % (len(x), self.min_sample_size))
         n = len(x)
@@ -160,20 +160,20 @@ class RefDistImpl(CommonFunctions):
 
         d = Beta(a, b)
         return d.__str__()
-        
+
     def _estimateTreeLengthPriorDirichlet(self, n_internal, mean_internal, var_internal, n_external, mean_external, var_external):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
-        Estimates the alpha and c parameters of the compound Dirichlet tree 
+        Estimates the alpha and c parameters of the compound Dirichlet tree
         length prior from the means, variances, and numbers of external and
         internal edge length proportions. The alpha parameter is the
         Dirichlet parameter common to all external edge length proportions,
         and c is the ratio of internal to external edge length proportions.
-        In an unrooted tree of 30 tips, there are 2*30 - 3 = 57 edges, of 
+        In an unrooted tree of 30 tips, there are 2*30 - 3 = 57 edges, of
         which 30 are external and 57 - 30 = 27 are internal. In this case,
-        the function should be called with n_internal = 27 and 
+        the function should be called with n_internal = 27 and
         n_external = 30. The return value is the 2-tuple (alpha,c).
-        
+
         """
         numer  = float(n_internal)*mean_internal*mean_internal*(1.0 - mean_internal)*(1.0 - mean_internal)
         numer += float(n_external)*mean_external*mean_external*(1.0 - mean_external)*(1.0 - mean_external)
@@ -184,16 +184,16 @@ class RefDistImpl(CommonFunctions):
         alpha = mean_external*phi
         c = mean_internal/mean_external
         return (alpha,c)
-        
+
     def _estimateDirichletParams(self, x):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
         Creates a Dirichlet parameter vector from a sample x comprising n
         m-tuples, where m is the dimension of the Dirichlet distribution and
         n is the sample size. That is, for x = [(a_1,b_1,c_1),(a_2,b_2,c_2),
-        ...,(a_n,b_n,c_n)], m = 3 and this function assumes that, for each 
+        ...,(a_n,b_n,c_n)], m = 3 and this function assumes that, for each
         i = 1,2,...,n, a_i + b_i + c_i = 1.0.
-        
+
         """
         # Compute sums and sums-of-squares
         dim = len(x[0])
@@ -203,8 +203,8 @@ class RefDistImpl(CommonFunctions):
         for t in x:
             for k,v in enumerate(t):
                 sums[k] += v
-                ss[k] += v*v 
-                
+                ss[k] += v*v
+
         # Estimate sample means and variances
         means = [0.0]*dim
         variances = [0.0]*dim
@@ -253,12 +253,12 @@ class RefDistImpl(CommonFunctions):
             curr_param = phi*means[i]
             params.append(curr_param)
         return params
-                
+
     def _fitDirichletRefDist(self, x):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
         Creates a Dirichlet reference distribution for a multivariate sample
-        x, which is expected to be a list of tuples representing the posterior 
+        x, which is expected to be a list of tuples representing the posterior
         sample. Note: For x = [(a_1,b_1,c_1),(a_2,b_2,c_2),...,(a_n,b_n,c_n)],
         this function assumes that a_i + b_i + c_i = 1.0 for each i in [1..n].
         """
@@ -268,18 +268,18 @@ class RefDistImpl(CommonFunctions):
         self.phycassert(dim > 1, 'Dirichlet reference distribution is only appropriate for multivariate samples')
 
         params = self._estimateDirichletParams(x)
-            
+
         d = Dirichlet(params)
         return d.__str__()
-        
+
     def _fitRelRateRefDist(self, x):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
-        Creates a relative rate reference distribution for a multivariate 
-        sample x, which is expected to be a list of tuples representing the  
+        Creates a relative rate reference distribution for a multivariate
+        sample x, which is expected to be a list of tuples representing the
         posterior sample. Note: For x = [(a_1,b_1,c_1),(a_2,b_2,c_2),...,
-        (a_n,b_n,c_n)], and for weights p_1, p_2, and p_3 representing e.g. 
-        the fraction of sites in each partition, this function assumes that 
+        (a_n,b_n,c_n)], and for weights p_1, p_2, and p_3 representing e.g.
+        the fraction of sites in each partition, this function assumes that
         p_1*a_i + p_2*b_i + p_3*c_i = 1.0 for each i in [1..n]. That is, the
         mean relative rate is always 1.0.
         """
@@ -298,28 +298,28 @@ class RefDistImpl(CommonFunctions):
             dirichlet_tuple = tuple([rel_rate_tuple[i]*subset_proportions[i] for i in range(dim)])
             self.phycassert(math.fabs(sum(dirichlet_tuple) - 1.0) < 1.e-8, 'Relative rates are expected to have mean 1.0 in RefDistImpl._fitRelRateRefDist')
             y.append(dirichlet_tuple)
-            
+
         params = self._estimateDirichletParams(y)
-        
+
         d = RelativeRateDistribution(params, subset_proportions)
         return d.__str__()
-        
+
     def _processParamSample(self, paramfname):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
-        Reads the contents of the parameter sample file and returns a 
+        Reads the contents of the parameter sample file and returns a
         reference distribution definition string.
-        
+
         """
         burnin = self.opts.burnin
         lines = open(paramfname, 'r').readlines()
         headers = lines[1].split()
-        
+
         # Sanity checks
         self.phycassert(len(lines) >= 3 + burnin, "File '%s' does not look like a parameter file (only %d lines, but expecting at least %d lines)" % (paramfname, len(lines), burnin+3))
         self.phycassert(headers[1] != 'beta', "Not expecting to see a column labeled 'beta' in parameter file; params should be a parameter file from an ordinary MCMC analysis, not one produced by a Stepping-stone analysis")
-        
-        # Create params dictionary such that, for example, params['lnL'] is a list of 
+
+        # Create params dictionary such that, for example, params['lnL'] is a list of
         # all log-likelihood values (in the order in which they were sampled)
         params = {}
         for h in headers:
@@ -331,7 +331,7 @@ class RefDistImpl(CommonFunctions):
                 raise InvalidNumberOfColumnsError(len(parts), len(headers), i + row_start + 1)
             for h,x in zip(headers,parts):
                 params[h].append(float(x))
-                
+
         # Create a reference distribution for each parameter and add distribution description to param_refdist_definition
         param_refdist_definition = ''
 
@@ -353,7 +353,7 @@ class RefDistImpl(CommonFunctions):
         # TL
         # lnL
         # lnPrior
-        
+
         sorted_headers = params.keys()[:]
         sorted_headers.sort()
         num_headers = len(sorted_headers)
@@ -446,10 +446,10 @@ class RefDistImpl(CommonFunctions):
                 t = [subset_rates[k][i] for k in sorted_keys]
                 x.append(tuple(t))
             param_refdist_definition += 'subset_relrates = %s\n' % self._fitRelRateRefDist(x)
-                
+
         #print 'param_refdist_definition:\n',param_refdist_definition
         return param_refdist_definition
-        
+
     def _recordTreeInMaps(self, tree, split_map, tree_key):
         # Each split found in any tree is associated with a list by the dictionary split_map
         #   The list is organized as follows:
@@ -497,11 +497,11 @@ class RefDistImpl(CommonFunctions):
                 else:
                     internal_edgelens.append(edge_len)
                 self._recordNodeInMaps(nd, split_map, tree_key, is_tip_node, edge_len)
-                
+
         # Convert stored edge lengths to edge length proportions
         internal_proportions = [edgelen/treelen for edgelen in internal_edgelens]
         external_proportions = [edgelen/treelen for edgelen in external_edgelens]
-        
+
         return (treelen, internal_proportions, external_proportions)
 
     def _recordNodeInMaps(self, nd, split_map, tree_key, is_tip_node, edge_len):
@@ -509,13 +509,13 @@ class RefDistImpl(CommonFunctions):
         s = nd.getSplit()
         if (not self.rooted_trees) and s.isBitSet(0):
             s.invertSplit()
-            
+
         # Create a string representation of the split
         ss = s.createPatternRepresentation()
 
         # Add string represention of the split to the tree_key list, which
         # will be used to uniquely identify the tree topology
-        if not is_tip_node:                        
+        if not is_tip_node:
             tree_key.append(ss)
 
         # Update the dictionary entry corresponding to this split
@@ -541,7 +541,7 @@ class RefDistImpl(CommonFunctions):
         supplied tree using posterior probabilities stored in split_map. The
         variable split_map associates a list with each split. The first
         element of this list is the number of trees considered in which the
-        split was found, so the edge length applied to the tree is the first 
+        split was found, so the edge length applied to the tree is the first
         element of the split divided by total_samples. This produces a tree
         with clade probabilities for edge lengths, which is useful in
         specifying a reference distribution for trees, used in the generalized
@@ -555,7 +555,7 @@ class RefDistImpl(CommonFunctions):
         edge lengths of the split over all trees in which it was found. The
         estimated edge length applied to the tree is the second element of
         the split divided by the first element.
-        
+
         """
         tree.recalcAllSplits(tree.getNObservables())
         nd = tree.getFirstPreorder()
@@ -571,7 +571,7 @@ class RefDistImpl(CommonFunctions):
                 v = split_map[ss]
             except KeyError:
                 raise ValueError('could not find edge length information for the split %s' % ss)
-        
+
             # determine fudge factor that ensures 0 < support < 1
             n1 = s.countOnBits()
             n2 = s.countOffBits()
@@ -579,23 +579,23 @@ class RefDistImpl(CommonFunctions):
             if n1 == 1 or n2 == 1:
                 support = 1.0
             else:
-                lognt  = ProbDist.lnGamma(2.0*(n1 + n2) - 4.0) - float(n1 + n2 - 3)*math.log(2.0) - ProbDist.lnGamma(float(n1 + n2) - 2.0)
-                logns1 = ProbDist.lnGamma(2.0*n1 - 2.0) - float(n1 - 2)*math.log(2.0) - ProbDist.lnGamma(float(n1) - 1.0) - lognt
-                logns2 = ProbDist.lnGamma(2.0*n2 - 2.0) - float(n2 - 2)*math.log(2.0) - ProbDist.lnGamma(float(n2) - 1.0) - lognt
+                lognt  = probdist.lnGamma(2.0*(n1 + n2) - 4.0) - float(n1 + n2 - 3)*math.log(2.0) - probdist.lnGamma(float(n1 + n2) - 2.0)
+                logns1 = probdist.lnGamma(2.0*n1 - 2.0) - float(n1 - 2)*math.log(2.0) - probdist.lnGamma(float(n1) - 1.0) - lognt
+                logns2 = probdist.lnGamma(2.0*n2 - 2.0) - float(n2 - 2)*math.log(2.0) - probdist.lnGamma(float(n2) - 1.0) - lognt
                 ns_over_nt = math.exp(logns1 + logns2)
-                
+
                 # set support value
                 numer = float(v[0]) + self.epsilon*ns_over_nt
                 denom = float(total_samples) + self.epsilon
                 support = numer/denom
             nd.setSupport(support)
-            
+
             if edge_lengths_are_clade_posteriors:
                 nd.setEdgeLen(support)
             else:
                 edge_len = float(v[1])/float(v[0])
                 nd.setEdgeLen(edge_len)
-                
+
     def _createTreeLengthRefDistStr(self, tree_lengths, n_int_edges, n_ext_edges, internal_proportions, external_proportions):
         n = len(tree_lengths)
         nint = len(internal_proportions)
@@ -633,24 +633,24 @@ class RefDistImpl(CommonFunctions):
             ss_prop += p*p
         mean_external = sum_prop/fn
         var_external  = (ss_prop - fn*mean_external*mean_external)/(fn - 1.0)
-        
+
         alpha, c = self._estimateTreeLengthPriorDirichlet(n_int_edges, mean_internal, var_internal, n_ext_edges, mean_external, var_external)
-        
+
         return 'tree_length = TreeLengthDist(%g,%g,%g,%g)' % (alphaT, betaT, alpha, c)
 
     def _processTreeSample(self, treefname):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
-        Reads the contents of the tree sample file and returns a 
+        Reads the contents of the tree sample file and returns a
         reference distribution definition string.
-        
+
         """
         # Check to make sure user specified an input tree file
         input_trees = self.opts.trees
         print 'input_trees is a(n)',input_trees.__class__.__name__
         if input_trees is None:
             raise NoTreesWarning()
-        
+
         num_trees = 0
         self.num_trees_considered = 0
         split_map = {}
@@ -667,7 +667,7 @@ class RefDistImpl(CommonFunctions):
         num_stored_trees = len(self.stored_tree_defs)
         if num_stored_trees == 0:
             raise NoTreesWarning()
-            
+
         # Create list to store tree lengths; used to create a tree length reference distribution
         tree_lengths = []
         internal_proportions = []
@@ -677,7 +677,7 @@ class RefDistImpl(CommonFunctions):
         # dictionary of splits (split_map) and the dictionary of tree topologies
         # (tree_map), respectively
         self.stdout.info('Compiling lists of tree topologies and splits...')
-        t = Phylogeny.Tree()
+        t = phylogeny.Tree()
         if self.rooted_trees:
             t.setRooted()
             n_int_edges += 1
@@ -698,12 +698,12 @@ class RefDistImpl(CommonFunctions):
             #ntips = t.getNTips()
             ntips = t.getNObservables()
             t.recalcAllSplits(ntips)
-            
+
             treelen, internal_props, external_props = self._recordTreeInMaps(t, split_map, tree_key)
             tree_lengths.append(treelen)
             internal_proportions += internal_props
             external_proportions += external_props
-            
+
             # Update tree_map, which is a map with keys equal to lists of internal node splits
             # and values equal to lists containing (0) the frequency, (1) tree length, and
             # (2) total number of trees considered. From (0) and (2) the
@@ -719,7 +719,7 @@ class RefDistImpl(CommonFunctions):
             else:
                 # tree topology has not yet been seen
                 tree_map[k] = [1, tree_def, treelen, self.num_trees_considered]
-                
+
         tree_length_refdist = self._createTreeLengthRefDistStr(tree_lengths, n_int_edges, n_ext_edges, internal_proportions, external_proportions)
 
         #self.stdout.info('\nSummary of sampled trees:')
@@ -731,15 +731,15 @@ class RefDistImpl(CommonFunctions):
         #self.stdout.info('Number of distinct splits found = %d' % (len(split_map.keys()) - t.getNObservables()))
         if self.num_trees_considered == 0:
             raise NoTreesWarning()
-        # Sort the splits from highest posterior probabilty to lowest        
+        # Sort the splits from highest posterior probabilty to lowest
         split_vect = split_map.items()
         c = lambda x,y: cmp(y[1][0], x[1][0])
         split_vect.sort(c)
-        
+
         num_trivial = 0
         first_below_50 = None
         for i,(k,v) in enumerate(split_vect):
-            # len(v) is 2 in trivial splits because these splits are associated with tips, 
+            # len(v) is 2 in trivial splits because these splits are associated with tips,
             # for which the sojourn history is omitted (v[0] is frequency and v[1] is edge length sum)
             trivial_split = len(v) == 3 and True or False
             if trivial_split:
@@ -756,13 +756,13 @@ class RefDistImpl(CommonFunctions):
             # majority-rule consensus tree
             if not first_below_50 and split_posterior < 0.5:
                 first_below_50 = i
-        
+
         ## No longer used because of the requirement that focal tree be fully resolved
         ## Build 50% majority rule tree if requested
-        #majrule = Phylogeny.Tree()
+        #majrule = phylogeny.Tree()
         #if self.rooted_trees:
         #    majrule.setRooted()
-        #tm = Phylogeny.TreeManip(majrule)
+        #tm = phylogeny.TreeManip(majrule)
         #majrule_splits = []
         #for k,v in split_vect[:first_below_50]:
         #    if len(v) > 3:
@@ -771,7 +771,7 @@ class RefDistImpl(CommonFunctions):
         #if len(majrule_splits) == 0:
         #    tm.starTree(num_trivial)
         #else:
-        #    tm.buildTreeFromSplitVector(majrule_splits, ProbDist.Exponential(10))
+        #    tm.buildTreeFromSplitVector(majrule_splits, probdist.Exponential(10))
         ##self._assignEdgeLensAndSupportValues(majrule, split_map, self.num_trees_considered)
         ##summary_short_name_list = ['majrule']
         ##summary_full_name_list = ['Majority-rule Consensus']
@@ -785,11 +785,11 @@ class RefDistImpl(CommonFunctions):
             if frq > maxfrq:
                 maxfrq = frq
                 treekey = list(k)
-        reftree = Phylogeny.Tree()
-        tm = Phylogeny.TreeManip(reftree)
-        tm.buildTreeFromSplitVector(treekey, ProbDist.Exponential(10))
+        reftree = phylogeny.Tree()
+        tm = phylogeny.TreeManip(reftree)
+        tm.buildTreeFromSplitVector(treekey, probdist.Exponential(10))
 
-        tree_refdist_definition = ''        
+        tree_refdist_definition = ''
 
         # Output reference prior information
         self._assignEdgeLensAndSupportValues(reftree, split_map, self.num_trees_considered, True) # True means assign clade posteriors as edge lengths
@@ -802,7 +802,7 @@ class RefDistImpl(CommonFunctions):
             gamma_b = var_edgelen/mean_edgelen
             gamma_a = mean_edgelen/gamma_b
             tree_refdist_definition += 'split_%s = Gamma(%g,%g)\n' % (k,gamma_a,gamma_b)
-            
+
         # create reference distribution for edges that did not make it into the majority rule tree
         num_NA_edgelens = 0
         sum_NA_edgelens = 0.0
@@ -821,28 +821,28 @@ class RefDistImpl(CommonFunctions):
             # if only one edge length was found, use Exponential distribution with mean equal to this edge length
             rate_param = 1.0/sum_NA_edgelens
             tree_refdist_definition += 'split_NA = Exponential(%g)' % rate_param
-        
+
         return tree_refdist_definition + '\n' + tree_length_refdist
-        
+
     def run(self):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
         Reads the contents of the param and tree file and produces a refdist
         file.
-        
+
         """
         self.burnin = self.opts.burnin
         self.epsilon = self.opts.epsilon
         self.rooted = self.opts.rooted
         self.out_refdist_file_name = self.opts.out.refdistfile._getFilename()
-        
+
         param_refdist_definition = self._processParamSample(self.opts.params)
-        
+
         try:
             tree_refdist_definition = self._processTreeSample(self.opts.trees)
         except NoTreesWarning:
             tree_refdist_definition = ''
-            
+
         self._openRefDistFile()
         self.refdistf.write('%s\n' % tree_refdist_definition)
         self.refdistf.write('%s\n' % param_refdist_definition)

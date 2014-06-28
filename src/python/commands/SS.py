@@ -1,9 +1,9 @@
-from phycas.Utilities.PhycasCommand import *
-from phycas.Utilities.CommonFunctions import CommonFunctions
+from phycas.utilities.PhycasCommand import *
+from phycas.utilities.CommonFunctions import CommonFunctions
 from phycas import mcmc,partition,model
 
 class SS(PhycasCommand):
-    def __init__(self): 
+    def __init__(self):
         args = (   ("nstones",          20,     "The number of stepping stones (ratios) used to estimate the marginal likelihood; for example, if this value is 5, then beta will take on these values: 0.8, 0.6, 0.4, 0.2, 0.0", IntArgValidate(min=1)),
                    ("shape1",           1.0,    "The first shape parameter of the distribution used to determine the beta values to be sampled. This distribution is, confusingly, a Beta distribution. Thus, if both shape1 and shape2 are set to 1, beta values will be chosen at uniform intervals from 0 to 1.", FloatArgValidate(greaterthan=0.0)),
                    ("shape2",           1.0,    "The second shape parameter of the distribution used to determine the beta values to be sampled. This distribution is, confusingly, a Beta distribution. Thus, if both shape1 and shape2 are set to 1, beta values will be chosen at uniform intervals from 0 to 1.", FloatArgValidate(greaterthan=0.0)),
@@ -24,24 +24,24 @@ class SS(PhycasCommand):
         #o.__dict__["_help_order"] = ["sss"]
         PhycasCommand.__init__(self, args, "ss", "Performs stepping stone method for purposes of estimating the marginal likelihood of the current model.")
 
-        # The data member below is hidden from the user because it overrides something that users should not be able to override 
+        # The data member below is hidden from the user because it overrides something that users should not be able to override
         #self.__dict__["override_fixed_topology_restriction"] = False
-        
+
         # The data members added below are hidden from the user because they are set when the mcmc command runs
         self.__dict__["sampled_likes"] = None
         self.__dict__["sampled_betas"] = None
-        
+
         # The data members added below are hidden from the user because they are for developer use only
         self.__dict__["refdist_definition_file"] = None # specify file name of file containing reference distributions (one per line in same order that they are outut in the log file)
 
     def hidden():
-        """ 
-        Overrides the PhycasCommand.hidden method to keep SS's name from being displayed 
+        """
+        Overrides the PhycasCommand.hidden method to keep SS's name from being displayed
         in the list of classes displayed when users type help. Delete this function, or
         change its return value to False, when it is ready to be advertised.
         """
         return False
-        
+
     hidden = staticmethod(hidden)
 
     def checkSanity(self):
@@ -62,10 +62,10 @@ class SS(PhycasCommand):
         if len(models) > 0:
             m = models[0]
         else:
-            m = model 
+            m = model
         if m.edgelen_hyperprior:
             cf.warning("the generalized stepping-stone method has only been tested on models in which model.edgelen_hyperprior = None (proceed at your own risk)")
-        
+
     def __call__(self, **kwargs):
         self.set(**kwargs)
         self.checkSanity()

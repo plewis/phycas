@@ -1,8 +1,8 @@
-import os,sys,math,random,re 
-#from phycas.TreeViewer import *
+import os,sys,math,random,re
+#from phycas.treeviewer import *
 from phycas import *
-from phycas.Utilities.PhycasCommand import *
-from phycas.Utilities.CommonFunctions import CommonFunctions
+from phycas.utilities.PhycasCommand import *
+from phycas.utilities.CommonFunctions import CommonFunctions
 
 class InvalidNumberOfColumnsError(Exception):
     def __init__(self, nparts, nexpected, line_num):
@@ -20,13 +20,13 @@ class ScriptGenImpl(CommonFunctions):
     #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
     """
     Creates template scripts that user can modify before running.
-    
+
     """
     def __init__(self, opts):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
         Initializes ScriptGenImpl object.
-        
+
         """
         CommonFunctions.__init__(self, opts)
         self.script_filename = None
@@ -38,7 +38,7 @@ class ScriptGenImpl(CommonFunctions):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
         Opens the output script file.
-        
+
         """
         self.phycassert(self.scriptf is None, 'Attempt made to open script file, but it is already open!')
         self.script_filename = self.opts.out.script._getFilename()
@@ -49,24 +49,24 @@ class ScriptGenImpl(CommonFunctions):
 
         if self.scriptf:
             print 'Script file was opened successfully'
-    
+
     def _closeScriptFile(self):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
         Closes the output script file.
-        
+
         """
         self.phycassert(self.scriptf is not None, 'Attempt made to close script file, but it is not open!')
         self.scriptf.close()
         if self.scriptf.closed:
             print 'Script file was closed successfully'
         self.scriptf = None
-        
+
     def _openSampleDataFile(self):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
         Opens the sample data file.
-        
+
         """
         self.phycassert(self.samplef is None, 'Attempt made to open the sample data file, but it is already open!')
         self.sampledata_filename = self.opts.out.sampledata._getFilename()
@@ -77,19 +77,19 @@ class ScriptGenImpl(CommonFunctions):
 
         if self.samplef:
             print 'The sample data file was opened successfully'
-    
+
     def _closeSampleDataFile(self):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
         Closes the sample data file.
-        
+
         """
         self.phycassert(self.samplef is not None, 'Attempt made to close the sample data file, but it is not open!')
         self.samplef.close()
         if self.samplef.closed:
             print 'The sample data file was closed successfully'
         self.samplef = None
-        
+
     def model_edgelen(self):
         self.scriptf.write("# Use independent exponential priors (mean 0.1) for each edge length parameter\n")
         self.scriptf.write("model.edgelen_prior = Exponential(10.0)\n")
@@ -113,33 +113,33 @@ class ScriptGenImpl(CommonFunctions):
         else:
             self.scriptf.write("# Assume rate homogeneity across sites\n")
             self.scriptf.write("model.num_rates = 1\n\n")
-    
+
     def model_jc(self, ratehet, title = "Set up JC model"):
         self.scriptf.write("# %s\n" % title)
         self.scriptf.write("model.type = 'jc'\n")
         self.add_rate_heterogenetity(ratehet)
-        
+
     def model_hky(self, ratehet, title = "Set up HKY model"):
         self.scriptf.write("# %s\n" % title)
         self.scriptf.write("model.type = 'hky'\n")
         self.scriptf.write("model.kappa_prior = Exponential(1.0)\n")
         self.scriptf.write("model.state_freq_prior = Dirichlet((1.0, 1.0, 1.0, 1.0))\n\n")
         self.add_rate_heterogenetity(ratehet)
-        
+
     def model_gtr(self, ratehet, title = "Set up GTR model"):
         self.scriptf.write("# %s\n" % title)
         self.scriptf.write("model.type = 'gtr'\n")
         self.scriptf.write("model.relrate_prior = Dirichlet((1.0, 1.0, 1.0, 1.0, 1.0, 1.0))\n")
         self.scriptf.write("model.state_freq_prior = Dirichlet((1.0, 1.0, 1.0, 1.0))\n\n")
         self.add_rate_heterogenetity(ratehet)
-        
+
     def model_codon(self, title = "Set up GTR model"):
         self.scriptf.write("# %s\n" % title)
         self.scriptf.write("model.type = 'codon'\n")
         self.scriptf.write("model.omega_prior = Exponential(1.0)\n")
         self.scriptf.write("model.state_freq_prior = Dirichlet([1.0]*61)\n\n")
         self.add_rate_heterogenetity(0)
-        
+
     def sump_analysis(self, cpo = False, title = "Summarize the posterior distribution of model parameters"):
         self.scriptf.write("# %s\n" % title)
         self.scriptf.write("sump.file = 'params.p'\n")
@@ -150,7 +150,7 @@ class ScriptGenImpl(CommonFunctions):
         self.scriptf.write("sump.out.log.prefix = 'sump-log'\n")
         self.scriptf.write("sump.out.log.mode = REPLACE\n")
         self.scriptf.write("sump()\n\n")
-        
+
     def sumt_analysis(self, title = "Summarize the posterior distribution of tree topologies and clades"):
         self.scriptf.write("# %s\n" % title)
         self.scriptf.write("sumt.trees = 'trees.t'\n")
@@ -165,7 +165,7 @@ class ScriptGenImpl(CommonFunctions):
         self.scriptf.write("sumt.out.splits.prefix = 'sumt-splits'\n")
         self.scriptf.write("sumt.out.splits.mode = REPLACE\n")
         self.scriptf.write("sumt()\n\n")
-        
+
     def mcmc_analysis(self, execute = True, title = "Conduct a Markov chain Monte Carlo (MCMC) analysis that samples from the posterior distribution"):
         self.scriptf.write("# %s\n" % title)
         self.scriptf.write("mcmc.ncycles = %g\n" % mcmc.ncycles)
@@ -230,7 +230,7 @@ class ScriptGenImpl(CommonFunctions):
         self.scriptf.write("refdist.out.refdistfile = 'refdist.txt'\n")
         self.scriptf.write("refdist.out.refdistfile.mode = REPLACE\n")
         self.scriptf.write("refdist()\n\n")
-        
+
     def idr_analysis(self, title = "Estimate the marginal likelihood using the Inflated Density Ratio (IDR) method"):
         self.mcmc_analysis()
         self.scriptf.write("# %s\n" % title)
@@ -242,7 +242,7 @@ class ScriptGenImpl(CommonFunctions):
         self.scriptf.write("idr.out.log.prefix = 'idr-log'\n")
         self.scriptf.write("idr.out.log.mode = REPLACE\n")
         self.scriptf.write("idr()\n\n")
-        
+
     def steppingstone_analysis(self, title = "Estimate the marginal likelihood using the Generalized Stepping-stone (GSS) method"):
         self.mcmc_analysis("Conduct MCMC analysis for purpose of generating a reference distribution")
 
@@ -255,7 +255,7 @@ class ScriptGenImpl(CommonFunctions):
         self.scriptf.write("# Ucomment and replace mcmc.starting_tree_source below with correct newick \n")
         self.scriptf.write("# tree description complete with edge lengths if mcmc.fix_topology is set to True\n")
         self.scriptf.write("#mcmc.starting_tree_source = TreeCollection(newick='(1:0.01,2:0.01,(3:0.01,4:0.01):0.01)')\n\n")
-        
+
         self.scriptf.write("# Choose different output file names to avoid overwriting the ones used for the reference distribution\n")
         self.scriptf.write("mcmc.out.log = 'ss-output.txt'\n")
         self.scriptf.write("mcmc.out.log.mode = REPLACE\n")
@@ -274,14 +274,14 @@ class ScriptGenImpl(CommonFunctions):
         self.scriptf.write("ss.shape1 = %f\n" % ss.shape1)
         self.scriptf.write("ss.shape2 = %f\n" % ss.shape2)
         self.scriptf.write("ss()\n\n")
-        
+
         self.scriptf.write("# Running sump on the param file output by the ss command will calculate the marginal likelihood estimate\n")
         self.scriptf.write("sump.file = 'ss-params.p'\n")
         self.scriptf.write("sump.burnin = 1\n")
         self.scriptf.write("sump.out.log.prefix = 'ss-sump-log'\n")
         self.scriptf.write("sump.out.log.mode = REPLACE\n")
         self.scriptf.write("sump()\n\n")
-        
+
     def saveSampleData(self):
         self._openSampleDataFile()
         self.samplef.write("#nexus\n\n")
@@ -297,19 +297,19 @@ class ScriptGenImpl(CommonFunctions):
         self.samplef.write("    ;\n")
         self.samplef.write("end;\n")
         self._closeSampleDataFile()
-    
+
     def run(self):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
         Creates example Python script.
-        
+
         """
         self._openScriptFile()
         self.scriptf.write("from phycas import *\n\n")
-        
+
         if self.opts.seed > 0:
             self.scriptf.write('setMasterSeed(%d)\n\n' % self.opts.seed)
-        
+
         if self.opts.model == 'jc':
             self.model_jc(0)
         elif self.opts.model == 'jc+i':
@@ -336,7 +336,7 @@ class ScriptGenImpl(CommonFunctions):
             self.model_gtr(3)
         elif self.opts.model == 'codon':
             self.model_codon()
-            
+
         self.model_edgelen()
 
         if self.opts.datafile is None:

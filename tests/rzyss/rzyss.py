@@ -14,7 +14,7 @@ model.kappa_prior = BetaPrime(1.0, 1.0)
 model.state_freq_prior = Dirichlet((1.0, 1.0, 1.0, 1.0))
 
 model.edgelen_hyperprior = None
-model.tree_length_prior = Likelihood.TreeLengthDist(1.0, 0.1, 20.0, 0.05)
+model.tree_length_prior = likelihood.TreeLengthDist(1.0, 0.1, 20.0, 0.05)
 
 mcmc.out.log.prefix = 'rzy-ss'
 mcmc.out.log.mode = REPLACE
@@ -28,7 +28,7 @@ mcmc.out.params.mode = REPLACE
 mcmc.nchains = 1
 mcmc.ncycles = 500
 mcmc.sample_every = 1
-mcmc.report_every = 50 
+mcmc.report_every = 50
 mcmc.adapt_first = 2
 mcmc.verbose = True
 mcmc.tree_scaler_weight = 1

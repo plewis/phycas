@@ -1,6 +1,6 @@
-from phycas.Utilities.PhycasCommand import *
+from phycas.utilities.PhycasCommand import *
 from phycas import mcmc, P  #, partition
-from phycas.Commands.GGImpl import GGImpl
+from phycas.commands.GGImpl import GGImpl
 
 class GG(PhycasCommand):
     def __init__(self):

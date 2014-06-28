@@ -11,7 +11,7 @@ class Split(SplitBase):
         """
         Initializes data members and sets up the Split for the 4-taxon case.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> s = Split()
         >>> s.setBits((0,1))
         >>> print s.createPatternRepresentation()
@@ -25,7 +25,7 @@ class Split(SplitBase):
         """
         Makes this split a copy of other.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> s = Split()
         >>> s.createFromPattern('-*--*---*')
         >>> r = Split()
@@ -41,7 +41,7 @@ class Split(SplitBase):
         """
         Sets all bits to 0, but does not change anything else.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> s = Split()
         >>> s.createFromPattern('-*--*---*')
         >>> s.countOnBits()
@@ -59,7 +59,7 @@ class Split(SplitBase):
         Sets bit b, where 0 <= b < number of taxa. The following example sets
         the first two bits (out of 4, which is the default number of taxa).
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> s = Split()
         >>> s.setBit(0)
         >>> s.setBit(1)
@@ -76,7 +76,7 @@ class Split(SplitBase):
         obeys 0 <= b < number of taxa. The following example sets the first
         two bits (out of 4, which is the default number of taxa).
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> s = Split()
         >>> s.setBits((0,1))
         >>> print s.createPatternRepresentation()
@@ -92,7 +92,7 @@ class Split(SplitBase):
         example sets all 4 bits (4 is is the default number of taxa), then
         clears bits 0 and 3.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> s = Split()
         >>> s.setBit(0)
         >>> s.setBit(1)
@@ -116,7 +116,7 @@ class Split(SplitBase):
         all 4 bits (4 is is the default number of taxa), then clears bits 0
         and 3.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> s = Split()
         >>> s.setBits((0,1,2,3))
         >>> print s.createPatternRepresentation()
@@ -134,7 +134,7 @@ class Split(SplitBase):
         Allows one to query whether a particular bit b is set, where
         0 <= b < number of taxa.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> s = Split()
         >>> print s.isBitSet(0)
         False
@@ -152,7 +152,7 @@ class Split(SplitBase):
         that are currently not set. Note: this function does not return a
         value.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> s = Split()
         >>> s.createFromPattern('-*--*---*')
         >>> s.invertSplit()
@@ -171,7 +171,7 @@ class Split(SplitBase):
         most complex split has complexity split_ntax/2 (note that this maximum
         holds whether or not the number of taxa is even or odd).
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> s = Split()
         >>> s.createFromPattern('-*--*---*')
         >>> print s.calcComplexity()
@@ -185,7 +185,7 @@ class Split(SplitBase):
         """
         Returns the number of bits that are currently set.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> s = Split()
         >>> s.createFromPattern('-*--*---***-*')
         >>> print s.countOnBits()
@@ -200,7 +200,7 @@ class Split(SplitBase):
         Returns the number of bits that are currently unset. This function
         will be slower than countOnBits if some bits have been excluded.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> s = Split()
         >>> s.createFromPattern('-*--*---***-*')
         >>> print s.countOffBits()
@@ -220,7 +220,7 @@ class Split(SplitBase):
         that are on are listed first, and are 1-offset (i.e. the first bit
         is represented by 1, not 0).
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> s = Split()
         >>> s.createFromPattern('-*--*---****')
         >>> print s.createNewickRepresentation()
@@ -237,7 +237,7 @@ class Split(SplitBase):
         although this can be changed through the use of the functions
         SetOnSymbol and SetOffSymbol, respectively.
         
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> s = Split()
         >>> s.createFromPattern('-*--*---****')
         >>> print s.createPatternRepresentation()
@@ -253,7 +253,7 @@ class Split(SplitBase):
         To be equal, the two splits must have exactly the same pattern of
         set bits.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> s = Split()
         >>> s.createFromPattern('-*--*---****')
         >>> r = Split()
@@ -277,7 +277,7 @@ class Split(SplitBase):
         set bits. One split is less than another if the sum of its component
         bit fields is smaller.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> s = Split()
         >>> s.createFromPattern('-*--*---****')
         >>> r = Split()
@@ -318,7 +318,7 @@ class Split(SplitBase):
         split a: -***---*--
         split b: ---***---*
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> a = Split()
         >>> a.createFromPattern('-***---*--')
         >>> b = Split()
@@ -336,7 +336,7 @@ class Split(SplitBase):
         non-empty and equal to this split. See the documentation for the
         function isCompatible for more information.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> a = Split()
         >>> a.createFromPattern('-****-*---')
         >>> b = Split()
@@ -354,7 +354,7 @@ class Split(SplitBase):
         """
         Documentation needs to be written...
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> s = Split()
         >>> s.createFromPattern('-****-*---')
         >>> print s.createPatternRepresentation()
@@ -368,7 +368,7 @@ class Split(SplitBase):
         """
         Returns a list of bits that are currently set.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> s = Split()
         >>> s.createFromPattern('-****-*---')
         >>> print s.getOnList()
@@ -382,7 +382,7 @@ class Split(SplitBase):
         """
         Returns a list of bits that are currently not set.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> s = Split()
         >>> s.createFromPattern('-****-*---')
         >>> print s.getOffList()
@@ -397,7 +397,7 @@ class Split(SplitBase):
         Returns a list of bits that are currently excluded (not to be
         considered either on or off).
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> s = Split()
         >>> s.createFromPattern('-***xx*-x-')
         >>> print s.getExcludedList()
@@ -412,7 +412,7 @@ class Split(SplitBase):
         Supplies a list of bits that should be excluded (i.e. not to be
         considered either on or off).
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> s = Split()
         >>> s.createFromPattern('-***--*---')
         >>> s.setExcluded([4, 5, 7, 8])
@@ -428,7 +428,7 @@ class Split(SplitBase):
         Returns the symbol used to represent "on" (i.e. set) bits in functions
         such as createPatternRepresentation.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> s = Split()
         >>> print s.getOnSymbol()
         *
@@ -442,7 +442,7 @@ class Split(SplitBase):
         Sets the symbol used to represent "on" (i.e. set) bits in functions
         such as createPatternRepresentation.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> s = Split()
         >>> s.createFromPattern('-***--*---')
         >>> print s.createPatternRepresentation()
@@ -460,7 +460,7 @@ class Split(SplitBase):
         Returns the symbol used to represent "off" (i.e. unset) bits in
         functions such as createPatternRepresentation.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> s = Split()
         >>> print s.getOffSymbol()
         -
@@ -474,7 +474,7 @@ class Split(SplitBase):
         Sets the symbol used to represent "off" (i.e. unset) bits in functions
         such as createPatternRepresentation.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> s = Split()
         >>> s.createFromPattern('-***--*---')
         >>> print s.createPatternRepresentation()
@@ -492,7 +492,7 @@ class Split(SplitBase):
         Returns the symbol used to represent excluded (i.e. neither set nor
         unset) bits in functions such as createPatternRepresentation.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> s = Split()
         >>> print s.getExcludedSymbol()
         x
@@ -506,7 +506,7 @@ class Split(SplitBase):
         Sets the symbol used to represent excluded (i.e. neither set nor
         unset) bits in functions such as createPatternRepresentation.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> s = Split()
         >>> s.createFromPattern('-***xx*-xx')
         >>> print s.createPatternRepresentation()
@@ -533,7 +533,7 @@ class Split(SplitBase):
         o a sequence of characters showing bits that are set, unset
           and excluded (using the three previously-defined symbols)
         
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> s = Split()
         >>> s.createFromPattern('-***xx*-xx')
         >>> split_string = s.write()
@@ -556,7 +556,7 @@ class Split(SplitBase):
         have been previously created using the write function. See write
         function for details about how a split is stored as a string.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> s = Split()
         >>> s.createFromPattern('-***xx*-xx')
         >>> split_string = s.write()
@@ -577,7 +577,7 @@ class Split(SplitBase):
         """
         Returns the number of taxa currently supported by this Split object.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> s = Split()
         >>> s.createFromPattern('-***xx*-xx')
         >>> print s.getNTaxa()
@@ -594,7 +594,7 @@ class Split(SplitBase):
         previously stored in it), even if n equals the number of taxa
         currently supported by the split.
 
-        >>> from phycas.Phylogeny import *
+        >>> from phycas.phylogeny import *
         >>> s = Split()
         >>> s.createFromPattern('-***xx*-xx')
         >>> print s.createPatternRepresentation()

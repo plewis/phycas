@@ -4,7 +4,7 @@ from phycas import *
 filename = getPhycasTestData('green.nex')
 blob = readFile(filename)
 
-rng = ProbDist.Lot()
+rng = probdist.Lot()
 rng.setSeed(13579)
 
 model.type = 'gtr'

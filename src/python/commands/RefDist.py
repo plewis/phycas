@@ -1,7 +1,7 @@
 from phycas import randomtree
-from phycas.Utilities.PhycasCommand import *
-from phycas.Commands.SumTImpl import TreeSummarizer
-from phycas.Commands.RefDistImpl import RefDistImpl
+from phycas.utilities.PhycasCommand import *
+from phycas.commands.SumTImpl import TreeSummarizer
+from phycas.commands.RefDistImpl import RefDistImpl
 import copy
 
 class RefDist(PhycasCommand):

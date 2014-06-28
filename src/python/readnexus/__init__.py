@@ -1,11 +1,11 @@
 import warnings
 warnings.filterwarnings('ignore', '.*second conversion method ignored.*', RuntimeWarning)
 
-from phycas.Conversions import *
+from phycas.conversions import *
 from _ReadNexusExt import *
 from _NexusReader import *
 
-#print 'importing ReadNexus...'
+#print 'importing readnexus...'
 
 def testExamples(verbose = False):
     import doctest

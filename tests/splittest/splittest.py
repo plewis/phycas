@@ -1,4 +1,4 @@
-from phycas.Phylogeny import *
+from phycas.phylogeny import *
 
 outf = file('out.txt', 'w')
 

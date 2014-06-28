@@ -20,7 +20,7 @@ class Beta(BetaDistBase, PyDistributionBase):
         """
         Specify the a and b parameters of the Beta object. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Beta(2, 3)
         >>> print d.getMean()
         0.4
@@ -33,7 +33,7 @@ class Beta(BetaDistBase, PyDistributionBase):
         """
         Creates a copy of this Beta distribution.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d1 = Beta(2, 3)
         >>> print d1.getMean()
         0.4
@@ -69,7 +69,7 @@ class Beta(BetaDistBase, PyDistributionBase):
         Returns a string that could be used to initialize another Beta
         object identical to this one. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Beta(2, 3)
         >>> print d.__str__()
         Beta(2.00000, 3.00000)
@@ -83,7 +83,7 @@ class Beta(BetaDistBase, PyDistributionBase):
         Returns a string that could be used to initialize another Beta
         object identical to this one. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Beta(2, 3)
         >>> print d.__repr__()
         Beta(2.00000, 3.00000)
@@ -129,7 +129,7 @@ class Beta(BetaDistBase, PyDistributionBase):
         seed! If you have already called setLot, you probably want to call
         the setSeed function of that Lot ojbect. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Beta(2, 3)
         >>> d.setSeed(135)
         >>> print "%.12f" % d.sample()
@@ -161,7 +161,7 @@ class Beta(BetaDistBase, PyDistributionBase):
         (i.e., it will not change if sample is called to generate samples
         from this distribution).
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Beta(2, 3)
         >>> print d.getMean()
         0.4
@@ -176,7 +176,7 @@ class Beta(BetaDistBase, PyDistributionBase):
         variance (i.e., it will not change if sample is called to generate
         samples from this distribution).
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Beta(2, 3)
         >>> print d.getVar()
         0.04
@@ -191,7 +191,7 @@ class Beta(BetaDistBase, PyDistributionBase):
         theoretical standard deviation (i.e., it will not change if sample is
         called to generate samples from this distribution).
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Beta(2, 3)
         >>> print d.getStdDev()
         0.2
@@ -206,7 +206,7 @@ class Beta(BetaDistBase, PyDistributionBase):
         x. This is the integral of the probability density function from 0.0
         up to the value x.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Beta(2, 3)
         >>> print d.getCDF(0.35)
         0.43701875
@@ -220,7 +220,7 @@ class Beta(BetaDistBase, PyDistributionBase):
         Given p, the integral of the probability density function from 0.0
         up to a value x, returns x.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Beta(2, 3)
         >>> print '%.5f' % d.getQuantile(0.35)
         0.30096
@@ -235,7 +235,7 @@ class Beta(BetaDistBase, PyDistributionBase):
         this Beta object. Python list comprehensions can be used to
         store many simulated samples for use in subsequent calculations.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Beta(2, 3)
         >>> d.setSeed(97531)
         >>> print round(d.sample(), 8)
@@ -254,7 +254,7 @@ class Beta(BetaDistBase, PyDistributionBase):
         Evaluates the probability density function at the supplied value x.
         Returns the natural logarithm of the density at x. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Beta(2, 3)
         >>> print d.getLnPDF(0.35)
         0.573518693104
@@ -288,7 +288,7 @@ class Beta(BetaDistBase, PyDistributionBase):
         correctly normalized density value (i.e. from a density function that
         integrates to 1.0)
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Beta(2, 3)
         >>> print d.getRelativeLnPDF(0.35)
         -1.91138795668
@@ -331,7 +331,7 @@ class Beta(BetaDistBase, PyDistributionBase):
                 = 6.347132562/(33.8513348761*6.81819)
                 = 0.0275
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Beta(2, 3)
         >>> print d.getMean()
         0.4

@@ -1,7 +1,7 @@
-from phycas.Utilities.PhycasCommand import *
+from phycas.utilities.PhycasCommand import *
 from phycas import model, randomtree, P
-from phycas.ProbDist import Exponential
-from phycas.Commands.LikeImpl import LikeImpl
+from phycas.probdist import Exponential
+from phycas.commands.LikeImpl import LikeImpl
 
 class Like(PhycasCommand):
     def __init__(self):

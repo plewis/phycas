@@ -19,7 +19,7 @@ class Exponential(ExponentialDistBase, PyDistributionBase):
         Specify the hazard parameter (i.e. inverse of the mean) when
         initializing an Exponential object. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> b = Exponential(2)
         >>> print b.getMean()
         0.5
@@ -56,7 +56,7 @@ class Exponential(ExponentialDistBase, PyDistributionBase):
         Returns a string that could be used to initialize another
         Exponential object identical to this one. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> b = Exponential(2)
         >>> print b.__str__()
         Exponential(2.00000)
@@ -70,7 +70,7 @@ class Exponential(ExponentialDistBase, PyDistributionBase):
         Returns a string that could be used to initialize another
         Exponential object identical to this one. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> b = Exponential(2)
         >>> print b.__repr__()
         Exponential(2.00000)
@@ -118,7 +118,7 @@ class Exponential(ExponentialDistBase, PyDistributionBase):
         seed! If you have already called setLot, you probably want to call
         the setSeed function of that Lot ojbect. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> b = Exponential(2)
         >>> b.setSeed(135)
         >>> print "%.12f" % b.sample()
@@ -150,7 +150,7 @@ class Exponential(ExponentialDistBase, PyDistributionBase):
         (i.e., it will not change if sample is called to generate samples
         from this distribution).
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> b = Exponential(2)
         >>> print b.getMean()
         0.5
@@ -165,7 +165,7 @@ class Exponential(ExponentialDistBase, PyDistributionBase):
         variance (i.e., it will not change if sample is called to generate
         samples from this distribution).
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> b = Exponential(2)
         >>> print b.getVar()
         0.25
@@ -180,7 +180,7 @@ class Exponential(ExponentialDistBase, PyDistributionBase):
         theoretical standard deviation (i.e., it will not change if sample is
         called to generate samples from this distribution).
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> b = Exponential(2)
         >>> print b.getStdDev()
         0.5
@@ -195,7 +195,7 @@ class Exponential(ExponentialDistBase, PyDistributionBase):
         x. This is the integral of the probability density function from 0.0
         up to the value x.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> b = Exponential(2)
         >>> print b.getCDF(1.5)
         0.950212931632
@@ -215,7 +215,7 @@ class Exponential(ExponentialDistBase, PyDistributionBase):
         can be used to store many simulated samples for use in subsequent
         calculations.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> b = Exponential(2)
         >>> b.setSeed(97531)
         >>> print "%.12f" % b.sample()
@@ -234,7 +234,7 @@ class Exponential(ExponentialDistBase, PyDistributionBase):
         Evaluates the probability density function at the supplied value x.
         Returns the natural logarithm of the density at x. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> b = Exponential(2)
         >>> print b.getLnPDF(1.5)
         -2.30685281944
@@ -256,7 +256,7 @@ class Exponential(ExponentialDistBase, PyDistributionBase):
         correctly normalized density value (i.e. from a density function that
         integrates to 1.0)
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> b = Exponential(2)
         >>> print b.getRelativeLnPDF(1.5)
         -3.0
@@ -278,7 +278,7 @@ class Exponential(ExponentialDistBase, PyDistributionBase):
         The reason this function even has a variance argument is for
         compatibility with functions of the same name in other distributions.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> b = Exponential(2)
         >>> print b.getMean()
         0.5

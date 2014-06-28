@@ -11,7 +11,7 @@ model.num_rates = 4        # add discrete gamma rate heterogeneity with 4 rate c
 
 # Set prior on the gamma shape parameter to be an exponential distribution having mean 0.5
 # Note that the value in parentheses is the inverse of the mean, not the mean.
-model.gamma_shape_prior = ProbDist.Exponential(2.0)
+model.gamma_shape_prior = probdist.Exponential(2.0)
 
 # Set the prior for the base frequency parameters. The base frequency parameters in Phycas
 # are only proportional to the base frequencies (i.e. they often add up to a value greater
@@ -20,10 +20,10 @@ model.gamma_shape_prior = ProbDist.Exponential(2.0)
 # equivalent to placing a Dirichlet(a,a,a,a) prior on the actual base frequencies. If you
 # change the prior, you should keep the second one (the scale) set to 1.0 if you want the
 # joint base frequency prior to remain Dirichlet.
-model.state_freq_param_prior = ProbDist.Gamma(1.0, 1.0)
+model.state_freq_param_prior = probdist.Gamma(1.0, 1.0)
 
 # Set the prior for kappa, the ratio of the rate of transitions to the rate of transversions
-model.kappa_prior = ProbDist.Exponential(1.0)
+model.kappa_prior = probdist.Exponential(1.0)
 
 # Use a hyperparameter to govern the mean of the branch length prior
 # Instead of specifying, say, Exponential(10.0) for branch lengths, this
@@ -34,7 +34,7 @@ model.kappa_prior = ProbDist.Exponential(1.0)
 # mu. For this "hyperprior" (the prior for a hyperparameter) we used an Inverse
 # Gamma distribution having mean 1.0 and variance 10.0, as first suggested by
 # Suchard et al. in their 2001 MBE (18:1001-1013) paper on Bayesian model selection.
-model.edgelen_hyperprior = ProbDist.InverseGamma(2.1, 1.0/1.1)
+model.edgelen_hyperprior = probdist.InverseGamma(2.1, 1.0/1.1)
 
 # Tell phycas that we want to allow polytomies
 mcmc.allow_polytomies = True
@@ -61,12 +61,12 @@ mcmc.data_source = file_contents.characters
 # We would like to start with a random tree, so we will create tree source
 # that generates random trees for the taxa that we have in our data set.
 
-# So that we can "replay" an analysis (if we would like to), we should set the 
-# seed on a pseudorandom number generator and give that random number generator 
+# So that we can "replay" an analysis (if we would like to), we should set the
+# seed on a pseudorandom number generator and give that random number generator
 # to the MCMC command and the randomtree simulator
 
 # first create the random number generator
-rng = ProbDist.Lot()
+rng = probdist.Lot()
 # now set the seed to a positive integer
 rng.setSeed(13957)
 

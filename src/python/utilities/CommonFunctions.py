@@ -1,5 +1,5 @@
 import sys
-from phycas import OutputFilter, getDefaultOutFilter, ProbDist
+from phycas import OutputFilter, getDefaultOutFilter, probdist
 
 output_stream = None
 outputter = None
@@ -72,7 +72,7 @@ class CommonFunctions(object):
         if l:
             self._rng = l
         elif self._rng is None:
-            self._rng = ProbDist.Lot()
+            self._rng = probdist.Lot()
         try:            
             i = int(self.opts.random_seed)
             if i != 0:

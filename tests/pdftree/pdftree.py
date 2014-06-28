@@ -1,5 +1,5 @@
 from phycas import Newick
-from phycas.Utilities.PDFTree import PDFTree
+from phycas.utilities.PDFTree import PDFTree
 
 pdftree = PDFTree()
 pdftree.pdf_newick                = Newick("('P. fimbriata':0.1,('P. articulata':0.09,'P. parksii':0.04)v:0.1,('P. macrophylla':0.14,(('P. gracilis':0.08,('P. ciliata':0.02,'P. basiramia':0.03)x:0.05)y:0.01,'P. polygama':0.09)z:0.06)w:0.07)u", Newick.TAXA_NAMES)

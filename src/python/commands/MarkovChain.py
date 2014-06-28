@@ -1,8 +1,8 @@
 import os,sys,math
 from phycas import *
-import phycas.Phylogeny as Phylogeny
-import phycas.ProbDist as ProbDist
-import phycas.Likelihood as Likelihood
+import phycas.phylogeny as phylogeny
+import phycas.probdist as probdist
+import phycas.likelihood as likelihood
 from LikelihoodCore import LikelihoodCore
 
 class MarkovChain(LikelihoodCore):
@@ -221,7 +221,7 @@ class MarkovChain(LikelihoodCore):
         #    print 'partition_model contains 1 model (i.e. unpartitioned)'
         #else:
         #    print 'partition_model contains %d models' % nmodels
-        self.chain_manager = Likelihood.MCMCChainManager(self.joint_prior_manager)
+        self.chain_manager = likelihood.MCMCChainManager(self.joint_prior_manager)
         for i in range(nmodels):
             # get the Model (as defined in likelihood_models.cpp) associated with partition subset i
             m = self.partition_model.getModel(i)
@@ -313,7 +313,7 @@ class MarkovChain(LikelihoodCore):
             # Add subset-model-specific moves
             if not mspec.type == 'jc' and not mspec.update_freqs_separately:
                 # Create a StateFreqMove to update entire state frequency vector
-                sfm = Likelihood.StateFreqMove()
+                sfm = likelihood.StateFreqMove()
                 if mspec.type == 'codon':
                     sfm.setDimension(61)
                 else:
@@ -338,7 +338,7 @@ class MarkovChain(LikelihoodCore):
 
             if mspec.type == 'gtr' and not mspec.update_relrates_separately:
                 # Create a RelRateMove to update entire relative rates vector
-                rrm = Likelihood.RelRatesMove()
+                rrm = likelihood.RelRatesMove()
                 #if nmodels > 1:
                 #    rrm.setName("relrates_%d" % (i+1,))
                 #else:
@@ -368,7 +368,7 @@ class MarkovChain(LikelihoodCore):
         # convergence in edge lengths. This move is unusual in using slice sampling rather
         # than Metropolis-Hastings updates: most "moves" in parent are Metropolis-Hastings.
         if self.parent.opts.tree_scaler_weight > 0:
-            self.tree_scaler_move = Likelihood.TreeScalerMove()
+            self.tree_scaler_move = likelihood.TreeScalerMove()
             self.tree_scaler_move.setName("tree_scaler")
             self.tree_scaler_move.setWeight(self.parent.opts.tree_scaler_weight)
             self.tree_scaler_move.setPosteriorTuningParam(self.parent.opts.tree_scaler_lambda)
@@ -384,7 +384,7 @@ class MarkovChain(LikelihoodCore):
         # If more than one partition subset, add a SubsetRelRate move to modify the
         # vector of relative substitution rates for each subset
         if (nmodels > 1):
-            self.subset_relrates_move = Likelihood.SubsetRelRatesMove()
+            self.subset_relrates_move = likelihood.SubsetRelRatesMove()
             self.subset_relrates_move.setDimension(nmodels)
             self.subset_relrates_move.setName("subset_relrates")
             if self.parent.__class__.__name__ == 'InflatedDensityRatio':
@@ -412,7 +412,7 @@ class MarkovChain(LikelihoodCore):
                 if partition.subset_relrates_prior is None:
                     # User did NOT provide a subset relative rates prior
                     c = self.partition_model.getSubsetProportions()
-                    d = ProbDist.RelativeRateDistribution(param_list, c.getSubsetProportions())
+                    d = probdist.RelativeRateDistribution(param_list, c.getSubsetProportions())
                     #d.setSubsetProportions(self.partition_model.getSubsetProportions())
                     self.subset_relrates_move.setMultivarPrior(d.cloneAndSetLot(self.r))
                     self.partition_model.setSubsetRelRatePrior(d.cloneAndSetLot(self.r))
@@ -435,7 +435,7 @@ class MarkovChain(LikelihoodCore):
         if not self.parent.opts.fix_topology:
             # Create a LargetSimonMove object to handle Metropolis-Hastings
             # updates to the tree topology and edge lengths
-            self.larget_simon_move = Likelihood.LargetSimonMove()
+            self.larget_simon_move = likelihood.LargetSimonMove()
             self.larget_simon_move.setName("larget_simon_local")
             self.larget_simon_move.setWeight(self.parent.opts.ls_move_weight)
             self.larget_simon_move.setPosteriorTuningParam(self.parent.opts.ls_move_lambda)
@@ -453,7 +453,7 @@ class MarkovChain(LikelihoodCore):
         # If requested, create a BushMove object to allow polytomous trees
         if self.parent.opts.allow_polytomies:
             # Create a BushMove object
-            self.bush_move = Likelihood.BushMove()
+            self.bush_move = likelihood.BushMove()
 
             # Set up BushMove object
             self.bush_move.setName("bush_move")
@@ -472,7 +472,7 @@ class MarkovChain(LikelihoodCore):
 
         if not self.parent.opts.fix_topology:
             if self.parent.opts.allow_polytomies:
-                topo_prior_calculator = Likelihood.PolytomyTopoPriorCalculatorBase()
+                topo_prior_calculator = likelihood.PolytomyTopoPriorCalculatorBase()
                 topo_prior_calculator.chooseUnrooted()
                 topo_prior_calculator.setC(self.parent.opts.topo_prior_C)
                 if self.parent.opts.polytomy_prior:
@@ -481,7 +481,7 @@ class MarkovChain(LikelihoodCore):
                     topo_prior_calculator.chooseResolutionClassPrior()
                 self.chain_manager.getJointPriorManager().addTopologyDistribution("tree_topology", topo_prior_calculator, self.tree);
             else:
-                self.chain_manager.getJointPriorManager().addTopologyDistribution("tree_topology", Likelihood.TopoProbCalculatorBase(), self.tree);
+                self.chain_manager.getJointPriorManager().addTopologyDistribution("tree_topology", likelihood.TopoProbCalculatorBase(), self.tree);
 
         self.chain_manager.finalize()
 

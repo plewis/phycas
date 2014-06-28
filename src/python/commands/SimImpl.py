@@ -1,21 +1,21 @@
 import os,sys,math,random
 from phycas import *
 from MCMCManager import LikelihoodCore
-from phycas.Utilities.PhycasCommand import *
-from phycas.Utilities.CommonFunctions import CommonFunctions
+from phycas.utilities.PhycasCommand import *
+from phycas.utilities.CommonFunctions import CommonFunctions
 
 class SimImpl(CommonFunctions):
     #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
     """
     Simulates DNA sequence data.
-    
+
     """
     def __init__(self, opts):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
         Initializes the SimulateImpl object by assigning supplied phycas object
         to a data member variable.
-        
+
         """
         CommonFunctions.__init__(self, opts)
         self.starting_tree_source = None
@@ -24,7 +24,7 @@ class SimImpl(CommonFunctions):
         self.sim_model_tree       = None
         self.data_matrix          = None
         self.nchar                = opts.nchar
-        
+
     def getStartingTree(self):
         if self.starting_tree is None:
             try:
@@ -38,13 +38,13 @@ class SimImpl(CommonFunctions):
                     self.stdout.error("A tree could not be obtained from the tree_source")
                 raise
         return self.starting_tree
-        
+
     def run(self):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
         Simulates a DNA dataset and stores it in NEXUS format in the supplied
         filename.
-        
+
         """
         self.starting_tree_source = self.opts.tree_source
         self.getStartingTree()
@@ -59,7 +59,7 @@ class SimImpl(CommonFunctions):
         core = LikelihoodCore(self)
         core.setupCore()
         if not core.tree.hasEdgeLens():
-            tm = Phylogeny.TreeManip(core.tree)
+            tm = phylogeny.TreeManip(core.tree)
             tm.setRandomEdgeLengths(self.opts.edgelen_dist)
         self.sim_model_tree = core.tree
         core.prepareForSimulation()
@@ -68,5 +68,5 @@ class SimImpl(CommonFunctions):
         dataf = open(self.opts.file_name,'a')
         dataf.write('\n[\ntree used for simulation:\n%s\n]\n' % core.tree.makeNewick() )
         dataf.close()
-        
-        
+
+

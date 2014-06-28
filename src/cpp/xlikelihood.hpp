@@ -24,7 +24,7 @@
 #include <exception>
 
 /*----------------------------------------------------------------------------------------------------------------------
-|	Exception class for transmitting exceptions originating within the Likelihood module from C++ to Python. The 
+|	Exception class for transmitting exceptions originating within the likelihood module from C++ to Python. The 
 |	attached message should be meaningful if caught and displayed in a Python environment.
 */
 class XLikelihood : public std::exception
@@ -68,12 +68,12 @@ inline XLikelihood::~XLikelihood() throw()
 	}
 
 /*----------------------------------------------------------------------------------------------------------------------
-|	If `msg' is empty, returns string "Likelihood module"; otherwise returns string stored by `msg'. Overrides the 
+|	If `msg' is empty, returns string "likelihood module"; otherwise returns string stored by `msg'. Overrides the
 |	virtual function in the base class (std::exception).
 */
 inline const char *XLikelihood::what () const throw ()
 	{
-	return msg.empty() ? "Likelihood module" : msg.c_str();
+	return msg.empty() ? "likelihood module" : msg.c_str();
 	}
 
 #endif

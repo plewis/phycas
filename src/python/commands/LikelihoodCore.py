@@ -1,8 +1,8 @@
 import os,sys,math
 from phycas import *
-import phycas.Phylogeny as Phylogeny
-import phycas.ProbDist as ProbDist
-import phycas.Likelihood as Likelihood
+import phycas.phylogeny as phylogeny
+import phycas.probdist as probdist
+import phycas.likelihood as likelihood
 
 def cloneDistribution(d):
     #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
@@ -54,8 +54,8 @@ class LikelihoodCore(object):
 
     def setTree(self, t):
         #self.likelihood.storeAllCLAs(self._tree)    # avoids a lot of deallocation and reallocation
-        if t and not isinstance(t, Phylogeny.Tree):
-            tr = Phylogeny.Tree()
+        if t and not isinstance(t, phylogeny.Tree):
+            tr = phylogeny.Tree()
             self._tree = t.buildTree(tr)
         else:
             self._tree = t
@@ -69,7 +69,7 @@ class LikelihoodCore(object):
 
     def createModel(self, model_spec):
         """
-        This method creates an actual model (e.g. JCModel defined in Likelihood/_Model.py) from a model_spec
+        This method creates an actual model (e.g. JCModel defined in likelihood/_Model.py) from a model_spec
         (e.g. Model defined in Phycas/Model.py). The model_spec is created by the user, who gives it a
         type (jc, hky, gtr, codon, etc.), but the model_spec cannot be used to compute likelihoods.
 
@@ -77,7 +77,7 @@ class LikelihoodCore(object):
         if model_spec.type == 'codon':
             self.parent.phycassert(model_spec.num_rates == 1, 'Cannot currently use gamma rate heterogeneity within codon model')
             self.parent.phycassert(not model_spec.pinvar_model, 'Cannot currently use invariable sites model within codon model')
-            m = Likelihood.CodonModel()
+            m = likelihood.CodonModel()
             m.setKappa(model_spec.kappa)
             if model_spec.fix_kappa:
                 m.fixKappa()
@@ -96,12 +96,12 @@ class LikelihoodCore(object):
                 m.fixStateFreqs()
         elif model_spec.type in ['gtr','hky']:
             if model_spec.type == 'gtr':
-                m = Likelihood.GTRModel()
+                m = likelihood.GTRModel()
                 m.setRelRates(model_spec.relrates)
                 if model_spec.fix_relrates:
                     m.fixRelRates()
             else:
-                m = Likelihood.HKYModel()
+                m = likelihood.HKYModel()
                 m.setKappa(model_spec.kappa)
                 if model_spec.fix_kappa:
                     m.fixKappa()
@@ -115,7 +115,7 @@ class LikelihoodCore(object):
             if model_spec.fix_freqs:
                 m.fixStateFreqs()
         elif model_spec.type in ['loss','gain']:
-            m = Likelihood.IrreversibleModel()
+            m = likelihood.IrreversibleModel()
             m.setScalingFactor(model_spec.scaling_factor)
             if model_spec.fix_scaling_factor:
                 m.fixScalingFactor()
@@ -126,7 +126,7 @@ class LikelihoodCore(object):
             else:
                 m.setGainOnly()
         elif model_spec.type in ['binary']:
-            m = Likelihood.BinaryModel()
+            m = likelihood.BinaryModel()
             m.setScalingFactor(model_spec.scaling_factor)
             if model_spec.fix_scaling_factor:
                 m.fixScalingFactor()
@@ -138,7 +138,7 @@ class LikelihoodCore(object):
             else:
                 m.freeKappa()
         else:
-            m = Likelihood.JCModel()
+            m = likelihood.JCModel()
 
         # If rate heterogeneity is to be assumed, add it to the model here
         # Note must defer setting up pattern specific rates model until we know number of patterns
@@ -180,12 +180,12 @@ class LikelihoodCore(object):
 
         from phycas import partition,model
         # Create the object
-        self.partition_model = Likelihood.PartitionModelBase()
+        self.partition_model = likelihood.PartitionModelBase()
 
         modelspecs = partition.getModels()
         if len(modelspecs) < 1:
             # model is an interface model object (i.e. Model defined in Phycas/Model.py),
-            # not an actual model object (e.g. JCModel defined in Likelihood/_Model.py).
+            # not an actual model object (e.g. JCModel defined in likelihood/_Model.py).
             # Need to create a real model using the interface specification
             # and add the real model to partition_model.
             mod = self.createModel(model)
@@ -193,7 +193,7 @@ class LikelihoodCore(object):
         else:
             for m in modelspecs:
                 # m is an interface model object (i.e. Model defined in Phycas/Model.py),
-                # not an actual model object (e.g. JCModel defined in Likelihood/_Model.py).
+                # not an actual model object (e.g. JCModel defined in likelihood/_Model.py).
                 # Need to create a real model using the interface specification
                 # and add the real model to partition_model.
                 mod = self.createModel(m)
@@ -213,7 +213,7 @@ class LikelihoodCore(object):
             self.parent.phycassert(num_subset_relrates == num_subsets, 'Length of partition.subset_relrates list (%d) should equal the number of subsets defined (%d)' % (num_subset_relrates, num_subsets))
             self.partition_model.setSubsetRelRatesVect(partition.subset_relrates)
 
-        self.likelihood = Likelihood.TreeLikelihood(self.partition_model)
+        self.likelihood = likelihood.TreeLikelihood(self.partition_model)
         # self.likelihood.setLot(self.r)
         self.likelihood.setUFNumEdges(self.parent.opts.uf_num_edges)
         if self.parent.data_matrix:
@@ -240,7 +240,7 @@ class LikelihoodCore(object):
         simulated data.
 
         """
-        sim_data = Likelihood.SimData()
+        sim_data = likelihood.SimData()
         self.parent.phycassert(self.parent.nchar > 0, 'nchar must be greater than zero in order to perform simulations')
         self.likelihood.simulateFirst(sim_data, self.tree, self.r, self.parent.nchar)
         return sim_data

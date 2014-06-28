@@ -16,7 +16,7 @@ class Uniform(UniformDistBase, PyDistributionBase):
         """
         Specify the left and right bounds of the Uniform object. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Uniform(2, 3)
         >>> print d.getMean()
         2.5
@@ -54,7 +54,7 @@ class Uniform(UniformDistBase, PyDistributionBase):
         Returns a string that could be used to initialize another Uniform
         object identical to this one. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Uniform(2, 3)
         >>> print d.__str__()
         Uniform(2.00000, 3.00000)
@@ -68,7 +68,7 @@ class Uniform(UniformDistBase, PyDistributionBase):
         Returns a string that could be used to initialize another Uniform
         object identical to this one. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Uniform(2, 3)
         >>> print d.__repr__()
         Uniform(2.00000, 3.00000)
@@ -116,7 +116,7 @@ class Uniform(UniformDistBase, PyDistributionBase):
         seed! If you have already called setLot, you probably want to call
         the setSeed function of that Lot ojbect. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Uniform(2, 3)
         >>> d.setSeed(135)
         >>> print d.sample()
@@ -148,7 +148,7 @@ class Uniform(UniformDistBase, PyDistributionBase):
         (i.e., it will not change if sample is called to generate samples
         from this distribution).
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Uniform(2, 3)
         >>> print d.getMean()
         2.5
@@ -163,7 +163,7 @@ class Uniform(UniformDistBase, PyDistributionBase):
         variance (i.e., it will not change if sample is called to generate
         samples from this distribution).
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Uniform(2, 3)
         >>> print d.getVar()
         0.0833333333333
@@ -178,7 +178,7 @@ class Uniform(UniformDistBase, PyDistributionBase):
         theoretical standard deviation (i.e., it will not change if sample is
         called to generate samples from this distribution).
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Uniform(2, 3)
         >>> print d.getStdDev()
         0.288675134595
@@ -193,7 +193,7 @@ class Uniform(UniformDistBase, PyDistributionBase):
         x. This is the integral of the probability density function from the
         left bound up to the value x.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Uniform(2, 3)
         >>> print d.getCDF(2.5)
         0.5
@@ -208,7 +208,7 @@ class Uniform(UniformDistBase, PyDistributionBase):
         this Uniform object. Python list comprehensions can be used to
         store many simulated samples for use in subsequent calculations.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Uniform(2, 3)
         >>> d.setSeed(97531)
         >>> print [d.sample()] * 3
@@ -223,7 +223,7 @@ class Uniform(UniformDistBase, PyDistributionBase):
         Evaluates the probability density function at the supplied value x.
         Returns the natural logarithm of the density at x. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> import math
         >>> d = Uniform(2, 3)
         >>> print math.fabs(d.getLnPDF(2.5))  # see note about fabs below
@@ -262,7 +262,7 @@ class Uniform(UniformDistBase, PyDistributionBase):
         returns the most negative floating point number possible if x is out
         of bounds.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Uniform(2, 3)
         >>> print d.getRelativeLnPDF(1.5)
         -1.79769313486e+308
@@ -283,7 +283,7 @@ class Uniform(UniformDistBase, PyDistributionBase):
         a = mean - c/2
         b = a + c
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Uniform(2, 3)
         >>> print d.getMean()
         2.5

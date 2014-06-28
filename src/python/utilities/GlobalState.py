@@ -1,6 +1,6 @@
 from phycas import P
-from phycas.Utilities.io import DataSource, TreeCollection, _readFileSanityCheck
-from phycas.ReadNexus import FileFormats
+from phycas.utilities.io import DataSource, TreeCollection, _readFileSanityCheck
+from phycas.readnexus import FileFormats
 class PhyloPackage(object):
     """A container for holding characters and trees that refer to the same set
     of taxa. The object has three attributes of interest:
@@ -15,13 +15,13 @@ class PhyloPackage(object):
 
 def readFile(filepath, format=FileFormats.NEXUS, out=None):
     """Returns a (list of taxon labels, DataSource, TreeCollection) from the file `filepath`
-    
+
     Currently only supports NEXUS and only returns the last data matrix, but
-    this will be generalized to read other formats and return the 
+    this will be generalized to read other formats and return the
     supermatrix of all data matrices in the file.
-    
-    A side effect of calling this function is the resetting of the 
-        taxon_labels, 
+
+    A side effect of calling this function is the resetting of the
+        taxon_labels,
         characters, and
         trees
     attributes of the global object P
@@ -37,7 +37,7 @@ def readFile(filepath, format=FileFormats.NEXUS, out=None):
 def readFileNoSideEffects(filepath, format=FileFormats.NEXUS, out=None):
     """Returns a (list of taxon labels, DataSource, TreeCollection) from the file `filepath`"""
     _readFileSanityCheck(filepath, format, out)
-    from phycas.ReadNexus import NexusReader
+    from phycas.readnexus import NexusReader
     reader = NexusReader()
     reader.readFile(filepath)
     x = PhyloPackage()

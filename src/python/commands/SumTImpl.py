@@ -1,26 +1,26 @@
 import os,sys,math,random
 import os,sys,math,random
-#from phycas.TreeViewer import *
+#from phycas.treeviewer import *
 from phycas import *
 from phycas import useWxPhycas
-from phycas.Utilities.PhycasCommand import *
-from phycas.Utilities.CommonFunctions import CommonFunctions
-from phycas.Utilities.PDFTree import PDFTree
+from phycas.utilities.PhycasCommand import *
+from phycas.utilities.CommonFunctions import CommonFunctions
+from phycas.utilities.PDFTree import PDFTree
 
 class TreeSummarizer(CommonFunctions):
     #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
     """
     Saves consensus tree and QQ plots in pdf files.
-    
+
     """
     def __init__(self, opts):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
         Initializes TreeSummarizer object.
-        
+
         """
         CommonFunctions.__init__(self, opts)
-        
+
         self.pdf_page_width = 8.5       # should be an option
         self.pdf_page_height = 11.0     # should be an option
         self.pdf_ladderize = 'right'    # should be an option - valid values are 'right', 'left' or None
@@ -30,7 +30,7 @@ class TreeSummarizer(CommonFunctions):
             self.outgroup = None
             self.warning('Specifying True for sumt_rooted is incompatible with specifying\nsumt_outgroup_taxon; I will pretend that you set sumt_outgroup_taxon to None')
         self.num_trees_considered = 0
-    
+
     def assignEdgeLensAndSupportValues(self, tree, split_map, joint_split_map, total_samples, estimate_ccb_probs = True):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
@@ -41,11 +41,11 @@ class TreeSummarizer(CommonFunctions):
         is the sum of the edge lengths of the split over all trees in which it
         was found. The estimated edge length applied to the tree is the
         second element of the split divided by the first element.
-        
+
         Also estimates joint posterior probability using Larget's 2013 method
         (see Larget, B. 2013. The estimation of tree posterior probabilities
         using conditional clade probability distributions. Systematic Biology 62:501-511).
-        
+
         """
         #tree.recalcAllSplits(tree.getNTips())
         tree.recalcAllSplits(tree.getNObservables())
@@ -56,7 +56,7 @@ class TreeSummarizer(CommonFunctions):
             nd = nd.getNextPreorder()
             if not nd:
                 break
-            
+
             s = nd.getSplit()
             if (not self.rooted_trees) and s.isBitSet(0):
                 s.invertSplit()
@@ -67,13 +67,13 @@ class TreeSummarizer(CommonFunctions):
                 raise ValueError('could not find edge length information for the split %s' % ss)
             support = float(v[0])/float(total_samples)
             nd.setSupport(support)
-                
+
             if eq_brlen:
                 edge_len = 1.0
             else:
                 edge_len = float(v[1])/float(v[0])
             nd.setEdgeLen(edge_len)
-            
+
             if estimate_ccb_probs:
                 #is_tip_node = nd.isTip() or nd.getParent().isRoot()
                 if not nd.isTip():
@@ -101,7 +101,7 @@ class TreeSummarizer(CommonFunctions):
                     assert support > 0.0, 'support less than or equal to zero in TreeSummarizer.assignEdgeLensAndSupportValues (SumTImpl.py)'
                     cond_log_prob = math.log(joint_prob) - math.log(support)
                     larget_log_prob += cond_log_prob
-    
+
         return larget_log_prob
 
     def save_trees(self, short_names, full_names, trees):
@@ -111,14 +111,14 @@ class TreeSummarizer(CommonFunctions):
         (trees) to a nexus tree file named tree_file. If a file by that name
         exists, a new name will be invented by adding a random integer
         between 1 and 1 million to the end of the supplied tree file name.
-        
+
         """
         # we use the trees file spec to make a pdf with the same filename prefix
         trees_spec = self.optsout.trees
         m = trees_spec.mode
         if isinstance(m, SkipExistingFileBehavior):
             return
-        
+
         p = trees_spec.prefix
         if not p:
             p = trees_spec.filename
@@ -139,7 +139,7 @@ class TreeSummarizer(CommonFunctions):
                 pdf = pdf_spec.open(self.pdf_page_width, self.pdf_page_height, self.stdout)
 
             treef = trees_spec.open(self.taxon_labels, self.stdout)
-    
+
             if (pdf is None) and (treef is None):
                 return
             reroot = self.outgroup
@@ -188,13 +188,13 @@ class TreeSummarizer(CommonFunctions):
         five, evenly-spaced points. Dividing ntrees by 5 gives 2, and these
         are thus the values to be plotted:
         x     y
-        --------   x = range(0, ntrees + 1, ntrees//ndivisions) 
+        --------   x = range(0, ntrees + 1, ntrees//ndivisions)
         0    0.0     = [0, 2, 4, 6, 8, 10]
-        2    0.0   
+        2    0.0
         4    0.5   To calculate y, let k track the number of values in v
         6    0.5   that are less than x
-        8    0.5     
-        10   0.6    
+        8    0.5
+        10   0.6
         --------
         The vector x can be calculated using the range function; however,
         computing y requires a loop:
@@ -207,7 +207,7 @@ class TreeSummarizer(CommonFunctions):
         4    8   4   9    4/8  = 0.5
         5   10   6   -    6/10 = 0.6
         ----------------------------
-        
+
         """
         # candidates for phycas variable status
         splits_to_plot = 1000
@@ -238,7 +238,7 @@ class TreeSummarizer(CommonFunctions):
                 y = float(k)/float(x)
                 line_data.append((x,y))
             data.append(line_data)
-            
+
             splits_plotted += 1
             if splits_plotted == splits_to_plot:
                 break
@@ -260,11 +260,11 @@ class TreeSummarizer(CommonFunctions):
                 wxapp = wxPhycas.CreateAWTYApp()
                 wxapp.scatterPlot(data, title = 'Split Probabilities Through Time', xinfo = (0,ntrees,10,0), yinfo = (0.0,1.0,10,1))
                 wxapp.MainLoop()
-        
+
         if trivial_ignored + uninteresting_ignored > 0:
             self.stdout.info('%d trivial and %d uninteresting splits were ignored.' % (trivial_ignored, uninteresting_ignored))
         return True
-        
+
     def sojournPlot(self, pdf_factory, split_vect, ntrees):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
@@ -275,7 +275,7 @@ class TreeSummarizer(CommonFunctions):
         those that were absent during some of the non-burn-in period. This
         plot provides a visual picture of mixing in the Markov chain with
         respect to splits.
-        
+
         """
         # candidates for phycas variable status
         splits_to_plot = 1000
@@ -376,7 +376,7 @@ class TreeSummarizer(CommonFunctions):
         #print
         #print '********* new tree **********'
         #print tree.makeNumberedNewick()
-        
+
         while True:
             nd = nd.getNextPreorder()
             if not nd:
@@ -396,14 +396,14 @@ class TreeSummarizer(CommonFunctions):
         s = nd.getSplit()
         if (not self.rooted_trees) and s.isBitSet(0):
             s.invertSplit()
-            
+
         # Create a string representation of the split
         ss = s.createPatternRepresentation()
-        
+
         # Add string represention of the split to the tree_key list, which
         # will be used to uniquely identify the tree topology
         is_pendant_edge = nd.isTip() or nd.getParent().isRoot()
-        if not is_pendant_edge:                        
+        if not is_pendant_edge:
             tree_key.append(ss)
 
         # Update the split_map entry corresponding to this split
@@ -425,16 +425,16 @@ class TreeSummarizer(CommonFunctions):
         if not nd.isTip():
             #print '------------------------'
             #print '%d joint_split_map keys' % (len(joint_split_map.keys()),)
-            
+
             # Store split in joint_split_map, or update count if already in map
             stuple = (ss,)
             if stuple in joint_split_map.keys():
                 joint_split_map[stuple] += 1
             else:
                 joint_split_map[stuple] = 1
-                
+
             #print ss,joint_split_map[stuple]
-            
+
             # Grab splits of child nodes and make tuple comprising
             #NEWWAY s plus all of the child splits
             #OLDWAY s plus all but one of the child splits
@@ -462,7 +462,7 @@ class TreeSummarizer(CommonFunctions):
                 joint_split_map[stuple] += 1
             else:
                 joint_split_map[stuple] = 1
-                
+
     def findBestParentSplit(self, curr_stuple, joint_split_map):
         best_parent_key = None
         best_parent_value = 0.0
@@ -509,7 +509,7 @@ class TreeSummarizer(CommonFunctions):
                 new_stuple_list.extend(best_child_stuples)
             best_descendants.extend(new_stuple_list)
             stuple_list = new_stuple_list
-            
+
         numer_term = float(joint_split_map[parent])/float(self.num_trees_considered)
         numer = numer_term
         denom = 1.0
@@ -522,7 +522,7 @@ class TreeSummarizer(CommonFunctions):
             denom_term = float(joint_split_map[(d[0],)])/float(self.num_trees_considered)
             #denominator_terms.append(denom_term)
             denom *= denom_term
-        
+
         #print 'numer =',numer
         #print 'numerator_terms =',numerator_terms
         #print 'denom =',denom
@@ -530,7 +530,7 @@ class TreeSummarizer(CommonFunctions):
         #print 'numer/denom =',(numer/denom)
 
         return (numer/denom, [parent] + best_descendants)
-        
+
     def calcKLupper(self, joint_split_map, log_num_possible_topol):
         # First, find largest joint split frequency in joint_split_map
         max_joint_split_freq = 0.0
@@ -540,7 +540,7 @@ class TreeSummarizer(CommonFunctions):
             if len(stuple) > 1 and (joint_split_freq > max_joint_split_freq):
                 max_joint_split_freq = joint_split_freq
                 best_stuple = stuple
-    
+
         # Second, find set of compatible splits yielding highest overall posterior using Larget's method
         best_posterior, best_relateds = self.findBestRelatedSplits(best_stuple, joint_split_map)
 
@@ -573,13 +573,13 @@ class TreeSummarizer(CommonFunctions):
         print
         print 'max_joint_split_freq =', max_joint_split_freq
         print 'best_stuple =', best_stuple
-        
+
         best_posterior, best_relateds = self.findBestRelatedSplits(best_stuple, joint_split_map)
         print 'best_posterior =',best_posterior
         print 'best related splits:'
         for k in best_relateds:
             print '  ',joint_split_map[k],'<--',k
-            
+
         log_best_posterior = math.log(best_posterior)
         assert log_best_posterior > -log_num_possible_topol, 'log_best_posterior () <= -log_num_possible_topol (), which should not be possible' % (log_best_posterior,-log_num_possible_topol)
         print 'KL upper bound =', (log_best_posterior + log_num_possible_topol)
@@ -591,18 +591,18 @@ class TreeSummarizer(CommonFunctions):
         a summary of splits found in the sampled trees, a summary of distinct
         tree topologies found, and a majority rule consensus tree, which is
         saved to the file sumt_output_tree_file if this variable is not None.
-        
+
         """
         # Check to make sure user specified an input tree file
         input_trees = self.opts.trees
         self.stdout.phycassert(input_trees, 'trees cannot be None or empty when sumt method is called')
-        
+
         num_trees = 0
         self.num_trees_considered = 0
         split_lookup = {}   # keys are string representations of splits, values are split objects
         split_map = {}
         joint_split_map = {}
-        
+
         # key is list of splits, value is tuple(count, newick, treelen, 1st time seen, 2nd time seen, ...)
         tree_map = {}
 
@@ -620,21 +620,21 @@ class TreeSummarizer(CommonFunctions):
         # dictionary of splits (split_map) and the dictionary of tree topologies
         # (tree_map), respectively
         self.stdout.info('Compiling lists of tree topologies and splits...')
-        t = Phylogeny.Tree()
+        t = phylogeny.Tree()
         if self.rooted_trees:
             t.setRooted()
 
         # values used for display purposes
         split_field_width = 0
         sojourn_field_width = 2 + math.floor(math.log10(float(num_stored_trees)))
-        
+
         curr_tree = 0
         for tree_def in self.stored_tree_defs:
             curr_tree += 1
             if curr_tree % (num_stored_trees//10) == 0:
                 pct_done = 100.0*curr_tree/num_stored_trees
                 self.stdout.info('  %.1f%% done' % pct_done)
-            
+
             if num_trees < self.opts.burnin:
                 num_trees += 1
                 continue
@@ -654,9 +654,9 @@ class TreeSummarizer(CommonFunctions):
                 # this is necessary only if number of taxa varies from tree to tree
                 split_field_width = ntips
             t.recalcAllSplits(ntips)
-            
+
             treelen = self.recordTreeInMaps(t, split_lookup, split_map, joint_split_map, tree_key)
-        
+
             # Update tree_map, which is a map with keys equal to lists of internal node splits
             # and values equal to 2-element lists containing the frequency and newick tree
             # description
@@ -683,7 +683,7 @@ class TreeSummarizer(CommonFunctions):
         if self.num_trees_considered == 0:
             self.stdout.info('\nSumT finished.')
             return
-        # Sort the splits from highest posterior probabilty to lowest        
+        # Sort the splits from highest posterior probabilty to lowest
         split_vect = split_map.items()
         c = lambda x,y: cmp(y[1][0], x[1][0])
         split_vect.sort(c)
@@ -708,12 +708,12 @@ class TreeSummarizer(CommonFunctions):
         num_trivial = 0
         split_info = []
         for i,(k,v) in enumerate(split_vect):
-            # len(v) is 2 in trivial splits because these splits are associated with tips, 
+            # len(v) is 2 in trivial splits because these splits are associated with tips,
             # for which the sojourn history is omitted (v[0] is frequency and v[1] is edge length sum)
             trivial_split = len(v) == 2 and True or False
             if trivial_split:
                 num_trivial += 1
-            
+
             # Split frequency is simply the first element of the list
             split_freq = v[0]
 
@@ -745,7 +745,7 @@ class TreeSummarizer(CommonFunctions):
                         num_sojourns += 1
                     prev = curr
 
-            split_str = split_fmt_str % k            
+            split_str = split_fmt_str % k
             freq_str = sojourn_fmt_str % split_freq
             s0_str = sojourn_fmt_str % first_sojourn_start
             sk_str = sojourn_fmt_str % last_sojourn_end
@@ -755,19 +755,19 @@ class TreeSummarizer(CommonFunctions):
 
         # Build 50% majority rule tree if requested
         self.stdout.info('\nSaving majority-rule consensus tree...')
-        majrule = Phylogeny.Tree()
+        majrule = phylogeny.Tree()
         if self.rooted_trees:
             majrule.setRooted()
-        tm = Phylogeny.TreeManip(majrule)
+        tm = phylogeny.TreeManip(majrule)
         majrule_splits = []
         for k,v in split_vect[:first_below_50]:
             if len(v) > 2:
                 majrule_splits.append(k)
-        
+
         if len(majrule_splits) == 0:
             tm.starTree(num_trivial)
         else:
-            tm.buildTreeFromSplitVector(majrule_splits, ProbDist.Exponential(10))
+            tm.buildTreeFromSplitVector(majrule_splits, probdist.Exponential(10))
 
         self.assignEdgeLensAndSupportValues(majrule, split_map, joint_split_map, self.num_trees_considered, False)
 
@@ -803,7 +803,7 @@ class TreeSummarizer(CommonFunctions):
 
                 if done:
                     break
-                
+
                 # Determine the posterior probability and cumulative posterior probability
                 post_prob = float(v[0])/float(self.num_trees_considered)
                 cum_prob += post_prob
@@ -816,7 +816,7 @@ class TreeSummarizer(CommonFunctions):
 
                 # Determine the sampled tree that began the first sojourn (the third element of the list)
                 first_sojourn_start = v[3]
-                
+
                 # Determine the sampled tree that ended the last sojourn (the final element of the list)
                 last_sojourn_end = v[-1]
 
@@ -828,9 +828,9 @@ class TreeSummarizer(CommonFunctions):
                     if curr - prev > 1:
                         num_sojourns += 1
                     prev = curr
-                
+
                 # Save the tree topology (decorated with posterior mean edge lengths) to the tree file
-                t = Phylogeny.Tree()
+                t = phylogeny.Tree()
                 if self.rooted_trees:
                     t.setRooted()
                 v[1].buildTree(t)
@@ -899,7 +899,7 @@ class TreeSummarizer(CommonFunctions):
                 KLupper += (1.0 - larget_cum_prob)*(math.log(1.0 - larget_cum_prob))
             if KLupper > KL_max:
                 KLupper = KL_max
-                
+
             KL_near_upper = self.calcKLupper(joint_split_map, KL_max)
 
             self.stdout.info('\nTopological information content:')
@@ -929,7 +929,7 @@ class TreeSummarizer(CommonFunctions):
 
         self._splitsPdfWriter = None
         self._splitsPdfFilename = None
-        
+
         if self.opts.save_splits_pdf and bool(self.optsout.splits):
             try:
                 pdf_source = lambda : self._getSplitsPDFWriter()
@@ -941,15 +941,15 @@ class TreeSummarizer(CommonFunctions):
 
         self.stdout.info('\nSumT finished.')
         return split_info
-        
+
     def _getSplitsPDFWriter(self):
         if self._splitsPdfWriter is None:
-            sp = self.optsout.splits 
+            sp = self.optsout.splits
             if sp.replaceMode() and sp.sameBaseName(self.optsout.trees):
                 self.stdout.info("Splits pdf will overwrite the tree topology pdf")
             self._splitsPdfFilename = sp._getFilename()
             self._splitsPdfWriter = sp.open(11.0, 8.5, self.stdout)
         return self._splitsPdfWriter
-            
-        
+
+
 

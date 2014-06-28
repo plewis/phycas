@@ -2,17 +2,17 @@ import sys, os
 from cStringIO import StringIO
 import textwrap
 from phycas import getDefaultOutFilter, OutFilter, help_double_space, current_double_space, current_follows_help
-from phycas.PDFGen import PDFGenerator
-import phycas.ReadNexus as ReadNexus
-from phycas.Utilities.CommonFunctions import getDefaultOutputStream
-from phycas.Utilities.io import FileFormats, DataSource, TreeCollection
+from phycas.pdfgen import PDFGenerator
+import phycas.readnexus as readnexus
+from phycas.utilities.CommonFunctions import getDefaultOutputStream
+from phycas.utilities.io import FileFormats, DataSource, TreeCollection
 from phycas import OutputFilter, name_of
 import copy
-try: 
+try:
     _s = set()
 except :
     from sets import Set as set
-    
+
 _fixed_terminal_width = None
 _use_instance_names = True
 
@@ -107,7 +107,7 @@ class PhycasHelp(object):
         n = [i.__name__.lower() for i in PhycasHelp._phycas_cmd_classes if not i.hidden()]
         t = two_column_str(n)
         return """Phycas Help
-    
+
 For Python Help use "python_help()"
 
 Commands are invoked by following the name by () and then
@@ -120,7 +120,7 @@ Commands (and almost everything else in python) are case-sensitive -- so
 lower case versions of the phycas command names.
 
 The currently implemented Phycas commands are:
-  
+
 %s
 
 Use <command_name>.help to see the detailed help for each command. So,
@@ -300,13 +300,13 @@ class FileOutputSpec(PhycasOutput):
                 o.__dict__[k] = copy.deepcopy(v)
         memo[self] = o
         return o
-        
+
     def __bool__(self):
         return bool(self._is_active and (self.filename or self.prefix))
 
     def _help_str_list(self, pref=""):
         """Generates a list of strings formatted for displaying help
-        Assumes that PhycasTablePrinter._reset_term_width has been called 
+        Assumes that PhycasTablePrinter._reset_term_width has been called
         more recently than the last terminal width change)."""
         if pref:
             dpref = pref + "."
@@ -330,15 +330,15 @@ class FileOutputSpec(PhycasOutput):
             opts_help.extend(self._options._help_str_list(pref))
         return opts_help
 
-    def _write_latex_item(self, out, pref="", cmdname=""): 
+    def _write_latex_item(self, out, pref="", cmdname=""):
         """Generates a list of strings formatted for displaying help
-        Assumes that PhycasTablePrinter._reset_term_width has been called 
+        Assumes that PhycasTablePrinter._reset_term_width has been called
         more recently than the last terminal width change)."""
         if pref:
             dpref = _escape_for_latex(pref + ".")
         else:
             dpref = ""
-            
+
         out.write("\index{%s!%s}\item[\\bftt  %s] %s\n" % (cmdname,  _escape_for_latex(pref), _escape_for_latex(pref), _escape_for_latex(self._help_str)))
         fmt_def = " (default :%s)"
         d = self.prefix and (fmt_def % _escape_for_latex(repr(self.filename))) or ""
@@ -346,7 +346,7 @@ class FileOutputSpec(PhycasOutput):
         d = self.filename and (fmt_def % _escape_for_latex(repr(self.filename))) or ""
         out.write("\index{%s!%sfilename}\item[\\bftt  %sfilename] %s%s\n" % (cmdname, dpref, dpref, "The full file name. Specifying this field preempts `prefix` setting.", d))
         d = _escape_for_latex(self.mode)
-        out.write("\index{%s!%smode}\item[\\bftt  %smode] %s%s\n" % (cmdname, dpref, dpref, 
+        out.write("\index{%s!%smode}\item[\\bftt  %smode] %s%s\n" % (cmdname, dpref, dpref,
                                                    _escape_for_latex('Controls the behavior when the file is present. Valid settings are %s. SKIP results in no file being created, regardless of whether the file name already exists (use this to avoid creating a specific type of output file). ADD_NUMBER indicates that a number will be added to the end of the file name (or prefix) to make the name unique' % self._getValidModeNames()),
                                                    d))
         if len(self._valid_formats) > 1:
@@ -358,7 +358,7 @@ class FileOutputSpec(PhycasOutput):
 
     def _current_str_list(self, pref=""):
         """Generates a list of strings formatted for displaying current value.
-        Assumes that PhycasTablePrinter._reset_term_width has been called 
+        Assumes that PhycasTablePrinter._reset_term_width has been called
         more recently than the last terminal width change)."""
         if pref:
             dpref = pref + "."
@@ -473,11 +473,11 @@ class FileOutputSpec(PhycasOutput):
         # Do not open the file if user has deactivated
         if not self.__bool__():
             return None
-            
+
         # Do not open the file if user has chosen mode = SKIP
         if isinstance(self.mode, SkipExistingFileBehavior):
             return None
-            
+
         self._opened_filename = self._getFilename()
         self._prexisting = os.path.exists(self._opened_filename)
         m =  isinstance(self.mode, AppendExistingFileBehavior) and "a" or "w"
@@ -554,7 +554,7 @@ class BinaryOutputSpec(FileOutputSpec):
 
 class DevNullWriter(object):
     """Class that fulfills the TreeWriter and MatrixWriter interface, but does
-    not write any data.""" 
+    not write any data."""
     def writeTree(self, tree, name="", rooted=None):
         pass
     def writeCharacters(self, data_matrix):
@@ -565,7 +565,7 @@ class DevNullWriter(object):
 
 class MultiWriter(object):
     """Class that fulfills the TreeWriter and MatrixWriter interface, by
-    delegating the information to other writers.""" 
+    delegating the information to other writers."""
     def __init__(self, writers=()):
         """Should pass in a list of opened writers."""
         self.writers = writers
@@ -595,8 +595,8 @@ class TreeOutputSpec(TextOutputSpec):
         if self._getFilename():
             o = FileOutputSpec.open(self, out)
         if FileFormats.NEXUS == self.format:
-            from phycas.ReadNexus._NexusReader import NexusWriter
-            self._writer = NexusWriter(o, self._prexisting and self.appendMode(), taxa_labels)  
+            from phycas.readnexus._NexusReader import NexusWriter
+            self._writer = NexusWriter(o, self._prexisting and self.appendMode(), taxa_labels)
         else:
             assert(False)
         if self.collection:
@@ -616,8 +616,8 @@ class TreeOutputSpec(TextOutputSpec):
             self._writer = None
         self._opened_pdfgen = None
         FileOutputSpec.close(self)
-            
-    
+
+
 class PDFOutputSpec(BinaryOutputSpec):
     def _getSuffix(self):
         return ".pdf"
@@ -633,7 +633,7 @@ class PDFOutputSpec(BinaryOutputSpec):
         pdf = PDFGenerator(w, h)
         self._opened_pdfgen = pdf
         return pdf
-        
+
     def close(self):
         if self._opened_pdfgen:
             assert(self._opened_file)
@@ -643,9 +643,9 @@ class PDFOutputSpec(BinaryOutputSpec):
 
 class PhycasCommandOutputOptions(object):
     """The PhycasCommandOutputOptions is a very simple class written to
-    provide a standardized place for command output settings to reside so 
+    provide a standardized place for command output settings to reside so
     that users can clearly see what the output options are (without cluttering
-    command settings with lots of settings such as tree_out_replace, 
+    command settings with lots of settings such as tree_out_replace,
     tree_out_append...
     """
     def __init__(self, verbosity_level=None):
@@ -658,7 +658,7 @@ class PhycasCommandOutputOptions(object):
         self.__dict__["_help_order"] = []
         self.__dict__["_outputter"] = None
         self.__dict__["_stream"] = None
-        
+
     def __deepcopy__(self, memo):
         c = memo.get(self)
         if not c is None:
@@ -671,7 +671,7 @@ class PhycasCommandOutputOptions(object):
                 o.__dict__[k] = copy.deepcopy(v, memo)
         memo[self] = o
         return o
-        
+
     def __setattr__(self, name, value):
         if name == "_outputter" or name == "_stream":
             self.__dict__[name] = value
@@ -708,10 +708,10 @@ class PhycasCommandOutputOptions(object):
 
     def _silence(self):
         """Silence the output from the associated function.
-        
+
         Somewhat counterintuitively, this function moves the level down
         to OutFilter.ERRORS rather than OutFilter.SILENT.
-        The OutFilter.SILENT level is intended only for developers 
+        The OutFilter.SILENT level is intended only for developers
         It can be set by (for an instance called `out`):
             out._silence()
             out.level = OutFilter.SILENT
@@ -719,7 +719,7 @@ class PhycasCommandOutputOptions(object):
         self.__dict__["level"] = OutFilter.ERRORS
         for n in self.__dict__["_help_order"]:
             self.__dict__[n]._silence()
-       
+
     def _activate(self):
         self.__dict__["level"] = self._cached_level
         for n in self.__dict__["_help_order"]:
@@ -727,7 +727,7 @@ class PhycasCommandOutputOptions(object):
 
     def _help_str_list(self, pref=""):
         """Generates a list of strings formatted for displaying help
-        Assumes that PhycasTablePrinter._reset_term_width has been called 
+        Assumes that PhycasTablePrinter._reset_term_width has been called
         more recently than the last terminal width change)."""
         if pref:
             dpref = pref + "."
@@ -757,7 +757,7 @@ class PhycasCommandOutputOptions(object):
 
     def _current_str_list(self, pref=""):
         """Generates a list of strings formatted for displaying help
-        Assumes that PhycasTablePrinter._reset_term_width has been called 
+        Assumes that PhycasTablePrinter._reset_term_width has been called
         more recently than the last terminal width change)."""
         if pref:
             dpref = pref + "."
@@ -776,7 +776,7 @@ class PhycasCommandOutputOptions(object):
        return "\n".join(self._help_str_list())
 
     def getStdOutputter(self):
-        """Returns self._outputter, or a filter around self._stream, or (if 
+        """Returns self._outputter, or a filter around self._stream, or (if
         both of those attributes are None) a filter around the default
         output stream.
         """
@@ -788,7 +788,7 @@ class PhycasCommandOutputOptions(object):
         return OutputFilter(self.level, s)
 
 class PhycasCmdOpts(object):
-    
+
     def __init__(self, command=None, args=None):
         self.__dict__["_current"] = {}
         self.__dict__["_transformer"] = {}
@@ -829,7 +829,7 @@ class PhycasCmdOpts(object):
         out.write('\\begin{description}\n')
         self._write_latex_item(out, pref, cmdname)
         out.write('\\end{description}\n')
-        
+
     def _write_latex_item(self, out, pref="", cmdname=""):
         "writes the options as items in LaTeX"
         if pref:
@@ -856,7 +856,7 @@ class PhycasCmdOpts(object):
 
     def _help_str_list(self, pref=""):
         """Generates a list of strings formatted for displaying help
-        Assumes that PhycasTablePrinter._reset_term_width has been called 
+        Assumes that PhycasTablePrinter._reset_term_width has been called
         more recently than the last terminal width change)."""
         if pref:
             dpref = pref + "."
@@ -870,13 +870,13 @@ class PhycasCmdOpts(object):
                 n = pref and "%s%s" % (dpref, oc_name) or oc_name
                 s = PhycasTablePrinter.format_help(n, i[2])
                 if help_double_space and i != self._optionsInOrder[0]:
-                    s = '\n%s' % s                                    
+                    s = '\n%s' % s
                 opts_help.append(s)
         return opts_help
 
     def _current_str_list(self, pref=""):
         """Generates a list of strings formatted for displaying help
-        Assumes that PhycasTablePrinter._reset_term_width has been called 
+        Assumes that PhycasTablePrinter._reset_term_width has been called
         more recently than the last terminal width change)."""
         if pref:
             dpref = pref + "."
@@ -890,7 +890,7 @@ class PhycasCmdOpts(object):
                 n = pref and "%s%s" % (dpref, oc_name) or oc_name
                 s = PhycasTablePrinter.format_help(n, str_value_for_user(self._current[name]))
                 if current_double_space and i != self._optionsInOrder[0]:
-                    s = '\n%s' % s                                    
+                    s = '\n%s' % s
                 opts_help.append(s)
         return opts_help
 
@@ -922,15 +922,15 @@ class PhycasCmdOpts(object):
             self._command.__dict__[name] = self._current[name]
         else:
             raise AttributeError("%s does not contain an attribute %s" % (self._command.__class__.__name__, name))
-            
+
     def __contains__(self, name):
         return name in self._current
-        
+
     def __getattr__(self, name):
         if name in self._current:
             return self._current[name]
         raise AttributeError("%s does not contain an attribute %s" % (self.__class__.__name__, name))
-        
+
     def __setattr__(self, name, value):
         if name in self.__dict__:
             self.__dict__[name] = value
@@ -982,7 +982,7 @@ def FileExistsValidate(opts, v):
     if not os.path.exists(v):
         raise ValueError("Expecting '%s' to be an existing file" % v)
     return v
-    
+
 def FileExistsOrNoneValidate(opts, v):
     if v is None:
         return None
@@ -990,7 +990,7 @@ def FileExistsOrNoneValidate(opts, v):
     if not os.path.exists(v):
         raise ValueError("Expecting '%s' to either be None or an existing file" % v)
     return v
-    
+
 def FileDoesNotExistOrNoneValidate(opts, v):
     if v is None:
         return None
@@ -998,7 +998,7 @@ def FileDoesNotExistOrNoneValidate(opts, v):
     if os.path.exists(v):
         raise ValueError("Expecting '%s' to either be None or the name of a file that does not already exist" % v)
     return v
-    
+
 class EnumArgValidate(object):
     def __init__(self, valid_values):
         l = []
@@ -1094,11 +1094,11 @@ class ProbArgValidate(FloatArgValidate):
         FloatArgValidate.__init__(self, min=0.0, max=1.0)
 
 def LotArgValidate(opts, v):
-    from phycas.ProbDist._Lot import Lot
+    from phycas.probdist._Lot import Lot
     if isinstance(v, Lot):
         return v
-    raise ValueError("Mest be a ProbDist.Lot instance")
-    
+    raise ValueError("Mest be a probdist.Lot instance")
+
 class PhycasCommandHelp(object):
     def __init__(self, command, cmd_name, cmd_descrip):
         self.command = command
@@ -1110,7 +1110,7 @@ class PhycasCommandHelp(object):
             return "\n".join([self.explain(), "\n", self.current()])
         else:
             return "\n" + self.explain()
-            
+
     def explain(self):
         PhycasTablePrinter._reset_term_width()
         command = self.command
@@ -1192,7 +1192,7 @@ class PhycasManualGenerator(object):
     def __str__(self):
         """Allows users to avoid using function call syntax"""
         self.manual()
-        
+
     def __call__(self):
         """Creates a LaTeX file whose name is <command name>.tex that can be included in the Phycas manual"""
         self.manual()
@@ -1217,9 +1217,9 @@ class PhycasCommand(object):
         m = PhycasManualGenerator(self, cmd_name, cmd_descrip)
         self.__dict__["curr"] = self.__dict__["current"] # allow abbreviation for current
         self.__dict__["manual"] = m
-        
+
     def hidden():
-        """ 
+        """
         Override this function to return True if you want to keep a class's name from being
         displayed in the main phycas help display.
         """
@@ -1276,14 +1276,14 @@ class PhycasCommand(object):
             self.__dict__[name] = value
         else:
             raise AttributeError("%s has no attribute %s" % (self.__class__.__name__, name))
-            
+
     def __getattr__(self, name):
         nl = name.lower()
         try:
             return self.__dict__[nl]
         except:
             raise AttributeError("%s has no attribute %s" % (self.__class__.__name__, name))
-            
+
     def set(self, **kwargs):
         "Sets the attributes of a command using keyword arguments"
         old = {}
@@ -1297,7 +1297,7 @@ class PhycasCommand(object):
             for key, value in old.iteritems():
                 o.set_unchecked(key, value)
             raise
-            
+
     def _brief_str(self):
         global _use_instance_names
         v = None
@@ -1307,7 +1307,7 @@ class PhycasCommand(object):
             return v
         v = "with id=%d" % id(self)
         return "The %s command instance %s" % (self.help.cmd_name, v)
-        
+
     def _getRNGOptions():
         return [("rng", None, "A pseudo-random number generator instance", LotArgValidate),
                 ("random_seed", 0, "Determines the random number seed used; specify 0 to generate seed automatically from system clock", IntArgValidate(min=0))]

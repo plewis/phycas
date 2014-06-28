@@ -1,19 +1,19 @@
 import copy, os, sys, math, random, copy
-from phycas.Utilities.PhycasCommand import str_value_for_user
-from phycas.Utilities.CommonFunctions import CommonFunctions
-from phycas.Utilities.io import TreeCollection
-from phycas import Phylogeny, Newick
+from phycas.utilities.PhycasCommand import str_value_for_user
+from phycas.utilities.CommonFunctions import CommonFunctions
+from phycas.utilities.io import TreeCollection
+from phycas import phylogeny, Newick
 
 class TreeSimulator(CommonFunctions, TreeCollection):
     #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
     """
-    A collection of simulated trees.  
-    
+    A collection of simulated trees.
+
     The n_trees attribute controls the size of the collection.  If it is set to
     0 then the collection will be bottomless and trees will not be stored (thus
     indexing the collection is not supported).
-    
-    If n_trees is > 0, then the trees will be simulated on demand, but stored 
+
+    If n_trees is > 0, then the trees will be simulated on demand, but stored
     so that the same tree will be returned with subsequent indexing with the same
     number.
     """
@@ -23,7 +23,7 @@ class TreeSimulator(CommonFunctions, TreeCollection):
         """
         Initializes TreeSummarizer object by assigning supplied phycas object
         to a data member variable.
-        
+
         """
         CommonFunctions.__init__(self, opts)
         self.r = self._getLot()
@@ -77,12 +77,12 @@ class TreeSimulator(CommonFunctions, TreeCollection):
             raise ValueError("TreeSimulator cannot be created with an empty list of taxon_labels and n_taxa set to 0")
         tl = self.taxon_labels
         if tl:
-            t = Phylogeny.Tree(taxon_labels=self.taxon_labels)
+            t = phylogeny.Tree(taxon_labels=self.taxon_labels)
             ntax = len(self.taxon_labels)
         else:
-            t = Phylogeny.Tree()
+            t = phylogeny.Tree()
             ntax = self.n_taxa
-        tm = Phylogeny.TreeManip(t)
+        tm = phylogeny.TreeManip(t)
         eld = self.edgelen_dist
         self.stdout.debugging("RandomTree._simulateTree seed = %d" %self.r.getSeed())
         n = self.newick
@@ -149,8 +149,8 @@ class TreeSimulator(CommonFunctions, TreeCollection):
         diff_len = k - len(self.trees)
         if diff_len > 0:
             self.trees.extend([None]*diff_len)
-        
-            
+
+
     def __len__(self):
         if self.n_trees < 1:
             raise TypeError("TreeSimulator without n_trees has no len()")
@@ -205,4 +205,4 @@ class TreeSimulator(CommonFunctions, TreeCollection):
     n_trees = property(getNTrees, setNTrees)
     n_taxa = property(getNTaxa, setNTaxa)
     newick = property(getNewick, setNewick)
-    
+

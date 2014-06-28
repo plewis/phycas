@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# This script expects certain environmental variables to be defined before it is run
-# Examples of the necessary definitions are commented out below; modify for your purpose
-# and, ideally, move these definitions to your .bashrc or .bash_profile script
+# This script expects certain environmental variables (BOOST_ROOT, PYTHON_ROOT,
+# and NCL_INSTALL_DIR) to be defined before it is run. Examples of the necessary
+# definitions are commented out below; modify appropriately for your installation.
 
 # Specify "linux" or "clang" (for macos mavericks)
 export OSTYPE="clang"

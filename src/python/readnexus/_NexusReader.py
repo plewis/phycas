@@ -1,5 +1,5 @@
 from _ReadNexusExt import *
-from phycas.DataMatrix._DataMatrix import DataMatrix
+from phycas.datamatrix._DataMatrix import DataMatrix
 import re
 
 _ROUND_TRIP_EVERY_NEXUS_READ = False
@@ -33,7 +33,7 @@ class TreeDescription(object):
         in the the variable `tree`
         Returns the `tree` instance."""
         if tree is None:
-            tree = Phylogeny.Tree()
+            tree = phylogeny.Tree()
         tree.buildFromString(self.newick, False) # tree descriptions from NCL 2.1 are 1-based not 0-based
         return tree
     name = property(getNameFromC)
@@ -168,7 +168,7 @@ class NexusReader(NexusReaderBase):
         Need to write.
 
         >>> from phycas import *
-        >>> reader = ReadNexus.NexusReader()
+        >>> reader = readnexus.NexusReader()
         >>> reader.readFile(getPhycasTestData('nyldna4.nex'))
         >>> print reader.getLastDiscreteMatrix().n_char
         3080

@@ -1,8 +1,8 @@
 import os,sys,math
 from phycas import *
-import phycas.Phylogeny as Phylogeny
-import phycas.ProbDist as ProbDist
-import phycas.Likelihood as Likelihood
+import phycas.phylogeny as phylogeny
+import phycas.probdist as probdist
+import phycas.likelihood as likelihood
 from LikelihoodCore import LikelihoodCore
 from MarkovChain import MarkovChain
 

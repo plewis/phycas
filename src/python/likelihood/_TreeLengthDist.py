@@ -1,4 +1,4 @@
-from phycas.ProbDist._PyDistributionBase import PyDistributionBase
+from phycas.probdist._PyDistributionBase import PyDistributionBase
 from _LikelihoodExt import *
 
 class TreeLengthDist(TreeLengthDistBase, PyDistributionBase):
@@ -26,7 +26,7 @@ class TreeLengthDist(TreeLengthDistBase, PyDistributionBase):
         external edge lengths, and the ratio of internal/external edge
         lengths.
 
-        >>> from phycas.Likelihood import *
+        >>> from phycas.likelihood import *
         >>> d = TreeLengthDist(1.0, 0.1, 1.0, 0.8)
 
         """
@@ -55,7 +55,7 @@ class TreeLengthDist(TreeLengthDistBase, PyDistributionBase):
         Returns a string that could be used to initialize another 
         TreeLengthDist object identical to this one. e.g.,
 
-        >>> from phycas.Likelihood import *
+        >>> from phycas.likelihood import *
         >>> d = TreeLengthDist(1.0, 0.1, 1.0, 0.8)
         >>> print d.__str__()
         TreeLengthDist(1.00000, 0.10000, 1.00000, 0.80000)
@@ -69,7 +69,7 @@ class TreeLengthDist(TreeLengthDistBase, PyDistributionBase):
         Returns a string that could be used to initialize another 
         TreeLengthDist object identical to this one. e.g.,
 
-        >>> from phycas.Likelihood import *
+        >>> from phycas.likelihood import *
         >>> d = TreeLengthDist(1.0, 0.1, 1.0, 0.8)
         >>> print d.__repr__()
         TreeLengthDist(1.00000, 0.10000, 1.00000, 0.80000)
@@ -83,7 +83,7 @@ class TreeLengthDist(TreeLengthDistBase, PyDistributionBase):
         Substitutes a different random number generator to use when drawing
         samples. e.g.,
 
-        >>> from phycas.Likelihood import *
+        >>> from phycas.likelihood import *
         >>> g = Lot()
         >>> g.setSeed(1357)
         >>> d1 = TreeLengthDist(1.0, 0.1, 1.0, 0.8)
@@ -118,7 +118,7 @@ class TreeLengthDist(TreeLengthDistBase, PyDistributionBase):
         seed! If you have already called setLot, you probably want to call
         the setSeed function of that Lot ojbect. e.g.,
 
-        >>> from phycas.Likelihood import *
+        >>> from phycas.likelihood import *
         >>> d = TreeLengthDist(1.0, 0.05, 1.0, 1.0)
         >>> d.setSeed(135)
         >>> print "%.12f" % d.sample(4)
@@ -150,7 +150,7 @@ class TreeLengthDist(TreeLengthDistBase, PyDistributionBase):
         this TreeLengthDist object. Python list comprehensions can be used to
         store many simulated samples for use in subsequent calculations.
 
-        >>> from phycas.Likelihood import *
+        >>> from phycas.likelihood import *
         >>> d = TreeLengthDist(1,.1,1,1)
         >>> d.setSeed(97531)
         >>> samples = [d.sample(4) for i in range(3)]
@@ -169,7 +169,7 @@ class TreeLengthDist(TreeLengthDistBase, PyDistributionBase):
         Evaluates the probability density function for the supplied tree t.
         Returns the natural logarithm of the density. e.g.,
 
-        >>> from phycas.Likelihood import *
+        >>> from phycas.likelihood import *
         >>> d = TreeLengthDist(1, .1, 1, 1)
         >>> tree = Tree()
         >>> tree.buildFromString('(a:.1,b:.1,(c:.1,d:.1):.1')

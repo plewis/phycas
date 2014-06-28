@@ -15,7 +15,7 @@ class Lognormal(LognormalDistBase, PyDistributionBase):
         X ~ Lognormal(0.0, 1.0) results in a distribution such that the mean
         of log(X) is 0.0 and the standard deviation of log(X) is 1.0.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Lognormal(0.0, 1.0)
         >>> print '%.5f' % d.getMean()
         1.64872
@@ -55,7 +55,7 @@ class Lognormal(LognormalDistBase, PyDistributionBase):
         Returns a string that could be used to initialize another Lognormal
         object identical to this one. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Lognormal(2, 3)
         >>> print d.__str__()
         Lognormal(2.00000, 3.00000)
@@ -69,7 +69,7 @@ class Lognormal(LognormalDistBase, PyDistributionBase):
         Returns a string that could be used to initialize another Lognormal
         object identical to this one. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Lognormal(2, 3)
         >>> print d.__repr__()
         Lognormal(2.00000, 3.00000)
@@ -117,7 +117,7 @@ class Lognormal(LognormalDistBase, PyDistributionBase):
         seed! If you have already called setLot, you probably want to call
         the setSeed function of that Lot ojbect. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Lognormal(2, 3)
         >>> d.setSeed(135)
         >>> print "%.12f" % d.sample()
@@ -150,7 +150,7 @@ class Lognormal(LognormalDistBase, PyDistributionBase):
         from this distribution). The mean of a Lognormal(logmean, logsd) 
         random variable is exp(logmean + logsd^2/2)
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Lognormal(2, 3)
         >>> print '%.5f' % d.getMean()
         665.14163
@@ -166,7 +166,7 @@ class Lognormal(LognormalDistBase, PyDistributionBase):
         samples from this distribution). The variance of a Lognormal(logmean, 
         logsd) random variable is (exp(logsd^2) - 1)*exp(2*logmean + logsd^2).
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Lognormal(2, 3)
         >>> print '%.5f' % d.getVar()
         3584470432.73958
@@ -181,7 +181,7 @@ class Lognormal(LognormalDistBase, PyDistributionBase):
         theoretical standard deviation (i.e., it will not change if sample is
         called to generate samples from this distribution).
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Lognormal(2, 3)
         >>> print '%.5f' % d.getStdDev()
         59870.44707
@@ -196,7 +196,7 @@ class Lognormal(LognormalDistBase, PyDistributionBase):
         x. This is the integral of the probability density function from 
         negative infinity up to the value x.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Lognormal(0, 3)
         >>> print '%.5f' % d.getCDF(0.0)
         0.00000
@@ -211,7 +211,7 @@ class Lognormal(LognormalDistBase, PyDistributionBase):
         by this Lognormal object. Python list comprehensions can be used to
         store many simulated samples for use in subsequent calculations.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Lognormal(0, 3)
         >>> d.setSeed(97531)
         >>> samples = [d.sample() for i in range(3)]
@@ -230,7 +230,7 @@ class Lognormal(LognormalDistBase, PyDistributionBase):
         Evaluates the probability density function at the supplied value x.
         Returns the natural logarithm of the density at x. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Lognormal(0, 3)
         >>> ln_pdf = d.getLnPDF(1)
         >>> print '%.5f' % ln_pdf
@@ -276,7 +276,7 @@ class Lognormal(LognormalDistBase, PyDistributionBase):
         """
         Sets the mean and variance of this distribution. 
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Lognormal(2, 3)
         >>> print '%.5f' % d.getMean()
         665.14163

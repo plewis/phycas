@@ -34,7 +34,7 @@ relrate_MLEs    = [4.28396, 34.10179,  1.39027,  2.53545, 40.60048,  1.00000]   
 state_freq_MLEs = [0.376859, 0.096002, 0.094516, 0.432623]
 shape_MLE       = 0.146955
 pinvar_MLE      = 0.621227
-    
+
 # model type (jc, hky or gtr)
 model.type = 'gtr'
 
@@ -57,7 +57,7 @@ model.gamma_shape_prior = Exponential(1.0)
 model.pinvar_model = False
 
 # edge lengths
-model.edgelen_hyperprior = None    
+model.edgelen_hyperprior = None
 model.edgelen_prior = Exponential(40.0)
 #model.internal_edgelen_prior = Exponential(40.0)
 #model.external_edgelen_prior = Exponential(40.0)
@@ -115,7 +115,7 @@ elif partition_scheme == 'genecodon':
 else:
     print 'Sorry, unrecognized scheme (%s)' % partition_scheme
     sys.exit()
-        
+
 # read in the data
 mcmc.data_source = 'marshall.nex'
 
@@ -155,7 +155,7 @@ mcmc.burnin = 500
 mcmc.ncycles = 10000
 mcmc.sample_every = 10
 mcmc.report_every = 1000
-#mcmc()
+mcmc()
 
 refdist.burnin = 1
 refdist.params = mcmcprefix+'.p'
@@ -188,4 +188,4 @@ sump.file         = ssprefix + '.p'
 sump.out.log      = sumpprefix + '.sump.txt'
 sump.out.log.mode = REPLACE
 sump()
-        
+

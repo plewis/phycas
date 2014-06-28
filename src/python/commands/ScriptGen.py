@@ -1,5 +1,5 @@
-from phycas.Utilities.PhycasCommand import *
-from phycas.Commands.ScriptGenImpl import ScriptGenImpl
+from phycas.utilities.PhycasCommand import *
+from phycas.commands.ScriptGenImpl import ScriptGenImpl
 import copy
 
 class ScriptGen(PhycasCommand):

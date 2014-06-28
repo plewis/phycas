@@ -15,7 +15,7 @@ class Bernoulli(BernoulliDistBase, PyDistributionBase):
         """
         Specify the probability p of a success. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Bernoulli(0.1)
         >>> print d.getMean()
         0.1
@@ -53,7 +53,7 @@ class Bernoulli(BernoulliDistBase, PyDistributionBase):
         Returns a string that could be used to initialize another
         Bernoulli object identical to this one. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Bernoulli(0.1)
         >>> print d.__str__()
         Bernoulli(0.10000)
@@ -67,7 +67,7 @@ class Bernoulli(BernoulliDistBase, PyDistributionBase):
         Returns a string that could be used to initialize another
         Bernoulli object identical to this one. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Bernoulli(0.1)
         >>> print d.__repr__()
         Bernoulli(0.10000)
@@ -113,7 +113,7 @@ class Bernoulli(BernoulliDistBase, PyDistributionBase):
         seed! If you have already called setLot, you probably want to call
         the setSeed function of that Lot ojbect. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Bernoulli(0.1)
         >>> d.setSeed(135)
         >>> d.sample()
@@ -145,7 +145,7 @@ class Bernoulli(BernoulliDistBase, PyDistributionBase):
         (i.e., it will not change if sample is called to generate samples
         from this distribution).
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Bernoulli(0.1)
         >>> print d.getMean()
         0.1
@@ -160,7 +160,7 @@ class Bernoulli(BernoulliDistBase, PyDistributionBase):
         variance (i.e., it will not change if sample is called to generate
         samples from this distribution).
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Bernoulli(0.1)
         >>> print d.getVar()
         0.09
@@ -175,7 +175,7 @@ class Bernoulli(BernoulliDistBase, PyDistributionBase):
         theoretical standard deviation (i.e., it will not change if sample is
         called to generate samples from this distribution).
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Bernoulli(0.1)
         >>> print d.getStdDev()
         0.3
@@ -190,7 +190,7 @@ class Bernoulli(BernoulliDistBase, PyDistributionBase):
         x. This is the sum of probabilities up to an including the state
         specified.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Bernoulli(0.1)
         >>> print d.getCDF(0)
         0.9
@@ -208,7 +208,7 @@ class Bernoulli(BernoulliDistBase, PyDistributionBase):
         can be used to store many simulated samples for use in subsequent
         calculations.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Bernoulli(0.1)
         >>> d.setSeed(97531)
         >>> print [d.sample()] * 3
@@ -223,7 +223,7 @@ class Bernoulli(BernoulliDistBase, PyDistributionBase):
         Evaluates the probability of the supplied value x. Returns the
         natural logarithm of the probability of x. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Bernoulli(0.1)
         >>> print d.getLnPDF(0)
         -0.105360515658
@@ -252,7 +252,7 @@ class Bernoulli(BernoulliDistBase, PyDistributionBase):
         reason this function requires both mean and variance is for
         compatibility with functions of the same name in other distributions.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = Bernoulli(0.1)
         >>> print d.getMean()
         0.1

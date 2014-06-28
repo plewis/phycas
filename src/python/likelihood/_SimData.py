@@ -30,7 +30,7 @@ class SimData(SimDataBase):
     the internal map representation is printed out.
 
     >>> from phycas import *
-    >>> d = Likelihood.SimData()
+    >>> d = likelihood.SimData()
     >>> d.resetPatternLength(4) # specify that there are 4 taxa
     >>> 
     >>> # Create the first pattern
@@ -82,17 +82,17 @@ class SimData(SimDataBase):
     taxon_names = phycas.reader.getTaxLabels()
     
     # Create a tree
-    phycas.tree = Phylogeny.Tree()
+    phycas.tree = phylogeny.Tree()
     model_tree = '(0:0.1,1:0.15,(2:0.025,3:0.15):0.05)'
     phycas.tree.buildFromString(model_tree, True)
     
     # Create a model
-    phycas.model = Likelihood.HKYModel()
+    phycas.model = likelihood.HKYModel()
     phycas.model.setKappa(4.0)
     phycas.model.setNucleotideFreqs(0.1, 0.2, 0.3, 0.4)
     
     # Create a likelihood object to orchestrate everything
-    phycas.likelihood = Likelihood.TreeLikelihood(phycas.model)
+    phycas.likelihood = likelihood.TreeLikelihood(phycas.model)
     phycas.likelihood.copyDataFromDiscreteMatrix(phycas.data_matrix)
     
     # Prepare the tree (e.g. equip it with transition matrices)
@@ -105,7 +105,7 @@ class SimData(SimDataBase):
     num_sites = 100
     
     # Simulate the data
-    sim_data = Likelihood.SimData()
+    sim_data = likelihood.SimData()
     phycas.likelihood.simulateFirst(sim_data, phycas.tree, phycas.r, num_sites)
     
     # Output a table showing the patterns that were simulated and the number of
@@ -167,7 +167,7 @@ class SimData(SimDataBase):
         function will delete any data stored in the internal pattern map.
         
         >>> from phycas import *
-        >>> d = Likelihood.SimData()
+        >>> d = likelihood.SimData()
         >>> d.resetPatternLength(4) # specify that there are 4 taxa
         >>> d.setState(0, 0)      # store state 0 for taxon 0
         >>> d.setState(1, 1)      # store state 1 for taxon 1

@@ -23,7 +23,7 @@ class InverseGamma(InverseGammaDistBase, PyDistributionBase):
         Specify the shape and scale parameters of the InverseGamma
         object. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = InverseGamma(2.25, 0.2)
         >>> print d.getMean()
         4.0
@@ -31,7 +31,7 @@ class InverseGamma(InverseGammaDistBase, PyDistributionBase):
         Trying to create an InverseGamma object with a shape less than
         2 results in a VAlueError exception:
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = InverseGamma(0.5, 3)
         Traceback (most recent call last):
         ...
@@ -70,7 +70,7 @@ class InverseGamma(InverseGammaDistBase, PyDistributionBase):
         Returns a string that could be used to initialize another InverseGamma
         object identical to this one. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = InverseGamma(2.25, 0.2)
         >>> print d.__str__()
         InverseGamma(2.25000, 0.20000)
@@ -84,7 +84,7 @@ class InverseGamma(InverseGammaDistBase, PyDistributionBase):
         Returns a string that could be used to initialize another
         InverseGamma object identical to this one. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = InverseGamma(2.25, 0.2)
         >>> print d.__repr__()
         InverseGamma(2.25000, 0.20000)
@@ -132,7 +132,7 @@ class InverseGamma(InverseGammaDistBase, PyDistributionBase):
         seed! If you have already called setLot, you probably want to call
         the setSeed function of that Lot ojbect. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = InverseGamma(2.25, 0.2)
         >>> d.setSeed(135)
         >>> print d.sample()
@@ -164,7 +164,7 @@ class InverseGamma(InverseGammaDistBase, PyDistributionBase):
         (i.e., it will not change if sample is called to generate samples
         from this distribution).
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = InverseGamma(2.25, 0.2)
         >>> print d.getMean()
         4.0
@@ -179,7 +179,7 @@ class InverseGamma(InverseGammaDistBase, PyDistributionBase):
         variance (i.e., it will not change if sample is called to generate
         samples from this distribution).
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = InverseGamma(2.25, 0.2)
         >>> print d.getVar()
         64.0
@@ -194,7 +194,7 @@ class InverseGamma(InverseGammaDistBase, PyDistributionBase):
         theoretical standard deviation (i.e., it will not change if sample is
         called to generate samples from this distribution).
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = InverseGamma(2.25, 0.2)
         >>> print d.getStdDev()
         8.0
@@ -209,7 +209,7 @@ class InverseGamma(InverseGammaDistBase, PyDistributionBase):
         x. This is the integral of the probability density function from 0.0
         up to the value x.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = InverseGamma(2.25, 0.2)
         >>> print d.getCDF(1.5)
         0.198360740619
@@ -224,7 +224,7 @@ class InverseGamma(InverseGammaDistBase, PyDistributionBase):
         this InverseGamma object. Python list comprehensions can be used to
         store many simulated samples for use in subsequent calculations.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = InverseGamma(2.25, 0.2)
         >>> d.setSeed(97531)
         >>> print "%.12f" % d.sample()
@@ -243,7 +243,7 @@ class InverseGamma(InverseGammaDistBase, PyDistributionBase):
         Evaluates the probability density function at the supplied value x.
         Returns the natural logarithm of the density at x. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = InverseGamma(3, 2)
         >>> print d.getLnPDF(1.5)
         -4.72778248801
@@ -275,7 +275,7 @@ class InverseGamma(InverseGammaDistBase, PyDistributionBase):
         getLnPDF instead if you need to have a correctly normalized density
         value (i.e. from a density function that integrates to 1.0)
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = InverseGamma(3, 2)
         >>> print d.getRelativeLnPDF(1.5)
         -1.95519376577
@@ -312,7 +312,7 @@ class InverseGamma(InverseGammaDistBase, PyDistributionBase):
         shape a = 2 + 12.5 = 14.5
         scale b = 1/(5 + 5*12.5) = 1/67.5 = 0.014814815
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = InverseGamma(2.25, 0.2)
         >>> print d.getMean()
         4.0

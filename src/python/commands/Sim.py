@@ -1,7 +1,7 @@
-from phycas.Utilities.PhycasCommand import *
+from phycas.utilities.PhycasCommand import *
 from phycas import model, randomtree
-from phycas.ProbDist import Exponential
-from phycas.Commands.SimImpl import SimImpl
+from phycas.probdist import Exponential
+from phycas.commands.SimImpl import SimImpl
 
 class Sim(PhycasCommand):
     def __init__(self):

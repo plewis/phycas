@@ -15,7 +15,7 @@ class TreeManip(TreeManipBase):
         >>> from phycas import *
         >>> t = Phylogeny.Tree()
         >>> tm = Phylogeny.TreeManip(t)
-        >>> d = ProbDist.Exponential(10.0)
+        >>> d = probdist.Exponential(10.0)
         >>> tm.starTree(5, d)
         >>> print t.walkPreorder()
         (0) -> [5] -> (4) -> (3) -> (2) -> (1)
@@ -35,7 +35,7 @@ class TreeManip(TreeManipBase):
 #         >>> t = Phylogeny.Tree()
 #         >>> tm = Phylogeny.TreeManip(t)
 #         >>> v = ['--****', '--**--', '----**']
-#         >>> tm.buildTreeFromSplitVector(v, ProbDist.Exponential(10.0))
+#         >>> tm.buildTreeFromSplitVector(v, probdist.Exponential(10.0))
 #         >>> print t.walkPreorder(2)
 #         (0) -> [6] -> (1) -> [4294967295] -> [4294967295] -> (3) -> (2) -> [4294967295] -> (5) -> (4)
 # 
@@ -51,7 +51,7 @@ class TreeManip(TreeManipBase):
         >>> from phycas import *
         >>> t = Phylogeny.Tree()
         >>> tm = Phylogeny.TreeManip(t)
-        >>> d = ProbDist.Exponential(10.0)
+        >>> d = probdist.Exponential(10.0)
         >>> tm.starTree(5, d)
         >>> print t.walkPreorder()
         (0) -> [5] -> (4) -> (3) -> (2) -> (1)
@@ -75,7 +75,7 @@ class TreeManip(TreeManipBase):
         then internal_dist will be made equal to external_dist.
         
         >>> from phycas import *
-        >>> r = ProbDist.Lot(13579)
+        >>> r = probdist.Lot(13579)
         >>> t = Phylogeny.Tree()
         >>> tm = Phylogeny.TreeManip(t)
         >>> tm.equiprobTree(5,r)
@@ -91,8 +91,8 @@ class TreeManip(TreeManipBase):
         mean 0.1 and variance 0.05.
         
         >>> from phycas import *
-        >>> r = ProbDist.Lot(94593)
-        >>> d = ProbDist.Gamma(1.0, 1.0)
+        >>> r = probdist.Lot(94593)
+        >>> d = probdist.Gamma(1.0, 1.0)
         >>> d.setMeanAndVariance(0.1, 0.001)
         >>> print 'mean = %.5f, variance = %.5f' % (d.getMean(), d.getVar())
         mean = 0.10000, variance = 0.00100
@@ -131,7 +131,7 @@ class TreeManip(TreeManipBase):
         
         >>> from phycas import *
         >>> t = Phylogeny.Tree()
-        >>> rng = ProbDist.Lot(13579)
+        >>> rng = probdist.Lot(13579)
         >>> tm = Phylogeny.TreeManip(t)
         >>> tm.yuleTree(5, rng, 1.5)
         >>> print t.walkPreorder()
@@ -140,8 +140,8 @@ class TreeManip(TreeManipBase):
         (1:0.10962,(2:0.29077,4:0.29077):0.00340,(3:0.22779,5:0.22779):0.06638)
 
         """
-        import phycas.ProbDist
-        dist = phycas.ProbDist.Exponential(lambd)
+        import phycas.probdist
+        dist = phycas.probdist.Exponential(lambd)
         dist.setLot(rng)
         TreeManipBase.randomTree(self, num_tips, rng, dist, True)
 
@@ -154,8 +154,8 @@ class TreeManip(TreeManipBase):
         
         >>> from phycas import *
         >>> t = Phylogeny.Tree()
-        >>> rng = ProbDist.Lot(13579)
-        >>> dist = ProbDist.Exponential(0.5)
+        >>> rng = probdist.Lot(13579)
+        >>> dist = probdist.Exponential(0.5)
         >>> dist.setLot(rng)
         >>> tm = Phylogeny.TreeManip(t)
         >>> tm.randTree(5, rng, dist)
@@ -176,8 +176,8 @@ class TreeManip(TreeManipBase):
         >>> from phycas import *
         >>> t = Phylogeny.Tree()
         >>> t.buildFromString('(1,(2,5),(3,4))')
-        >>> rng = ProbDist.Lot(13579)
-        >>> dist = ProbDist.Exponential(0.5)
+        >>> rng = probdist.Lot(13579)
+        >>> dist = probdist.Exponential(0.5)
         >>> dist.setLot(rng)
         >>> tm = Phylogeny.TreeManip(t)
         >>> tm.setRandomEdgeLengths(dist)
@@ -199,10 +199,10 @@ class TreeManip(TreeManipBase):
         >>> from phycas import *
         >>> t = Phylogeny.Tree()
         >>> t.buildFromString('(1,(2,5),(3,4))')
-        >>> rng = ProbDist.Lot(13579)
-        >>> edist = ProbDist.Exponential(1.0)
+        >>> rng = probdist.Lot(13579)
+        >>> edist = probdist.Exponential(1.0)
         >>> edist.setLot(rng)
-        >>> idist = ProbDist.Exponential(10.0)
+        >>> idist = probdist.Exponential(10.0)
         >>> idist.setLot(rng)
         >>> tm = Phylogeny.TreeManip(t)
         >>> tm.setRandomInternalExternalEdgeLengths(idist, edist)

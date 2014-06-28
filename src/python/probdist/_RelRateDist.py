@@ -14,7 +14,7 @@ class RelativeRateDistribution(RelRateDistBase, PyDistributionBase):
         Specify the parameters and coefficients (probabilities of rate 
         categories) of the RelativeRateDistribution object as a tuple. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = RelativeRateDistribution((10,20,30,40),(0.25,0.25,0.25,0.25))
         >>> print '(%.1f, %.1f, %.1f, %.1f)' % tuple([x for x in d.getMean()])
         (0.4, 0.8, 1.2, 1.6)
@@ -35,7 +35,7 @@ class RelativeRateDistribution(RelRateDistBase, PyDistributionBase):
         Always returns False because the relative rate distribution is 
         continuous.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = RelativeRateDistribution((1,1,1,1))
         >>> print d.isDiscrete()
         False
@@ -48,7 +48,7 @@ class RelativeRateDistribution(RelRateDistBase, PyDistributionBase):
         """
         Returns the string 'RelativeRateDistribution'
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = RelativeRateDistribution((1,1,1,1))
         >>> print d.getDistName()
         RelativeRateDistribution
@@ -62,7 +62,7 @@ class RelativeRateDistribution(RelRateDistBase, PyDistributionBase):
         Returns a string that could be used to initialize another 
         RelativeRateDistribution object identical to this one. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = RelativeRateDistribution((1,2,3,4))
         >>> print d.__str__()
         RelativeRateDistribution((1.00000,2.00000,3.00000,4.00000))
@@ -76,7 +76,7 @@ class RelativeRateDistribution(RelRateDistBase, PyDistributionBase):
         Returns a string that could be used to initialize another 
         RelativeRateDistribution object identical to this one. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = RelativeRateDistribution((1,2,3,4))
         >>> print d.__repr__()
         RelativeRateDistribution((1.00000,2.00000,3.00000,4.00000))
@@ -139,7 +139,7 @@ class RelativeRateDistribution(RelRateDistBase, PyDistributionBase):
         seed! If you have already called setLot, you probably want to call
         the setSeed function of that Lot ojbect.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = RelativeRateDistribution((1,2,3,4))
         >>> d.setSeed(135)
         >>> for x in d.sample():
@@ -184,7 +184,7 @@ class RelativeRateDistribution(RelRateDistBase, PyDistributionBase):
         from this distribution). Because this is a multivariate distribution,
         the object returned is a tuple.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = RelativeRateDistribution((1,2,3,4))
         >>> print '(%.1f, %.1f, %.1f, %.1f)' % tuple([x for x in d.getMean()])
         (0.4, 0.8, 1.2, 1.6)
@@ -200,7 +200,7 @@ class RelativeRateDistribution(RelRateDistBase, PyDistributionBase):
         samples from this distribution). Because this is a multivariate
         distribution, the object returned is a tuple.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = RelativeRateDistribution((1,2,3,4))
         >>> print '(%.5f, %.5f, %.5f, %.5f)' % tuple([x for x in d.getVar()])
         (0.13091, 0.23273, 0.30545, 0.34909)
@@ -216,7 +216,7 @@ class RelativeRateDistribution(RelRateDistBase, PyDistributionBase):
         called to generate samples from this distribution). Because this is
         a multivariate distribution, the object returned is a tuple.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = RelativeRateDistribution((1,2,3,4))
         >>> print '(%.5f, %.5f, %.5f, %.5f)' % tuple([x for x in d.getStdDev()])
         (0.36181, 0.48242, 0.55268, 0.59084)
@@ -232,7 +232,7 @@ class RelativeRateDistribution(RelRateDistBase, PyDistributionBase):
         comprehensions can be used to store many simulated samples for use in 
         subsequent calculations.
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = RelativeRateDistribution((1,2,3,4))
         >>> d.setSeed(97531)
         >>> for x in d.sample():
@@ -260,7 +260,7 @@ class RelativeRateDistribution(RelRateDistBase, PyDistributionBase):
         in the following example to ensure that the approximated CDF will be 
         the same every time this example is run:
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = RelativeRateDistribution((1,1))
         >>> d.setSeed(1357)
         >>> print d.approxCDF(d.getMean())
@@ -278,7 +278,7 @@ class RelativeRateDistribution(RelRateDistBase, PyDistributionBase):
         Evaluates the probability density function at the supplied value x.
         Returns the natural logarithm of the density at x. e.g.,
 
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = RelativeRateDistribution((1,2,3))
         >>> d.setCoefficients((1.0/6.0,1.0/3.0,1.0/2.0))
         >>> print '%.12f' % d.getLnPDF((0.5, 1.0))
@@ -344,7 +344,7 @@ class RelativeRateDistribution(RelRateDistBase, PyDistributionBase):
     #    are not needed to fully specify the Dirichlet distribution).
     #    For example:
     #
-    #    >>> from phycas.ProbDist import *
+    #    >>> from phycas.probdist import *
     #    >>> from numarray import array
     #    >>> d = Dirichlet((1,1,1))
     #    >>> m = array([1./9., 3./9., 5./9.])
@@ -376,7 +376,7 @@ class RelativeRateDistribution(RelRateDistBase, PyDistributionBase):
         out the covariances (which are not needed to fully specify the
         RelativeRateDistribution distribution). For example:
         
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = RelativeRateDistribution((1.0,1.0,1.0))
         >>> m = (1.2,1.0,0.8)
         >>> print '(%.1f, %.1f, %.1f)' % m
@@ -419,7 +419,7 @@ class RelativeRateDistribution(RelRateDistBase, PyDistributionBase):
     #    Var_i  = 1*2/36 = 0.05555556
     #    Cov_ij = -1*1/36 = -0.02777778
     #
-    #    >>> from phycas.ProbDist import *
+    #    >>> from phycas.probdist import *
     #    >>> from numpy.numarray import array
     #    >>> d = Dirichlet((1,1,1))
     #    >>> print d.getVarCovarMatrix()
@@ -472,7 +472,7 @@ class RelativeRateDistribution(RelRateDistBase, PyDistributionBase):
         Var_i  = 3*1*2/36 = 0.00091827
         Cov_ij = -3*1*1/36 = -0.083333
         
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d = RelativeRateDistribution((1,1,1))
         >>> d.printSquareMatrix(d.getVarCovarMatrix())
          0.50000000  -0.25000000  -0.25000000 
@@ -488,7 +488,7 @@ class RelativeRateDistribution(RelRateDistBase, PyDistributionBase):
         Returns the number of parameters in the Dirichlet distribution. 
         For example:
         
-        >>> from phycas.ProbDist import *
+        >>> from phycas.probdist import *
         >>> d1 = RelativeRateDistribution((1,2,3,4))
         >>> print d1.getNParams()
         4

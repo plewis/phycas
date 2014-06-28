@@ -1,14 +1,14 @@
 import warnings
 warnings.filterwarnings('ignore', '.*second conversion method ignored.*', RuntimeWarning)
 
-from phycas.Conversions import *
+from phycas.conversions import *
 from _PhylogenyExt import *
 from _Tree import *
 from _TreeNode import *
 from _TreeManip import *
 from _Split import *
 
-#print 'importing Phylogeny...'
+#print 'importing phylogeny...'
 
 def testExamples(verbose = False):
     import doctest

@@ -1,6 +1,6 @@
 from phycas import randomtree
-from phycas.Utilities.PhycasCommand import *
-from phycas.Commands.SumTImpl import TreeSummarizer
+from phycas.utilities.PhycasCommand import *
+from phycas.commands.SumTImpl import TreeSummarizer
 import copy
 class SumT(PhycasCommand):
     def __init__(self):
