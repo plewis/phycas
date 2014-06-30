@@ -235,7 +235,7 @@ inline const uint_vect_t & TipData::getConstStateListPos(
 */
 inline bool TipData::parentalCLAValid() const
 	{
-	return parWorkingCLA;
+	return (bool)parWorkingCLA;
 	}
 
 /*----------------------------------------------------------------------------------------------------------------------
@@ -245,7 +245,7 @@ inline bool TipData::parentalCLAValid() const
 */
 inline bool TipData::parentalCLACached() const
 	{
-	return parCachedCLA;
+	return (bool)parCachedCLA;
 	}
 
 } // namespace phycas

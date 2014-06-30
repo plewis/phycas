@@ -203,7 +203,7 @@ inline ConstCondLikelihoodShPtr InternalData::getValidParentalCondLikePtr() cons
 */
 inline bool InternalData::filialCLAValid() const
 	{
-	return childWorkingCLA;
+	return (bool)childWorkingCLA;
 	}
 
 /*----------------------------------------------------------------------------------------------------------------------
@@ -213,7 +213,7 @@ inline bool InternalData::filialCLAValid() const
 */
 inline bool InternalData::filialCLACached() const
 	{
-	return childCachedCLA;
+	return (bool)childCachedCLA;
 	}
 
 /*----------------------------------------------------------------------------------------------------------------------
@@ -222,7 +222,7 @@ inline bool InternalData::filialCLACached() const
 */
 inline bool InternalData::parentalCLAValid() const
 	{
-	return parWorkingCLA;
+	return (bool)parWorkingCLA;
 	}
 
 /*----------------------------------------------------------------------------------------------------------------------
@@ -232,7 +232,7 @@ inline bool InternalData::parentalCLAValid() const
 */
 inline bool InternalData::parentalCLACached() const
 	{
-	return parCachedCLA;
+	return (bool)parCachedCLA;
 	}
 
 } // namespace phycas

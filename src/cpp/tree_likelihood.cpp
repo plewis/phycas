@@ -1050,7 +1050,7 @@ bool TreeLikelihood::isValid(const TreeNode * refNd, const TreeNode * neighborCl
 			// refNd is the child of neighborCloserToEffectiveRoot
 			// If refNd has a filial CLA, then return true because that means refNd is valid
 			const InternalData * id = refNd->GetInternalData();
-			return (id->childWorkingCLA);
+			return (bool)(id->childWorkingCLA);
 			}
 		else
 			{
@@ -1058,7 +1058,7 @@ bool TreeLikelihood::isValid(const TreeNode * refNd, const TreeNode * neighborCl
 			// If neighborCloserToEffectiveRoot has a parental CLA, then return true because
 			// that means refNd is valid
 			const InternalData * id = neighborCloserToEffectiveRoot->GetInternalData();
-			return (id->parWorkingCLA);
+			return (bool)(id->parWorkingCLA);
 			}
 		}
 	}
