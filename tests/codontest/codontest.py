@@ -22,6 +22,7 @@ mcmc.nchains                    = 1
 mcmc.ncycles                    = 20
 mcmc.sample_every               = 10
 mcmc.report_every               = 1
+mcmc.ndecimals                  = 5
 mcmc.adapt_first                = 2
 mcmc.verbose                    = True
 

@@ -121,7 +121,6 @@
 		D1521FE8193B756F007ADBB5 /* MCMCManager.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = MCMCManager.py; path = src/python/commands/MCMCManager.py; sourceTree = PHYCAS_ROOT; };
 		D1521FE9193B756F007ADBB5 /* Model.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = Model.py; path = src/python/commands/Model.py; sourceTree = PHYCAS_ROOT; };
 		D1521FEA193B756F007ADBB5 /* Partition.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = Partition.py; path = src/python/commands/Partition.py; sourceTree = PHYCAS_ROOT; };
-		D1521FEB193B756F007ADBB5 /* Phycas.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = Phycas.py; path = src/python/commands/Phycas.py; sourceTree = PHYCAS_ROOT; };
 		D1521FEC193B756F007ADBB5 /* RandomTree.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = RandomTree.py; path = src/python/commands/RandomTree.py; sourceTree = PHYCAS_ROOT; };
 		D1521FED193B756F007ADBB5 /* RandomTreeImpl.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = RandomTreeImpl.py; path = src/python/commands/RandomTreeImpl.py; sourceTree = PHYCAS_ROOT; };
 		D1521FEE193B756F007ADBB5 /* RefDist.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = RefDist.py; path = src/python/commands/RefDist.py; sourceTree = PHYCAS_ROOT; };
@@ -389,7 +388,6 @@
 				D1521FE8193B756F007ADBB5 /* MCMCManager.py */,
 				D1521FE9193B756F007ADBB5 /* Model.py */,
 				D1521FEA193B756F007ADBB5 /* Partition.py */,
-				D1521FEB193B756F007ADBB5 /* Phycas.py */,
 				D1521FEC193B756F007ADBB5 /* RandomTree.py */,
 				D1521FED193B756F007ADBB5 /* RandomTreeImpl.py */,
 				D1521FEE193B756F007ADBB5 /* RefDist.py */,
