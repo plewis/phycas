@@ -20,7 +20,7 @@ SET BOOST_BUILD_PATH=%HOMEDRIVE%\boost_1_55_0\tools\build\v2
 REM Provide path to preinstalled Nexus Class Library
 REM (download from http://sourceforge.net/projects/ncl/)
 SET NCL_ALREADY_INSTALLED=
-SET PHYCAS_NCL_STATIC=
+SET PHYCAS_NCL_STATIC=1
 SET NCL_INSTALL_DIR=%HOMEDRIVE%\ncl-2.1.18
 
 REM This removes the phycas directory created by previous build

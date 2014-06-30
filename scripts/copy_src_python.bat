@@ -1,8 +1,8 @@
 @ECHO OFF
 
-REM ################################
-REM # Copy master __init__.py file #
-REM ################################
+REM ############################################################################
+REM # Copy master __init__.py file, plus LICENCE, CHANGES, README, and INSTALL #
+REM ############################################################################
 
 ECHO CWD = %CWD%
 
@@ -12,6 +12,10 @@ IF NOT EXIST "phycas" (
 
 CD phycas
 COPY ..\src\python\__init__.py .
+COPY ..\README .
+COPY ..\INSTALL .
+COPY ..\CHANGES .
+COPY ..\LICENSE .
 
 REM ###############################################
 REM # Copy python files for conversions extension #
@@ -105,7 +109,7 @@ IF NOT ERRORLEVEL 0 (
 
 CD pdfgen
 COPY ..\..\src\python\pdfgen\*.py .
-XCOPY /E /S ..\..\src\python\pdfgen\AFM .
+XCOPY /I /E /S ..\..\src\python\pdfgen\AFM AFM
 CD ..
 
 REM ###########################################
@@ -124,9 +128,9 @@ CD treeviewer
 COPY ..\..\src\python\treeviewer\*.py .
 CD ..
 
-##########################################
-# Copy python files for utilities module #
-##########################################
+REM ##########################################
+REM # Copy python files for utilities module #
+REM ##########################################
 
 IF EXIST "utilities" (
     RMDIR /S /Q utilities)
@@ -140,9 +144,9 @@ CD utilities
 COPY ..\..\src\python\utilities\*.py .
 CD ..
 
-#########################################
-# Copy python files for commands module #
-#########################################
+REM #########################################
+REM # Copy python files for commands module #
+REM #########################################
 
 IF EXIST "commands" (
     RMDIR /S /Q commands)
@@ -172,9 +176,9 @@ CD tests
 XCOPY /E /S ..\..\tests\* .
 CD ..
 
-#################
-# Copy examples #
-#################
+REM #################
+REM # Copy examples #
+REM #################
 
 IF EXIST "examples" (
     RMDIR /S /Q examples)
@@ -188,3 +192,7 @@ CD examples
 XCOPY /E /S ..\..\examples\* .
 CD ..
 
+REM ####################################
+REM # Navigate out of phycas directory #
+REM ####################################
+CD ..
