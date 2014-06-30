@@ -4,13 +4,12 @@ REM ############################################################################
 REM # Copy master __init__.py file, plus LICENCE, CHANGES, README, and INSTALL #
 REM ############################################################################
 
-ECHO CWD = %CWD%
-
 IF NOT EXIST "phycas" (
     ECHO %0 expected to find a directory named "phycas" inside %CWD%
     EXIT /B 1)
 
 CD phycas
+ECHO Copying files to %cd%...
 COPY ..\src\python\__init__.py .
 COPY ..\README .
 COPY ..\INSTALL .
@@ -26,7 +25,8 @@ IF NOT EXIST "conversions" (
     EXIT /B 1)
 
 CD conversions
-ECHO Y | DEL *.py
+ECHO Copying files to %cd%...
+DEL /Q *.py libncl.lib
 COPY ..\..\src\python\conversions\*.py .
 CD ..
 
@@ -39,7 +39,8 @@ IF NOT EXIST "datamatrix" (
     EXIT /B 1)
 
 CD datamatrix
-ECHO Y | DEL *.py
+ECHO Copying files to %cd%...
+DEL /Q *.py
 COPY ..\..\src\python\datamatrix\*.py .
 CD ..
 
@@ -52,7 +53,8 @@ IF NOT EXIST "likelihood" (
     EXIT /B 1)
 
 CD likelihood
-ECHO Y | DEL *.py
+ECHO Copying files to %cd%...
+DEL /Q *.py
 COPY ..\..\src\python\likelihood\*.py .
 CD ..
 
@@ -65,7 +67,8 @@ IF NOT EXIST "phylogeny" (
     EXIT /B 1)
 
 CD phylogeny
-ECHO Y | DEL *.py
+ECHO Copying files to %cd%...
+DEL /Q *.py
 COPY ..\..\src\python\phylogeny\*.py .
 CD ..
 
@@ -78,7 +81,8 @@ IF NOT EXIST "probdist" (
     EXIT /B 1)
 
 CD probdist
-ECHO Y | DEL *.py
+ECHO Copying files to %cd%...
+DEL /Q *.py
 COPY ..\..\src\python\probdist\*.py .
 CD ..
 
@@ -91,7 +95,8 @@ IF NOT EXIST "readnexus" (
     EXIT /B 1)
 
 CD readnexus
-ECHO Y | DEL *.py
+ECHO Copying files to %cd%...
+DEL /Q *.py
 COPY ..\..\src\python\readnexus\*.py .
 CD ..
 
@@ -108,6 +113,7 @@ IF NOT ERRORLEVEL 0 (
     EXIT /B 1)
 
 CD pdfgen
+ECHO Copying files to %cd%...
 COPY ..\..\src\python\pdfgen\*.py .
 XCOPY /I /E /S ..\..\src\python\pdfgen\AFM AFM
 CD ..
@@ -125,6 +131,7 @@ IF NOT ERRORLEVEL 0 (
     EXIT /B 1)
 
 CD treeviewer
+ECHO Copying files to %cd%...
 COPY ..\..\src\python\treeviewer\*.py .
 CD ..
 
@@ -141,6 +148,7 @@ IF NOT ERRORLEVEL 0 (
     EXIT /B 1)
 
 CD utilities
+ECHO Copying files to %cd%...
 COPY ..\..\src\python\utilities\*.py .
 CD ..
 
@@ -157,12 +165,13 @@ IF NOT ERRORLEVEL 0 (
     EXIT /B 1)
 
 CD commands
+ECHO Copying files to %cd%...
 COPY ..\..\src\python\commands\*.py .
 CD ..
 
-##############
-# Copy tests #
-##############
+REM ##############
+REM # Copy tests #
+REM ##############
 
 IF EXIST "tests" (
     RMDIR /S /Q tests)
@@ -173,6 +182,7 @@ IF NOT ERRORLEVEL 0 (
     EXIT /B 1)
 
 CD tests
+ECHO Copying files to %cd%...
 XCOPY /E /S ..\..\tests\* .
 CD ..
 
@@ -189,6 +199,7 @@ IF NOT ERRORLEVEL 0 (
     EXIT /B 1)
 
 CD examples
+ECHO Copying files to %cd%...
 XCOPY /E /S ..\..\examples\* .
 CD ..
 
@@ -196,3 +207,4 @@ REM ####################################
 REM # Navigate out of phycas directory #
 REM ####################################
 CD ..
+ECHO Navigating to original directory %cd%...
