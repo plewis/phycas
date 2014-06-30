@@ -1,0 +1,8 @@
+Computing likelihood for non-polytomous tree:
+  correct lnL = -18117.830737
+          lnL = -18117.830733
+
+Computing likelihood for tree with polytomies:
+  correct lnL = -16403.967004359674
+          lnL = -16403.967004
+
