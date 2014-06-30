@@ -35,3 +35,6 @@ tests/rzyss/rzy-ss.p
 tests/rzyss/rzy-ss.t
 tests/rzyss/rzy-ss.txt
 tests/splittest/out.txt
+tests/fixedparams/output.txt
+tests/gtrtest/output.txt
+output.txt
