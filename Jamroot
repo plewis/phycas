@@ -11,6 +11,7 @@ local NCL_INSTALL_DIR = [ os.environ NCL_INSTALL_DIR ] ;
 local NCL_ALREADY_INSTALLED = [ os.environ NCL_ALREADY_INSTALLED ] ;
 local OSTYPE = [ os.environ OSTYPE ] ;
 local OS = [ os.environ OS ] ;
+local LDFLAGS = "-headerpad_max_install_names -v" ;
 
 # Tool-specific settings
 echo "---------------------------------------------------------" ;
@@ -40,8 +41,12 @@ if $(NCL_ALREADY_INSTALLED) {
         else {
 			if $(OSTYPE) = "clang" {
 				echo "  Looks like this is a Mac using the LLVM compiler only, so using toolset clang" ;
+                echo "CFLAGS:" ;
+                echo $(CFLAGS) ;
+                echo "LDFLAGS:" ;
+                echo $(LDFLAGS) ;
 				using clang ;
-				alias tool_specific_requirements : : : : <toolset>clang  <cflags>"${CFLAGS}" <cxxflags>"-g -include src/cpp/std_force_include.hpp $CXXFLAGS -I$NCL_INSTALL_DIR/include" <linkflags>"-L$NCL_INSTALL_DIR/lib/ncl -lncl ${LDFLAGS} -v" ;
+				alias tool_specific_requirements : : : : <toolset>clang  <cflags>"${CFLAGS}" <cxxflags>"-g -include src/cpp/std_force_include.hpp $CXXFLAGS -I$NCL_INSTALL_DIR/include" <linkflags>"-L$NCL_INSTALL_DIR/lib/ncl -lncl $(LDFLAGS)" ;
 			}
 			else {
 				echo "  Could not identify platform.  Expecting an environmental variable:" ;
@@ -82,7 +87,7 @@ else {
 			if $(OSTYPE) = "clang" {
 				echo "  Looks like this is a Mac using the LLVM compiler only, so using toolset clang" ;
 				using clang ;
-				alias tool_specific_requirements : : : : <toolset>clang  <cflags>"${CFLAGS}" <cxxflags>"-g -include src/cpp/std_force_include.hpp $CXXFLAGS -I$NCL_INSTALL_DIR/include" <linkflags>"-L$NCL_INSTALL_DIR/lib/ncl -lncl ${LDFLAGS}" ;
+				alias tool_specific_requirements : : : : <toolset>clang  <cflags>"${CFLAGS}" <cxxflags>"-g -include src/cpp/std_force_include.hpp $CXXFLAGS -I$NCL_INSTALL_DIR/include" <linkflags>"-L$NCL_INSTALL_DIR/lib/ncl -lncl ${LDFLAGS} -headerpad_max_install_names" ;
 			}
 			else {
 				if $(OS) = "Windows_NT" {

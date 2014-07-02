@@ -11,7 +11,8 @@ export OSTYPE="clang"
 export BOOST_ROOT="$HOME/Documents/libraries/boost_1_55_0"
 
 # The path to your python installation (download from https://www.python.org/)
-export PYTHON_ROOT="$HOME/Documents/libraries/pydbg/bin/python2.7"
+export PYTHON_ROOT="/usr/bin/python"
+# export PYTHON_ROOT="$HOME/Documents/libraries/pydbg/bin/python2.7"
 
 # Modify PATH so that bjam executable can be found. This assumes bjam is just
 # inside $BOOST_ROOT, which will be the case if bootstrap.sh was run: e.g.
@@ -27,8 +28,8 @@ export BOOST_BUILD_PATH="$BOOST_ROOT/tools/build/v2"
 export NCL_ALREADY_INSTALLED=1
 export NCL_INSTALL_DIR="$HOME/Documents/libraries/ncl"
 
-# This removes dynamic link libraries from previous builds
-scripts/remove_dylibs.sh
+# This removes the phycas directory created in a previous build
+rm -rf phycas
 
 # This command initiates the build
 if [ $# -eq 1 ] ; then
@@ -38,6 +39,9 @@ else
     echo Running bjam release...
     bjam -q release
 fi
+
+# bjam examples:
+# ./bjam -j2 variant=release link=shared install
 
 scripts/copy_src_python.sh
 
