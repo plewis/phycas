@@ -274,6 +274,6 @@ Version %s
 
 Phycas is written by Paul O. Lewis, Mark Holder and David Swofford
 
-Phycas is distributed under the GNU Public License (see License file for more
+Phycas is distributed under the GNU Public License (see LICENSE file for more
 information).
 """ % (_phycas_revision,)

@@ -8,7 +8,7 @@
 export OSTYPE="clang"
 
 # The path to your boost installation (download from http://www.boost.org/)
-export BOOST_ROOT="$HOME/Documents/libraries/boost_1_55_0"
+export BOOST_ROOT="$HOME/Documents/libraries/modular-boost"
 
 # The path to your python installation (download from https://www.python.org/)
 export PYTHON_ROOT="/usr/bin/python"

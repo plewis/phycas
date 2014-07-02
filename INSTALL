@@ -1,2 +1,114 @@
-Installing Phycas
+*************************
+*** Installing Phycas ***
+*************************
+
+Phycas is not pure Python, and requires the Boost build system, making it difficult to distribute in the ordinary python way (using setup.py and either pip or easy_install). With previous versions of Phycas, we have tried to create rather complex wrappers and installers, but have settled on a much simpler solution going forward: Phycas is now distributed as a zip (windows) or compressed tar (mac, linux) archive that you simply copy into your python site-packages directory.
+
+Because Phycas is primarily built using C++, you must install a version of Phycas that matches your specific version of Python and operating system. We only create pre-built versions for (what we hope are the) most popular versions of the Mac and Windows operating systems and Python versions. There are currently only two combinations available:
+
+Mac:
+    OS: Mavericks (MacOS 10.9)
+    Python: 2.7.5 (comes with Mavericks)
+
+Windows:
+    OS: Windows 7
+    Python: 2.7.6
+    Download: phycas-2.0.0-win.zip
+
+Most users will prefer to use Phycas on a departmental or university linux cluster rather than tying up their laptop or desktop with long analyses, and thus instructions are provided below for obtaining the source code and building Phycas under a linux operating system.
+
+*****************************************************************
+*** Installing Phycas on a Mac running MacOS 10.9 (Mavericks) ***
+*****************************************************************
+1. Start by downloading phycas-2.0.0-mac.tar.gz from http://phycas.org/.
+
+2. Move phycas-2.0.0-mac.tar.gz to your home directory
+
+3. Open Terminal.app (Finder > Go > Utilities)
+
+4. Type the following command to open a Finder window showing your home directory:
+
+   open .
+
+Verify that phycas-2.0.0-mac.tar.gz is in that directory (if not, move it there).
+
+5. Verify the location of your site-packages directory using the following command (copy and paste into Terminal.app):
+
+   python -c "import site; print site.getsitepackages()"
+
+The second item in the list should be "/Library/Python/2.7/site-packages"
+
+6. Unpack phycas-2.0.0-mac.tar.gz into your site-packages directory:
+
+   sudo tar -C /Library/Python/2.7/site-packages -zxvf phycas-2.0.0-mac.tar.gz
+
+The "sudo" at the beginning runs the command as the superuser, so you will need to supply your system password to continue. The "-C" provides tar with the directory into which the archive should be extracted. Finally, the "zxvf" means uncompress (z), extract (x), verbose (v) and "the file I want you to uncompress and extract follows" (f).
+
+7. Test your Phycas installation (copy/paste the following into Terminal.app):
+
+   python -c "from phycas import *"
+
+You should see the following output:
+
+  /////////////////////////////
+ ///// Welcome to Phycas /////
+/////////////////////////////
+Version 2.0.0
+
+Phycas is written by Paul O. Lewis, Mark Holder and David Swofford
+
+Phycas is distributed under the GNU Public License (see LICENSE file for more
+information).
+
+8. If you ever want to completely remove Phycas from your system, delete the phycas-2.0.0-mac.tar.gz file (if it is still in your home directory) and issue the following command to delete the extracted phycas folder from the Python site-packages directory:
+
+   sudo rm -rf /Library/Python/2.7/site-packages/phycas
+
+If you are squeamish, open the /Library/Python/2.7/site-packages in Finder using the following command (copy and paste into Terminal.app):
+
+   open /Library/Python/2.7/site-packages
+
+delete the phycas directory by selecting it and deleting it using Ctrl-delete. Because you are now in the bowels of the MacOS, you will be asked for your system password before the folder is actually deleted. One advantage of this approach is that it will end up in Trash (things deleted with the "rm" command are just deleted immediately).
+
+***************************************************
+*** Installing Phycas on a PC running Windows 7 ***
+***************************************************
+1. These instructions assume that you installed Python at the base of the C:\ drive, and thus the directory C:\Python27 exists. If you installed it somewhere else, please adjust the instructions accordingly.
+
+2. Start by downloading phycas-2.0.0-win.zip from http://phycas.org/.
+
+3. Move phycas-2.0.0-win.zip to the Python site-packages directory, which is here:
+
+   C:\Python27\Lib\site-packages
+
+4. If you have 7-Zip  (http://www.7-zip.org/) installed (highly recommended, *much* faster than the native zip file extractor supplied with Windows), right-click the phycas-2.0.0-win.zip file and select "7-Zip > Extract Here" from the popup menu. If you insist on using the native unzip program, right-click the phycas-2.0.0-win.zip file and select "Extract All..." from the popup menu.
+
+5. Test your Phycas installation by opening a command console window by shift-right-clicking on the C:\Python27 directory in Explorer and choosing "Open command window here". Then type the following at the C:\Python27> prompt:
+
+   python.exe -c "from phycas import *"
+
+You should see the following output:
+
+  /////////////////////////////
+ ///// Welcome to Phycas /////
+/////////////////////////////
+Version 2.0.0
+
+Phycas is written by Paul O. Lewis, Mark Holder and David Swofford
+
+Phycas is distributed under the GNU Public License (see LICENSE file for more
+information).
+
+6. If you get an error, verify that the site-packages directory being used by Python is indeed the one you copied phycas-2.0.0-win.zip into:
+
+   python.exe -c "import site; print site.getsitepackages()"
+
+The second item in the list should be "C:\\Python27\\lib\\site-packages". If it is not, you need to repeat steps 2-4 using the site-packages directory listed.
+
+7. If you ever want to completely remove Phycas from your system, simply delete the phycas-2.0.0-win.zip file (if you haven't already) and the phycas directory in your site-packages directory.
+
+***********************************
+*** Building Phycas under linux ***
+***********************************
+TODO
 
