@@ -11,7 +11,8 @@ local NCL_INSTALL_DIR = [ os.environ NCL_INSTALL_DIR ] ;
 local NCL_ALREADY_INSTALLED = [ os.environ NCL_ALREADY_INSTALLED ] ;
 local OSTYPE = [ os.environ OSTYPE ] ;
 local OS = [ os.environ OS ] ;
-local LDFLAGS = "-headerpad_max_install_names -v" ;
+local LINUXLDFLAGS = "-v" ;
+local CLANGLDFLAGS = "-headerpad_max_install_names -v" ;
 
 # Tool-specific settings
 echo "---------------------------------------------------------" ;
@@ -30,13 +31,13 @@ if $(NCL_ALREADY_INSTALLED) {
     if $(OSTYPE) = "linux" {
       echo "  Looks like this is Linux, so using toolset gcc" ;
       echo "  Looking for NCL libraries in $(NCL_INSTALL_DIR)/lib/ncl " ;
-      alias tool_specific_requirements : : : : <toolset>gcc <cxxflags>"-include src/cpp/std_force_include.hpp -I$(NCL_INSTALL_DIR)/include" <linkflags>"-L$(NCL_INSTALL_DIR)/lib/ncl -lncl" ;
+      alias tool_specific_requirements : : : : <toolset>gcc <cxxflags>"-include src/cpp/std_force_include.hpp -I$(NCL_INSTALL_DIR)/include" <linkflags>"-L$(NCL_INSTALL_DIR)/lib/ncl -lncl $(LINUXLDFLAGS)" ;
     }
     else {
         if $(OSTYPE) = "darwin" {
             echo "  Looks like this is a Mac, so using toolset darwin" ;
             using darwin ;
-            alias tool_specific_requirements : : : : <toolset>darwin  <cflags>"${CFLAGS}" <cxxflags>"-g -include src/cpp/std_force_include.hpp $CXXFLAGS -I$NCL_INSTALL_DIR/include" <linkflags>"-L$NCL_INSTALL_DIR/lib/ncl -lncl ${LDFLAGS}" ;
+            alias tool_specific_requirements : : : : <toolset>darwin  <cflags>"$(CFLAGS)" <cxxflags>"-g -include src/cpp/std_force_include.hpp $CXXFLAGS -I$NCL_INSTALL_DIR/include" <linkflags>"-L$NCL_INSTALL_DIR/lib/ncl -lncl $(DARWINLDFLAGS)" ;
         }
         else {
 			if $(OSTYPE) = "clang" {
@@ -46,7 +47,7 @@ if $(NCL_ALREADY_INSTALLED) {
                 echo "LDFLAGS:" ;
                 echo $(LDFLAGS) ;
 				using clang ;
-				alias tool_specific_requirements : : : : <toolset>clang  <cflags>"${CFLAGS}" <cxxflags>"-g -include src/cpp/std_force_include.hpp $CXXFLAGS -I$NCL_INSTALL_DIR/include" <linkflags>"-L$NCL_INSTALL_DIR/lib/ncl -lncl $(LDFLAGS)" ;
+				alias tool_specific_requirements : : : : <toolset>clang  <cflags>"$(CFLAGS)" <cxxflags>"-g -include src/cpp/std_force_include.hpp $CXXFLAGS -I$NCL_INSTALL_DIR/include" <linkflags>"-L$NCL_INSTALL_DIR/lib/ncl -lncl $(CLANGLDFLAGS)" ;
 			}
 			else {
 				echo "  Could not identify platform.  Expecting an environmental variable:" ;
