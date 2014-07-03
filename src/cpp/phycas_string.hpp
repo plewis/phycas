@@ -43,6 +43,7 @@
 #	include <ctype.h>
 #else
 #	include <cmath>
+#	include <cfloat>
 #	include <cctype>
 #endif
 #include <cstring>

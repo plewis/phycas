@@ -110,5 +110,68 @@ The second item in the list should be "C:\\Python27\\lib\\site-packages". If it 
 ***********************************
 *** Building Phycas under linux ***
 ***********************************
-TODO
+1. Install Boost C++ library:
+    a. Download boost_1_55_0.tar.gz from http://www.boost.org/, save in $HOME, then unpack as follows:
 
+        cd $HOME
+        tar zxvf boost_1_55_0.tar.gz
+
+    b. cd into boost_1_55_0 and run the following commands to compile the thread and python libraries
+
+        cd $HOME/boost_1_55_0
+        ./bootstrap.sh --with-libraries=thread,python
+        ./b2
+
+    # This part not necessary
+    # c. install the boost-build system (adds the bin and share directories to $HOME/boostlib)
+    #
+    #    cd $HOME/boost_1_55_0/tools/build/v2
+    #    ./bootstrap.sh
+    #    ./b2 install --prefix=$HOME/boostlib
+
+2. Install the Nexus Class Library (NCL):
+    a. Download ncl-2.1.18.tar.gz from http://sourceforge.net/projects/ncl/ and unpack:
+
+        cd $HOME
+        curl -L http://sourceforge.net/projects/ncl/files/latest/download > ncl-2.1.18.tar.gz
+        tar zxvf ncl-2.1.18.tar.gz
+
+    b. Configure, make and install:
+
+        cd $HOME/ncl-2.1.18
+        ./configure
+        sudo make install
+
+    c. If you do not have sudo privileges, you can specify
+
+        cd $HOME/ncl-2.1.18
+        ./configure --prefix=$HOME/nclib
+        make install
+
+3. Build Phycas
+    a. Download phycas-2.0.0-src.tar.gz from http://phycas.org/ and save in $HOME
+
+    b. Unpack phycas-2.0.0-src.tar.gz
+
+        cd $HOME
+        tar zxvf phycas-2.0.0-src.tar.gz
+        cd phycas-2.0.0
+
+    c. Copy build.sh from scripts directory to $HOME/phycas and in the copy specify values for these variables:
+            OSTYPE="linux"
+            BOOST_ROOT="$HOME/boost_1_55_0"
+            BJAM_DIR="$BOOST_ROOT/tools/build/v2/engine/bin.linuxx86_64"
+            PYTHON_ROOT="/opt/python/bin/python" (or whatever is the path to your python interpreter)
+            NCL_INSTALL_DIR="/usr/local/lib" (or "$HOME/nclib" if you do not have sudo privileges)
+
+    d. Now run it
+
+        cd $HOME
+        ./build.sh
+
+    e. Copy $HOME/phycas/phycas to your site-packages directory to complete the installation
+
+    f. If you lack sudo privileges, you can specify these before invoking python:
+
+        export PYTHONPATH="$HOME/phycas"
+        export LD_LIBRARY_PATH="$HOME/phycas:$HOME/nclib"

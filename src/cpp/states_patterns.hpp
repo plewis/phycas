@@ -24,6 +24,7 @@
 #include <map>
 #include <set>
 #include <list>
+#include <string>
 
 // some basic types derived from STL containers
 typedef std::vector< char >				char_vect_t;
