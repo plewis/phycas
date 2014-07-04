@@ -1,0 +1,423 @@
+This file documents major bugs in Phycas. A major bug is loosely defined as something
+that prevents a user from using Phycas to analyze a particular data set, or something
+that causes Phycas to generate incorrect results. Major bugs usually take a day or more
+to fix, and documenting them helps to avoid repeating history. Minor bugs represent 
+cosmetic glitches that are easy to work around and do not take long to fix. Minor bugs 
+are best documented in the source code and in the comments submitted when the fix is 
+committed to the git repository.
+
+Bug 12: the "Reference Rooting" bug (27-Mar-2013)
+-------------------------------------------------
+In the variable tree steppingstone method, the tree topology reference distribution is
+summarized by a tree. If a user-specified starting tree was rooted differently than this
+reference tree, mistakes would be made in calculating the reference distribution density.
+The problem was solved by rooting each chain's tree at the same taxon used to root the
+reference tree (see _loadReferenceDistribution function in MCMCImpl.py). 
+
+Bug 11: the "Forgot Likelihood Root" bug (19-Mar-2013)
+------------------------------------------------------
+Symptom was that runs under partitioned JC69 (no rate het.) model locked up after a few 
+seconds. The only updaters in use were the Larget-Simon move and the Subset Relative 
+Rates move. Disabling the Subset Relative Rates move by adding "return false;" to the 
+very beginning of the update function relieved the symptoms, but of course did not allow
+updating of the subset relative rates. Recalculating the likelihood in the LS move update
+function instead of relying on the stored previous log likelihood cured the problem as 
+well. Curiously, prev_ln_like did not change when this was done, but the log likelihood of
+the first proposed move changed, indicating that some invalid CLAs were being used. It 
+turned out that likelihood->useAsLikelihoodRoot(NULL) was being used in the subset 
+relative rate move revert function to force all CLAs to be recalculated on the next call
+of likelihood->calcLnL(tree), but unfortunately the LS move changed the likelihood root
+before this could have its intended effect. The first LS move update after setting the
+likelihood root to NULL picks a random 3-edge segment, and one of the nodes inside that
+segment is designated as the likelihood root. This means that some CLAs from the previous
+subset relative rate move were being used by the LS move when computing the likelihood for
+its first proposed move following a subset relative rate update. The bug was fixed by
+replacing likelihood->useAsLikelihoodRoot(NULL) with likelihood->storeAllCLAs(tree) in the
+subset relative rate move revert function (and did the same thing in the revert function 
+of the tree scaler move, which was making the same mistaken assumption).
+
+Bug 10: the "Debry" bug (30-Jan-2011)
+-------------------------------------
+This bug turned out to have an easy fix, but it took a long time to determine what that easy fix 
+was. Ron Debry reported stepping-stone analyses that resulted in "nan" ("not a number"). The data 
+set in question was partitioned by codon position, and the second codon position sites were very 
+slow evolving. Fitting a Gamma reference distribution to the individual GTR relative rates for 
+second position sites yielded Gamma distributions for the transversions that had a shape parameter 
+less than 1. These, in turn, generated values very close to 0 when sampling directly from the 
+reference prior in the final step of the stepping-stone method. The nan values cropped up when the 
+likelihood was computed for these samples containing 0 relative transversion rates. The solution 
+turned out to be substituting a LogNormal reference distribution for the individual GTR relative 
+rate parameters, replacing the Gamma distributions used previously. The LogNormal always has a 
+mode, and thus avoids the extremely low values that can be sampled from a Gamma distribution with 
+shape much less than 1, yet the LogNormal involves no ad hoc constraints or limits on parameter 
+values that would be necessary if one attempted to continue using a Gamma reference distribution 
+for these parameters.
+
+Bug 9: the "not-a-bug" bug (4-Aug-2010)
+---------------------------------------
+This turned out to not be a bug after all. The observation that concerned us was that
+if performing steppingstone sampling (ss.ti=False) and if model.update_freqs_separately=True,
+then the base frequency trace plots appear to gain in variance as one moves from posterior
+to reference distribution, but dramatically decrease in variance during the period when
+beta=0.0. It seemed like there should not be a reversal in the trend of increasing variance
+at the last step. This turned out to be due to autocorrelation. If each of four Gamma(1,b) random
+variables X_1, X_2, X_3 and X_4 is normalized by dividing by the sum (X_. = X_1+X_2+X_3+X_4), 
+this transforms the four into a single multivariate Dirichlet(b,b,b,b) random variable Z. 
+If, however, there is autocorrelation in the sampling of each X_i, this dramatically increases
+the variance of the individual components of Z. Thus, running the chain 100 times longer and
+sampling only every 100th. update cycle produces the expected result. We did notice in solving
+this mystery that setting model.update_freqs_separately=True and thus slice sampling individual
+frequency parameters independently results in very autocorrelated samples of the underlying
+unnormalized frequency parameters. The autocorrelation is not apparent in the normalized 
+frequencies because the unnormalized frequencies move up and down together. We could thus 
+use a move in Phycas that rescales the unnormalized frequencies in this case. This would be
+a cheap move to add because it would not require recalculation of the likelihood.
+
+Bug 8: the "Jockusch" bug (fixed in revision 1315 on 9-June-2010)
+-----------------------------------------------------------------
+Named for the person (Elizabeth Jockusch) whose data set triggered this investigation.
+This is essentially the same bug as the Rota bug (Bug 3), except caused by a very
+small subset relative rate rather than by a combination of extreme rate heterogeneity
+and extreme state frequencies. The reason that the Rota bug fix didn't solve this
+problem was that JC::calcPMat was not touched in fixing the Rota bug due to the
+fact that extreme base frequencies were needed to trigger the Rota bug. The Jockush
+bug can occur even under the JC model, however, so the fix was to check edge lengths 
+in JC::calcPMat and ensure that a minimum edge length is enforced there as well as
+in HKY::calcPMat and QMatrix::recalcPMat.
+
+Bug 7: the "underflow" bug (fixed in revision 1050 on 13 Mar 2009)
+------------------------------------------------------------------
+Thanks to Federico Plazzi and Mark Clements for alerting us to this problem.
+Symptoms of this bug were that the likelihood was incorrectly computed when the pinvar
+submodel was used and underflow protection was active. This turned out to be three
+unrelated bugs. 
+
+The first bug was that UnderflowType was typedef'd to an unsigned integer
+in cond_likelihood.hpp. Because the maximum conditional likelihood for a pattern sometimes
+needs to be made smaller, the log correction factors sometimes must be negative, hence
+the problem. The UnderflowType is now a (signed) long. 
+
+The second bug had to do with the pinvar model. The overall site likelihood x for the 
+pinvar model is computed as follows:
+
+x = p*i + (1 - p)*v
+
+where p is pinvar, i is the site likelihood given invariability and v is the site 
+likelihood given variability. If underflow correction has been applied, 
+
+x = p*i + (1 - p)*v*c
+
+where c is the cumulative correction factor that has been applied to keep v from
+underflowing. In non-pinvar models, we were subtracting the log of c from the log 
+site likelihood, but obviously taking the log of x above and subtracting log c will
+not work, hence the incorrect log-likelihoods. To correct this, we now compute an
+underflow correction factor f for i if underflow correction has been applied to v:
+
+x = p*i*f + (1 - p)*v*c
+
+If f < c, we effectively replace v*c with v*f by multiplying by f/c:
+
+x = p*i*f + (1 - p)*v*c*(f/c)
+  = p*i*f + (1 - p)*v*f
+  
+Now, log f can later be subtracted from the log x to give the correct site likelihood.
+We need not worry that f/c might underflow, because if it does it means the variable 
+component of the site-likelihood was negligible anyway.
+
+If f < c, we effectively replace i*f with i*c by multiplying by c/f:
+
+x = p*i*f*(c/d) + (1 - p)*v*c
+  = p*i*c + (1 - p)*v*c
+  
+In this case, log c can later be subtracted from the log x to give the correct site
+likelihood (i.e., the usual procedure). If c/f underflows, it means that f was 
+incredibly large, which can only happen if the frequency of the constant state was 
+so small that it would make the invariable part of the site likelihood zero anyway.
+An assert was put in place that tests whether i > z, where z = underflow_max/DBL_MAX, 
+the smallest value of i such that the correction factor f will not overflow.
+
+The third bug surfaced after the first two were fixed when comparing the Paradox
+example output when mcmc.uf_num_edges was set to 5 to that when mcmc.uf_num_edges
+was set to 50 (the default). In the latter case, underflow protection does not kick
+in because the data set has only 17 taxa (and thus 17*2 - 3 = 31 edges). This turned
+out to be an incompletely-implemented PatternSpecificUnderflowPolicy::check() 
+function.
+
+Bug 6: the "leaky" bug (fixed in revision 994 on 24 Dec 2008)
+-------------------------------------------------------------
+This bug turned out to be two bugs, both causing memory leaks during that part of 
+path sampling analyses when the prior is being sampled directly. The first bug turned
+out to be relatively easy to fix: the ScopedThreeDMatrix destructor in nxsallocatematrix.h
+consisted of this line
+
+if (!ptr) DeleteThreeDArray<T>(ptr);
+
+which of course should have been
+
+if (ptr) DeleteThreeDArray<T>(ptr);
+
+The second memory leak was much harder to find and fix. First of all, the Tree destructor
+(in basic_tree.cpp) was popping nodes off the internalNodeStorage and tipStorage stacks
+but not actually deleting the nodes. This meant that not only were TreeNode objects
+not being deleted, but the large TipData and even larger InternalData structures that
+were stored in these TreeNode objects were also not getting deleted. To fix this,
+"delete nd" statements were added to the Tree destructor, but this led to a complication:
+each TreeNode object was storing a smart pointer to its Tree object. Unfortunately, these
+smart pointers were being created upon TreeNode construction and thus each of these had
+a use count of just 1 when the node was deleted, resulting in a second call of the Tree
+destructor. The Tree destructor was thus being called recursively, which led to lots of
+problems with freeing the same object multiple times. Since the smart pointer to Tree
+inside TreeNode objects was not ever being used, this data member was simply removed to
+solve this problem. One final glitch remained, however, and this was revealed when 
+doctestall.py was run in debug mode. The first doctest example in _TreeLikelihood.py
+crashed when the following section was executed:
+
+>>> likelihood = Likelihood.TreeLikelihood(model)
+>>> likelihood.copyDataFromDiscreteMatrix(data_matrix)
+>>> for t in reader.getTrees():
+...     tree = Phylogeny.Tree(t)
+...     likelihood.prepareForLikelihood(tree)
+...     lnL = likelihood.calcLnL(tree)
+...     print '%.5f' % lnL
+-7812.79213
+
+The problem here was that the TreeLikelihood object's destructor was called before the
+Tree destructor. TreeNode objects that have been used to compute likelihoods have
+either TipData or InternalData objects attached to them, and the InternalData objects
+each have (or had, I should say) a reference to the CondLikelihoodStorage data member 
+(cla_pool) of the TreeLikelihood class, so when TreeLikelihood was deleted,
+these references got hosed. Then, when Tree::~Tree was called, it began deleting nodes
+and the internal nodes began deleting their InternalData structures, which in turn
+began trying to stuff their CondLikelihood objects back into cla_pool, and...you see
+the problem. To fix this, TreeLikelihood creates a new CondLikelihoodStorage
+object in its constructor:
+
+cla_pool = CondLikelihoodStorageShPtr(new CondLikelihoodStorage());
+
+and from this point on, shared pointers are used by InternalData objects. That way,
+the object pointed to by cla_pool is not deleted until all references to it are 
+deleted.
+
+Bug 5: the "pinvar" bug (fixed in revision 760 on 17 July 2008)
+---------------------------------------------------------------
+Phycas failed the LikelihoodTest test when that test was reinstated by MTH on 16 July.
+This bug caused the log-likelihoods for +I models to be slightly off (5th decimal place).
+It turns out that this bug was caused by the "Rota" bug fix. Rather than implement a
+workaround, POL decided to take the opportunity to redo the +I model likelihood 
+calculations in a more efficient manner (+I was previously being implemented as simple
+one more rate category with a 0.0 rate). Phycas now does not require an additional
+rate category for +I models and instead uses a vector (TreeLikelihood::constant_states)
+that stores the state(s) of potentially constant sites (and also keeps track of 
+sites that are definitely variable). The constant_states vector is built in the function
+TreeLikelihood::buildConstantStatesVector, and the information in constant_states is
+used in TreeLikelihood::harvestLnLFromValidEdge.
+
+Bug 4: the "Yang" bug (fixed in revision 591 on 5 May 2008)
+-----------------------------------------------------------
+Reported by Ziheng Yang on 3 May 2008. The immediate problem that Ziheng had 
+when running the Paradox.py example was
+
+Files\Python25\lib\site-packages\phycas\Phycas\MCMCManager.py", line 377, in
+setupChain
+    self.bush_move.viewProposedMove(self.phycas.bush_move_debug)
+AttributeError: 'BushMove' object has no attribute 'viewProposedMove'
+
+However, when that was fixed (by removing the call to viewProposedMove, which 
+no longer exists), the program crashed almost immediately (with an unidentified
+C++ exception) when running the Paradox example. 
+
+When the three of us (MTH, POL and DLS) got together in Kansas (20-26 October 2007)
+to implement SAMC, we inadvertently created this bug by eliminating Tree::nodeStorage 
+and replacing it with Tree::tipStorage and Tree::internalNodeStorage. The Paradox
+example in SVN revision 455 was found to work fine, but failed in revision 456 
+(after unrelated compile-time errors were fixed). In revision 455, any node that 
+was pruned from a tree was stored in one place, whereas in 456 onward it is stored in 
+one of two places depending on whether it is a tip or an internal node. In BushMove,
+when an edge is deleted to create a polytomy, BushMove::proposeDeleteEdgeMove calls
+the function TreeManipulator::DeleteLeaf to remove the node (now a tip even if it 
+was originally internal because all of its children have been made children of its
+parent). DeleteLeaf stored the node in tipStorage, even if originally it was an
+internal node. When BushMove::proposeAddEdgeMove was called later, it checks 
+internalNodeStorage to see if any nodes are available before creating one de novo, 
+but of course internalNodeStorage was empty because previous delete edge moves had
+been storing pruned nodes in tipStorage instead. Thus, a new node was created each
+time BushMove::proposeAddEdgeMove was called. This too would not be problematic if
+the function TreeLikelihood::prepareInternalNodeForLikelihood were working correctly.
+This function had this body:
+	if (!nd)
+		{
+		TreeNode::InternalDataDeleter	cl_deleter	= &deallocateInternalData;
+		InternalData * cl = allocateInternalData();
+		nd->SetInternalData(cl, cl_deleter);
+		}
+The conditional should have been "if (nd)..." not "if (!nd)...", so newly-minted nodes
+were not being adorned by internal node data structures necessary for carrying out 
+likelihood calculations and the program crashed the first time these data structures
+were needed. Search for POLPY_NEWWAY in revision 591 for all the places where code
+was changed to fix this bug. The POLPY_NEWWAY conditionals were removed in revision
+592.
+
+Bug 3: the "Rota" bug (fixed in revision 434 on 19-Oct-2007)
+------------------------------------------------------------
+Named for the person (Jadranka Rota) whose data set triggered this investigation.
+A combination of high rate heterogeneity, small branch lengths and quite unequal
+base frequencies caused phycas to hang during MCMC analyses involving models that
+allowed base frequencies to be unequal. Checks were in place to prevent edge lengths
+from becomming too small (see TreeNode::SetEdgeLen), but when there is high rate
+heterogeneity, these already small edge lengths are multiplied by a relative rate
+that results in a really tiny edge length for the first rate category. This, in
+combination with quite unequal base frequencies can lead to very small negative 
+transition probabilities in HKY::calcPMat and QMatrix::recalcPMat. The fix was to
+check edge lengths in HKY::calcPMat and QMatrix::recalcPMat, as that is where
+the minimum edge length should be enforced.
+
+Bug 2: the "topology prior table" bug (fixed in revision 421 on 13-Aug-2007)
+----------------------------------------------------------------------------
+This bug was first reported by Stephano Mona on 21 July 2007.
+Using the polytomy model with a data set of 186 taxa resulted in this error:
+
+Topology prior:
+  Prior type:
+polytomy prior
+  Prior strength (C): 2.71828182846
+  Expected prior probability for each resolution class:
+   class        prior
+  -------------------
+       1      0.00000
+       2      0.00000
+...
+      38      0.00000
+      39      0.00000
+Traceback (most recent call last):
+  File "mona.py", line 89, in <module>
+    phycas.run()
+  File "C:\Synchronized\Projects\phycasdev_trunk\phycas\Phycas\Phycas.py", line 935, in run
+    self.showTopoPriorInfo()
+  File "C:\Synchronized\Projects\phycasdev_trunk\phycas\Phycas\Phycas.py", line 475, in showTopoPriorInfo
+    self.output('%8d %12.5f' % (i,math.exp(v - denom)))
+ValueError: math domain error
+
+Resolution:
+-----------
+The problem was in the display of the realized prior probabilities for topologies. The numerator 
+of each of these probabilities can get large because it involves the number of tree topologies 
+for a given number of internal nodes. For this problem (186 taxa), the numerator overflowed for 
+trees having more than 39 internal nodes and the crash occurred when it tried to subtract 
+1.#INF from 1.#INF.
+
+Fixing the bug required reworking parts of the TopoPriorCalculator class 
+(phycas/src/topo_prior_calculator.cpp). In particular, the RecalcCountsAndPriorsImpl function was
+reworked so that the vector counts is now associated with a vector nfactors, the ith element of 
+which contains the number of times a factor needed to be removed in order to keep the magnitude
+of counts[i] reasonable. The factor taken out is scaling_factor (saved as the log in a new variable
+named log_scaling_factor). Thus, if scaling_factor = 10, nfactors[i] = 3, and counts[i] = 1.5, the 
+value of the log_scaling_factor variable would be log(10) and the actual count would be 1.5*10^3.
+Even with this system, the log of the total topology count is still difficult to obtain because
+each log count must be exponentiated in order to add it to the sum. Thus, the largest log count is
+determined and factored out of the sum, then its log is added back in at the end. Many of the 
+smaller counts will disappear, but they are negligible anyway given that the total is never used 
+in any MCMC calculations. A similar factoring out of the largest value was required in the function 
+GetRealizedResClassPriorsVect. Now, a valid table of resolution class priors is presented to the
+user prior to an analysis involving polytomies. For large numbers of taxa (e.g. 186), many of the
+values will appear to be zero. A note has been added to the output apprising users of the fact that
+even though probabilities are reported as 0.00000000, they are not in fact exactly zero and this
+result simply means that the value is less than 0.000000005 and rounds off to zero when only 8
+decimal places are used.
+
+Bug 1: the "total_count" bug (fixed in revision 292 on 3-Nov-2006)
+------------------------------------------------------------------
+In the Gelfand-Ghosh calculations, a map in which patterns are keys and pattern counts are
+values is generated that maintains the sum of all posterior predictive datasets generated
+during the run. At the end of the run, each count is divided by the number of data sets added,
+so that this map, called gg_mu, ends up being best described as the "average" posterior predictive
+data set. The problem here was that the counts were stored as floats, and adding enough of these
+together finally overflows the float value, creating errors in the total number of counts over
+all patterns. The main symptom was that adding a value such as 1 to total_count yielded an updated
+total_count that was not 1 more than its previous value! The example below explains why this 
+happens. This bug mostly affected the SimData class (files sim_data.hpp, sim_data.inl and sim_data.cpp).
+
+Here is an example of how the overflow is manifested. A count of 1139.0 is added to the existing
+total count 16776298.0, which should yield 16777437.0, but instead yields 16777436.0.
+
+total_count before:  16776298.0 is  111111111111110001101010 in binary
+added amount:            1139.0 is               10001110011 in binary
+----------------------------------------------------------------------
+total_count after should be:       1000000000000000011011101 in binary
+
+Single precision floats are stored as a 23 bit mantissa and an 8 bit biased exponent, plus a 
+sign bit. For example, to represent 1139.0, start with the binary representation, 10001110011,
+and move the decimal point left until achieving the normalized representation
+
+ 10001110011 = 1.0001110011 * 2^{10}
+ 
+Adding the bias (127) to the exponent (biasing is necessary to allow negative exponents to be 
+represented as unsigned values) yields 127 + 10 = 137, which is 10001001 binary. Thus, the
+sign bit is 0 (because the number is positive), the 8 bit exponent is 10001001 and the 23 bit
+mantissa (padded on the right with 13 0s) is 00011100110000000000000:
+
+ 1139 = 0|10001001|00011100110000000000000
+ 
+Doing the same with total_count after the addtion, we have 
+ 
+ 16777437.0 = 1.000000000000000011011101 * 2^{24} = 0|10010111|000000000000000011011101
+ 
+Unfortunately, the mantissa is 24 bits long rather than the 23 allowed, so the trailing
+1 gets lopped off, giving us the following instead:
+
+ 16777436.0 = 0|10010111|00000000000000001101110
+
+This is the source of the confusion surrounding this bug. The value of total_count was 
+accurate until enough simulated datasets had been added to gg_mu to cause overflow of this
+sort, at which point adding 1 didn't necessarily increase total_count by 1! 
+
+Solution:
+
+The best solution seems to keep the counts as floats, but instead of waiting until all
+posterior predictive data sets have been added to gg_mu to before doing the division, keep
+a running average so that the total number of counts does not grow too large.
+
+For example, suppose there are only four possible patterns, and the following pattern counts 
+are generated by performing three posterior predictive simulations:
+
+[213, 287,   0,   0]
+[177,   0, 323,   0]
+[103,   0,  97, 300]
+
+In each case, the sum of all pattern counts is 500, so the total count is 1500 after all 
+three have been added. The strategy before would be to add values for each pattern over
+all three replicates, then divide by 3 at the end, so mu vector would be:
+
+[164.333, 95.667, 140, 100]
+
+The alternative is to add each pair in turn to a running average as follows:
+
+Add first posterior predictive replicate (r1) to mu:
+p = 1/1 (p is always 1/(number of posterior predictive datasets added)
+mu = [ 0,     0, 0, 0 ] =>   [ 0*(1-p), 0*(1-p), 0*(1-p), 0*(1-p) ]
+r1 = [ 213, 287, 0, 0 ] => + [   213*p,   287*p,     0*p,     0*p ]
+                    new mu = [     213,     287,       0,       0 ]
+
+Add second posterior predictive replicate (r2) to mu:
+p = 1/2
+mu = [ 213, 287,   0, 0 ] =>   [ 213*(1-p), 287*(1-p), 0*(1-p), 0*(1-p) ]
+r2 = [ 177,   0, 323, 0 ] => + [     177*p,       0*p,   323*p,     0*p ]
+                      new mu = [       195,     143.5,   161.5,       0 ]
+
+Add third posterior predictive replicate (r3) to mu:
+p = 1/3
+mu = [ 195, 143.5, 161.5,   0 ] =>   [ 195*(1-p), 143.5*(1-p), 161.5*(1-p), 0*(1-p) ]
+r3 = [ 103,     0,    97, 300 ] => + [     103*p,         0*p,        97*p,   300*p ]
+                            new mu = [   164.333,      95.667,         140,     100 ]
+
+To implement the above averaging scheme required changing only four lines, all 
+in Phycas.py. These three lines were added just before the contents of tmp_simdata
+are added to gg_mu in the recordSample function:
+
+  p = 1.0/self.gg_num_post_pred_reps
+  self.gg_mu.multBy(1.0 - p)
+  self.tmp_simdata.multBy(p)
+
+The following line, which formerly did the final division, was removed from the 
+run function:
+
+  self.gg_mu.divideBy(float(self.gg_total)
