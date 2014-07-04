@@ -576,8 +576,8 @@ class ParamSummarizer(CommonFunctions):
                 gss = '%20s' + '%15d' + '%15.5f'*(sz - 2)
                 self.output(gss % stats)
             except (VarianceZeroError,VarianceUndefinedError):
-                gss = '%20s' + '%15s'*(sz-1) + '\n'
-                sub = tuple(['---']*sz)
+                gss = '%20s' + '%15s'*(sz-1)
+                sub = tuple([h] + ['---']*(sz-1))
                 self.output(gss % sub)
         marglike = None
         self.output()
