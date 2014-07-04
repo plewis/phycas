@@ -39,3 +39,4 @@ tests/fixedparams/output.txt
 tests/gtrtest/output.txt
 output.txt
 phycas.xccheckout
+build.sh
