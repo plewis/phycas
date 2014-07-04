@@ -124,7 +124,7 @@ intercept_python_exceptions = True
 default_verbosity_level = OutFilter.NORMAL
 _user_ini_checked = False
 _use_wx_phycas = False
-_check_for_updates = True
+_check_for_updates = False
 _phycas_update_url = "129.237.138.231" # change this to phycas.org url
 _phycas_branch = "$HeadURL$"
 
