@@ -99,6 +99,9 @@
 \newcommand{\mrbayesurl}{\href{http://mrbayes.sourceforge.net/}{{\sc MrBayes}}\index{MrBayes}}
 \newcommand{\mrbayes}{{\sc MrBayes}\index{MrBayes}}
 
+\newcommand{\pfoururl}{\href{https://code.google.com/p/p4-phylogenetics/}{{\sc P4}}\index{P4}}
+\newcommand{\pfour}{{\sc P4}\index{P4}}
+
 \newcommand{\pinvar}{\mbox{$p_{\mbox{invar}}$}}
 \newcommand{\ncat}{\mbox{$n_{\mbox{cat}}$}}
 
@@ -252,7 +255,7 @@ To tell \phycas\ to use the Rannala-Zhu-Yang tree length prior, set \opt{model}{
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Polytomy priors}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-A solution to the ``Star Tree Paradox'' problem was proposed by \citet*{LewisHolderHolsinger2005}. Their solution was to use reversible-jump MCMC to allow {\em unresolved} tree topologies to be sampled in addition to fully-resolved tree topologies during the course of a Bayesian phylogenetic analysis. If the time between speciation events is so short (or the substitution rate so low) that no substitutions occurred along a particular internal edge in the true tree, then use of the \termfirst{polytomy prior} proposed by \citet*{LewisHolderHolsinger2005} can improve inference by giving the Bayesian model a ``way out.'' That is, it is not required to find a fully resolved tree, but is allowed to place most of the posterior probability mass on a less-than-fully-resolved topology. Please refer to the \citet*{LewisHolderHolsinger2005} paper for details. \phycas\ is no longer the only Bayesian phylogenetics program that allows polytomies: the software P4 (\url{https://code.google.com/p/p4-phylogenetics/}) now offers the same polytomy prior.
+A solution to the ``Star Tree Paradox'' problem was proposed by \citet*{LewisHolderHolsinger2005}. Their solution was to use reversible-jump MCMC to allow {\em unresolved} tree topologies to be sampled in addition to fully-resolved tree topologies during the course of a Bayesian phylogenetic analysis. If the time between speciation events is so short (or the substitution rate so low) that no substitutions occurred along a particular internal edge in the true tree, then use of the \termfirst{polytomy prior} proposed by \citet*{LewisHolderHolsinger2005} can improve inference by giving the Bayesian model a ``way out.'' That is, it is not required to find a fully resolved tree, but is allowed to place most of the posterior probability mass on a less-than-fully-resolved topology. Please refer to the \citet*{LewisHolderHolsinger2005} paper for details. \phycas\ is no longer the only Bayesian phylogenetics program that allows polytomies: the software \pfoururl\ now offers the same polytomy prior.
 
 To use the polytomy prior in an analysis, be sure that \opt{mcmc}{allow\_polytomies} and \opt{mcmc}{polytomy\_prior} are both \code{True}. The setting \opt{mcmc}{topo\_prior\_C} determines the strength of the polytomy prior. Setting \opt{mcmc}{topo\_prior\_C} to 1.0 results in a flat prior (all topologies have identical prior probabilities, and thus unresolved topologies get no more or less weight than fully-resolved topologies). Usually it is desirable to use the prior to gently encourage polytomies: this way you can identify nodes that are susceptible to the over-credibility artifact. Setting \opt{mcmc}{topo\_prior\_C} greater than 1.0 favors less resolved topologies over fully-resolved ones. In our 2005 paper, this value was set to the value $e$ (the base of the natural logarithms). To do this in \phycas, set \opt{mcmc}{topo\_prior\_C} to \code{math.exp(1.0)} (you may need to add an \code{import math} line in order to use \code{math.exp}).
 
@@ -878,6 +881,8 @@ The parameter summary table includes the following information:
 \item[stddev] The marginal posterior standard deviation for this parameter
 \end{description}
 
+A word about \indexed{autocorrelation} is in order. If MCMC samples are highly autocorrelated, then you effectively have a smaller sample size than you might have thought given the actual sample size. To see this, imagine a perfectly autocorrelated sample in which every sampled value is exactly the same. In this case, you really only have a sample size of 1, even though \phycas\ might have saved 2000 values. The effective sample size is computed from the autocorrelation. The effective sample size would thus be 1 if samples were perfectly autocorrelated.
+
 \begin{samepage}
 \begin{verbatim}
 # Summarize the posterior distribution of tree topologies and clades
@@ -1114,63 +1119,18 @@ If you examine the \pathname{params.p} file, you will find that the parameters h
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Estimating marginal likelihoods}\label{subsection:margliketutorial}
 
+The stepping-stone method was described earlier (see section \ref{subsection:marglike} on page \pageref{subsection:marglike}). In this part of the tutorial, you will use the \cmd{scriptgen} command to create a \phycas\ script that carries out a stepping-stone analysis.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{The \pathname{steppingstone.py} script}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-To initiate a steppingstone analysis, use the \cmd{ss} command {\em instead of} the \cmd{mcmc} command. Here is the entire \pathname{steppingstone.py} script. 
-
+To perform a steppingstone analysis, create a new folder, copy \pathname{green.nex} into it, start \python\ inside the new folder, import \phycas, and use the \cmd{scriptgen} command as illustrated below to create a \phycas\ script named \pathname{steppingstone.py}:
 \begin{verbatim}
-from phycas import * 
-mcmc.data_source = 'green.nex'
- 
-model.type="hky"
-model.state_freqs = [0.25, 0.25, 0.25, 0.25]
-model.fix_freqs = True
-model.kappa = 2.0
-model.kappa_prior = BetaPrime(1.0, 1.0)
-model.num_rates = 4
-model.gamma_shape = 0.5
-model.gamma_shape_prior = Exponential(1.0)
- 
-m1 = model()
-m2 = model()
- 
-model.fix_freqs = False
- 
-m3 = model()
- 
-first      = subset(1, 1296, 3)
-second = subset(2, 1296, 3)
-third     = subset(3, 1296, 3)
- 
-partition.addSubset(first, m1, "First codon positions")
-partition.addSubset(second, m2, "Second codon positions")
-partition.addSubset(third, m3, "Third codon positions")
-partition()
- 
-mcmc.fix_topology = True
-mcmc.starting_tree_source = TreeCollection(newick='''(1:0.31,2:0.10,(3:0.13,(4:0.09,
-((5:0.10,6:0.20):0.06,(7:0.10,((8:0.05,10:0.11):0.02,9:0.08):0.06):0.04):0.04):0.05):0.03)''')
- 
-mcmc.ncycles = 1000
-mcmc.sample_every = 1
-
-mcmc.out.log = 'ss.log'
-mcmc.out.log.mode = REPLACE
-mcmc.out.trees = 'ss.t'
-mcmc.out.trees.mode = REPLACE
-mcmc.out.params = 'ss.p'
-mcmc.out.params.mode = REPLACE
-
-ss.nbetavals = 11
-ss.xcycles = 1000
-ss()
-
-sump.out.log = 'ss.sump.log'
-sump.out.log.mode = REPLACE
-sump.file = 'ss.p'
-sump()
+>>> scriptgen.analysis = 'ss'
+>>> scriptgen.datafile = 'green.nex'
+>>> scriptgen.model = 'gtr+i+g'
+>>> scriptgen.out.script = 'steppingstone.py'
+>>> scriptgen()
 \end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1181,65 +1141,69 @@ Run the \pathname{steppingstone.py} in \python\ as described for \pathname{basic
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Line-by-line explanation}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Most of this script was described in the previous section (see section~\ref{subsubsec:partitionpyexplanation}), so we will start with the line containing the \opt{mcmc}{fix\_topology} setting.
+Most parts of this script have been described in previous sections, so this section will concentrate on aspects of the script that are important for stepping-stone analyses.
 
 \begin{samepage}
 \begin{verbatim}
-mcmc.fix_topology = True
+# Estimate the marginal likelihood using the Generalized Stepping-stone (GSS) method
+# Estimate the reference distribution to use with Generalized SS
+refdist.burnin = 1
+refdist.params = 'params.p'
+refdist.trees = 'trees.t'
+refdist.out.refdistfile = 'refdist.txt'
+refdist.out.refdistfile.mode = REPLACE
+refdist()
 \end{verbatim}
-\pointup\ This line tells \phycas\ that we wish to fix the tree topology (i.e. not allow the tree topology to change throughout the MCMC analysis). While this is not strictly necessary, it does improve the efficiency of the stepping stone estimation somewhat because the reference distribution can contain terms for each individual edge length parameter, making it a much better match to the posterior. If the topology changes, then a single distribution must be used to describe all edge length parameters. Because some edge lengths are short, and others long, using a single distribution will necessarily have a large variance and not fit any specific edge length marginal posterior distribution as well as a reference distribution dedicated to that particular edge length parameter.
+\pointup\ This section appears after the line \code{mcmc()}. A short MCMC analysis has been conducted, as usual exploring the posterior distribution, and the purpose of this section is to summarize the posterior distribution and generate the reference distribution that will be used in the stepping-stone analysis. The settings \opt{refdist}{params} and \opt{refdist}{trees} specify the parameter and tree files, respectively, that were generated by the previous MCMC analysis. The setting \opt{refdist}{burnin} is set to \optval{1} to skip the starting values in both the parameter and tree file. The \opt{refdist}{refdistfile} determines the name of the reference distribution file that will be generated, and the \opt{refdist}{refdistfile.mode} setting says to replace this file if one by that name already exists. Finally, \code{refdist()} causes the \pathname{refdist.txt} file to be created.
 \end{samepage}
 
 \begin{samepage}
 \begin{verbatim}
-mcmc.starting_tree_source = TreeCollection(newick='''(1:0.31,2:0.10,(3:0.13,(4:0.09,
-((5:0.10,6:0.20):0.06,(7:0.10,((8:0.05,10:0.11):0.02,9:0.08):0.06):0.04):0.04):0.05):0.03)''')
+# Choose different output file names to avoid overwriting the 
+# ones used for the reference distribution
+mcmc.out.log = 'ss-output.txt'
+mcmc.out.log.mode = REPLACE
+mcmc.out.trees = 'ss-trees.t'
+mcmc.out.trees.mode = REPLACE
+mcmc.out.params = 'ss-params.p'
+mcmc.out.params.mode = REPLACE
 \end{verbatim}
-\pointup\ Because we are fixing the tree topology, we should specify the tree topology that we wish to use. This line defines a tree topology by creating a \cmd{TreeCollection} object containing a single tree. That single tree is described by the string passed in via the \code{newick} argument. Tree descriptions passed in this way should have taxa identified by numbers (starting with 1), and the numbers should reference the position of the taxon in the data file. 
-
-Note that the tree description is broken across two lines above. Note also that the tree description is surrounded by triple quotes\index{triple quoted strings} (three single quote characters in a row). When \python\ encounters a string defined by triple quotes, it allows line breaks inside. This is one way to handle this situation, but you could also delete the carriage return in the middle so that the tree description occupies just one line in your file. If the tree description string is all on one line, then you can use any kind of quotes you like: single, double, or triple. However, if you break the string across two or more lines and you fail to use triple quotes to define it, you will get an error message from \python\ (``SyntaxError: EOL while scanning string literal'').
+\pointup\ These commands are necessary because we are just about to conduct a new MCMC analysis. If these lines were absent, the log, parameter and tree files generated by this new MCMC analysis would overwrite the ones created by the first MCMC analysis (the one used to create the reference distribution). Setting new names simply allows us to keep all the files and avoid possible confusion later about which MCMC analysis generated them.
 \end{samepage}
 
 \begin{samepage}
 \begin{verbatim}
-mcmc.ncycles = 1000
+# Set up and run the ss command (this will make use of many mcmc settings)
+ss.nstones = 20
+ss.ncycles = 500
 \end{verbatim}
-\pointup\ The \cmd{ss} command uses the \cmd{mcmc} command to do almost all of the work. Hence, the setting \opt{mcmc}{ncycles} specifies the number of parameter update cycles devoted to each beta value visited. Note that this is the number of cycles per beta value. If you specified \opt{ss}{nbetavals} to be 11 and \opt{mcmc}{ncycles} to be 1000, then the total number of cycles would be 11 times 1000, or 11000 cycles.
+\pointup\ The \cmd{ss} command uses the \cmd{mcmc} command to do almost all of its work. Hence, many of the settings that affect a stepping-stone analysis are actually \cmd{mcmc} settings. The setting \opt{mcmc}{ncycles} specifies the number of parameter update cycles devoted to each beta value visited. Note that this is the number of cycles {\em per beta value}. If you specified \opt{ss}{nbetavals} to be 11 and \opt{mcmc}{ncycles} to be 1000, then the total number of cycles would be 11 times 1000, or 11000 cycles.
 \end{samepage}
 
-This example uses 11 beta values, but is this enough? Generally the more stepping stones (i.e. beta values) used, the better the estimate will be, but the quality of the estimate also depends on the quality of the reference distribution. If the reference distribution approximates the posterior well, then fewer beta values are needed (and fewer samples per beta value are needed). If the reference distribution exactly equals the posterior, then only a single sample from the reference distribution (beta = 0.0) would be needed to determine the marginal likelihood exactly, This utopia is never achievable because if one actually knew the posterior distribution exactly, then one would also know the normalizing constant exactly and hence you would not need to estimate it! In practice, it probably makes sense to start with, say, 11 $\beta$ values, and a reasonable number (\eg 1000) cycles per $\beta$ value. Then do another run, doubling both values. If this makes a big difference, then probably the first run was not long enough (and perhaps the second run too). 
+This example uses 20 beta values (\opt{ss}{nstones}), but is this enough? Generally the more stepping stones (i.e. beta values) used, the better the estimate will be, but the quality of the estimate also depends on the quality of the reference distribution. If the reference distribution approximates the posterior well, then fewer beta values are needed (and fewer samples per beta value are needed). If the reference distribution exactly equals the posterior, then only a single sample from the reference distribution (beta = 0.0) would be needed to determine the marginal likelihood exactly! (This utopia is never achievable because if one actually knew the posterior distribution exactly, then one would also know the normalizing constant exactly and hence you would not need to estimate it!) In practice, it probably makes sense to start with, say, 20 $\beta$ values, and a reasonable number (\eg 500) cycles per $\beta$ value. Then do another run, doubling both values. If this makes a big difference, then probably the first run was not long enough (and perhaps the second run too!). 
 
 \begin{samepage}
 \begin{verbatim}
-mcmc.sample_every = 1
+ss.sample_every = 1
+ss.report_every = 100
 \end{verbatim}
 \pointup\ Normally, the \opt{mcmc}{sample\_every} setting governs the degree of \termfirst{thinning} performed. Thinning involves ignoring some sampled parameter values in order to decrease autocorrelation or to avoid an excessive file size. In principle, there is no reason to thin other than to keep the size of the parameter file small because one could alway thin out the samples at a later time. Because we are not worried about the size of the parameter file here, this line tells \phycas\ to save every sample (i.e. don't thin; sample parameter values every cycle).
 \end{samepage}
 
 \begin{samepage}
 \begin{verbatim}
-mcmc.out.log = 'ss.log'
-mcmc.out.log.mode = REPLACE
-mcmc.out.trees = 'ss.t'
-mcmc.out.trees.mode = REPLACE
-mcmc.out.params = 'ss.p'
-mcmc.out.params.mode = REPLACE
+ss.refdist_is_prior = False
+ss.refdistfile = 'refdist.txt'
 \end{verbatim}
-\pointup\ The \opt{mcmc}{out.log}, \opt{mcmc}{out.trees} and \opt{mcmc}{out.params} settings tell \phycas\ to create a log file named \pathname{ss.log}, a tree file named \pathname{ss.t}, and a parameter file named \pathname{ss.p}, respectively. The \opt{mcmc}{out.log.mode}, \opt{mcmc}{out.trees.mode}, and \opt{mcmc}{out.params.mode} settings tell \phycas\ to automatically replace these files if they already exist (the default action is to append a number to the name rather than deleting the existing file).
+\pointup\ The setting \opt{ss}{refdist\_is\_prior} is set to \optval{False} because we want to use a reference distribution that approximates the posterior for efficiency. The setting \opt{ss}{refdistfile} specifies the reference distribution file that was created previously by the \cmd{refdist} command.
 \end{samepage}
 
 \begin{samepage}
 \begin{verbatim}
-ss.nbetavals = 11
+ss.shape1 = 1.000000
+ss.shape2 = 1.000000
 \end{verbatim}
-\pointup\ This specifies the number of ``stepping stones''to use in estimating the marginal likelihood. With this setting, the following 11 beta values would be used: 1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0.0. In \citep{FanWuChenKuoLewis2010}, the value $K$ represents the number of intervals (or stepping stone ratios), and thus $K=10$ in this case ($K$ = \opt{ss}{nbetavals} - 1).
-\end{samepage}
-
-\begin{samepage}
-\begin{verbatim}
-ss.xcycles = 1000
-\end{verbatim}
-\pointup\ This represents the number of extra cycles spent on the posterior distribution. Because the reference distribution is created based on a sample from the posterior, it may make sense to spend a little more time on the first stepping stone (when $\beta = 1$ and the MCMC sampler is exploring the posterior) than on the other $\beta$ values. Our (limited) experience shows that it is not worth spending an exorbitant amount of time on the posterior; a small sample seems to work quite well (assuming the tree topology is fixed).
+\pointup\ The settings \opt{ss}{shape1} and \opt{ss}{shape2} determine how the $\beta$ values are distributed on the interval from 0 to 1. If, as here, both are set to \optval{1}, the $\beta$ values will be evenly distributed. If we had set \opt{ss}{refdist\_is\_prior} to \optval{True}, it would be better to choose \opt{ss}{shape1} to be, say, \optval{0.3}, which would place more $\beta$ values near 0. When the prior is used as the reference distribution, there is a sharp change in the value of the power posterior as $\beta$ approaches 0, and both SS and TI are less biased if $\beta$ values are concentrated in this region of rapid change. See \citet{XieLewisFanKuoChen2010} and \citet{LepageBryantPhilippeLartillot2007} for more in-depth explanations.
 \end{samepage}
 
 \begin{samepage}
@@ -1254,49 +1218,43 @@ ss()
 sump.out.log = 'ss.sump.log'
 sump.out.log.mode = REPLACE
 \end{verbatim}
-\pointup\ The \opt{sump}{out.log} setting specifies the name of the file that will hold the output of the \cmd{sump} command. The \opt{sump}{out.log.mode} setting tells \phycas\ that it is Ok to go ahead and delete any \pathname{ss.sump.log} file that already exists.
-\end{samepage}
-
-\begin{samepage}
-\begin{verbatim}
-sump.file = 'ss.p'
-sump()
-\end{verbatim}
-\pointup\ The \cmd{sump} command is used to summarize the parameter file produced by the \cmd{ss} command and calculate the estimate of the marginal likelihood. The name of the parameter file to summarize must be supplied in the \opt{sump}{file} setting. Note that we have specified \pathname{ss.p} here, which matches the file name specified by the earlier \opt{mcmc}{out.params} setting.
+\pointup\ The \opt{sump}{out.log} setting specifies the name of the file that will hold the output of the \cmd{sump} command. Note that you must include the \cmd{sump} command because the \cmd{ss} command only carries out the MCMC analysis; it is the \cmd{sump} command that actually computes the estimate of the marginal likelihood.
 \end{samepage}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Output of \pathname{steppingstone.py}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-The file \pathname{ss.sump.log} contains the output of interest from this analysis. This file has three sections labeled, respectively, Autocorrelations, Effective and actual sample sizes, and Marginal likelihood estimate. The first and second sections are related, for it is the autocorrelations that determine the effective sample sizes. You will note that the first line of the Effective sample sizes section (after the header line showing the $\beta$ values) provides the actual sample sizes. This is the number of times parameter values were saved while the MCMC analysis was exploring a particular $\beta$ value. The other rows in this table provide effective sample sizes. If the MCMC samples are highly autocorrelated, then you effectively have a smaller sample size than you might have thought given the actual sample size. To see this, imagine a perfectly autocorrelated sample in which every sampled value is the same. In this case, you really only have a sample size of 1, even though \phycas\ might have saved 2000 values. Note the last column (for $\beta=0$). The effective sample sizes in this column are often larger than the actual sample size. What's up with that? If there is zero autocorrelation, then the effective sample sizes will hover around the actual sample size. If the autocorrelation is negative, then the effective sample size will be larger than the actual sample size. When $\beta=0$, \phycas\ is sampling directly from standard probability distributions and zero autocorrelation is expected in this case.
+The file \pathname{ss-sump-log.txt} contains the output of interest from this analysis. This file has three sections labeled, respectively, Autocorrelations, Effective and actual sample sizes, and Marginal likelihood estimate. The first and second sections are related, for it is the autocorrelations that determine the effective sample sizes. You will note that the first line of the Effective sample sizes section (after the header line showing the $\beta$ values) provides the actual sample sizes. This is the number of times parameter values were saved while the MCMC analysis was exploring a particular $\beta$ value. The other rows in this table provide effective sample sizes. Note the last column (for $\beta=0$). The effective sample sizes in this column are often larger than the actual sample size. What's up with that? If there is zero autocorrelation, then the effective sample sizes will hover around the actual sample size. If the autocorrelation is negative, then the effective sample size will be larger than the actual sample size. When $\beta=0$, \phycas\ is sampling directly from standard probability distributions and zero autocorrelation is expected in this case. Even though zero autocorrelation is expected, some parameters will have slightly negative autocorrelations and others will have slightly higher autocorrelations. This is normal, and explains why some effective sample sizes are greater than the actual sample size for this column. 
 
-The last section provides some information about each of the ratios (stepping stones) that it estimated in the process of estimating the marginal likelihood. The first column (labeled \code{b\_(k-1)}) is the power (i.e. value of $\beta$) used for the distribution being sampled. You will note that $\beta=1$ (the posterior distribution) is absent. This is because the samples taken from the posterior are used to formulate the reference distribution, not for estimating the individual ratios in the stepping-stone method. The column labeled \code{beta\_incr} shows the difference between the current $\beta$ value and the previous one. For the (default) generalized stepping-stone method, these $\beta$ increments should all be the same. The column labeled \code{n} provides the number of sample used for that particular ratio. The column labeled \code{lnRk} is the log of the ratio of normalizing constants corresponding to one stepping stone ratio. The product of the individual ratios equals the estimate of the marginal likelihood. The last column, labeled \code{lnR(cum)} provides the running sum of the individual \code{lnRk} values. The final estimate of the log of the marginal likelihood is provided at the bottom of the file.
+The last section provides some information about each of the ratios (stepping stones) that it estimated in the process of estimating the marginal likelihood. The first column (labeled \code{b\_(k-1)}) is the power (i.e. value of $\beta$) used for the distribution being sampled. You will note that $\beta=1$ (the posterior distribution) is absent. This is because the samples taken from the posterior are used as burn-in, not for estimating the individual ratios in the stepping-stone method. The column labeled \code{beta\_incr} shows the difference between the current $\beta$ value and the previous one. For the (default) generalized stepping-stone method, these $\beta$ increments should all be the same. The column labeled \code{n} provides the number of sample used for that particular ratio. The column labeled \code{lnRk} is the log of the ratio of normalizing constants corresponding to one stepping stone ratio. The product of the individual ratios equals the estimate of the marginal likelihood. The last column, labeled \code{lnR(cum)} provides the running sum of the individual \code{lnRk} values. The final estimate of the log of the marginal likelihood is provided at the bottom of the file.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%% Polytomy analyses %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Polytomy analyses}\label{subsection:polytomyanalyses}
 
-Unlike most other programs for Bayesian phylogenetic inference, \phycas\ can be set up to allow its Markov chain to visit tree topologies containing polytomies. In the most extreme case, \phycas\ could even spend time on the star tree (i.e. a tree with only one internal node). The reasons one might want to do this are outlined in \citet*{LewisHolderHolsinger2005}. \phycas\ is not the only software package out there that does this. In fact, there are two others that I know of: Crux (written by Jason Evans, \url{http://www.canonware.com/Crux/}) and p4 (written by Peter Foster, \url{http://bmnh.org/~pf/p4.html}).
-To convert an existing \phycas\ \python\ script into one that allows polytomies, you need add only three lines:
+Unlike most other programs for Bayesian phylogenetic inference, \phycas\ can be set up to allow its Markov chain to visit tree topologies containing polytomies. In the most extreme case, \phycas\ could even spend time on the star tree (i.e. a tree with only one internal node). The reasons one might want to allow polytomous tree topologies to be assigned posterior probability mass are outlined in \citet*{LewisHolderHolsinger2005}. \pfoururl\ (written by Peter Foster) also has the option of allowing polytomies.
+To convert an existing \phycas\ script into one that allows polytomies, you need add the following 5 lines:
 \begin{verbatim}
 mcmc.allow_polytomies = True
-mcmc.polytomy_prior   = True
+mcmc.polytomy_prior = True
 mcmc.topo_prior_C     = exp(1.0)
+mcmc.bush_move_weight = 50
+mcmc.ls_move_weight = 50
 \end{verbatim}
 The setting \opt{mcmc}{allow\_polytomies}, when set to \code{True}, tells \phycas\ that you wish for unresolved trees to be visited in addition to fully-resolved trees. Unresolved trees are tree topologies with at least one \termfirst{polytomy} (an internal node with at least four connecting edges). A fully-resolved unrooted tree has exactly three edges connecting to each internal node. The next two lines determine the kind of topology prior you wish to use. There are two major possibilities: (1) a polytomy prior and (2) a prior on resolution class.
 
 The first (\termfirst{polytomy prior}) is the easiest to understand, is the one implied by the command \opt{mcmc}{polytomy\_prior}\code{ = True}, and is the only one we will use in the following exercises. In the polytomy prior, the relative prior probability of a tree with $n$ internal nodes differs from the prior probability of a tree with $n + 1$ internal nodes by the factor \opt{mcmc}{topo\_prior\_C}. If \opt{mcmc}{topo\_prior\_C} is set equal to 1.0, then every tree topology, regardless of the number of internal nodes, would have the same prior probability. Setting \opt{mcmc}{topo\_prior\_C} to a value greater than 1 favors less-resolved trees. If we used the command \opt{mcmc}{topo\_prior\_C}\code{ = exp(1.0)}, then the factor used would be $e^1$ (approximately 2.718), and a fully-resolved tree would need to have a likelihood 1 unit higher (on the log scale) to be favored over a tree with one fewer internal node (and hence 1 fewer edge). To push the bar even higher, you could set \opt{mcmc}{topo\_prior\_C}\code{ = exp(2.0)}, which sets the factor to $e^2$ and requires a more-resolved tree to be higher by 2 log-likelihood units to equal a tree with one more polytomy.
 
-You might ask ``Why should the prior favor less-resolved trees?'' If you are tempted to perform a polytomy-friendly analysis in the first place, it is probably because you fear that a false clade will receive undue support. In such situations, you may prefer to be conservative, not only allowing polytomous trees into the analysis but actually making it extra hard for a false clade to receive high support.
+You might ask ``Why should the prior favor less-resolved trees?'' If you are tempted to perform a polytomy-friendly analysis in the first place, it is probably because you fear that a false clade will receive undue support. In such situations, you may prefer to be conservative, not only allowing polytomous trees into the analysis but actually making it extra hard for a false clade to receive high support. We have found that even a prior that strongly favors polytomies will be effectively defeated by the likelihood if there is any sign at all that substitutions have occurred on an edge. For example, one sees polytomies in trees for data simulated under a very low rate of substitution on a model tree with some short (but not zero length) edges. If the data are simulated on the same model tree but at a very high substitution rate (such that the sequences are effectively saturated), one does not see polytomies. In the latter case, the data have little information because they are so noisy, but substitutions occurred on every edge and thus polytomies are not favored.
 
-The second possible prior allowed by \phycas\ is the \termfirst{resolution class prior}. This prior not only takes account of the number of internal nodes, but also the number of possible trees that have that particular number of internal nodes. A tree topology in resolution class $k$ has $k$ internal nodes. For example, in a 4-taxon problem, there is a single star tree (resolution class 1) but 3 fully-resolved trees (resolution class 2). Suppose you conducted an MCMC analysis for a 4-taxon problem that explored the prior, using a polytomy prior with \opt{mcmc}{topo\_prior\_C}\code{ = 1}. In this case, every tree topology has the same prior probability as every other tree topology, yet the resulting sample would be dominated by fully-resolved trees! In fact, there should be 3 times as many fully-resolved trees as unresolved (star) trees showing up in the sample there are 3 possible unresolved trees but only 1 star tree. Using a resolution class prior, you could create a prior that results in each resolution class being C times more probable, a priori, than the next lower resolution class. For the 4-taxon case, making the star tree 3 times more probable than any one fully-resolved topology results in a flat resolution class prior. An MCMC sample would contain roughly the same number of star trees as fully-resolved trees. To use a resolution class prior, set \opt{mcmc}{polytomy\_prior}\code{ = False} and set \opt{mcmc}{topo\_prior\_C} to the desired ratio of adjacent resolution class priors.
+The second possible prior allowed by \phycas\ is the \termfirst{resolution class prior}. This prior not only takes account of the number of internal nodes, but also the number of possible trees that have that particular number of internal nodes. A tree topology in resolution class $k$ has $k$ internal nodes. For example, in a 4-taxon problem, there is a single star tree (resolution class 1) but 3 fully-resolved trees (resolution class 2). Suppose you conducted an MCMC analysis for a 4-taxon problem that explored the prior, using a polytomy prior with \opt{mcmc}{topo\_prior\_C}\code{ = 1}. In this case, every tree topology has the same prior probability as every other tree topology, yet the resulting sample would be dominated by fully-resolved trees! In fact, there should be 3 times as many fully-resolved trees as unresolved (star) trees showing up in the sample because there are 3 possible unresolved trees but only 1 star tree. Using a resolution class prior, you could create a prior that results in each resolution class being C times more probable, a priori, than the next lower resolution class. For the 4-taxon case, making the star tree 3 times more probable than any one fully-resolved topology results in a flat resolution class prior. An MCMC sample would contain roughly the same number of star trees as fully-resolved trees. To use a resolution class prior, set \opt{mcmc}{polytomy\_prior}\code{ = False} and set \opt{mcmc}{topo\_prior\_C} to the desired ratio of adjacent resolution class priors.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Exploring the polytomy prior}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-It is instructive to run \phycas\ without data in order to explore the prior. Let's begin by figuring out what to expect. For a 5-taxon problem, there are 15 possible fully-resolved trees (resolution class 3), 10 trees with 2 internal nodes (resolution class 2), and 1 star tree (resolution class 1). Below is a table showing the expected results (prior probabilities of each of the 26 possible tree topologies) for both a polytomy prior and a resolution class prior when \opt{mcmc}{topo\_prior\_C} equals 1.0:
+It is instructive to run \phycas\ without data in order to explore the polytomy prior. Let's begin by figuring out what to expect. For a 5-taxon problem, there are 15 possible fully-resolved trees (resolution class 3), 10 trees with 2 internal nodes (resolution class 2), and 1 star tree (resolution class 1). Below is a table showing the expected results (prior probabilities of each of the 26 possible tree topologies) for both a polytomy prior and a resolution class prior when \opt{mcmc}{topo\_prior\_C} equals 1.0:
 
 \begin{tabular}{ccccc}
 Tree Number & Resolution Class & Tree Topology & Polytomy Prior & Resolution Class Prior \\ \hline
@@ -1335,26 +1293,22 @@ In the resolution class prior column, note that each of the fully resolved trees
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{The \pathname{polytomy.py} script}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Set up an analysis that will explore one of these priors. Here is a minimal \phycas\ \python\ script to explore the resolution class prior for 5 taxa. Name this script \pathname{polytomy.py}.
+Set up an analysis that will explore one of these priors. Here are the \cmd{scriptgen} commands needed to create a \phycas\ script named \pathname{polytomy.py} that will get us close to what we want:
 \begin{verbatim}
-from phycas import *
+>>> scriptgen.analysis='poly'
+>>> scriptgen.out.script='polytomy.py'
+>>> scriptgen()
+\end{verbatim}
 
-mcmc.allow_polytomies = True
-mcmc.polytomy_prior   = False
-mcmc.topo_prior_C     = 1.0
+Because we did not specify a data file name, \cmd{scriptgen} created the file \pathname{sample.nex} and specified it as the data source in the \pathname{polytomy.py} file it generated:
+\begin{verbatim}
+mcmc.data_source = 'sample.nex'
+\end{verbatim}
 
+To explore the prior, simply set \opt{mcmc}{data\_source} to \optval{None} and tell \phycas\ how many taxa you would like to have (ordinarily \phycas\ gets this number from the data file):
+\begin{verbatim}
 mcmc.data_source = None
-mcmc.ntax = 5 
-  
-mcmc.ncycles = 20000
-mcmc.sample_every = 1 
-
-mcmc()
-
-sumt.trees = 'trees.t'
-sumt.burnin = 1
-sumt.tree_credible_prob = 1.0
-sumt()
+mcmc.ntax = 5
 \end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
