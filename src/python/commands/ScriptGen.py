@@ -4,7 +4,7 @@ import copy
 
 class ScriptGen(PhycasCommand):
     def __init__(self):
-        args = (    ("analysis",    'mcmc',         "One of 'mcmc', 'cpo', 'poly', 'idr', 'ss'.", EnumArgValidate(['mcmc', 'cpo', 'poly', 'idr', 'ss'])),
+        args = (    ("analysis",    'mcmc',         "One of 'mcmc', 'cpo', 'poly', 'ss'.", EnumArgValidate(['mcmc', 'cpo', 'poly', 'ss'])),
                     ("model",       'jc',           "One of 'jc', 'jc+i', 'jc+g', 'jc+i+g', 'hky', 'hky+i', 'hky+g', 'hky+i+g', 'gtr', 'gtr+i', 'gtr+g', 'gtr+i+g', or 'codon'.", EnumArgValidate(['jc', 'jc+i', 'jc+g', 'jc+i+g', 'hky', 'hky+i', 'hky+g', 'hky+i+g', 'gtr', 'gtr+i', 'gtr+g', 'gtr+i+g', 'codon'])),
                     ("seed",        0,              "Pseudorandom number seed to use for the analysis (a value of 0 selects seed from system clock).", IntArgValidate(min=0)),
                     ("datafile",    'sample.nex',   "Name of the data file to use, or None.", FileExistsOrNoneValidate)
