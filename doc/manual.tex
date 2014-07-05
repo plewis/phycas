@@ -52,7 +52,7 @@
 \newcommand{\windistrfilename}{phycas-2.0.0-win.zip}
 \newcommand{\macdistrfilename}{phycas-2.0.0-mac.dmg}
 \newcommand{\linuxdistrfilename}{phycas-2.0.0.tar.gz}
-\newcommand{\distrfolder}{phycas-2.0}
+\newcommand{\distrfolder}{\pathname{phycas}}
 
 \newcommand{\trademark}[1]{#1${}^{\mbox{\tiny TM}}$}
 \newcommand{\pathname}[1]{{\em #1}}				% file name or file path
@@ -70,14 +70,14 @@
 \newcommand{\important}[1]{{\bf Important: #1}}	% important information
 
 \newcommand{\warning}[1]{{\bf Warning: #1}}		% warnings
-\newcommand{\warnNoPyThree}{\warning{Do not install Python 3.x --- Phycas is not yet ready to make the leap to Python 3.}}
+\newcommand{\warnNoPyThree}{\warning{Do not install Python 3.x --- Phycas is not designed to run under Python 3.}}
 \newcommand{\eg}{{\em e.g.}~}
 \newcommand{\Windows}{Windows$^{\mbox{\tiny\textregistered}}$ }
 \newcommand{\textwrangler}{\href{http://www.barebones.com/products/TextWrangler/}{TextWrangler}}
 \newcommand{\notepadpp}{\href{http://notepad-plus-plus.org/}{NotePad++}}
 \newcommand{\registered}{$^{\mbox{\tiny\textregistered}}$ }
 
-\newcommand{\one}[1]{\mbox{${\bf 1}_{#1}$}}
+\newcommand{\one}[1]{\mbox{$1_{#1}$}}
 \newcommand{\data}{{\bf y}}
 \newcommand{\params}{\mbox{$\bm \theta$}}
 \newcommand{\Var}{\mbox{Var}}
@@ -102,7 +102,7 @@
 \newcommand{\pfoururl}{\href{https://code.google.com/p/p4-phylogenetics/}{{\sc P4}}\index{P4}}
 \newcommand{\pfour}{{\sc P4}\index{P4}}
 
-\newcommand{\pinvar}{\mbox{$p_{\mbox{invar}}$}}
+\newcommand{\pinvar}{\mbox{$p_{\mbox{\tiny inv}}$}}
 \newcommand{\ncat}{\mbox{$n_{\mbox{cat}}$}}
 
 \newcommand{\phycasapp}{\pathname{Phycas.app}}
@@ -1256,6 +1256,12 @@ The second possible prior allowed by \phycas\ is the \termfirst{resolution class
 
 It is instructive to run \phycas\ without data in order to explore the polytomy prior. Let's begin by figuring out what to expect. For a 5-taxon problem, there are 15 possible fully-resolved trees (resolution class 3), 10 trees with 2 internal nodes (resolution class 2), and 1 star tree (resolution class 1). Below is a table showing the expected results (prior probabilities of each of the 26 possible tree topologies) for both a polytomy prior and a resolution class prior when \opt{mcmc}{topo\_prior\_C} equals 1.0:
 
+% Table "polytomyprior"
+%
+\begin{table}[h]
+\caption{Expected polytomy and resolution class prior probabilities for the 26 possible tree topologies for an unrooted 5-taxon problem.}
+\label{polytomyprior}
+\begin{center}
 \begin{tabular}{ccccc}
 Tree Number & Resolution Class & Tree Topology & Polytomy Prior & Resolution Class Prior \\ \hline
 1	 &   1	  	&  (1,2,3,4,5)	  	&    0.03846	&    0.33330 \\
@@ -1285,6 +1291,8 @@ Tree Number & Resolution Class & Tree Topology & Polytomy Prior & Resolution Cla
 25	 & 	 3		&  (1,4,(2,(3,5))	& 	 0.03846	& 	 0.02222 \\
 26	 & 	 3	  	&  (1,4,(3,(2,5))	& 	 0.03846	&    0.02222 \\ \hline
 \end{tabular}
+\end{center}
+\end{table}
 
 For the polytomy prior, each of the 26 tree topologies shows up in 1/26 (3.846\%) of the sample. Note that, as a class, fully-resolved trees dominate the sample (57.7\%) even though, individually, they are as frequent as any other tree topology. That is because there are 15 tree topologies in this class (resolution class 3), but only 10 in resolution class 2 and only 1 in resolution class 1 (the star tree).
 
@@ -1323,9 +1331,9 @@ mcmc.topo_prior_C = 1.0
 sumt.tree_credible_prob = 1.0
 \end{verbatim}
 
-Go ahead and run the script, then take a look at the table of tree topology statistics produced by the \cmd{sumt} command. Over the 26 tree topologies sampled, the minimum probability was 0.0345, the maximum probability was 0.0417, and the average probability was 0.03846, which exactly equals the expected value.
+Go ahead and run the script, then take a look at the table of tree topology statistics produced by the \cmd{sumt} command (Table~\ref{polytomyprior}). Over the 26 tree topologies sampled, the minimum probability was 0.0345, the maximum probability was 0.0417, and the average probability was 0.03846, which exactly equals the expected value.
 
-Now set opt{mcmc}{polytomy\_prior} to \optval{False}, which selects the resolution class prior, and run the script again. Compare the resulting tree topology probabilities to the expected values in the table above and note that the match is quite good.
+Now set opt{mcmc}{polytomy\_prior} to \optval{False}, which selects the resolution class prior, and run the script again. Compare the resulting tree topology probabilities to the expected values in the right-most column of Table~\ref{polytomyprior} and note that the match is quite good. The single tree topology in resolution class 1 (the star tree) has estimated prior probability 0.32480 compared to its true prior probability 0.33330, the 10 trees in resolution class 2 have average estimated prior probability 0.03355 compared to the true prior probability 0.03333, and the 15 trees in resolution class 3 (fully resolved) have average estimated prior probability 0.02265 compared to their true prior probability 0.02222.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%% Reference %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1342,39 +1350,30 @@ Now set opt{mcmc}{polytomy\_prior} to \optval{False}, which selects the resoluti
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Terminology}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
-The \termfirst{support} of a distribution is the set of values for which the density function is greater than zero. A distribution is a \termfirst{discrete distribution} if the number of possible values is finite and each value is associated with a non-zero probability. Discrete distributions are associated with {\em probability} functions, $p(y|\params)$, that serve to provide the probability associated with each possible value. A distribution is a \termfirst{continuous distribution} if the number of possible values is infinite and thus each particular value has probability zero. Continuous distributions are associated with {\em probability density} functions (\termfirst{pdf}s). The pdf, $f(y|\params)$, provides the {\em relative} probability of each value. The pdf is scaled so that it integrates to 1.0, allowing specific {\em areas} under the pdf to be interpreted as probabilities. The \termfirst{indicator function} \one{x=y} takes on the value 1.0 if and only if the condition in the subscript is true (i.e., $x=y$ in this example).
+The \termfirst{support} of a distribution is the set of values for which the density function is greater than zero. A distribution is a \termfirst{discrete distribution} if the number of possible values is finite and each value is associated with a non-zero probability. Discrete distributions are associated with {\em probability} functions that serve to provide the probability associated with each possible value. For example, the likelihood $p(y|\params)$ in phylogenetics is normally a discrete probability function because sequence data $y$ comprises discrete patterns. 
+
+A distribution is a \termfirst{continuous distribution} if the number of possible values is infinite and thus each particular value has probability zero. Continuous distributions are associated with {\em probability density} functions (\termfirst{pdf}s). The pdf provides the {\em relative} probability of each value. The pdf is scaled so that it integrates to 1.0, allowing specific {\em areas} under the pdf to be interpreted as probabilities. For example, the posterior probability function $p(\params|y)$ represents a probability density if $\params$ is a continuous parameter.
+
+The \termfirst{indicator function} \one{x=y} takes on the value 1.0 if and only if the condition in the subscript is true.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Using probability distributions in \phycas}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-In most cases, you will need to prefix the names of distributions with \code{ProbDist}. For example:
-%
-\begin{verbatim}
-model.pinvar_prior = ProbDist.Beta(1,1)
-\end{verbatim}
-%
-You can avoid the need for the prefix by specifically importing the distributions you need at the top of your script. For example:
-%
-\begin{verbatim}
-from phycas.ProbDist import Beta,Gamma
-...
-model.pinvar_prior = Beta(1,1)
-\end{verbatim}
-%
 Each probability distribution defined in \phycas\ provides a \code{sample} method that generates a single random deviate from that distribution. For example:
 %
 \begin{verbatim}
-d = ProbDist.Gamma(0.5, 4.0)
-d.sample()
+>>> from phycas import *
+>>> d = Gamma(0.5, 4.0)
+>>> d.sample()
 11.923011659940444
 \end{verbatim}
 %
 This can be used to get a feel for typical values generated from a distribution. To generate 10 values from a Gamma(0.5, 4.0) distribution, you can use a \python\ \cmd{for} loop:
 %
 \begin{verbatim}
-d = ProbDist.Gamma(0.5, 4.0)
-for i in range(10):
-    d.sample()
+>>> d = Gamma(0.5, 4.0)
+>>> for i in range(10):
+...    d.sample()
 0.21277867604109485
 1.8952730436709666
 0.26548236737438019
@@ -1390,34 +1389,36 @@ for i in range(10):
 It is also possible to get the distribution object to tell you its current mean, variance and standard deviation:
 %
 \begin{verbatim}
-d = ProbDist.Gamma(0.5, 4.0)
-d.getMean()
+>>> d = Gamma(0.5, 4.0)
+>>> d.getMean()
 2.0
-d.getVar()
+>>> d.getVar()
 8.0
-d.getStdDev()
+>>> d.getStdDev()
 2.8284271247461903
 \end{verbatim}
 %
 To set the parameters of a distribution to match a particular mean and variance, use the \code{setMeanAndVariance} method:
 %
 \begin{verbatim}
-d = ProbDist.Normal(1.0, 1.0)
-d.setMeanAndVariance(2.0, 1.0)
-d.getMean()
+>>> d = Normal(1.0, 1.0)
+>>> d.setMeanAndVariance(2.0, 1.0)
+>>> d.getMean()
 2.0
-d.getVar()
+>>> d.getVar()
 1.0
 \end{verbatim}
 %
 To get a description of the distribution and a list of all of its methods, use the \code{help} function:
 %
 \begin{verbatim}
-help(ProbDist.Normal)
+>>> help(Normal)
 
 This is a class or python type
 Represents the univariate normal probability distribution.
+
 The following public methods are available:
+cloneAndSetLot
 getMean
 setLot
 resetLot
@@ -1438,18 +1439,18 @@ getCDF
 To get a description and usage example for a particular function, use \code{help} on the name of the function:
 %
 \begin{verbatim}
-help(ProbDist.Exponential.setMeanAndVariance)
+>>> help(Exponential.setMeanAndVariance)
 
 <unbound method Exponential.setMeanAndVariance>
 
 An instance of type instancemethod.
 
 Sets the mean and variance of this distribution. This distribution is
-determined entirely by the mean, so the var argument is ignored. The
-reason this function requires both mean and variance is for
+determined entirely by the mean, so no variance need be provided.
+The reason this function even has a variance argument is for
 compatibility with functions of the same name in other distributions.
 
->>> from phycas.ProbDist import *
+>>> from phycas.probdist import *
 >>> b = Exponential(2)
 >>> print b.getMean()
 0.5
@@ -1488,12 +1489,12 @@ Variance:             & & $\Var(y) = p(1-p)$
 %%%%%%%%%%%%%%%%%%%%
 \index{Beta distribution}
 
-Beta distributions are popular as priors for parameters whose support is the interval [0.0, 1.0], such as proportions. The proportion of invariable sites parameter (often abbreviated pinvar) has a Beta prior by default in \phycas. The quantity $\Gamma(x)$ that appears in the pdf is the \termfirst{gamma function}, which for integral values of $x$ is equal to $(x-1)!$.
+Beta distributions are popular as priors for parameters whose support is the interval [0.0, 1.0], such as proportions. The proportion of invariable sites parameter (often abbreviated pinvar) has a Beta prior by default in \phycas. The quantity $\Gamma(x)$ that appears in the pdf is the \termfirst{gamma function}, which for a positive integer $x$ is equal to $(x-1)!$.
 
 \begin{tabular}{lcl}
 Type:                 & & Continuous, univariate \\
 Parameters:           & & $\alpha$, $\beta$   \\
-Probability density function: & & $f(y|\alpha, \beta) = \frac{\Gamma(\alpha + \beta)}{\Gamma(\alpha) \; \Gamma(\beta)} \; y^{\alpha-1} \; (1-y)^{\beta - 1}$ \\
+Probability density function: & & $p(y|\alpha, \beta) = \frac{\Gamma(\alpha + \beta)}{\Gamma(\alpha) \; \Gamma(\beta)} \; y^{\alpha-1} \; (1-y)^{\beta - 1}$ \\
 Support:              & & $[0.0,1.0]$     \\
 Expected value:       & & $E[y] = \frac{\alpha}{\alpha + \beta}$ \\
 Variance:             & & $\Var(y) = \frac{\alpha \beta}{(\alpha + \beta)^2 \; (\alpha + \beta + 1)}$ 
@@ -1504,12 +1505,12 @@ Variance:             & & $\Var(y) = \frac{\alpha \beta}{(\alpha + \beta)^2 \; (
 %%%%%%%%%%%%%%%%%%%%%%%%%
 \index{BetaPrime distribution}
 
-The main use of the BetaPrime distribution in \phycas\ is to provide a prior distribution for the $\kappa$ parameter (the transition/transversion rate ratio in the HKY model) that is comparable to the prior used by MrBayes. In MrBayes, the $\kappa$ parameter is not given a prior directly; instead, a Beta prior is applied (by default) to the two relative rates in the HKY rate matrix (the transition rate and the transversion rate). Specifying a BetaPrime(a,b) prior on $\kappa$ in \phycas\ is equivalent to specifying a Beta(a,b) prior on the transition and transversion rates in MrBayes. You are of course free to use any other univariate distribution as a prior for $\kappa$ in \phycas; the BetaPrime distribution is only provided to make it possible to conduct Phcyas analyses that are comparable to MrBayes analyses. Note that the mean of the BetaPrime distribution is undefined if $\alpha$ is less than or equal to 1, and the variance is undefined if $\beta$ is less than or equal to 2.
+The main use of the BetaPrime distribution in \phycas\ is to provide a prior distribution for the $\kappa$ parameter (the transition/transversion rate ratio in the HKY model) that is comparable to the prior used by \mrbayes. In \mrbayes, the $\kappa$ parameter is not given a prior directly; instead, a Beta prior is applied (by default) to the two relative rates in the HKY rate matrix (the transition rate and the transversion rate). Specifying a BetaPrime(a,b) prior on $\kappa$ in \phycas\ is equivalent to specifying a Beta(a,b) prior on the transition and transversion rates in \mrbayes. You are of course free to use any other univariate distribution as a prior for $\kappa$ in \phycas; the BetaPrime distribution is only provided to make it possible to conduct \phycas\ analyses that are comparable to \mrbayes\ analyses. Note that the mean of the BetaPrime distribution is undefined if $\alpha$ is less than or equal to 1, and the variance is undefined if $\beta$ is less than or equal to 2.
 
 \begin{tabular}{lcl}
 Type:                 & & Continuous, univariate \\
 Parameters:           & & $\alpha$, $\beta$   \\
-Probability density function: & & $f(y|\alpha, \beta) = \frac{\Gamma(\alpha + \beta)}{\Gamma(\alpha) \; \Gamma(\beta)} \frac{y^{\alpha-1}}{y^{\alpha + \beta}}$ \\
+Probability density function: & & $p(y|\alpha, \beta) = \frac{\Gamma(\alpha + \beta)}{\Gamma(\alpha) \; \Gamma(\beta)} \frac{y^{\alpha-1}}{y^{\alpha + \beta}}$ \\
 Support:              & & $[0.0,1.0]$     \\
 Expected value:       & & $E[y] = \frac{\alpha}{\beta - 1}$ \\
 Variance:             & & $\Var(y) = \frac{\alpha (\alpha + \beta - 1)}{(\beta - 2)(\beta - 1)^2}$
@@ -1547,7 +1548,7 @@ or use square brackets (recognized by \python\ as defining a list), like this:\p
 Type:                 & & Continuous, multivariate \\
 Parameters:           & & $c_1, c_2, \cdots, c_n \; (0 < c_i < \infty)$    \\
                       & & $c_{\cdot} = \sum_{i=1}^{n} c_i$ \\
-Probability function: & & $f(y_1, y_2, \cdots, y_n|c_1, c_2, \cdots, c_n) = p_1 p_2 \cdots p_n
+Probability density function: & & $p(y_1, y_2, \cdots, y_n|c_1, c_2, \cdots, c_n) = p_1 p_2 \cdots p_n
 \left(
 	\frac{\left(p_1 y_1\right)^{c_1-1} \; \left(p_2 y_2\right)^{c_2-1} \; \cdots \; \left(p_n y_n\right)^{c_n-1}}
 	{\frac{\Gamma(c_1) \Gamma(c_2) \cdots \Gamma(c_n)}{\Gamma(\ccdot)}}
@@ -1568,7 +1569,7 @@ The Exponential distribution is a special case of the Gamma distribution (in whi
 \begin{tabular}{lcl}
 Type:                 & & Continuous, univariate \\
 Parameter:            & & $\lambda$ (rate; a.k.a. hazard)    \\
-Probability function: & & $f(y|\lambda) = \lambda e^{-\lambda y}$ \\
+Probability density function: & & $p(y|\lambda) = \lambda e^{-\lambda y}$ \\
 Support:              & & $[0.0,\infty)$     \\
 Expected value:       & & $E[y] = 1/\lambda$ \\
 Variance:             & & $\Var(y) = 1/\lambda^2$ 
@@ -1584,7 +1585,7 @@ The Gamma distribution (or its special case, the Exponential distribution) is co
 \begin{tabular}{lcl}
 Type:                 & & Continuous, univariate \\
 Parameters:           & & $\alpha$ (shape), $\beta$ (scale)    \\
-Probability function: & & $f(y|\alpha,\beta) = \frac{y^{\alpha - 1} \; e^{-y/\beta}}{\beta^{\alpha} \; \Gamma(\alpha)}$ \\
+Probability density function: & & $p(y|\alpha,\beta) = \frac{y^{\alpha - 1} \; e^{-y/\beta}}{\beta^{\alpha} \; \Gamma(\alpha)}$ \\
 Support:              & & $[0.0,\infty)$     \\
 Expected value:       & & $E[y] = \alpha \beta$ \\
 Variance:             & & $\Var(y) = \alpha \beta^2$ 
@@ -1600,7 +1601,7 @@ The Inverse Gamma distribution with parameters $\alpha$ and $\beta$ is the distr
 \begin{tabular}{lcl}
 Type:                 & & Continuous, univariate \\
 Parameters:           & & $\alpha$ (shape), $\beta$ (scale)    \\
-Probability function: & & $f(y|\alpha,\beta) = \frac{(1/y)^{\alpha + 1} \; e^{-(1/y)/\beta}}{\beta^{\alpha} \; \Gamma(\alpha)}$ \\
+Probability density function: & & $p(y|\alpha,\beta) = \frac{(1/y)^{\alpha + 1} \; e^{-(1/y)/\beta}}{\beta^{\alpha} \; \Gamma(\alpha)}$ \\
 Support:              & & $[0.0,\infty)$     \\
 Expected value:       & & $E[y] = \frac{1}{\beta \;(\alpha-1)}$ \\
 Variance:             & & $\Var(y) = \frac{1}{\beta^2 \; (\alpha-1)^2 \; (\alpha-2)}$ 
@@ -1616,7 +1617,7 @@ Specifying a Lognormal($\mu$,$\sigma$) distribution for a random variable $Y$ me
 \begin{tabular}{lcl}
 Type:                 & & Continuous, univariate \\
 Parameters:           & & $\mu$ (mean of $\log(Y)$), $\sigma$ (standard deviation of $\log(Y)$)    \\
-Probability function: & & $f(y|\mu,\sigma) = \frac{1}{y \sqrt{2 \pi \sigma^2}} e^{-\frac{(\log(y)-\mu)^2}{2 \sigma^2}}$ \\
+Probability density function: & & $p(y|\mu,\sigma) = \frac{1}{y \sqrt{2 \pi \sigma^2}} e^{-\frac{(\log(y)-\mu)^2}{2 \sigma^2}}$ \\
 Support:              & & $[0,\infty)$     \\
 Expected value:       & & $E[y] = e^{\mu + \frac{\sigma^2}{2}}$ \\
 Variance:             & & $\Var(y) = \left( e^{\sigma^2} - 1 \right) e^{2 \mu + \sigma^2}$ 
@@ -1632,7 +1633,7 @@ The normal distribution does not get a lot of use as a prior distribution becaus
 \begin{tabular}{lcl}
 Type:                 & & Continuous, univariate \\
 Parameters:           & & $\mu$ (mean), $\sigma$ (standard deviation)    \\
-Probability function: & & $f(y|\mu,\sigma) = \frac{1}{\sqrt{2 \pi \sigma^2}} e^{-\frac{(y-\mu)^2}{2 \sigma^2}}$ \\
+Probability density function: & & $p(y|\mu,\sigma) = \frac{1}{\sqrt{2 \pi \sigma^2}} e^{-\frac{(y-\mu)^2}{2 \sigma^2}}$ \\
 Support:              & & $(-\infty,\infty)$     \\
 Expected value:       & & $E[y] = \mu$ \\
 Variance:             & & $\Var(y) = \sigma^2$ 
@@ -1643,21 +1644,21 @@ Variance:             & & $\Var(y) = \sigma^2$
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \index{Relative rate distribution}
 
-The Relative Rate Distribution is used as a prior for the subset relative rates in a partitioned data model. The Relative Rate Distribution is very similar to a Dirichlet distribution. A vector of relative rates has mean equal to 1.0, however, which makes a Dirichlet distribution inappropriate (the sum, not the mean, of the components of a Dirichlet-distributed random variable is 1). The distinction between a Relative Rate distribution and a Dirichlet distribution mainly arises in the model selection context when the Stepping Stone method is begin used to estimate marginal (model) likelihoods. In the Stepping Stone method, constants that appear in prior distribution probability density functions must be fully specified. This is not necessary for Bayesian MCMC analyses because such constants cancel out.
+The Relative Rate Distribution is used as a prior for the subset relative rates in a partitioned data model. The Relative Rate Distribution is very similar to a Dirichlet distribution. A vector of relative rates has mean equal to 1.0, however, which makes a Dirichlet distribution inappropriate (the sum, not the mean, of the components of a Dirichlet-distributed random variable is 1). The distinction between a Relative Rate distribution and a Dirichlet distribution mainly arises in the model selection context when the stepping-stone method is begin used to estimate marginal (model) likelihoods. In the stepping-stone method, constants that appear in prior distribution probability density functions must be fully specified. This is not necessary for Bayesian MCMC analyses because such constants cancel out.
 
 The quantities $p_i$ below are the subset weights. Ordinarily, $p_i$ is simply the proportion of sites assigned to subset $i$. The parameter $c_i$ is analogous to the corresponding parameter in a Dirichlet distribution.
 \begin{indentednote}
-{\bf Important:} For multivariate distributions such as the relative rate distribution, you must supply a \python\ list or tuple rather than a single value as the parameter. Thus, to construct a flat RelativeRate prior for partition subset relative rates, you either need to use an extra set of parentheses (the inner set being recognized by \python\ as defining a tuple), like this:\par\smallskip
+{\bf Important:} For multivariate distributions such as the relative rate distribution, you must supply a \python\ list or tuple rather than a single value as the parameter. Thus, to construct a flat Relative Rate prior for partition subset relative rates, you either need to use an extra set of parentheses (the inner set being recognized by \python\ as defining a tuple), like this:\par\smallskip
 {\small \tt partition.subset\_relrates\_prior = RelativeRate((1.0, 1.0, 1.0, 1.0))}\par\smallskip
 or use square brackets (recognized by \python\ as defining a list), like this:\par\smallskip
 {\small \tt partition.subset\_relrates\_prior = RelativeRate([1.0, 1.0, 1.0, 1.0])}\par\smallskip
-Note that because the default is to use a RelativeRate prior for partition subset relative rates, you need not worry about specifying anything for \opt{partition}{subset\_relrates\_prior} unless you want to create a prior that is more informative than the default (in which all parameters in the supplied tuple equal 1.0).
+Note that because the default is to use a Relative Rate prior for partition subset relative rates, you need not worry about specifying anything for \opt{partition}{subset\_relrates\_prior} unless you want to create a prior that is more informative than the default (in which all parameters in the supplied tuple equal 1.0).
 \end{indentednote}
 \begin{tabular}{lcl}
 Type:                 & & Continuous, multivariate \\
 Parameters:           & & $c_1, c_2, \cdots, c_n \; (0 < c_i < \infty)$    \\
                       & & $c_{\cdot} = \sum_{i=1}^{n} c_i$    \\
-Probability function: & & $f(y_1, y_2, \cdots, y_n|c_1, c_2, \cdots, c_n) = p_1 p_2 \cdots p_n
+Probability density function: & & $p(y_1, y_2, \cdots, y_n|c_1, c_2, \cdots, c_n) = p_1 p_2 \cdots p_{n-1}
 \left(
 	\frac{\left(p_1 y_1\right)^{c_1-1} \; \left(p_2 y_2\right)^{c_2-1} \; \cdots \; \left(p_n y_n\right)^{c_n-1}}
 	{\frac{\Gamma(c_1) \Gamma(c_2) \cdots \Gamma(c_n)}{\Gamma(c_{\cdot})}}
@@ -1673,7 +1674,7 @@ Covariance:           & & $\Cov(y_i,y_j) = \frac{-c_i c_j}{p_i p_j \ccdot^2 (\cc
 %%%%%%%%%%%%%%%%%%%%%%%
 \index{Uniform distribution}
 
-The Uniform distribution has been used extensively as a prior for many different continuous model parameters; however, because Uniform distributions must be truncated in order to be proper, their use as prior distributions can have some surprising effects (see \citet{Felsenstein2004} for a good discussion of the problems with truncated Uniform priors).
+The Uniform distribution has been used extensively as a prior for many different continuous model parameters; however, because Uniform distributions must be truncated in order to be proper, their use as prior distributions for parameters whose domain includes the space of all positive real numbers can have some surprising effects (see \citet{Felsenstein2004} for a good discussion of the problems with truncated Uniform priors).
 
 \begin{tabular}{lcl}
 Type:                 & & Continuous, univariate \\
@@ -1813,56 +1814,11 @@ model.pinvar_model = True
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Discrete gamma}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-A ``$+G$'' version \citep{Yang1994} of any of the basic substitution models means that the model assumes that the distribution of rates across sites conforms to a Gamma distribution having mean 1.0. In \phycas\ (as in most phylogenetic software), a discretized Gamma distribution is used in practice, and implemented as an equal weight mixture model (each site is assumed to belong to each rate category with probability $1/\ncateg$). The number of rate categories $\ncateg$ is set using the \opt{model}{num\_rates} setting. If \opt{model}{num\_rates} is set to any value greater than 1, the model becomes a $+G$ version.
+A ``$+G$'' version \citep{Yang1994} of any of the basic substitution models means that the model assumes that the distribution of rates across sites conforms to a Gamma distribution having mean 1.0. In \phycas\ (as in most phylogenetic software), a discretized Gamma distribution is used in practice, and implemented as an equal-weight mixture model (each site is assumed to belong to each rate category with probability $1/\ncateg$). The number of rate categories $\ncateg$ is set using the \opt{model}{num\_rates} setting. If \opt{model}{num\_rates} is set to any value greater than 1, the model becomes a $+G$ version.
 
 \begin{verbatim}
 model.num_rates = 4
 \end{verbatim}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%% Web sites %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Web sites}\label{section:websites}
-Below is a list of all web sites referenced by hyperlinks in this document.
-\begin{description}
-\item[Phycas] \url{http://www.phycas.org}
-\item[Python programming language] \url{http://www.python.org}
-\end{description}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%% Settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\subsection{Settings}\label{subsection:phycassettings}
-%\input{cmdsettings}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%% Design principles %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\section{Design principles}\label{section:designprinciples}
-
-%The design principles underlying \phycas\ are presented best as a series of questions and answers.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\subsection{Why was \phycas\ written as an extension to \python?}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\index{Why \python?}Most phylogenetic analyses take a considerable amount of time to run, and thus most phylogenetic analysis software provides a mechanism for batch processing. 
-%Batch processing is ordinarily accomplished through the use of a command syntax of some sort that allows the user to specify the sequence of commands to run. For example, PAUP* allows PAUP blocks to be placed in NEXUS files. The user can run an analysis without manual intervention by simply executing such a file containing PAUP* commands. 
-%This mode has the added benefit of creating a record of exactly the analysis performed, so that later on when the reviews come back and you are trying to respond to reviewers' concerns, you can actually recall what you did! 
-%Using menu-driven programs makes this difficult unless the software saves a history of all keystrokes and menu selections. 
-%Other popular programs have their own, private command languages. 
-%For example, MrBayes uses MRBAYES blocks in NEXUS files, Hy-Phy uses a C-like language, and Beast uses xml as its medium for communicating commands. One reason we chose to extent \python\ is so that we could use an existing, well-documented, widely-available computing language as the command language for \phycas. There are many books available on using \python, which means we do not have to provide all the details, and \python\ is a very powerful computing language, meaning you can write very sophisticated scripts that do anything your heart desires in your phylogenetic analysis. With the phylogenetic library of tools supplied by \phycas, you can even invent new phylogenetic methods if you are so inclined. 
-%There is, of course, some program-specific learning you must do in order to use \phycas; just having a prior knowledge of \python\ will not save you from reading this manual to learn what \phycas\ offers and how to access those features.
-%We feel, however, that using a powerful, existing computing language to communicate with \phycas\ instead of ``rolling our own'' program-specific language was a very good idea.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\subsection{Why is there no graphical user interface (GUI)?}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\index{graphical user interface}Due to the large scale at which DNA sequencing is performed these days, and the increasing desire to ``pipeline'' analyses, we felt that using a script-based approach would best serve the needs of potential users in the near and distant future. \python\ is already installed on most unix-based operating systems (including Linux and MacIntosh OSX), and thus \phycas\ can be easily inserted into bioinformatics pipeline applications. Although it does not come pre-installed on new systems, \python\ is easy to install on \Windows-based PCs, and thus \phycas\ can be used easily on any workstation or laptop. While many users like user-friendly GUIs with pull-down menus and dialog boxes, software that depends on a GUI has certain disadvantages: (1) cannot be pipelined easily; (2) cannot be run on a remote cluster; and (3) often does not allow one to save a record of the exact analysis performed. One of the strong benefits of a GUI is that it allows experimentation and visualization. \phycas\ provides for visualization by outputting trees and plots in the form of PDF files. While not quite as appealing as an on-screen visual representation, PDF files provide what most of us really need: the ability to insert a publication-quality figure into a manuscript, or load artwork into other programs for manipulation.  
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\subsection{Is \phycas\ slower than MrBayes?}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%All scripting-based languages (R, \python, Perl, Ruby) are relatively slow compared to compiled languages such as C and C++. Fortunately, the Boost Python library (\url{http://www.boost.org/libs/python/doc/}) has made it easy to write the parts of \phycas\ that need to be fast in C++ and export these routines so that they can be called from \python. As a result, \phycas\ competes favorably with any phylogenetic software application out there in terms of speed. If you make speed comparisons of \phycas\ to other programs, be sure to compare them in a fair way. \phycas\ uses a different definition of ``generation'' than does MrBayes, for example. Because a ``cycle'' in \phycas\ is equivalent to more than 100 ``generations'' in MrBayes, it is easy to conclude that \phycas\ is slow compared to MrBayes. To be fair, compare instead the time required for some (large) number likelihood calculations under comparable models. \phycas\ makes this easy by reporting the number of likelihood calculations performed and the time required at the end of an MCMC analysis\index{comparing speed}. The number of likelihood calculations used by MrBayes for a single chain equals simply the number of generations.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%% Installing \phycas\ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1878,7 +1834,7 @@ These instructions assume you are using \Windows\ XP, Windows Vista\registered o
 \subsubsection{\Windows\ console}
 \label{subsubsection:winconsole}
 %
-One very handy feature that does not come with \Windows\ is the ability to open a command console by using the right-click speed menu in Explorer. The web site \url{http://www.commandline.co.uk/cmdhere/} describes how to add this functionality, which will make \phycas\ {\em much} easier to use (it is not required, however, in order to use \phycas). The basic procedure is to create a file named \pathname{cmdhere.reg} with the following text (or download the file from the web site above):
+One very handy feature of \Windows\ 7 is the ability to open a command console by using the shift-right-click speed menu in Explorer; however, older versions of \Windows\ (e.g. XP) lack this feature. The web site \url{http://www.commandline.co.uk/cmdhere/} describes how to add this functionality, which will make \phycas\ {\em much} easier to use (it is not required, however, in order to use \phycas). The basic procedure is to create a file named \pathname{cmdhere.reg} with the following text (or download the file from the web site above):
 %
 \begin{verbatim}
 REGEDIT4
@@ -1900,66 +1856,86 @@ Assuming that you saved this file with the extension \pathname{.reg}, the \Windo
 
 \subsubsection{Installing \python\ under \Windows}
 
-Before you go to the trouble of downloading and installing \python, make sure you do not already have \python\ installed on your \Windows\ system. From the Start button, choose \menu{All Programs}, then \menu{Accessories} and finally \menu{Command Prompt}. Type \code{python -V} in the console window that appears, and if a phrase such as \code{Python 2.5.1} appears, then you already have \python\ installed! Most \Windows\ users will probably see \code{'python' is not recognized as an internal or external command, operable program or batch file.} In this case, you need to visit \url{http://python.org} and download and install the latest version of \python\ (version \currPyVersion\ as of this writing). \warnNoPyThree
+Before you go to the trouble of downloading and installing \python, make sure you do not already have \python\ installed on your \Windows\ system. From the Start button, choose \menu{All Programs}, then \menu{Accessories} and finally \menu{Command Prompt}. Type \code{python -V} in the console window that appears, and if a phrase such as \code{Python 2.7.6} appears, then you already have \python\ installed! Most \Windows\ users will probably see \code{'python' is not recognized as an internal or external command, operable program or batch file.} In this case, you need to visit \url{http://python.org} and download and install the latest version of \python\ (version \currPyVersion\ as of this writing). \warnNoPyThree
 
 \subsubsection{Installing \phycas\ under \Windows}
 
-Visit the Download section of the \phycas\ web site \url{http://phycas.org/} and download the file \windistrfilename. Extract this zip file in a location of your choice, creating a \distrfolder. It is important to actually {\em extract} the zip file. If you simply double-click the downloaded zip file, \Windows\ will let you see inside the zip file without actually unpacking the files. You will know that you have successfully unzipped it if you see the zip file itself alongside a directory of the same name (but lacking the zipper image on the folder icon). You may wish to install the program 7-zip (\url{http://www.7-zip.org/}) for this, as 7-zip is much faster at extracting zip files than \Windows.
+Visit the Download section of the \phycas\ web site \url{http://phycas.org/} and download the file \windistrfilename. Extract this zip file in a location of your choice, creating a \distrfolder\ directory. It is important to actually {\em extract} the zip file. If you simply double-click the downloaded zip file, \Windows\ will let you see inside the zip file without actually unpacking the files. You will know that you have successfully unzipped it if you see the zip file itself alongside a directory of the same name (but lacking the zipper image on the folder icon). You may wish to install the program 7-zip (\url{http://www.7-zip.org/}) for this, as 7-zip is much faster at extracting zip files than \Windows.
 
-Inside the folder that appears after extracting the zip file, you should find a file named \pathname{phycas.bat}. With the {\em right mouse button}, drag this file onto your desktop. When you let go of the right mouse button, you will be given a choice to move the file, copy the file or create a shortcut (see Figure~\ref{windragdrop}). Choose the option to create a shortcut on the desktop. (If you did not succeed in actually extracting the zip file, and instead are dragging a file within the zip file to the desktop, you will not see the option to create a shortcut.)
+The unzipped \distrfolder\ directory must be moved to the \pathname{site-packages} directory of your \python\ distribution. To find the location of this directory, issue the following commands after starting \python:
+\begin{verbatim}
+>>> import site
+>>> site.getsitepackages()
+\end{verbatim}
+This should produce a list of directories, the path of one of which should end in \pathname{site-packages}. Drag your \distrfolder\ directory into \pathname{site-packages} and you should be good to go. If there is already a directory named \distrfolder\ in \pathname{site-packages}, it means you have installed \phycas\ in the past. Just delete the old folder and replace it with the latest version.
 
-It is important to not move \pathname{phycas.bat} out of its context relative to the other files in the \phycas\ folder. If \pathname{phycas.bat} is moved or copied elsewhere, \python\ will not be able to import the \phycas\ code. This is why you should be sure to drag with the right mouse button so that you can create a shortcut to \pathname{phycas.bat} rather than move or copy \pathname{phycas.bat}.
+%Inside the folder that appears after extracting the zip file, you should find a file named \pathname{phycas.bat}. With the {\em right mouse button}, drag this file onto your desktop. When you let go of the right mouse button, you will be given a choice to move the file, copy the file or create a shortcut (see Figure~\ref{windragdrop}). Choose the option to create a shortcut on the desktop. (If you did not succeed in actually extracting the zip file, and instead are dragging a file within the zip file to the desktop, you will not see the option to create a shortcut.)
+
+%It is important to not move \pathname{phycas.bat} out of its context relative to the other files in the \phycas\ folder. If \pathname{phycas.bat} is moved or copied elsewhere, \python\ will not be able to import the \phycas\ code. This is why you should be sure to drag with the right mouse button so that you can create a shortcut to \pathname{phycas.bat} rather than move or copy \pathname{phycas.bat}.
 
 %
 % Figure "windragdrop"
 %
-\begin{figure}[t]
-\begin{center}
-\begin{minipage}{5.in}
-\hfil\includegraphics[scale=0.3]{images/windragdrop}\hfil
-\caption{\small The popup screen just after right-dragging the phycas.bat file onto the desktop. Note that ``Create shortcuts here'' is an option (and you should choose this option).}
-\label{windragdrop}
-\end{minipage}
-\end{center}
-\end{figure}
+%\begin{figure}[t]
+%\begin{center}
+%\begin{minipage}{5.in}
+%\hfil\includegraphics[scale=0.3]{images/windragdrop}\hfil
+%\caption{\small The popup screen just after right-dragging the phycas.bat file onto the desktop. Note that ``Create shortcuts here'' is an option (and you should choose this option).}
+%\label{windragdrop}
+%\end{minipage}
+%\end{center}
+%\end{figure}
 
-You should now be able to drag \python\ scripts onto the \pathname{phycas.bat} shortcut to run them. For example, navigate to \pathname{phycas}\verb+\+\pathname{Examples}\verb+\+\pathname{Simplest} and drag the file \pathname{Simplest.py} onto the \pathname{phycas.bat} shortcut. A console window should appear and \phycas\ should begin an MCMC analysis.
+%You should now be able to drag \python\ scripts onto the \pathname{phycas.bat} shortcut to run them. For example, navigate to \pathname{phycas}\verb+\+\pathname{Examples}\verb+\+\pathname{Simplest} and drag the file \pathname{Simplest.py} onto the \pathname{phycas.bat} shortcut. A console window should appear and \phycas\ should begin an MCMC analysis.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Instructions for MacIntosh Users}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-These instructions assume you are using MacOS 10.4 or later.
+These instructions assume you are using MacOS 10.9 (Mavericks) and the default Python \currPyVersion. If you are using a different version of the MacOS, or if you have installed a different version of Python and are using that instead of the default, all bets are off.
 
-\subsubsection{The iTerm terminal application}
+Visit the Download section of the \phycas\ web site \url{http://phycas.org/} and download the file \macdistrfilename. Extract this zip file by double-clicking it in Finder, creating a \distrfolder\ directory.
 
-Bundled with \phycas\ is a terminal application called iTerm. The iTerm application is an open-source replacement for the Terminal application with which you may be familiar (and which comes with the MacOS). While it is possible to use \phycas\ from Terminal, we recommend strongly that you use the iTerm application that comes with \phycas. The iTerm application starts automatically when you click on the icon labeled ``\phycas'' (see below) or drop a (\python) script file onto the icon. The main reason for using the bundled iTerm application is that it starts \python\ and imports \phycas\ for you automatically when it is started.
+The unzipped \distrfolder\ directory must be moved to the \pathname{site-packages} directory of your \python\ distribution. To find the location of this directory, issue the following commands after starting \python:
+\begin{verbatim}
+>>> import site
+>>> site.getsitepackages()
+\end{verbatim}
+This should produce a list of directories, the path of one of which should be \pathname{/Library/Python/2.7/site-packages}. The MacOS does not ordinarily allow you to navigate to the branch of your file system rooted at \pathname{/Library}, but you can still open the \pathname{site-packages} in Finder: type the following command into a Terminal window:
+\begin{verbatim}
+open /Library/Python/2.7/site-packages
+\end{verbatim}
+Now drag your \distrfolder\ directory into \pathname{site-packages}. You will have to type your system password to authenticate because \pathname{site-packages} is owned by the so-called root user rather than by you (which is why MacOS tries to hide these directories from you). If there is already a directory named \distrfolder\ in \pathname{site-packages}, it means you have installed \phycas\ in the past. Just delete the old folder and replace it with the latest version.
 
-\subsubsection{Installing \python\ on a Mac}
-
-If you are using MacOS 10.4, and haven't installed \python\ yourself, your Mac probably has \python\ 2.3 installed. To find out, open a terminal window (you can find the Terminal app in the Utilities folder, which is itself a subfolder of the \pathname{Applications} folder) and type \code{python -V}. If the version of \python\ is 2.3, you will need to visit \url{http://python.org} and download and install the latest version of \python\ (version \currPyVersion\ as of this writing). \warnNoPyThree
-
-\subsubsection{Installing \phycas\ on a Mac}
-
-Visit the Download section of the \phycas\ web site \url{http://phycas.org/} and download the MacOS DMG file. Once the DMG file has been downloaded, double-click it to mount it. Inside the DMG, you should find several files (Figure~\ref{phycasdmg}). Copy the ``file'' named \pathname{Phycas} (which is actually a special ``application bundle'' folder named \phycasapp, but the operating system hides the \pathname{.app} part of the name) to your \pathname{Applications} folder and the file named \pathname{manual.pdf} to a folder of your choice. To start \phycas, double-click the \phycasapp\ application or, alternatively, drop a script file with \phycas\ commands onto it. \important{When you start \phycas, you are actually starting an application named iTerm that has been bundled with the \phycas\ \python\ libraries. Thus, the menu items you see are iTerm menu items (including the \menu{Update...} menu item)}. With this MacOS version, you need not type the \code{from phycas import *} command because this is done for you when you double-click \phycasapp.
-
-\subsubsection{Locating the ``\phycas\ Installation Folder'' on a Mac} \label{subsubsec:installfoldermac}
-
-The ``\phycas\ Installation Folder'' that is mentioned in the tutorial is inside the \phycasapp\ application bundle. MacOS tries to make it difficult for you to see inside application bundles, but clicking on the \phycasapp\ bundle while pressing the \keycmd{Ctrl} will produce a menu, and choosing the \menu{Show Package Contents} item on that menu will allow you to view the contents of the application bundle folder. Once inside \phycasapp, double-click on the \pathname{Contents} folder, then the \pathname{Resources} folder to find the \phycas\ Installation folder, which is simply named \path{phycas}.
-
+%\subsubsection{The iTerm terminal application}
+%
+%The iTerm application is an open-source replacement for the Terminal application with which you may be familiar (and which comes with the MacOS). While it is possible to use \phycas\ from Terminal, we recommend strongly that you use the iTerm application that comes with \phycas. The iTerm application starts automatically when you click on the icon labeled ``\phycas'' (see below) or drop a (\python) script file onto the icon. The main reason for using the bundled iTerm application is that it starts \python\ and imports \phycas\ for you automatically when it is started.
+%
+%\subsubsection{Installing \python\ on a Mac}
+%
+%If you are using MacOS 10.4, and haven't installed \python\ yourself, your Mac probably has \python\ 2.3 installed. To find out, open a terminal window (you can find the Terminal app in the Utilities folder, which is itself a subfolder of the \pathname{Applications} folder) and type \code{python -V}. If the version of \python\ is 2.3, you will need to visit \url{http://python.org} and download and install the latest version of \python\ (version \currPyVersion\ as of this writing). \warnNoPyThree
+%
+%\subsubsection{Installing \phycas\ on a Mac}
+%
+%Visit the Download section of the \phycas\ web site \url{http://phycas.org/} and download the MacOS DMG file. Once the DMG file has been downloaded, double-click it to mount it. Inside the DMG, you should find several files (Figure~\ref{phycasdmg}). Copy the ``file'' named \pathname{Phycas} (which is actually a special ``application bundle'' folder named \phycasapp, but the operating system hides the \pathname{.app} part of the name) to your \pathname{Applications} folder and the file named \pathname{manual.pdf} to a folder of your choice. To start \phycas, double-click the \phycasapp\ application or, alternatively, drop a script file with \phycas\ commands onto it. \important{When you start \phycas, you are actually starting an application named iTerm that has been bundled with the \phycas\ \python\ libraries. Thus, the menu items you see are iTerm menu items (including the \menu{Update...} menu item)}. With this MacOS version, you need not type the \code{from phycas import *} command because this is done for you when you double-click \phycasapp.
+%
+%\subsubsection{Locating the ``\phycas\ Installation Folder'' on a Mac} \label{subsubsec:installfoldermac}
+%
+%The ``\phycas\ Installation Folder'' that is mentioned in the tutorial is inside the \phycasapp\ application bundle. MacOS tries to make it difficult for you to see inside application bundles, but clicking on the \phycasapp\ bundle while pressing the \keycmd{Ctrl} will produce a menu, and choosing the \menu{Show Package Contents} item on that menu will allow you to view the contents of the application bundle folder. Once inside \phycasapp, double-click on the \pathname{Contents} folder, then the \pathname{Resources} folder to find the \phycas\ Installation folder, which is simply named \path{phycas}.
+%
 %
 % Figure "phycasdmg"
 %
-\begin{figure}[t]
-\begin{center}
-\begin{minipage}{5.in}
-\hfil\includegraphics[scale=0.5]{images/phycasdmg}\hfil
-\caption{\small The \phycas\ DMG file after it has been mounted.}
-\label{phycasdmg}
-\end{minipage}
-\end{center}
-\end{figure}
-
+%\begin{figure}[t]
+%\begin{center}
+%\begin{minipage}{5.in}
+%\hfil\includegraphics[scale=0.5]{images/phycasdmg}\hfil
+%\caption{\small The \phycas\ DMG file after it has been mounted.}
+%\label{phycasdmg}
+%\end{minipage}
+%\end{center}
+%\end{figure}
+%
 \clearpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1969,6 +1945,7 @@ The ``\phycas\ Installation Folder'' that is mentioned in the tutorial is inside
 \renewcommand{\bibsection}{}
 \bibliography{manual}
 
+\clearpage
 \printindex
 
 \end{document}
