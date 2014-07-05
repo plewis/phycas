@@ -1311,99 +1311,21 @@ mcmc.data_source = None
 mcmc.ntax = 5
 \end{verbatim}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Line-by-line explanation}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{samepage}
+In order to have a larger sample size, increase \opt{mcmc}{ncycles} from \optval{10000} to \optval{100000} and decrease \opt{mcmc}{sample\_every} from \optval{100} to \optval{10}, yielding a sample size of 10000 rather than the original 100.
 \begin{verbatim}
-from phycas import *
+mcmc.ncycles = 100000
+mcmc.sample_every = 10
 \end{verbatim}
-\pointup\ This is the mandatory starting line for any \phycas\ \python\ script. It imports all the functionality defined by \phycas\ into your \python\ implementation.
-\end{samepage}
 
-\begin{samepage}
+Finally, specify \opt{mcmc}{topo\_prior\_C} to be \optval{1.0} to match the value used to construct the table above, and set \opt{sumt}{tree\_credible\_prob} to \optval{1.0} so that all tree topologies sampled will be included in the tree topology summary:
 \begin{verbatim}
-mcmc.allow_polytomies = True
-\end{verbatim}
-\pointup\ This line tells \phycas\ to consider unresolved trees when performing a Bayesian MCMC analysis. If this were set to \code{False} (the default), only fully resolved trees would be allowed.
-\end{samepage}
-
-\begin{samepage}
-\begin{verbatim}
-mcmc.polytomy_prior   = False
-\end{verbatim}
-\pointup\ Setting \opt{mcmc}{polytomy\_prior} to \code{True} tells \phycas\ that you want to use a \termfirst{polytomy prior}. Setting \opt{mcmc}{polytomy\_prior} to \code{False}, as we've done here, chooses a \termfirst{resolution class prior}.
-\end{samepage}
-
-\begin{samepage}
-\begin{verbatim}
-mcmc.topo_prior_C     = 1.0
-\end{verbatim}
-\pointup\ This sets the ``strength'' of the resolution class prior. Specifying 1.0 here means that each resolution class will be represented equally in a sample from the prior. This effectively emphasizes tree topologies in resolution classes that have fewer members. For example, even though the star tree is the only member of the resolution class 1, it will be visited as often as the fully-resolved resolution class, which contains a potentially huge number of tree topologies (2,027,025 unrooted, fully-resolved tree topologies for just 10 taxa). Specifying 2.0 here would mean each resolution class is twice as probable as the next higher resolution class (by higher, I mean more resolved; i.e. having one more internal node).
-\end{samepage}
-
-\begin{samepage}
-\begin{verbatim}
-mcmc.data_source = None
-\end{verbatim}
-\pointup\ Setting \opt{mcmc}{data\_source} to \code{None} (be sure to capitalize the \code{None} so that \python\ recognizes it) tells \phycas\ that we are not specifying a data set for this analysis. The MCMC analysis will explore the prior rather than the posterior in this case.
-\end{samepage}
-
-\begin{samepage}
-\begin{verbatim}
-mcmc.ntax = 5
-\end{verbatim}
-\pointup\ Normally, \phycas\ ascertains the number of taxa from the data file, but since we are running without data we need to tell \phycas\ how many taxa to assume. The \opt{mcmc}{ntax} setting accomplishes that.
-\end{samepage}
-
-\begin{samepage}
-\begin{verbatim}
-mcmc.ncycles = 20000
-\end{verbatim}
-\pointup\ The \opt{mcmc}{ncycles} setting tells \phycas\ how many parameter update cycles to perform. \phycas\ will normally update each parameter once during a single cycle, but edge length parameters make this a bit complicated. If the tree topology is fixed, each edge length is updated once per cycle. In the present example, the tree topology is free to vary, which means that edge lengths are updated using a Metropolis-Hastings proposal (the LOCAL move) that selects three edges at random to modify. This proposal is, by default, attempted 100 times per cycle, so some edge length parameters will probably get updated more than once, and others not at all, during a single update cycle.
-\end{samepage}
-
-\begin{samepage}
-\begin{verbatim}
-mcmc.sample_every = 1
-\end{verbatim}
-\pointup\ The \opt{mcmc}{sample\_every} setting establishes how often a sample will be saved to the \pathname{params.p} file. In this case, we are saving a sample after every cycles. If this setting had been 10, then we would only save a sample after every 10 cycles.
-\end{samepage}
-
-\begin{samepage}
-\begin{verbatim}
-mcmc()
-\end{verbatim}
-\pointup\ The \cmd{mcmc} command initiates the MCMC analysis.
-\end{samepage}
-
-\begin{samepage}
-\begin{verbatim}
-sumt.trees = 'trees.t'
-\end{verbatim}
-\pointup\ The \cmd{sumt} command summarizes the trees and splits sampled during an MCMC analysis. This \opt{sumt}{trees} setting tells the \cmd{sumt} command what file to summarize. The \pathname{trees.t} file is created by the \cmd{mcmc} command.
-\end{samepage}
-
-\begin{samepage}
-\begin{verbatim}
-sumt.burnin = 1
-\end{verbatim}
-\pointup\ The first tree saved in a tree file produced during an MCMC analysis is the starting tree, which is never a valid sample from the posterior distribution. Thus, the \opt{sumt}{burnin} setting above tells \phycas\ to not count the first tree in the \pathname{trees.t} file. If we had specified 10 instead of 1 for the \opt{sumt}{burnin} setting, then \phycas\ would have ignored the first ten trees it found in the \pathname{trees.t} file.
-\end{samepage}
-
-\begin{samepage}
-\begin{verbatim}
+mcmc.topo_prior_C = 1.0
 sumt.tree_credible_prob = 1.0
 \end{verbatim}
-\pointup\ Normally, the \cmd{sumt} command produces a PDF file containing a graphical representation of all trees in the 95\% credible set. To determine the 95\% credible set, \phycas\ sorts tree topologies by their marginal posterior probability (with the largest posteriors first) and adds tree topologies to the credible set until the cumulative posterior probability first exceeds 0.95. The \opt{sumt}{tree\_credible\_prob} setting tells \phycas\ what the cutoff should be. The default value is 0.95, but here we are making it 1.0 so that all trees sampled will be included in the credible set (and any summary statistics produced). Ordinarily, this might be a dangerous thing to do. Imagine if your \pathname{trees.t} file contained 20000 distinct tree topologies. The resulting PDF file would be enormous! In this case it is safe because we know there are only 15 possible tree topologies for 5 taxa.
-\end{samepage}
 
-\begin{samepage}
-\begin{verbatim}
-sumt()
-\end{verbatim}
-\pointup\ This line calls the \cmd{sumt}. It essentially tells \phycas\ that we have finished setting up the \cmd{sumt} command and are ready for it to run.
-\end{samepage}
+Go ahead and run the script, then take a look at the table of tree topology statistics produced by the \cmd{sumt} command. Over the 26 tree topologies sampled, the minimum probability was 0.0345, the maximum probability was 0.0417, and the average probability was 0.03846, which exactly equals the expected value.
+
+Now set opt{mcmc}{polytomy\_prior} to \optval{False}, which selects the resolution class prior, and run the script again. Compare the resulting tree topology probabilities to the expected values in the table above and note that the match is quite good.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%% Reference %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
