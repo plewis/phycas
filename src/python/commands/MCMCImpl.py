@@ -784,7 +784,7 @@ class MCMCImpl(CommonFunctions):
             w = p.getWeight()
             name = p.getName()
             if (name.find('edgelen_hyper') > -1) or (name.find('external_hyper') > -1) or (name.find('internal_hyper') > -1):   # C++ class HyperPriorParam
-                self.phycassert(tree_length_prior_specified, 'Cannot specify edge length hyperpriors and tree length prior simultaneously')
+                self.phycassert(not tree_length_prior_specified, 'Cannot specify edge length hyperpriors and tree length prior simultaneously')
                 if not edgelens_generated:
                     # Choose hyperparam, then use it to choose new edge lengths for a newly-created tree
                     m = chain.partition_model.getModel(0)
@@ -971,7 +971,7 @@ class MCMCImpl(CommonFunctions):
                 # Choose number of internal nodes
                 jpm = self.mcmc_manager.getColdChainManager().getJointPriorManager()
                 topo_prior_calculator = jpm.getTopoProbCalculator()
-                num_internal_nodes = chain.topo_prior_calculator.sample(chain.r)
+                num_internal_nodes = topo_prior_calculator.sample(chain.r)
 
                 # Delete nodes at random from tree to achieve chosen number of internal nodes
                 orig_num_internal_nodes = chain.tree.getNInternals()
