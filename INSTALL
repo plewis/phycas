@@ -111,9 +111,10 @@ The second item in the list should be "C:\\Python27\\lib\\site-packages". If it 
 *** Building Phycas under linux ***
 ***********************************
 1. Install Boost C++ library:
-    a. Download boost_1_55_0.tar.gz from http://www.boost.org/, save in $HOME, then unpack as follows:
+    a. Download boost_1_55_0.tar.gz from http://www.boost.org/ and unpack into your home directory:
 
         cd $HOME
+        curl -L http://sourceforge.net/projects/boost/files/boost/1.55.0/boost_1_55_0.tar.gz/download > boost_1_55_0.tar.gz
         tar zxvf boost_1_55_0.tar.gz
 
     b. cd into boost_1_55_0 and run the following commands to compile the thread and python libraries
@@ -122,15 +123,8 @@ The second item in the list should be "C:\\Python27\\lib\\site-packages". If it 
         ./bootstrap.sh --with-python=/opt/python/bin/python --with-libraries=thread,python
         ./b2
 
-    # This part not necessary
-    # c. install the boost-build system (adds the bin and share directories to $HOME/boostlib)
-    #
-    #    cd $HOME/boost_1_55_0/tools/build/v2
-    #    ./bootstrap.sh
-    #    ./b2 install --prefix=$HOME/boostlib
-
 2. Install the Nexus Class Library (NCL):
-    a.  Download ncl-2.1.18.tar.gz from http://sourceforge.net/projects/ncl/ and unpack:
+    a.  Download ncl-2.1.18.tar.gz from http://sourceforge.net/projects/ncl/ and unpack into your home directory:
 
         cd $HOME
         curl -L http://sourceforge.net/projects/ncl/files/latest/download > ncl-2.1.18.tar.gz
@@ -149,15 +143,14 @@ The second item in the list should be "C:\\Python27\\lib\\site-packages". If it 
         make install
 
 3. Build Phycas
-    a.  Download phycas-2.0.0-src.tar.gz from http://phycas.org/ and save in $HOME
-
-    b.  Unpack phycas-2.0.0-src.tar.gz
+    a.  Download phycas-2.0.0-src.tar.gz from http://phycas.org/ and unpack into your home directory:
 
         cd $HOME
+        curl -L http://phycas.org/downloads/phycas-2.0.0-src.tar.gz > phycas-2.0.0-src.tar.gz
         tar zxvf phycas-2.0.0-src.tar.gz
         cd phycas-2.0.0
 
-    c.  Copy build.sh from scripts directory to $HOME/phycas and in the copy specify values for these variables:
+    c.  Copy build.sh from scripts directory to $HOME/phycas-2.0.0 and in the copy specify values for these variables:
             OSTYPE="linux"
             BOOST_ROOT="$HOME/boost_1_55_0"
             BJAM_DIR="$BOOST_ROOT/tools/build/v2/engine/bin.linuxx86_64"
@@ -166,7 +159,7 @@ The second item in the list should be "C:\\Python27\\lib\\site-packages". If it 
 
     d.  Now run it
 
-        cd $HOME
+        cd $HOME/phycas-2.0.0
         ./build.sh
 
     e.  Copy $HOME/phycas/phycas to your site-packages directory to complete the installation or, if you lack sudo privileges, you can specify these before invoking python:

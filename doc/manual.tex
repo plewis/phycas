@@ -54,7 +54,7 @@
 \newcommand{\currPyVersion}{2.7}
 \newcommand{\windistrfilename}{phycas-2.0.0-win.zip}
 \newcommand{\macdistrfilename}{phycas-2.0.0-mac.zip}
-\newcommand{\linuxdistrfilename}{phycas-2.0.0.tar.gz}
+\newcommand{\linuxdistrfilename}{phycas-2.0.0-src.tar.gz}
 \newcommand{\distrfolder}{\pathname{phycas}}
 
 \newcommand{\trademark}[1]{#1${}^{\mbox{\tiny TM}}$}
@@ -302,6 +302,15 @@ Now drag your \distrfolder\ directory into \pathname{site-packages}. You will ha
 %\end{center}
 %\end{figure}
 %
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Instructions for Linux users} 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Visit the Download section of the \phycas\ web site \url{http://phycas.org/} and download the source distribution file \linuxdistrfilename. Unpack this file using the command 
+
+\code{tar zxvf \linuxdistrfilename}
+
+and follow the instructions in the \pathname{INSTALL} file to build \phycas\ for a Linux system.
 \clearpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2076,6 +2085,12 @@ The \cmd{ps} and \cmd{sump} commands are new to version 1.1. The \cmd{ps} comman
 
 \subsubsection{Bugs fixed}
 Two memory leaks were fixed prior to this release. For a description of the leaks and what was done to fix them, see the section on the ``leaky'' bug in the BUGS file.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% Acknowledgements %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Acknowledgements}\addcontentsline{toc}{section}{Acknowledgements}
+\phycas\ development was in part funded by grants EF-0331495, DEB-1036448, and DEB-1354146 from the National Science Foundation and grant 98-4-5 ME from the Alfred P. Sloan Foundation. Additional support was provided by the Department of Ecology and Evolutionary Biology at the University of Kansas and by the Department of Ecology and Evolutionary Biology and the Bioinformatics Facility of the Biotechnology/Bioservices Center at the University of Connecticut.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
