@@ -32,6 +32,9 @@
 \usepackage{graphicx}
 \usepackage{floatflt}
 
+% Allows \titleref
+%\usepackage{titleref} % does not play well with hyperref, use \nameref instead
+
 % bold math
 \usepackage{bm}
 
@@ -50,7 +53,7 @@
 \newcommand{\currReleaseGitBuild}{18e7a835616e453dcfd60d1b9ee9e763858778cc}			% TODO: CHECK PRIOR TO NEW RELEASE
 \newcommand{\currPyVersion}{2.7}
 \newcommand{\windistrfilename}{phycas-2.0.0-win.zip}
-\newcommand{\macdistrfilename}{phycas-2.0.0-mac.dmg}
+\newcommand{\macdistrfilename}{phycas-2.0.0-mac.zip}
 \newcommand{\linuxdistrfilename}{phycas-2.0.0.tar.gz}
 \newcommand{\distrfolder}{\pathname{phycas}}
 
@@ -174,54 +177,132 @@ pdfkeywords={phylogenetics, Bayesian, Markov chain Monte Carlo, MCMC}}
 
 \phycasurl\ is an extension of the \pythonurl\ programming language that allows \python\ to read NEXUS-formatted data files, run Bayesian phylogenetic MCMC analyses, and summarize the results. In order to use \phycas, you need to first have \python\ installed on your computer. Please see section~\ref{section:install} entitled ``Installing Phycas'' (p.~\pageref{section:install}) for detailed installation instructions and useful information on topics important for using \phycas, such as how to access the command prompt for the operating system you are using. The following sections assume that you have successfully installed \phycas\ and have read section~\ref{section:install}.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{What's new in version 2.0?} %%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-This version was released on \currReleaseDate\footnote{This version corresponds with git commit SHA \currReleaseGitBuild}. The jump to version 2.0 is marked by the addition of a second posterior predictive method (GG) to go along with Conditional Predictive Ordinates (CPO), the Rannala-Zhu-Yang tree length prior, as well as the \cmd{scriptgen} command that simplifies creation of \python\ scripts that perform \phycas\ analyses. The \cmd{scriptgen} command will be introduced in this manual to generate all scripts used in tutorials. 
-
-The Rannala-Zhu-Yang tree length prior \citet{RannalaZhuYang2011} provides an elegant solution to the problem of undue influence of edge length prior choice on the induced tree length prior. Rather than placing a prior on individual edge length parameters and allowing them to collectively define the tree length prior, Rannala, Zhu and Yang suggest placing a prior instead on the tree length and letting that determine the individual edge length priors. This approach effectively eliminates the gross overestimation of tree length sometimes observed in Bayesian phylogenetic analyses, while allowing a flat prior on edge length proportions given the tree length. \phycas\ now provides a choice between the new tree length prior and the classical edge length priors offered by previous versions of the software.
-
-%The IDR method, recently introduced to phylogenetics by \citet{ArimaTardella2012}, is very promising because it (alone among the accurate marginal likelihood estimation methods) does not require an {\em ad hoc} MCMC analysis that cannot also be interpreted as a sample from the posterior distribution. Thus, it features the computational efficiency of the harmonic mean method as well as the accuracy of the stepping-stone or thermodynamic integration methods. 
-
-\phycas\ has also improved its model selection repertoire. The Gelfand-Ghosh (GG) method \citep{GelfandGhosh1998,Lewis:2014gw} introduces a second posterior predictive approach to Bayesian model selection to complement the CPO method introduced first in version 1.2. The generalized stepping-stone method has been generalized further, now allowing for estimation of the total marginal likelihood when tree topology is allowed to vary. This makes use of the tree topology reference distribution described in \citet{Holder:2014vc}.
-
-Finally, \phycas\ distribution has been streamlined and simplified, and it is installed the same way on both Windows and Mac machines: by copying a folder named \pathname{phycas} to the \pathname{site-packages} directory inside the \python\ distribution you intend to use. In the process, the directory structure was reorganized and a new GitHub repository set up for maintaining the project. You can now obtain the bleeding edge version of \phycas\ by cloning from \phycasgithuburl.
-
-%Although the (non-generalized) stepping-stone method has recently been introduced to BEAST and MrBayes 3.2, \phycas\ now has one of the richest Bayesian model selection repertoires of any phylogenetic software package, including the posterior predictive methods CPO (Conditional Predictive Ordinates) and GG (Gelfand-Ghosh) and the marginal likelihood methods TI (Thermodynamic Integration), SS (Stepping-stone), GSS (Generalized Stepping-stone), and IDR (Inflated Density Ratio).
-
-\subsubsection{Bugs fixed}
-The BUGS file documents 4 additional bugs that were fixed prior to this release: the ``not-a-bug'' ``bug'', the ``Debry'' bug (brought to our attention by Ron DeBry), the ``Forgot Likelihood Root'' bug, and the ``Reference Rooting'' bug.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{What's new in version 1.2?} %%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-This version was released on 9 August 2010\footnote{This version corresponds with git commit SHA 18e7a835616e453dcfd60d1b9ee9e763858778cc}. It adds support for data partitioning, changes the name of the \cmd{ps} command to \cmd{ss}, and adds the \cmd{cpo} command. \phycas\ now supports a limited form of data partitioning in that topology and edge lengths are always linked across partition subsets and all other model parameters are unlinked. The name change from \cmd{ps} to \cmd{ss} reflects the fact that the primary purpose of the command is to use the stepping-stone method, and ``ps'' stands for ``path sampling,'' a name that was never used even by the authors of the thermodynamic integration approach! Finally, the \cmd{cpo} command is identical to the \cmd{mcmc} command except that it saves the site log-likelihoods to a file and estimates the Conditional Predictive Ordinate for each site using those stored site log-likelihoods. See section \ref{subsection:cpo} for details. 
-
-The process of specifying a master pseudorandom number seed has been simplified in version 1.2. You can now simply insert the command \code{setMasterSeed(13579)}\index{setMasterSeed} just after the \code{from phycas import *} command to set the master random number seed to the value 13579.
-
-\subsubsection{Bugs fixed}
-The BUGS file documents two additional bug fixes prior to this release. They are the ``underflow'' bug (brought to our attention by Federico Plazzi and Mark Clements), which resulted in incorrect likelihood calculations for large trees when a ``+I'' model was in use, and the ``Jockusch'' bug (brought to our attention by Elizabeth Jockusch), which resulted in ``not-a-number'' likelihoods when a particular subset relative rate was very tiny.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\subsection{What's new in version 1.1.x?} %%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%These are bug-fix releases. For a description of the major bug fixed, see the section on the ``underflow'' bug in the BUGS file. For other changes, see the CHANGES file.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{What's new in version 1.1?} %%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{New features}
-The \cmd{ps} and \cmd{sump} commands are new to version 1.1. The \cmd{ps} command allows computation of both the path sampling (a.k.a. thermodynamic integration) method of \citet{LartillotPhillippe2006} and the steppingstone sampling method introduced by \citet{XieLewisFanKuoChen2010}. See section \ref{subsection:marglike} on page \pageref{subsection:marglike} for details. The \cmd{sump} command provides an analog of the sump command in \mrbayesurl, providing means, extremes, and credible intervals for model parameters based on samples saved in the parameter file.
-
-\subsubsection{Bugs fixed}
-Two memory leaks were fixed prior to this release. For a description of the leaks and what was done to fix them, see the section on the ``leaky'' bug in the BUGS file.
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{How to use this manual} %%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-This manual begins with a description of some things you can do with \phycas\ that you cannot do with most other Bayesian phylogenetics software. Following this features section (section~\ref{section:features}) is a tutorial (section~\ref{section:tutorial}) showing you how to perform some basic Bayesian phylogenetic analyses. This tutorial does not attempt to explain all possible settings. The online help system provides details about settings not mentioned in the tutorial. After these initial sections, the manual switches to reference style (section~\ref{section:reference}), detailing probability distributions (sections~\ref{subsection:probdist} and \ref{subsection:phycasprobdists}) that can be used as priors, and describing the models of character evolution (section~\ref{subsection:models}) available in \phycas.
+This manual begins with instructions for getting \phycas\ (and \python) installed on your computer system, followed by a description of some types of analyses you can do with \phycas\ (section~\ref{section:features}). Following this is a tutorial (section~\ref{section:tutorial}) showing you how to perform some basic Bayesian phylogenetic analyses. This tutorial does not attempt to explain all possible settings. The online help system provides details about settings not mentioned in the tutorial. After these initial sections, the manual switches to reference style (section~\ref{section:reference}), detailing probability distributions (sections~\ref{subsection:probdist} and \ref{subsection:phycasprobdists}) that can be used as priors, and describing the models of character evolution (section~\ref{subsection:models}) available in \phycas.
 %This is followed by a discussion (section~\ref{section:designprinciples}) of design principles (\eg Why did we decide to extend \python\ rather than write a stand-alone program? Why is there no graphical interface?).
-A list of related web sites (section~\ref{section:websites}) is followed by one final section (section~\ref{section:install}) devoted to the details of getting \phycas\ (and \python) installed on your computer system.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% Installing Phycas %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Installing \phycas}\label{section:install}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Instructions for \Windows\ users} 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+These instructions assume you are using \Windows\ 7. The instructions may work with later versions of the operating system, but probably not with earlier versions such as \Windows\ XP or Windows Vista\registered.
+
+\subsubsection{\Windows\ console}
+\label{subsubsection:winconsole}
+One very handy feature of \Windows\ 7 is the ability to open a command console by using a popup menu in Explorer. Select a folder in Explorer, then right-click the selected folder while holding down the Shift key. One of the items on the resulting popup menu allows you to open a console window in which the selected folder is the current directory.
+
+%Older versions of \Windows\ (e.g. XP) lack this feature. The web site \url{http://www.commandline.co.uk/cmdhere/} describes how to add this functionality, which will make \phycas\ {\em much} easier to use (it is not required, however, in order to use \phycas). The basic procedure is to create a file named \pathname{cmdhere.reg} with the following text (or download the file from the web site above):
+%
+%\begin{verbatim}
+%REGEDIT4
+%
+%[HKEY_CLASSES_ROOT\*\shell\cmdhere]
+%@="Cmd&Here"
+%
+%[HKEY_CLASSES_ROOT\*\shell\cmdhere\command]
+%@="cmd.exe /c start cmd.exe /k pushd \"%L\\..\""
+%
+%[HKEY_CLASSES_ROOT\Folder\shell\cmdhere]
+%@="Cmd&Here"
+%
+%[HKEY_CLASSES_ROOT\Folder\shell\cmdhere\command]
+%@="cmd.exe /c start cmd.exe /k pushd \"%L\""
+%\end{verbatim}
+%
+%Assuming that you saved this file with the extension \pathname{.reg}, the \Windows\ operating system will know what to do with it. Double-click the name of the file in \Windows\ Explorer, and the required registry entry will be made. \warning{making changes to your system's registry is a bit risky, and we take no responsibility for any damage your system may incur by following these directions!} That said, this worked fine for us and saves an enormous amount of time. \Windows\ offers a PowerToy (\url{http://www.microsoft.com/windowsxp/downloads/powertoys/xppowertoys.mspx}) for XP that does something similar. While perhaps safer to install, it is somewhat frustrating to use because if you are already inside a directory in which you want to open a console, you must first go up one level in order to open a console window for that directory.
+
+\subsubsection{Installing \python\ under \Windows}
+
+Before you go to the trouble of downloading and installing \python, make sure you do not already have \python\ installed on your \Windows\ system. From the Start button, choose \menu{All Programs}, then \menu{Accessories} and finally \menu{Command Prompt}. Type \code{python -V} in the console window that appears, and if a phrase such as \code{Python 2.7.6} appears, then you already have \python\ installed! Most \Windows\ users will probably see \code{'python' is not recognized as an internal or external command, operable program or batch file.} In this case, you need to visit \url{http://python.org} and download and install the latest version of \python\ (version \currPyVersion\ as of this writing). \warnNoPyThree
+
+\subsubsection{Installing \phycas\ under \Windows}
+
+Visit the Download section of the \phycas\ web site \url{http://phycas.org/} and download the file \windistrfilename. Extract this zip file in a location of your choice, creating a \distrfolder\ directory. It is important to actually {\em extract} the zip file. If you simply double-click the downloaded zip file, \Windows\ will let you see inside the zip file without actually unpacking the files. You will know that you have successfully unzipped it if you see the zip file itself alongside a directory of the same name (but lacking the zipper image on the folder icon). You may wish to install the program 7-zip (\url{http://www.7-zip.org/}) for this, as 7-zip is much faster at extracting zip files than \Windows.
+
+The unzipped \distrfolder\ directory must be moved to the \pathname{site-packages} directory of your \python\ distribution. To find the location of this directory, issue the following commands after starting \python:
+\begin{verbatim}
+>>> import site
+>>> site.getsitepackages()
+\end{verbatim}
+This should produce a list of directories, the path of one of which should end in \pathname{site-packages}. Drag your \distrfolder\ directory into \pathname{site-packages} and you should be good to go. If there is already a directory named \distrfolder\ in \pathname{site-packages}, it means you have installed \phycas\ in the past. Just delete the old folder and replace it with the latest version.
+
+%Inside the folder that appears after extracting the zip file, you should find a file named \pathname{phycas.bat}. With the {\em right mouse button}, drag this file onto your desktop. When you let go of the right mouse button, you will be given a choice to move the file, copy the file or create a shortcut (see Figure~\ref{windragdrop}). Choose the option to create a shortcut on the desktop. (If you did not succeed in actually extracting the zip file, and instead are dragging a file within the zip file to the desktop, you will not see the option to create a shortcut.)
+
+%It is important to not move \pathname{phycas.bat} out of its context relative to the other files in the \phycas\ folder. If \pathname{phycas.bat} is moved or copied elsewhere, \python\ will not be able to import the \phycas\ code. This is why you should be sure to drag with the right mouse button so that you can create a shortcut to \pathname{phycas.bat} rather than move or copy \pathname{phycas.bat}.
+
+%
+% Figure "windragdrop"
+%
+%\begin{figure}[t]
+%\begin{center}
+%\begin{minipage}{5.in}
+%\hfil\includegraphics[scale=0.3]{images/windragdrop}\hfil
+%\caption{\small The popup screen just after right-dragging the phycas.bat file onto the desktop. Note that ``Create shortcuts here'' is an option (and you should choose this option).}
+%\label{windragdrop}
+%\end{minipage}
+%\end{center}
+%\end{figure}
+
+%You should now be able to drag \python\ scripts onto the \pathname{phycas.bat} shortcut to run them. For example, navigate to \pathname{phycas}\verb+\+\pathname{Examples}\verb+\+\pathname{Simplest} and drag the file \pathname{Simplest.py} onto the \pathname{phycas.bat} shortcut. A console window should appear and \phycas\ should begin an MCMC analysis.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Instructions for MacIntosh Users}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+These instructions assume you are using MacOS 10.9 (Mavericks) and the default Python \currPyVersion. If you are using a different version of the MacOS, or if you have installed a different version of Python and are using that instead of the default, all bets are off.
+
+Visit the Download section of the \phycas\ web site \url{http://phycas.org/} and download the file \macdistrfilename. Extract this zip file by double-clicking it in Finder, creating a \distrfolder\ directory.
+
+The unzipped \distrfolder\ directory must be moved to the \pathname{site-packages} directory of your \python\ distribution. To find the location of this directory, you must first start \python\ interpreter. Open a terminal window (in Finder, choose \menu{Go}, then \menu{Utilities}, and start the application named Terminal). At the command prompt, type \code{python} to invoke \python. Once \python\ has started, the prompt will change to three greater-than symbols: \code{>>>}
+
+Now that you have started the \python\ interpreter, issue the following commands:
+\begin{verbatim}
+>>> import site
+>>> site.getsitepackages()
+\end{verbatim}
+This should produce a list of directories, the path of one of which should be \pathname{/Library/Python/2.7/site-packages}. The MacOS does not ordinarily allow you to navigate to the branch of your file system rooted at \pathname{/Library}, but you can still open the \pathname{site-packages} in Finder: type the following command into a Terminal window:
+\begin{verbatim}
+open /Library/Python/2.7/site-packages
+\end{verbatim}
+Now drag your \distrfolder\ directory into \pathname{site-packages}. You will have to type your system password to authenticate because \pathname{site-packages} is owned by the so-called root user rather than by you (which is why MacOS tries to hide these directories from you). If there is already a directory named \distrfolder\ in \pathname{site-packages}, it means you have installed \phycas\ in the past. Just delete the old folder and replace it with the latest version.
+
+%\subsubsection{The iTerm terminal application}
+%
+%The iTerm application is an open-source replacement for the Terminal application with which you may be familiar (and which comes with the MacOS). While it is possible to use \phycas\ from Terminal, we recommend strongly that you use the iTerm application that comes with \phycas. The iTerm application starts automatically when you click on the icon labeled ``\phycas'' (see below) or drop a (\python) script file onto the icon. The main reason for using the bundled iTerm application is that it starts \python\ and imports \phycas\ for you automatically when it is started.
+%
+%\subsubsection{Installing \python\ on a Mac}
+%
+%If you are using MacOS 10.4, and haven't installed \python\ yourself, your Mac probably has \python\ 2.3 installed. To find out, open a terminal window (you can find the Terminal app in the Utilities folder, which is itself a subfolder of the \pathname{Applications} folder) and type \code{python -V}. If the version of \python\ is 2.3, you will need to visit \url{http://python.org} and download and install the latest version of \python\ (version \currPyVersion\ as of this writing). \warnNoPyThree
+%
+%\subsubsection{Installing \phycas\ on a Mac}
+%
+%Visit the Download section of the \phycas\ web site \url{http://phycas.org/} and download the MacOS DMG file. Once the DMG file has been downloaded, double-click it to mount it. Inside the DMG, you should find several files (Figure~\ref{phycasdmg}). Copy the ``file'' named \pathname{Phycas} (which is actually a special ``application bundle'' folder named \phycasapp, but the operating system hides the \pathname{.app} part of the name) to your \pathname{Applications} folder and the file named \pathname{manual.pdf} to a folder of your choice. To start \phycas, double-click the \phycasapp\ application or, alternatively, drop a script file with \phycas\ commands onto it. \important{When you start \phycas, you are actually starting an application named iTerm that has been bundled with the \phycas\ \python\ libraries. Thus, the menu items you see are iTerm menu items (including the \menu{Update...} menu item)}. With this MacOS version, you need not type the \code{from phycas import *} command because this is done for you when you double-click \phycasapp.
+%
+%\subsubsection{Locating the ``\phycas\ Installation Folder'' on a Mac} \label{subsubsec:installfoldermac}
+%
+%The ``\phycas\ Installation Folder'' that is mentioned in the tutorial is inside the \phycasapp\ application bundle. MacOS tries to make it difficult for you to see inside application bundles, but clicking on the \phycasapp\ bundle while pressing the \keycmd{Ctrl} will produce a menu, and choosing the \menu{Show Package Contents} item on that menu will allow you to view the contents of the application bundle folder. Once inside \phycasapp, double-click on the \pathname{Contents} folder, then the \pathname{Resources} folder to find the \phycas\ Installation folder, which is simply named \path{phycas}.
+%
+%
+% Figure "phycasdmg"
+%
+%\begin{figure}[t]
+%\begin{center}
+%\begin{minipage}{5.in}
+%\hfil\includegraphics[scale=0.5]{images/phycasdmg}\hfil
+%\caption{\small The \phycas\ DMG file after it has been mounted.}
+%\label{phycasdmg}
+%\end{minipage}
+%\end{center}
+%\end{figure}
+%
+\clearpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%% Features %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -237,7 +318,7 @@ A list of related web sites (section~\ref{section:websites}) is followed by one 
 
 %Phycas first attempts to adapt its slice samplers (one slice sampler is assigned to each model parameter) at the cycle specified by the setting \opt{mcmc}{adapt\_first}. Each subsequent adaptation occurs after twice as many cycles as the previous adaptation. After the first few adaptations there is usually little to be gained by adapting the slice samplers further, hence the increasingly long time periods between adaptations. 
 
-%Slice sampling can be used only for continuous model parameters, not for updating the tree topology. Phycas uses the \citet{LargetSimon1999} ``LOCAL move without a molecular clock'' to propose simultaneous changes in tree topology and edge lengths. Because edge length parameters are closely tied to the topology (and because there are so many of them!), it appears to be more efficient to use the LOCAL move rather than slice samplers to update edge lengths.
+%Slice sampling can be used only for continuous model parameters, not for updating the tree topology. Phycas uses the \citet{LargetSimon:1999} ``LOCAL move without a molecular clock'' to propose simultaneous changes in tree topology and edge lengths. Because edge length parameters are closely tied to the topology (and because there are so many of them!), it appears to be more efficient to use the LOCAL move rather than slice samplers to update edge lengths.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Tree length and edge length priors} \label{subsection:tree-and-edge-length-priors}
@@ -360,7 +441,9 @@ Regardless of which platform (Windows, Mac, Linux) you are using, you must open 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Making life easier}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-If you find yourself using \phycas\ often, and thus end up typing  \code{from phycas import *} over and over, you should consider installing \ipythonurl. Once installed, create a default configuration profile as follows
+If you find yourself using \phycas\ often, and thus end up typing  \code{from phycas import *} over and over, you should consider installing \ipythonurl. (This section is optional; if you do not want to install \ipython\ at this time, just skip this section and continue the tutorial at the next section~\ref{subsubsection:gettinghelp} (entitled ``\nameref{subsubsection:gettinghelp}'') 
+
+Once \ipython\ is installed, create a default configuration profile as follows
 \begin{verbatim}
 ipython profile create
 \end{verbatim}
@@ -411,9 +494,9 @@ Note that in \ipython\, the python prompt looks different (\code{In [1]:} instea
 
 %All the instructions for the rest of the manual will be executed the same way regardless of whether \phycas\ running from a \Windows\ console window, a Linux terminal or the \pathname{Phycas} application.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Getting help}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Getting help} \label{subsubsection:gettinghelp}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Now type \cmd{help} at the \python\ prompt. This will display the following help message:
 \begin{verbatim}
 >>> help
@@ -991,10 +1074,25 @@ The \code{randomtree()} invocation returns a \code{TreeCollection} that holds a 
 %{\bf If you are using \Windows...} 
 %
 To execute the \pathname{basic.py} script you just created, open a console window, navigate\footnote{If you are using an older version of \Windows, we suggest you read section~\ref{subsubsection:winconsole}, where a registry trick is described that enables you to open a console window positioned at a particular directory by right-clicking the name of the folder in an Explorer or My Computer window. This saves having to navigate to the directory after opening the console window, which can be a very tedious and time consuming operation if the directory in which your script resides is nested deep inside your file system. Windows 7 already has this capability built in: use shift-right-click to see the ``Open command window here'' menu item.} to the directory containing the script and type the following at the command prompt:
-%
 \begin{verbatim}
 python basic.py
 \end{verbatim}
+While \phycas\ is running, it will provide progress reports every \opt{mcmc}{report\_every} update cycles and periodic ``Updater diagnostics'' reports such as the following:
+\begin{verbatim}
+cycle = 6200, lnL = -343.90083 (4 seconds remaining)
+cycle = 6300, lnL = -344.46491 (4 seconds remaining)
+
+Updater diagnostics (* = slice sampler):
+   accepted 66.9% of 3200 attempts (tree_scaler)
+   accepted 36.0% of 320000 attempts (larget_simon_local)
+ * efficiency = 16.5%, mode=0.15199 (edgelen_hyper)
+
+cycle = 6400, lnL = -344.72761 (3 seconds remaining)
+cycle = 6500, lnL = -342.36245 (3 seconds remaining)
+\end{verbatim}
+The \indexed{updater diagnostics} report above says that \phycas\ has thus far attempted to rescale the tree 3200 times and accepted 66.9\% of those attempts, and has attempted 320000 Larget-Simon LOCAL move (without a molecular clock) proposals \citep{LargetSimon:1999} and accepted 36.0\% of them. Both of these are \indexed{Metropolis-Hastings proposals} \citep{Metropolis:1953vj,Hastings:1970wm}. Many parameter updates in \phycas\ use \indexed{slice sampling} \citep{Neal2003a} instead of Metropolis-Hastings. These slice-sampling updates are indicated by an asterisk ($\ast$) and the efficiency rather than the acceptance rate is what is reported. The efficiency\index{slice sampler!efficiency} is the inverse of the number of likelihood calculations needed before a sample is returned. The ``mode'' reported is the previously-sampled value of the parameter associated with the highest posterior density thus far. It is {\em not} the mode of the marginal posterior distribution of the parameter, which would be much more difficult to estimate. The mode reported here is intended merely to provide a rough idea of the best current value of the parameter.
+
+Note that updater diagnostics reports are generated at 100, 300, 700, 1500, 3100, etc., cycles. The value 100 comes from \opt{mcmc}{adapt\_first}, and the waiting time for each subsequent report is twice the length of waiting time since the last report. The reasoning behind this schedule is that updater diagnostics reports are produced when all slice samplers in use are tuned\index{slice sampler!tuning}, where tuning a slice sampler involves adjusting its horizontal unit slice width to be more efficient. As the analysis proceeds, less tuning is necessary, so the interval between adaptations increases over time.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %{\bf If you are using MacOS...} 
@@ -1227,6 +1325,118 @@ sump.out.log.mode = REPLACE
 The file \pathname{ss-sump-log.txt} contains the output of interest from this analysis. This file has three sections labeled, respectively, Autocorrelations, Effective and actual sample sizes, and Marginal likelihood estimate. The first and second sections are related, for it is the autocorrelations that determine the effective sample sizes. You will note that the first line of the Effective sample sizes section (after the header line showing the $\beta$ values) provides the actual sample sizes. This is the number of times parameter values were saved while the MCMC analysis was exploring a particular $\beta$ value. The other rows in this table provide effective sample sizes. Note the last column (for $\beta=0$). The effective sample sizes in this column are often larger than the actual sample size. What's up with that? If there is zero autocorrelation, then the effective sample sizes will hover around the actual sample size. If the autocorrelation is negative, then the effective sample size will be larger than the actual sample size. When $\beta=0$, \phycas\ is sampling directly from standard probability distributions and zero autocorrelation is expected in this case. Even though zero autocorrelation is expected, some parameters will have slightly negative autocorrelations and others will have slightly higher autocorrelations. This is normal, and explains why some effective sample sizes are greater than the actual sample size for this column. 
 
 The last section provides some information about each of the ratios (stepping stones) that it estimated in the process of estimating the marginal likelihood. The first column (labeled \code{b\_(k-1)}) is the power (i.e. value of $\beta$) used for the distribution being sampled. You will note that $\beta=1$ (the posterior distribution) is absent. This is because the samples taken from the posterior are used as burn-in, not for estimating the individual ratios in the stepping-stone method. The column labeled \code{beta\_incr} shows the difference between the current $\beta$ value and the previous one. For the (default) generalized stepping-stone method, these $\beta$ increments should all be the same. The column labeled \code{n} provides the number of sample used for that particular ratio. The column labeled \code{lnRk} is the log of the ratio of normalizing constants corresponding to one stepping stone ratio. The product of the individual ratios equals the estimate of the marginal likelihood. The last column, labeled \code{lnR(cum)} provides the running sum of the individual \code{lnRk} values. The final estimate of the log of the marginal likelihood is provided at the bottom of the file.
+
+%~~~~~~~~~~~ begin work in progress ~~~~~~~~~~~
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% Conditional Predictive Ordinates %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Conditional Predictive Ordinates}\label{subsection:cpotutorial}
+
+Conditional Predictive Ordinates (CPO) was described earlier (see section \ref{subsection:cpo} on page \pageref{subsection:cpo}). In this part of the tutorial, you will use the \cmd{scriptgen} command to create a \phycas\ script that carries out a CPO analysis.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{The \pathname{cpo.py} script}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+To perform a CPO analysis, create a new folder, copy \pathname{green.nex} into it, start \python\ inside the new folder, import \phycas, and use the \cmd{scriptgen} command as illustrated below to create a \phycas\ script named \pathname{cpo.py}:
+\begin{verbatim}
+>>> scriptgen.analysis = 'cpo'
+>>> scriptgen.datafile = 'green.nex'
+>>> scriptgen.model = 'gtr+i+g'
+>>> scriptgen.out.script = 'cpo.py'
+>>> scriptgen()
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Running \pathname{cpo.py}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Run the \pathname{cpo.py} in \python\ as described for \pathname{basic.py} (see section \ref{subsubsection:runningbasicpy} on page \pageref{subsubsection:runningbasicpy}). While it is running, read the line-by-line explanation below.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Line-by-line explanation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Only the parts of of \pathname{cpo.py} that have not been previously described will be discussed below.
+
+\begin{samepage}
+\begin{verbatim}
+#mcmc()
+
+# Using MCMC setup above, compute conditional predictive ordinates (CPO) for each site and for the entire data set
+cpo.out.sitelike.prefix = 'sitelikes'
+cpo()
+\end{verbatim}
+\pointup\ There is an \cmd{mcmc} command in the file generated by \cmd{scriptgen}, but it is commented out. When performing a CPO analysis, use the \cmd{cpo} command instead of the \cmd{mcmc} command to perform the MCMC analysis. The \cmd{cpo} command is similar to the \cmd{ss} command in that it uses the machinery behind the \cmd{mcmc} command to do almost all of the work, and thus effectively all that \cmd{cpo} really does is set up the \cmd{mcmc} command so that it saves a file containing site log-likelihoods for every site every time parameters and the tree are sampled. The snippet above shows how you can modify the name of this site log-likelihood file if you wish. If you change just the prefix, as is done in the script generated by \cmd{scriptgen}, the extension \pathname{.txt} will be appended. Alternatively, you could specify the entire name (prefix and extension) of the site log-likelihood file using \code{cpo.out.sitelike = 'sitelikes.txt'}.
+\end{samepage}
+
+\begin{samepage}
+\begin{verbatim}
+# Run sump command to summarize CPO values saved during MCMC
+sump.file = 'params.p'
+sump.burnin = 1
+sump.cpofile = 'sitelikes.txt'
+sump.cpo_cutoff = 0.1
+sump.out.log.prefix = 'sump-log'
+sump.out.log.mode = REPLACE
+sump()
+\end{verbatim}
+\pointup\ Note that the \cmd{cpo} command results in an MCMC analysis that saves a site log-likelihood file; it does not actually estimate the CPO for any site! To do that, you need to run the \cmd{sump} command after the MCMC analysis is finished, specifying the name of the site log-likelihood file in the \opt{sump}{cpofile} setting:
+\end{samepage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Output of \pathname{cpo.py}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{samepage}
+The \cmd{sump} command will produce three files: \pathname{cpoplot.R}, \pathname{cpoinfo.txt}, and \pathname{sump-log.txt}. The \pathname{cpoplot.R} can be used to create a plot of log(CPO) values for every site using the \pathname{rscript} script provided with \Rurl:
+\begin{verbatim}
+rscript cpoplot.R
+\end{verbatim}
+The resulting plot is shown in Figure~\ref{rplot}. The impulses colored red correspond to log(CPO) values that are lower than the user-defined cutoff specified by \opt{sump}{cpo\_cutoff}, which in this example is 0.1 (i.e. the worst 10\% of sites according to CPO are colored red). While the plot provides a graphical depiction, it is difficult to determine from the plot which sites are actually the ones colored red.  
+\end{samepage}
+
+\begin{samepage}
+The \pathname{cpoinfo.txt} file provides two ways to find out which sites are in this lowest 10\% category. First, near the top of the file is a mask: a series of dashes and asterisks, one for every site, that can be copied and pasted above the alignment in the data file. The sites in the lowest \opt{sump}{cpo\_cutoff} fraction are indicated by the asterisks ($\ast$). In the example below, I have deleted most of the mask, replacing the middle part with ellipses that are absent in the actual mask:
+\begin{verbatim}
+BEGIN_MASK
+  ---------*----------------*--*--*---*-*-----------*--------- ... -*------**-
+END_MASK
+\end{verbatim}
+\end{samepage}
+
+\begin{samepage}
+The \pathname{cpoinfo.txt} file also contains a large table of log(CPO) values, one for each site, along with the data subset to which that site belongs (only useful if you have partitioned the data) and a column indicating whether the site has a CPO value in the lowest 10\% of sites:
+\begin{verbatim}
+BEGIN_LOG_CPO_TABLE
+        site	    log(CPO)	      subset	       worst
+           1	    -1.66349	     default	           0
+           2	    -1.66349	     default	           0
+           3	    -1.66349	     default	           0
+           4	    -1.96609	     default	           0
+           5	    -1.66349	     default	           0
+           .
+           .
+           .
+        1295	   -13.44352	     default	           1
+        1296	    -9.16329	     default	           0
+END_LOG_CPO_TABLE
+\end{verbatim}
+(The \code{BEGIN\_LOG\_CPO\_TABLE} and \code{END\_LOG\_CPO\_TABLE} markers are provided to make it easy to extract just this portion of the file using a regular expression.)
+\end{samepage}
+
+Finally, the \pathname{sump-log.txt} file contains the LPML (Log PseudoMarginal Likelihood) estimate, which is simply the sum over all sites of the log(CPO). The LPML value can be used as an overall measure of model performance and compared among different models in much the same way the marginal likelihood is used. In this case, the LPML provides an overall measure of how well the model can predict the very data used for fitting.
+
+%
+% Figure "rplot"
+%
+\begin{figure}[t]
+\begin{center}
+\begin{minipage}{5.in}
+\hfil\includegraphics[scale=0.6]{images/rplot.pdf}\hfil
+\caption{\small The plot obtained by processing the \pathname{cpoplot.R} file produced by the \pathname{cpo.py} script generated in section~\ref{subsection:cpotutorial} of the tutorial.}
+\label{rplot}
+\end{minipage}
+\end{center}
+\end{figure}
+
+%~~~~~~~~~~~ end work in progress ~~~~~~~~~~~
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%% Polytomy analyses %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1821,122 +2031,51 @@ model.num_rates = 4
 \end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%% Installing \phycas\ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% Release notes %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Installing \phycas}\label{section:install}
+\section{Release notes}\label{section:releasenotes}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Instructions for \Windows\ users} 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{What's new in version 2.0?} %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+This version was released on \currReleaseDate\footnote{This version corresponds with git commit SHA \currReleaseGitBuild}. The jump to version 2.0 is marked by the addition of a second posterior predictive method (GG) to go along with Conditional Predictive Ordinates (CPO), the Rannala-Zhu-Yang tree length prior, as well as the \cmd{scriptgen} command that simplifies creation of \python\ scripts that perform \phycas\ analyses. The \cmd{scriptgen} command will be introduced in this manual to generate all scripts used in tutorials. 
 
-These instructions assume you are using \Windows\ XP, Windows Vista\registered or \Windows\ 7.
+The Rannala-Zhu-Yang tree length prior \citet{RannalaZhuYang2011} provides an elegant solution to the problem of undue influence of edge length prior choice on the induced tree length prior. Rather than placing a prior on individual edge length parameters and allowing them to collectively define the tree length prior, Rannala, Zhu and Yang suggest placing a prior instead on the tree length and letting that determine the individual edge length priors. This approach effectively eliminates the gross overestimation of tree length sometimes observed in Bayesian phylogenetic analyses, while allowing a flat prior on edge length proportions given the tree length. \phycas\ now provides a choice between the new tree length prior and the classical edge length priors offered by previous versions of the software.
 
-\subsubsection{\Windows\ console}
-\label{subsubsection:winconsole}
-%
-One very handy feature of \Windows\ 7 is the ability to open a command console by using the shift-right-click speed menu in Explorer; however, older versions of \Windows\ (e.g. XP) lack this feature. The web site \url{http://www.commandline.co.uk/cmdhere/} describes how to add this functionality, which will make \phycas\ {\em much} easier to use (it is not required, however, in order to use \phycas). The basic procedure is to create a file named \pathname{cmdhere.reg} with the following text (or download the file from the web site above):
-%
-\begin{verbatim}
-REGEDIT4
+%The IDR method, recently introduced to phylogenetics by \citet{ArimaTardella2012}, is very promising because it (alone among the accurate marginal likelihood estimation methods) does not require an {\em ad hoc} MCMC analysis that cannot also be interpreted as a sample from the posterior distribution. Thus, it features the computational efficiency of the harmonic mean method as well as the accuracy of the stepping-stone or thermodynamic integration methods. 
 
-[HKEY_CLASSES_ROOT\*\shell\cmdhere]
-@="Cmd&Here"
+\phycas\ has also improved its model selection repertoire. The Gelfand-Ghosh (GG) method \citep{GelfandGhosh1998,Lewis:2014gw} introduces a second posterior predictive approach to Bayesian model selection to complement the CPO method introduced first in version 1.2. The generalized stepping-stone method has been generalized further, now allowing for estimation of the total marginal likelihood when tree topology is allowed to vary. This makes use of the tree topology reference distribution described in \citet{Holder:2014vc}.
 
-[HKEY_CLASSES_ROOT\*\shell\cmdhere\command]
-@="cmd.exe /c start cmd.exe /k pushd \"%L\\..\""
+Finally, \phycas\ distribution has been streamlined and simplified, and it is installed the same way on both Windows and Mac machines: by copying a folder named \pathname{phycas} to the \pathname{site-packages} directory inside the \python\ distribution you intend to use. In the process, the directory structure was reorganized and a new GitHub repository set up for maintaining the project. You can now obtain the bleeding edge version of \phycas\ by cloning from \phycasgithuburl.
 
-[HKEY_CLASSES_ROOT\Folder\shell\cmdhere]
-@="Cmd&Here"
+%Although the (non-generalized) stepping-stone method has recently been introduced to BEAST and MrBayes 3.2, \phycas\ now has one of the richest Bayesian model selection repertoires of any phylogenetic software package, including the posterior predictive methods CPO (Conditional Predictive Ordinates) and GG (Gelfand-Ghosh) and the marginal likelihood methods TI (Thermodynamic Integration), SS (Stepping-stone), GSS (Generalized Stepping-stone), and IDR (Inflated Density Ratio).
 
-[HKEY_CLASSES_ROOT\Folder\shell\cmdhere\command]
-@="cmd.exe /c start cmd.exe /k pushd \"%L\""
-\end{verbatim}
+\subsubsection{Bugs fixed}
+The BUGS file documents 4 additional bugs that were fixed prior to this release: the ``not-a-bug'' ``bug'', the ``Debry'' bug (brought to our attention by Ron DeBry), the ``Forgot Likelihood Root'' bug, and the ``Reference Rooting'' bug.
 
-Assuming that you saved this file with the extension \pathname{.reg}, the \Windows\ operating system will know what to do with it. Double-click the name of the file in \Windows\ Explorer, and the required registry entry will be made. \warning{making changes to your system's registry is a bit risky, and we take no responsibility for any damage your system may incur by following these directions!} That said, this worked fine for us and saves an enormous amount of time. \Windows\ offers a PowerToy (\url{http://www.microsoft.com/windowsxp/downloads/powertoys/xppowertoys.mspx}) for XP that does something similar. While perhaps safer to install, it is somewhat frustrating to use because if you are already inside a directory in which you want to open a console, you must first go up one level in order to open a console window for that directory.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{What's new in version 1.2?} %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+This version was released on 9 August 2010\footnote{This version corresponds with git commit SHA 18e7a835616e453dcfd60d1b9ee9e763858778cc}. It adds support for data partitioning, changes the name of the \cmd{ps} command to \cmd{ss}, and adds the \cmd{cpo} command. \phycas\ now supports a limited form of data partitioning in that topology and edge lengths are always linked across partition subsets and all other model parameters are unlinked. The name change from \cmd{ps} to \cmd{ss} reflects the fact that the primary purpose of the command is to use the stepping-stone method, and ``ps'' stands for ``path sampling,'' a name that was never used even by the authors of the thermodynamic integration approach! Finally, the \cmd{cpo} command is identical to the \cmd{mcmc} command except that it saves the site log-likelihoods to a file and estimates the Conditional Predictive Ordinate for each site using those stored site log-likelihoods. See section \ref{subsection:cpo} for details. 
 
-\subsubsection{Installing \python\ under \Windows}
+The process of specifying a master pseudorandom number seed has been simplified in version 1.2. You can now simply insert the command \code{setMasterSeed(13579)}\index{setMasterSeed} just after the \code{from phycas import *} command to set the master random number seed to the value 13579.
 
-Before you go to the trouble of downloading and installing \python, make sure you do not already have \python\ installed on your \Windows\ system. From the Start button, choose \menu{All Programs}, then \menu{Accessories} and finally \menu{Command Prompt}. Type \code{python -V} in the console window that appears, and if a phrase such as \code{Python 2.7.6} appears, then you already have \python\ installed! Most \Windows\ users will probably see \code{'python' is not recognized as an internal or external command, operable program or batch file.} In this case, you need to visit \url{http://python.org} and download and install the latest version of \python\ (version \currPyVersion\ as of this writing). \warnNoPyThree
+\subsubsection{Bugs fixed}
+The BUGS file documents two additional bug fixes prior to this release. They are the ``underflow'' bug (brought to our attention by Federico Plazzi and Mark Clements), which resulted in incorrect likelihood calculations for large trees when a ``+I'' model was in use, and the ``Jockusch'' bug (brought to our attention by Elizabeth Jockusch), which resulted in ``not-a-number'' likelihoods when a particular subset relative rate was very tiny.
 
-\subsubsection{Installing \phycas\ under \Windows}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\subsection{What's new in version 1.1.x?} %%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%These are bug-fix releases. For a description of the major bug fixed, see the section on the ``underflow'' bug in the BUGS file. For other changes, see the CHANGES file.
 
-Visit the Download section of the \phycas\ web site \url{http://phycas.org/} and download the file \windistrfilename. Extract this zip file in a location of your choice, creating a \distrfolder\ directory. It is important to actually {\em extract} the zip file. If you simply double-click the downloaded zip file, \Windows\ will let you see inside the zip file without actually unpacking the files. You will know that you have successfully unzipped it if you see the zip file itself alongside a directory of the same name (but lacking the zipper image on the folder icon). You may wish to install the program 7-zip (\url{http://www.7-zip.org/}) for this, as 7-zip is much faster at extracting zip files than \Windows.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{What's new in version 1.1?} %%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{New features}
+The \cmd{ps} and \cmd{sump} commands are new to version 1.1. The \cmd{ps} command allows computation of both the path sampling (a.k.a. thermodynamic integration) method of \citet{LartillotPhillippe2006} and the steppingstone sampling method introduced by \citet{XieLewisFanKuoChen2010}. See section \ref{subsection:marglike} on page \pageref{subsection:marglike} for details. The \cmd{sump} command provides an analog of the sump command in \mrbayesurl, providing means, extremes, and credible intervals for model parameters based on samples saved in the parameter file.
 
-The unzipped \distrfolder\ directory must be moved to the \pathname{site-packages} directory of your \python\ distribution. To find the location of this directory, issue the following commands after starting \python:
-\begin{verbatim}
->>> import site
->>> site.getsitepackages()
-\end{verbatim}
-This should produce a list of directories, the path of one of which should end in \pathname{site-packages}. Drag your \distrfolder\ directory into \pathname{site-packages} and you should be good to go. If there is already a directory named \distrfolder\ in \pathname{site-packages}, it means you have installed \phycas\ in the past. Just delete the old folder and replace it with the latest version.
-
-%Inside the folder that appears after extracting the zip file, you should find a file named \pathname{phycas.bat}. With the {\em right mouse button}, drag this file onto your desktop. When you let go of the right mouse button, you will be given a choice to move the file, copy the file or create a shortcut (see Figure~\ref{windragdrop}). Choose the option to create a shortcut on the desktop. (If you did not succeed in actually extracting the zip file, and instead are dragging a file within the zip file to the desktop, you will not see the option to create a shortcut.)
-
-%It is important to not move \pathname{phycas.bat} out of its context relative to the other files in the \phycas\ folder. If \pathname{phycas.bat} is moved or copied elsewhere, \python\ will not be able to import the \phycas\ code. This is why you should be sure to drag with the right mouse button so that you can create a shortcut to \pathname{phycas.bat} rather than move or copy \pathname{phycas.bat}.
-
-%
-% Figure "windragdrop"
-%
-%\begin{figure}[t]
-%\begin{center}
-%\begin{minipage}{5.in}
-%\hfil\includegraphics[scale=0.3]{images/windragdrop}\hfil
-%\caption{\small The popup screen just after right-dragging the phycas.bat file onto the desktop. Note that ``Create shortcuts here'' is an option (and you should choose this option).}
-%\label{windragdrop}
-%\end{minipage}
-%\end{center}
-%\end{figure}
-
-%You should now be able to drag \python\ scripts onto the \pathname{phycas.bat} shortcut to run them. For example, navigate to \pathname{phycas}\verb+\+\pathname{Examples}\verb+\+\pathname{Simplest} and drag the file \pathname{Simplest.py} onto the \pathname{phycas.bat} shortcut. A console window should appear and \phycas\ should begin an MCMC analysis.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Instructions for MacIntosh Users}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-These instructions assume you are using MacOS 10.9 (Mavericks) and the default Python \currPyVersion. If you are using a different version of the MacOS, or if you have installed a different version of Python and are using that instead of the default, all bets are off.
-
-Visit the Download section of the \phycas\ web site \url{http://phycas.org/} and download the file \macdistrfilename. Extract this zip file by double-clicking it in Finder, creating a \distrfolder\ directory.
-
-The unzipped \distrfolder\ directory must be moved to the \pathname{site-packages} directory of your \python\ distribution. To find the location of this directory, issue the following commands after starting \python:
-\begin{verbatim}
->>> import site
->>> site.getsitepackages()
-\end{verbatim}
-This should produce a list of directories, the path of one of which should be \pathname{/Library/Python/2.7/site-packages}. The MacOS does not ordinarily allow you to navigate to the branch of your file system rooted at \pathname{/Library}, but you can still open the \pathname{site-packages} in Finder: type the following command into a Terminal window:
-\begin{verbatim}
-open /Library/Python/2.7/site-packages
-\end{verbatim}
-Now drag your \distrfolder\ directory into \pathname{site-packages}. You will have to type your system password to authenticate because \pathname{site-packages} is owned by the so-called root user rather than by you (which is why MacOS tries to hide these directories from you). If there is already a directory named \distrfolder\ in \pathname{site-packages}, it means you have installed \phycas\ in the past. Just delete the old folder and replace it with the latest version.
-
-%\subsubsection{The iTerm terminal application}
-%
-%The iTerm application is an open-source replacement for the Terminal application with which you may be familiar (and which comes with the MacOS). While it is possible to use \phycas\ from Terminal, we recommend strongly that you use the iTerm application that comes with \phycas. The iTerm application starts automatically when you click on the icon labeled ``\phycas'' (see below) or drop a (\python) script file onto the icon. The main reason for using the bundled iTerm application is that it starts \python\ and imports \phycas\ for you automatically when it is started.
-%
-%\subsubsection{Installing \python\ on a Mac}
-%
-%If you are using MacOS 10.4, and haven't installed \python\ yourself, your Mac probably has \python\ 2.3 installed. To find out, open a terminal window (you can find the Terminal app in the Utilities folder, which is itself a subfolder of the \pathname{Applications} folder) and type \code{python -V}. If the version of \python\ is 2.3, you will need to visit \url{http://python.org} and download and install the latest version of \python\ (version \currPyVersion\ as of this writing). \warnNoPyThree
-%
-%\subsubsection{Installing \phycas\ on a Mac}
-%
-%Visit the Download section of the \phycas\ web site \url{http://phycas.org/} and download the MacOS DMG file. Once the DMG file has been downloaded, double-click it to mount it. Inside the DMG, you should find several files (Figure~\ref{phycasdmg}). Copy the ``file'' named \pathname{Phycas} (which is actually a special ``application bundle'' folder named \phycasapp, but the operating system hides the \pathname{.app} part of the name) to your \pathname{Applications} folder and the file named \pathname{manual.pdf} to a folder of your choice. To start \phycas, double-click the \phycasapp\ application or, alternatively, drop a script file with \phycas\ commands onto it. \important{When you start \phycas, you are actually starting an application named iTerm that has been bundled with the \phycas\ \python\ libraries. Thus, the menu items you see are iTerm menu items (including the \menu{Update...} menu item)}. With this MacOS version, you need not type the \code{from phycas import *} command because this is done for you when you double-click \phycasapp.
-%
-%\subsubsection{Locating the ``\phycas\ Installation Folder'' on a Mac} \label{subsubsec:installfoldermac}
-%
-%The ``\phycas\ Installation Folder'' that is mentioned in the tutorial is inside the \phycasapp\ application bundle. MacOS tries to make it difficult for you to see inside application bundles, but clicking on the \phycasapp\ bundle while pressing the \keycmd{Ctrl} will produce a menu, and choosing the \menu{Show Package Contents} item on that menu will allow you to view the contents of the application bundle folder. Once inside \phycasapp, double-click on the \pathname{Contents} folder, then the \pathname{Resources} folder to find the \phycas\ Installation folder, which is simply named \path{phycas}.
-%
-%
-% Figure "phycasdmg"
-%
-%\begin{figure}[t]
-%\begin{center}
-%\begin{minipage}{5.in}
-%\hfil\includegraphics[scale=0.5]{images/phycasdmg}\hfil
-%\caption{\small The \phycas\ DMG file after it has been mounted.}
-%\label{phycasdmg}
-%\end{minipage}
-%\end{center}
-%\end{figure}
-%
-\clearpage
+\subsubsection{Bugs fixed}
+Two memory leaks were fixed prior to this release. For a description of the leaks and what was done to fix them, see the section on the ``leaky'' bug in the BUGS file.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%% References %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
