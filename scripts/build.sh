@@ -1,8 +1,12 @@
 #!/bin/bash
 
 # This script expects certain environmental variables (BOOST_ROOT, PYTHON_ROOT,
-# and NCL_INSTALL_DIR) to be defined before it is run. Examples of the necessary
-# definitions are commented out below; modify appropriately for your installation.
+# NCL_INSTALL_DIR, PHYCAS_VERSION) to be defined before it is run. Examples of the
+# necessary definitions are commented out below; modify appropriately for your
+# installation.
+
+# Specify the version number (used in creating the tar.gz file for distribution)
+export PHYCAS_VERSION="PLEASE_SUPPLY"
 
 # Specify "linux" or "clang" (for MacOS Mavericks) or "windows" (for Windows)
 # e.g. export OSTYPE="linux"
@@ -33,6 +37,11 @@ if [ ! -e "scripts/fixit.sh" ]; then
     exit 1
 fi
 
+if [ "$PHYCAS_VERSION" == "PLEASE_SUPPLY" ]; then
+    echo Please edit $0 and specify a valid version \(e.g. \"2.0.0\"\) for PHYCAS_VERSION
+    exit 1
+fi
+
 if [ "$OSTYPE" == "PLEASE_SUPPLY" ] || ( [ "$OSTYPE" != "linux" ] && [ "$OSTYPE" != "clang" ] && [ "$OSTYPE" != "windows" ] ); then
     echo Please edit $0 and specify a valid string for OSTYPE \(either \"linux\", \"clang\" or \"windows\"\)
     exit 1
@@ -57,6 +66,9 @@ if [ "$NCL_INSTALL_DIR" == "PLEASE_SUPPLY" ] || [ ! -e "$NCL_INSTALL_DIR" ]; the
     echo Please edit $0 and specify a valid directory for NCL_INSTALL_DIR
     exit 1
 fi
+
+# Obtain path to libpython2.7.dylib (note: assumes you are using Python 2.7)
+export PYTHON_DYLIB_DIR=`$PYTHON_ROOT -c "import sys; print sys.prefix"`/lib
 
 # Modify PATH so that bjam executable can be found
 export PATH="$BJAM_DIR:${PATH}"
@@ -83,4 +95,22 @@ fi
 # bjam -d2 -q release
 # bjam -j2 variant=release link=shared install
 
+# This copies Python files for each extension as well as the examples and tests folders
+# into the phycas directory
 scripts/copy_src_python.sh
+
+# This creates a tar.gz file of the phycas directory to make it easy to distribute
+# the phycas module
+if [ "$OSTYPE" == "linux" ]; then
+    tar zcvf phycas-${PHYCAS_VERSION}-linux.tar.gz phycas
+elif [ "$OSTYPE" == "clang" ]; then
+    # First fix dylibs and so file internal paths so that phycas module can be moved around
+    cp scripts/fixit.sh .
+    sed -e 's|PHYCAS_DIR="PLEASE_SUPPLY"|PHYCAS_DIR="phycas"|' -i '' ./fixit.sh
+    sed -e 's|NCL_DYLIB_DIR="PLEASE_SUPPLY"|NCL_DYLIB_DIR="'$NCL_INSTALL_DIR'"|' -i '' ./fixit.sh
+    sed -e 's|PYTHON_DYLIB_DIR="PLEASE_SUPPLY"|PYTHON_DYLIB_DIR="'$PYTHON_DYLIB_DIR'"|' -i '' ./fixit.sh
+    tar zcvf phycas-${PHYCAS_VERSION}-mac.tar.gz phycas
+else
+    echo No tar file created because \$OSTYPE was neither \"linux\" nor \"clang\"
+fi
+

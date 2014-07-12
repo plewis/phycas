@@ -123,7 +123,7 @@ The second item in the list should be "C:\\Python27\\lib\\site-packages". If it 
         ./bootstrap.sh --with-libraries=system,chrono,thread,python
         ./b2
 
-       Note: if you are building on a Mac and have installed a different version of python using MacPorts, you need to tell Boost where to find this version of python:
+       Note: if you have installed and want to use a different version of python, you need to tell Boost where to find this version of python:
 
         ./bootstrap.sh --with-python=/opt/python/bin/python --with-libraries=system,chrono,thread,python
 
@@ -166,7 +166,7 @@ The second item in the list should be "C:\\Python27\\lib\\site-packages". If it 
         cd $HOME/phycas-2.0.0
         ./build.sh
 
-    e.  Copy $HOME/phycas/phycas to your site-packages directory to complete the installation (if you lack sudo privileges, go to step f). To find out where your Python's site-packages directory is located, use the following command in Python 2.7:
+    e.  Copy $HOME/phycas/phycas to your site-packages directory (or unpack the $HOME/phycas/phycas-2.0.0-linux.tar.gz file there) to complete the installation (if you lack sudo privileges, go to step f). To find out where your Python's site-packages directory is located, use the following command in Python 2.7:
 
         python -c "import site; print site.getsitepackages()"
 

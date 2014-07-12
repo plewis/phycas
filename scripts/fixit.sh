@@ -4,9 +4,10 @@
 # that will be installed in the standard Python 2.7 location /Library/Python/2.7/site-packages
 #
 # Note: this script expects...
-# 1. existence of /usr/local/lib/ncl/libncl-2.1.18.dylib
-# 2. existence of ../phycas
-# 3. this script is <phycas dir>/scripts/fixit.sh
+# 1. existence of $NCL_DYLIB_DIR/lib/ncl/libncl-2.1.18.dylib
+# 2. existence of $PYTHON_DYLIB_DIR/libpython2.7.dylib
+# 3. existence of $PHYCAS_DIR/phycas
+# 4. this script is $PHYCAS_DIR/scripts/fixit.sh
 #
 # If libncl-2.1.18.dylib does not yet exist, download NCL from http://sourceforge.net/projects/ncl
 # and configure/make/install it to the standard location
@@ -15,30 +16,54 @@
 #
 # See https://blogs.oracle.com/dipol/entry/dynamic_libraries_rpath_and_mac
 
+# Specify location of phycas module
+# e.g. PHYCAS_DIR=$HOME/Documents/software/phycas
+PHYCAS_DIR="PLEASE_SUPPLY"
+
 # Specify location of libncl-2.1.18.dylib
-NCL_DYLIB_DIR=/Users/plewis/Documents/libraries/ncl/lib/ncl
+# e.g. NCL_DYLIB_DIR=$HOME/Documents/libraries/ncl/lib/ncl
+NCL_DYLIB_DIR="PLEASE_SUPPLY"
 
 # Specify location of libpython2.7.dylib
-# PYTHON_DYLIB_DIR=/Users/plewis/Documents/libraries/pydbg/lib
-PYTHON_DYLIB_DIR=/System/Library/Frameworks/Python.framework/Versions/2.7/lib
+# e.g. PYTHON_DYLIB_DIR=$HOME/Documents/libraries/pydbg/lib
+# e.g. PYTHON_DYLIB_DIR=/System/Library/Frameworks/Python.framework/Versions/2.7/lib
+PYTHON_DYLIB_DIR="PLEASE_SUPPLY"
 
-# Make sure only root can run this script
+# Make sure user knows that this script may fail if not run as root
 if [[ $EUID -ne 0 ]]; then
-  echo "This script must be run as root" 1>&2
-  exit 1
+  echo "If fixit.sh fails, it may be because you need to run it as root user \(try \"sudo ./fixit.sh\"\)" 1>&2
+fi
+
+# Make sure directories PHYCAS_DIR, NCL_DYLIB_DIR and PYTHON_DYLIB_DIR have been correctly defined
+if [ "$PHYCAS_DIR" == "PLEASE_SUPPLY" ] || [ ! -e "$PHYCAS_DIR/conversions" ]; then
+    echo Please edit $0 and specify a valid directory for PHYCAS_DIR
+    exit 1
+fi
+
+if [ "$NCL_DYLIB_DIR" == "PLEASE_SUPPLY" ] || [ ! -e "$NCL_DYLIB_DIR/lib/ncl/libncl-2.1.18.dylib" ]; then
+    echo Please edit $0 and specify a valid directory for NCL_DYLIB_DIR
+    exit 1
+fi
+
+if [ "$PYTHON_DYLIB_DIR" == "PLEASE_SUPPLY" ] || [ ! -e "$PYTHON_DYLIB_DIR/libpython2.7.dylib" ]; then
+    echo Please edit $0 and specify a valid directory for PYTHON_DYLIB_DIR
+    exit 1
 fi
 
 # Save the starting directory so that we can exit in the same place
 CWD=`pwd`
 
 # Collect all dylibs in a newly-created lib directory
-cd ../phycas
+cd $PHYCAS_DIR
+if [ -e "lib" ]; then
+    rm -rf lib
+fi
 mkdir lib
 cd conversions
 mv *.dylib ../lib
-#
+
 cd ../lib
-cp $NCL_DYLIB_DIR/libncl-2.1.18.dylib .
+cp $NCL_DYLIB_DIR//lib/ncl/libncl-2.1.18.dylib .
 ln -s libncl-2.1.18.dylib libncl.dylib
 cp $PYTHON_DYLIB_DIR/libpython2.7.dylib .
 
