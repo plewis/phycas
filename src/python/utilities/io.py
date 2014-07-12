@@ -12,7 +12,7 @@ def getPhycasDir():
     return _phycas_dir
 
 def getPhycasTestDir():
-    return os.path.join(getPhycasDir(), "Tests")
+    return os.path.join(getPhycasDir(), "tests")
 
 def getPhycasTestDataDir():
     return os.path.join(getPhycasTestDir(), "data")

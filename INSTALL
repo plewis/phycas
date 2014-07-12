@@ -120,7 +120,7 @@ The second item in the list should be "C:\\Python27\\lib\\site-packages". If it 
     b. cd into boost_1_55_0 and run the following commands to compile the thread and python libraries
 
         cd $HOME/boost_1_55_0
-        ./bootstrap.sh --with-python=/opt/python/bin/python --with-libraries=thread,python
+        ./bootstrap.sh --with-python=/opt/python/bin/python --with-libraries=chrono,thread,python
         ./b2
 
 2. Install the Nexus Class Library (NCL):
@@ -146,7 +146,7 @@ The second item in the list should be "C:\\Python27\\lib\\site-packages". If it 
     a.  Download phycas-2.0.0-src.tar.gz from http://phycas.org/ and unpack into your home directory:
 
         cd $HOME
-        curl -L http://phycas.org/downloads/phycas-2.0.0-src.tar.gz > phycas-2.0.0-src.tar.gz
+        curl -L http://www.eeb.uconn.edu/projects/phycas/downloads/v2.0.0/phycas-2.0.0-src.tar.gz > phycas-2.0.0-src.tar.gz
         tar zxvf phycas-2.0.0-src.tar.gz
         cd phycas-2.0.0
 
@@ -155,7 +155,7 @@ The second item in the list should be "C:\\Python27\\lib\\site-packages". If it 
             BOOST_ROOT="$HOME/boost_1_55_0"
             BJAM_DIR="$BOOST_ROOT/tools/build/v2/engine/bin.linuxx86_64"
             PYTHON_ROOT="/opt/python/bin/python" (or whatever path to your python interpreter you supplied to $HOME/boost_1_55_0/bootstrap.sh)
-            NCL_INSTALL_DIR="/usr/local/lib" (or "$HOME/nclib" if you do not have sudo privileges)
+            NCL_INSTALL_DIR="/usr/local" (or "$HOME/nclib" if you do not have sudo privileges)
 
     d.  Now run it
 
