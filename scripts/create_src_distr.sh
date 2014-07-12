@@ -3,7 +3,7 @@
 # Call this script from same level as Jamroot file to create a source distribution.
 # Specify desired name of phycas directory on the command line:
 #
-# ./create_src_distr.sh phycas-2.0.0
+# scripts/create_src_distr.sh phycas-2.0.0
 #
 # This will create a dist directory and a directory phycas-2.0.0 within dist.
 # The phycas-2.0.0 directory will be archived to create a phycas-2.0.0-src.tar.gz file
