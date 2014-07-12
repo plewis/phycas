@@ -117,11 +117,15 @@ The second item in the list should be "C:\\Python27\\lib\\site-packages". If it 
         curl -L http://sourceforge.net/projects/boost/files/boost/1.55.0/boost_1_55_0.tar.gz/download > boost_1_55_0.tar.gz
         tar zxvf boost_1_55_0.tar.gz
 
-    b. cd into boost_1_55_0 and run the following commands to compile the thread and python libraries
+    b. cd into boost_1_55_0 and run the following commands to compile the thread and python libraries:
 
         cd $HOME/boost_1_55_0
-        ./bootstrap.sh --with-python=/opt/python/bin/python --with-libraries=chrono,thread,python
+        ./bootstrap.sh --with-libraries=system,chrono,thread,python
         ./b2
+
+       Note: if you are building on a Mac and have installed a different version of python using MacPorts, you need to tell Boost where to find this version of python:
+
+        ./bootstrap.sh --with-python=/opt/python/bin/python --with-libraries=system,chrono,thread,python
 
 2. Install the Nexus Class Library (NCL):
     a.  Download ncl-2.1.18.tar.gz from http://sourceforge.net/projects/ncl/ and unpack into your home directory:
@@ -162,9 +166,38 @@ The second item in the list should be "C:\\Python27\\lib\\site-packages". If it 
         cd $HOME/phycas-2.0.0
         ./build.sh
 
-    e.  Copy $HOME/phycas/phycas to your site-packages directory to complete the installation or, if you lack sudo privileges, you can specify these before invoking python:
+    e.  Copy $HOME/phycas/phycas to your site-packages directory to complete the installation (if you lack sudo privileges, go to step f). To find out where your Python's site-packages directory is located, use the following command in Python 2.7:
 
-        export PYTHONPATH="$HOME/phycas"
-        export LD_LIBRARY_PATH="$HOME/phycas/phycas/conversions:$HOME/nclib/lib/ncl"
+        python -c "import site; print site.getsitepackages()"
 
-        The PYTHONPATH environmental variable tells Python where to find the phycas module (the phycas module is the phycas directory nested within $HOME/phycas). The LD_LIBRARY_PATH allows the operating system to locate dynamic link libraries needed when Phycas is running. When Phycas is built, all dynamic link libraries except for NCL are copied into the conversions directory, and the NCL dynamic link library will end up inside the lib/ncl directory of the directory specified as the install prefix when NCL was built.
+        or this command if using Python 2.6:
+
+        python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()"
+
+    f. If you lack sudo privileges, you can specify these before invoking python:
+
+        export PYTHONPATH="$HOME/phycas-2.0.0"
+        export LD_LIBRARY_PATH="$HOME/phycas-2.0.0/phycas/conversions:$HOME/nclib/lib/ncl"
+
+        The PYTHONPATH environmental variable tells Python where to find the phycas module (the phycas module is the phycas directory nested within $HOME/phycas-2.0.0). The LD_LIBRARY_PATH allows the operating system to locate dynamic link libraries needed when Phycas is running. When Phycas is built, all dynamic link libraries except for NCL are copied into the conversions directory, and the NCL dynamic link library will end up inside the lib/ncl directory of the directory specified as the install prefix when NCL was built.
+
+        When running Phycas on a cluster that uses SGE for job management, you must include these environmental variables in your qsub script. For example, create a file named myjob.sh containing these lines:
+
+        #$ -S /bin/bash
+        #$ -cwd
+        #$ -N myjobname
+        export PYTHONPATH="$HOME/phycas-2.0.0"
+        export LD_LIBRARY_PATH="$HOME/phycas-2.0.0/phycas/conversions:$HOME/nclib/lib/ncl"
+        /usr/bin/python runphycas.py
+
+        Assuming the current directory contains a file named runphycas.py containing the Phycas commands you want to execute, you can submit the job using qsub as follows:
+
+        qsub myjob.sh
+
+    g. You should now run the tests to ensure that Phycas was installed correctly:
+
+        cd $HOME/phycas-2.0.0/tests
+        python runall.py
+
+        After the tests are finished, the file diffs.txt should contain only the titles of all tests run and no error messages.
+
