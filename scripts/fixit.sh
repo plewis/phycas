@@ -40,15 +40,21 @@ if [ "$PHYCAS_DIR" == "PLEASE_SUPPLY" ] || [ ! -e "$PHYCAS_DIR/conversions" ]; t
     exit 1
 fi
 
+echo PHYCAS_DIR is $PHYCAS_DIR
+
 if [ "$NCL_DYLIB_DIR" == "PLEASE_SUPPLY" ] || [ ! -e "$NCL_DYLIB_DIR/lib/ncl/libncl-2.1.18.dylib" ]; then
     echo Please edit $0 and specify a valid directory for NCL_DYLIB_DIR
     exit 1
 fi
 
+echo NCL_DYLIB_DIR is $NCL_DYLIB_DIR
+
 if [ "$PYTHON_DYLIB_DIR" == "PLEASE_SUPPLY" ] || [ ! -e "$PYTHON_DYLIB_DIR/libpython2.7.dylib" ]; then
     echo Please edit $0 and specify a valid directory for PYTHON_DYLIB_DIR
     exit 1
 fi
+
+echo PYTHON_DYLIB_DIR is $PYTHON_DYLIB_DIR
 
 # Save the starting directory so that we can exit in the same place
 CWD=`pwd`
@@ -63,7 +69,7 @@ cd conversions
 mv *.dylib ../lib
 
 cd ../lib
-cp $NCL_DYLIB_DIR//lib/ncl/libncl-2.1.18.dylib .
+cp $NCL_DYLIB_DIR/lib/ncl/libncl-2.1.18.dylib .
 ln -s libncl-2.1.18.dylib libncl.dylib
 cp $PYTHON_DYLIB_DIR/libpython2.7.dylib .
 
@@ -85,21 +91,21 @@ install_name_tool -id "@loader_path/../lib/libboost_chrono.dylib" libboost_chron
 install_name_tool -id "@loader_path/../lib/libboost_system.dylib" libboost_system.dylib
 
 # libboost_chrono.dylib references libncl.dylib and libboost_system.dylib
-install_name_tool -change "$NCL_DYLIB_DIR/libncl-2.1.18.dylib" "@loader_path/../lib/libncl.dylib" libboost_chrono.dylib
+install_name_tool -change "$NCL_DYLIB_DIR/lib/ncl/libncl-2.1.18.dylib" "@loader_path/../lib/libncl.dylib" libboost_chrono.dylib
 install_name_tool -change "libboost_system.dylib" "@loader_path/../lib/libboost_system.dylib" libboost_chrono.dylib
 
 # libboost_system.dylib references libncl.dylib
-install_name_tool -change "$NCL_DYLIB_DIR/libncl-2.1.18.dylib" "@loader_path/../lib/libncl.dylib" libboost_system.dylib
+install_name_tool -change "$NCL_DYLIB_DIR/lib/ncl/libncl-2.1.18.dylib" "@loader_path/../lib/libncl.dylib" libboost_system.dylib
 
 # libboost_thread.dylib references libncl.dylib and libboost_system
-install_name_tool -change "$NCL_DYLIB_DIR/libncl-2.1.18.dylib" "@loader_path/../lib/libncl.dylib" libboost_thread.dylib
+install_name_tool -change "$NCL_DYLIB_DIR/lib/ncl/libncl-2.1.18.dylib" "@loader_path/../lib/libncl.dylib" libboost_thread.dylib
 install_name_tool -change "libboost_system.dylib" "@loader_path/../lib/libboost_system.dylib" libboost_thread.dylib
 
 # libboost_python.dylib references libpython2.7.dylib
 install_name_tool -change "$PYTHON_DYLIB_DIR/libpython2.7.dylib" "@loader_path/../lib/libpython2.7.dylib" libboost_python.dylib
 
 cd ../conversions
-install_name_tool -change "$NCL_DYLIB_DIR/libncl-2.1.18.dylib" "@loader_path/../lib/libncl.dylib" _ConversionsExt.so
+install_name_tool -change "$NCL_DYLIB_DIR/lib/ncl/libncl-2.1.18.dylib" "@loader_path/../lib/libncl.dylib" _ConversionsExt.so
 install_name_tool -change "$PYTHON_DYLIB_DIR/libpython2.7.dylib" "@loader_path/../lib/libpython2.7.dylib" _ConversionsExt.so
 install_name_tool -change "libboost_thread.dylib" "@loader_path/../lib/libboost_thread.dylib" _ConversionsExt.so
 install_name_tool -change "libboost_python.dylib" "@loader_path/../lib/libboost_python.dylib" _ConversionsExt.so
@@ -107,7 +113,7 @@ install_name_tool -change "libboost_chrono.dylib" "@loader_path/../lib/libboost_
 install_name_tool -change "libboost_system.dylib" "@loader_path/../lib/libboost_system.dylib" _ConversionsExt.so
 
 cd ../datamatrix
-install_name_tool -change "$NCL_DYLIB_DIR/libncl-2.1.18.dylib" "@loader_path/../lib/libncl.dylib" _DataMatrixExt.so
+install_name_tool -change "$NCL_DYLIB_DIR/lib/ncl/libncl-2.1.18.dylib" "@loader_path/../lib/libncl.dylib" _DataMatrixExt.so
 install_name_tool -change "$PYTHON_DYLIB_DIR/libpython2.7.dylib" "@loader_path/../lib/libpython2.7.dylib" _DataMatrixExt.so
 install_name_tool -change "libboost_thread.dylib" "@loader_path/../lib/libboost_thread.dylib" _DataMatrixExt.so
 install_name_tool -change "libboost_python.dylib" "@loader_path/../lib/libboost_python.dylib" _DataMatrixExt.so
@@ -115,7 +121,7 @@ install_name_tool -change "libboost_chrono.dylib" "@loader_path/../lib/libboost_
 install_name_tool -change "libboost_system.dylib" "@loader_path/../lib/libboost_system.dylib" _DataMatrixExt.so
 
 cd ../likelihood
-install_name_tool -change "$NCL_DYLIB_DIR/libncl-2.1.18.dylib" "@loader_path/../lib/libncl.dylib" _LikelihoodExt.so
+install_name_tool -change "$NCL_DYLIB_DIR/lib/ncl/libncl-2.1.18.dylib" "@loader_path/../lib/libncl.dylib" _LikelihoodExt.so
 install_name_tool -change "$PYTHON_DYLIB_DIR/libpython2.7.dylib" "@loader_path/../lib/libpython2.7.dylib" _LikelihoodExt.so
 install_name_tool -change "libboost_thread.dylib" "@loader_path/../lib/libboost_thread.dylib" _LikelihoodExt.so
 install_name_tool -change "libboost_python.dylib" "@loader_path/../lib/libboost_python.dylib" _LikelihoodExt.so
@@ -123,7 +129,7 @@ install_name_tool -change "libboost_chrono.dylib" "@loader_path/../lib/libboost_
 install_name_tool -change "libboost_system.dylib" "@loader_path/../lib/libboost_system.dylib" _LikelihoodExt.so
 
 cd ../phylogeny
-install_name_tool -change "$NCL_DYLIB_DIR/libncl-2.1.18.dylib" "@loader_path/../lib/libncl.dylib" _PhylogenyExt.so
+install_name_tool -change "$NCL_DYLIB_DIR/lib/ncl/libncl-2.1.18.dylib" "@loader_path/../lib/libncl.dylib" _PhylogenyExt.so
 install_name_tool -change "$PYTHON_DYLIB_DIR/libpython2.7.dylib" "@loader_path/../lib/libpython2.7.dylib" _PhylogenyExt.so
 install_name_tool -change "libboost_thread.dylib" "@loader_path/../lib/libboost_thread.dylib" _PhylogenyExt.so
 install_name_tool -change "libboost_python.dylib" "@loader_path/../lib/libboost_python.dylib" _PhylogenyExt.so
@@ -131,7 +137,7 @@ install_name_tool -change "libboost_chrono.dylib" "@loader_path/../lib/libboost_
 install_name_tool -change "libboost_system.dylib" "@loader_path/../lib/libboost_system.dylib" _PhylogenyExt.so
 
 cd ../probdist
-install_name_tool -change "$NCL_DYLIB_DIR/libncl-2.1.18.dylib" "@loader_path/../lib/libncl.dylib" _ProbDistExt.so
+install_name_tool -change "$NCL_DYLIB_DIR/lib/ncl/libncl-2.1.18.dylib" "@loader_path/../lib/libncl.dylib" _ProbDistExt.so
 install_name_tool -change "$PYTHON_DYLIB_DIR/libpython2.7.dylib" "@loader_path/../lib/libpython2.7.dylib" _ProbDistExt.so
 install_name_tool -change "libboost_thread.dylib" "@loader_path/../lib/libboost_thread.dylib" _ProbDistExt.so
 install_name_tool -change "libboost_python.dylib" "@loader_path/../lib/libboost_python.dylib" _ProbDistExt.so
@@ -139,7 +145,7 @@ install_name_tool -change "libboost_chrono.dylib" "@loader_path/../lib/libboost_
 install_name_tool -change "libboost_system.dylib" "@loader_path/../lib/libboost_system.dylib" _ProbDistExt.so
 
 cd ../readnexus
-install_name_tool -change "$NCL_DYLIB_DIR/libncl-2.1.18.dylib" "@loader_path/../lib/libncl.dylib" _ReadNexusExt.so
+install_name_tool -change "$NCL_DYLIB_DIR/lib/ncl/libncl-2.1.18.dylib" "@loader_path/../lib/libncl.dylib" _ReadNexusExt.so
 install_name_tool -change "$PYTHON_DYLIB_DIR/libpython2.7.dylib" "@loader_path/../lib/libpython2.7.dylib" _ReadNexusExt.so
 install_name_tool -change "libboost_thread.dylib" "@loader_path/../lib/libboost_thread.dylib" _ReadNexusExt.so
 install_name_tool -change "libboost_python.dylib" "@loader_path/../lib/libboost_python.dylib" _ReadNexusExt.so
