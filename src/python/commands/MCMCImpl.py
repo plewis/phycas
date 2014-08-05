@@ -140,6 +140,19 @@ class MCMCImpl(CommonFunctions):
             self.output('\nUpdater diagnostics (* = slice sampler):')
             self.output(summary)
 
+        if self.opts.verbose and self.opts.nchains > 1:
+            self.output('Chain swaps (upper: attempted swaps, lower: accepted swaps):')
+
+            row = '%20s' % 'heating power -->'
+            row += ' '.join(['%12.2f' % self.mcmc_manager.chains[k].heating_power for k in range(self.opts.nchains)])
+            self.output(row)
+
+            for ii in range(self.opts.nchains):
+                row = '%20.2f' % (self.mcmc_manager.chains[ii].heating_power,)
+                row += ' '.join(['%12d' % self.mcmc_manager.swap_table[ii][jj] for jj in range(self.opts.nchains)])
+                self.output(row)
+            self.output()
+
     def obsoleteUpdateAllUpdaters(self, chain, chain_index, cycle):
         # This function abandoned; functionality moved to C++ side
         # for speed reasons: see MCMCChainManager::updateAllUpdaters
@@ -1339,7 +1352,7 @@ class MCMCImpl(CommonFunctions):
         """
         nchains = len(self.mcmc_manager.chains)
         self.phycassert(self.data_matrix is not None, 'steppingstone sampling requires data')
-        self.phycassert(nchains == 1, 'path sampling requires nchains to be 1')
+        self.phycassert(nchains == 1, 'steppingstone sampling currently requires nchains = 1')
         chain = self.mcmc_manager.getColdChain()
 
         if not self.opts.ssobj.refdist_is_prior:

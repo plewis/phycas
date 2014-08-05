@@ -312,21 +312,3 @@ class MCMCManager:
             self.chains[i], self.chains[j] = self.chains[j], self.chains[i]
 
             self.swap_table[j][i] += 1  # lower triangle
-
-        if cycle % 1 == 0:
-            print '\n********** Attempting chain swap **********'
-            print 'n =',n
-            print 'i =',i
-            print 'j =',j
-            print 'log_accept_ratio =',log_accept_ratio
-            print 'log_u            =',log_u
-            if swap_accepted:
-                print 'swap_accepted    = True'
-            else:
-                print 'swap_accepted    = False'
-            print 'swap_table:'
-            for ii in range(n):
-                for jj in range(n):
-                    print '%12d' % self.swap_table[ii][jj],
-                print
-            print '*********************************************\n'

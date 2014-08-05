@@ -1,4 +1,12 @@
 This is the CHANGES file associated with the Python program Phycas
 Phycas can be obtained from http://www.phycas.org/
 
-We have started a new CHANGES file starting with version 2.0.0 because 2.0.0 is the version associated with the official published release note describing Phycas.
+We have started a new CHANGES file starting with version 2.0.0 because 2.0.0 is
+the version associated with the official published release note describing
+Phycas.
+
+Version 2.0.1
+-------------
+Posted 5-August-2014
+Added chain swap information to the updater summary when mcmc.nchains > 1 (and removed
+the debugging output that cluttered the console previously)

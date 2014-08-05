@@ -157,11 +157,12 @@ if __name__ == '__main__':
 
     # os.chdir(os.path.join(os.path.split(scriptPar)[0], "Examples"))
     os.chdir(scriptPar)
+    runTest(outFile, "gtrtest", ["gtr_test.p", "gtr_test.t"])
+    runTest(outFile, "nchains", ["nchains_test.p", "nchains_test.t"])
     runTest(outFile, "simulator", ["simulated.nex"])
     runTest(outFile, "exploreprior", mcmcOutputs(["nodata.nex"]))
     runTest(outFile, "splittest", ["out.txt"])
     runTest(outFile, "pdftree", ["test.pdf"])
-    runTest(outFile, "gtrtest", ["gtr_test.p", "gtr_test.t"])
     runTest(outFile, "sump", ["logfile.txt"])
     runTest(outFile, "sumt", ["trees.tre","splits.pdf","logfile.txt"])
     runTest(outFile, "likelihoodtest", ["check.nex"])
