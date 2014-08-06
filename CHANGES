@@ -9,5 +9,6 @@ Version 2.0.1
 -------------
 Posted 5-August-2014
 Added chain swap information to the updater summary when mcmc.nchains > 1 (and removed
-the debugging output that cluttered the console previously)
-
+the debugging output that cluttered the console previously). Parameter file now only
+includes the log-likelihood for the cold chain (previously nchains log-likelihoods were
+included in each row except the header row, which only included one "lnL" header).

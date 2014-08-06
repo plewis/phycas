@@ -184,9 +184,9 @@ class MCMCManager:
             if self.parent.opts.doing_steppingstone_sampling:
                 self.parent.paramf.write(float_format_str % (cold_chain.heating_power))
 
-            # lnL for each chain
-            for lnl in lnLikes:
-                self.parent.paramf.write(float_format_str % lnl)
+            # lnL for cold chain
+            lnl = cold_chain.chain_manager.getLastLnLike()
+            self.parent.paramf.write(float_format_str % lnl)
 
             # lnPrior
             ln_prior = cold_chain.chain_manager.getJointPriorManager().getLogJointPrior()

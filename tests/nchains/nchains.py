@@ -28,8 +28,8 @@ mcmc.out.params.prefix = 'nchains_test'
 mcmc.out.params.mode = REPLACE
 
 mcmc.nchains = 4
-mcmc.ncycles = 200
-mcmc.sample_every = 2
+mcmc.ncycles = 100
+mcmc.sample_every = 1
 mcmc.report_every = 10
 mcmc.adapt_first = 2
 mcmc.verbose = True

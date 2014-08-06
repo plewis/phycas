@@ -48,13 +48,15 @@
 %\usepackage{upquote}
 %\newfont{\mytt}{cmtt10 at 10pt}
 
-\newcommand{\currPhycasVersion}{2.0.0}			% TODO: CHECK PRIOR TO NEW RELEASE
-\newcommand{\currReleaseDate}{4 July 2014}		% TODO: CHECK PRIOR TO NEW RELEASE
-\newcommand{\currReleaseGitBuild}{18e7a835616e453dcfd60d1b9ee9e763858778cc}			% TODO: CHECK PRIOR TO NEW RELEASE
+\newcommand{\currPhycasMajorVersion}{2.0}			% TODO: CHECK PRIOR TO NEW RELEASE
+\newcommand{\currMajorVersionReleaseDate}{4 July 2014} % TODO: CHECK PRIOR TO NEW RELEASE
+
+\newcommand{\currPhycasMinorVersion}{2.0.1}			% TODO: CHECK PRIOR TO NEW RELEASE
+\newcommand{\currMinorVersionReleaseDate}{5 August 2014} % TODO: CHECK PRIOR TO NEW RELEASE
 \newcommand{\currPyVersion}{2.7}
-\newcommand{\windistrfilename}{phycas-2.0.0-win.zip}
-\newcommand{\macdistrfilename}{phycas-2.0.0-mac.tar.gz}
-\newcommand{\linuxdistrfilename}{phycas-2.0.0-src.tar.gz}
+\newcommand{\windistrfilename}{phycas-2.0.1-win.zip}			% TODO: CHECK PRIOR TO NEW RELEASE
+\newcommand{\macdistrfilename}{phycas-2.0.1-mac.tar.gz}			% TODO: CHECK PRIOR TO NEW RELEASE
+\newcommand{\linuxdistrfilename}{phycas-2.0.1-src.tar.gz}			% TODO: CHECK PRIOR TO NEW RELEASE
 \newcommand{\distrfolder}{\pathname{phycas}}
 
 \newcommand{\trademark}[1]{#1${}^{\mbox{\tiny TM}}$}
@@ -163,7 +165,7 @@ pdfkeywords={phylogenetics, Bayesian, Markov chain Monte Carlo, MCMC}}
 
 \begin{document}
 
-\title{{\sc Phycas User Manual} \\ Version \currPhycasVersion}
+\title{{\sc Phycas User Manual} \\ Version \currPhycasMajorVersion}
 \author{Paul O. Lewis, Mark T. Holder, and David L. Swofford}
 \date{\today}
 \maketitle
@@ -2047,7 +2049,7 @@ model.num_rates = 4
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{What's new in version 2.0?} %%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-This version was released on \currReleaseDate\footnote{This version corresponds with git commit SHA \currReleaseGitBuild}. The jump to version 2.0 is marked by the addition of a second posterior predictive method (GG) to go along with Conditional Predictive Ordinates (CPO), the Rannala-Zhu-Yang tree length prior, as well as the \cmd{scriptgen} command that simplifies creation of \python\ scripts that perform \phycas\ analyses. The \cmd{scriptgen} command will be introduced in this manual to generate all scripts used in tutorials. 
+Version \currPhycasMajorVersion\ was released on \currMajorVersionReleaseDate. The current version is \currPhycasMinorVersion; see the CHANGES file for information about what has changed for minor releases. The jump to version 2.0 is marked by the addition of a second posterior predictive method (GG) to go along with Conditional Predictive Ordinates (CPO), the Rannala-Zhu-Yang tree length prior, as well as the \cmd{scriptgen} command that simplifies creation of \python\ scripts that perform \phycas\ analyses. The \cmd{scriptgen} command will be introduced in this manual to generate all scripts used in tutorials. 
 
 The Rannala-Zhu-Yang tree length prior \citet{RannalaZhuYang2011} provides an elegant solution to the problem of undue influence of edge length prior choice on the induced tree length prior. Rather than placing a prior on individual edge length parameters and allowing them to collectively define the tree length prior, Rannala, Zhu and Yang suggest placing a prior instead on the tree length and letting that determine the individual edge length priors. This approach effectively eliminates the gross overestimation of tree length sometimes observed in Bayesian phylogenetic analyses, while allowing a flat prior on edge length proportions given the tree length. \phycas\ now provides a choice between the new tree length prior and the classical edge length priors offered by previous versions of the software.
 
