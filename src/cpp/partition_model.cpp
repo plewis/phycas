@@ -622,6 +622,7 @@ void PartitionModel::setTransformedParameters(
             // if parameter is not a subset relative rate, let the subset model handle it
             bool found = subset_model[subset_index]->setParamValueFromTransformed(this_param_name, this_param_value, tree);
             PHYCAS_ASSERT(found);
+            (void)found;		//suppress "unused" compiler warning in release builds
             }
         }
 
