@@ -32,16 +32,16 @@ Phycas under a linux operating system.
 ############
 ### NOTE ###
 ############
-The instructions below use 2.0.x to refer to the most recent version rather than
-2.0.0, 2.0.1, etc. The x indicates versions that differ from 2.0.0 only in bug
-fixes.
+These instructions were written when the most recent version of Phycas was 2.0.1.
+If you are using a newer version, replace all instances of 2.0.1 with the new
+version number.
 
 *****************************************************************
 *** Installing Phycas on a Mac running MacOS 10.9 (Mavericks) ***
 *****************************************************************
-1. Start by downloading phycas-2.0.x-mac.tar.gz from http://phycas.org/.
+1. Start by downloading phycas-2.0.1-mac.tar.gz from http://phycas.org/.
 
-2. Move phycas-2.0.x-mac.tar.gz to your home directory
+2. Move phycas-2.0.1-mac.tar.gz to your home directory
 
 3. Open Terminal.app (Finder > Go > Utilities)
 
@@ -49,7 +49,7 @@ fixes.
 
    open .
 
-Verify that phycas-2.0.x-mac.tar.gz is in that directory (if not, move it there).
+Verify that phycas-2.0.1-mac.tar.gz is in that directory (if not, move it there).
 
 5. Verify the location of your site-packages directory using the following
 command (copy and paste into Terminal.app):
@@ -58,9 +58,9 @@ command (copy and paste into Terminal.app):
 
 The second item in the list should be "/Library/Python/2.7/site-packages"
 
-6. Unpack phycas-2.0.x-mac.tar.gz into your site-packages directory:
+6. Unpack phycas-2.0.1-mac.tar.gz into your site-packages directory:
 
-   sudo tar -C /Library/Python/2.7/site-packages -zxvf phycas-2.0.x-mac.tar.gz
+   sudo tar -C /Library/Python/2.7/site-packages -zxvf phycas-2.0.1-mac.tar.gz
 
 The "sudo" at the beginning runs the command as the superuser, so you will need
 to supply your system password to continue. The "-C" provides tar with the
@@ -77,7 +77,7 @@ You should see the following output:
   /////////////////////////////
  ///// Welcome to Phycas /////
 /////////////////////////////
-Version 2.0.x
+Version 2.0.1
 
 Phycas is written by Paul O. Lewis, Mark Holder and David Swofford
 
@@ -85,7 +85,7 @@ Phycas is distributed under the GNU Public License (see LICENSE file for more
 information).
 
 8. If you ever want to completely remove Phycas from your system, delete the
-phycas-2.0.x-mac.tar.gz file (if it is still in your home directory) and issue
+phycas-2.0.1-mac.tar.gz file (if it is still in your home directory) and issue
 the following command to delete the extracted phycas folder from the Python
 site-packages directory:
 
@@ -109,17 +109,17 @@ are just deleted immediately).
 drive, and thus the directory C:\Python27 exists. If you installed it somewhere
 else, please adjust the instructions accordingly.
 
-2. Start by downloading phycas-2.0.x-win.zip from http://phycas.org/.
+2. Start by downloading phycas-2.0.1-win.zip from http://phycas.org/.
 
-3. Move phycas-2.0.x-win.zip to the Python site-packages directory, which is here:
+3. Move phycas-2.0.1-win.zip to the Python site-packages directory, which is here:
 
    C:\Python27\Lib\site-packages
 
 4. If you have 7-Zip  (http://www.7-zip.org/) installed (highly recommended,
 *much* faster than the native zip file extractor supplied with Windows),
-right-click the phycas-2.0.x-win.zip file and select "7-Zip > Extract Here" from
+right-click the phycas-2.0.1-win.zip file and select "7-Zip > Extract Here" from
 the popup menu. If you insist on using the native unzip program, right-click the
-phycas-2.0.x-win.zip file and select "Extract All..." from the popup menu.
+phycas-2.0.1-win.zip file and select "Extract All..." from the popup menu.
 
 5. Test your Phycas installation by opening a command console window by
 shift-right-clicking on the C:\Python27 directory in Explorer and choosing "Open
@@ -132,7 +132,7 @@ You should see the following output:
   /////////////////////////////
  ///// Welcome to Phycas /////
 /////////////////////////////
-Version 2.0.x
+Version 2.0.1
 
 Phycas is written by Paul O. Lewis, Mark Holder and David Swofford
 
@@ -140,7 +140,7 @@ Phycas is distributed under the GNU Public License (see LICENSE file for more
 information).
 
 6. If you get an error, verify that the site-packages directory being used by
-Python is indeed the one you copied phycas-2.0.x-win.zip into:
+Python is indeed the one you copied phycas-2.0.1-win.zip into:
 
    python.exe -c "import site; print site.getsitepackages()"
 
@@ -148,7 +148,7 @@ The second item in the list should be "C:\\Python27\\lib\\site-packages". If it
 is not, you need to repeat steps 2-4 using the site-packages directory listed.
 
 7. If you ever want to completely remove Phycas from your system, simply delete
-the phycas-2.0.x-win.zip file (if you haven't already) and the phycas directory
+the phycas-2.0.1-win.zip file (if you haven't already) and the phycas directory
 in your site-packages directory.
 
 ***********************************
@@ -156,12 +156,11 @@ in your site-packages directory.
 ***********************************
 1. Install Boost C++ library:
     a. Download boost_1_55_0.tar.gz from http://www.boost.org/ and unpack into
-    your home directory:
+    your home directory (this assumes Boost version 1.55; more recent versions
+    will probably work but have not been tested):
 
         cd $HOME
-        curl -L
-        http://sourceforge.net/projects/boost/files/boost/1.55.0/boost_1_55_0.
-        tar.gz/download > boost_1_55_0.tar.gz
+        curl -L http://sourceforge.net/projects/boost/files/boost/1.55.0/boost_1_55_0.tar.gz/download > boost_1_55_0.tar.gz
         tar zxvf boost_1_55_0.tar.gz
 
     b. cd into boost_1_55_0 and run the following commands to compile the thread
@@ -197,29 +196,34 @@ in your site-packages directory.
         make install
 
 3. Build Phycas
-    a.  Download phycas-2.0.x-src.tar.gz from http://phycas.org/ and unpack into
+    a.  Download phycas-2.0.1-src.tar.gz from http://phycas.org/ and unpack into
     your home directory:
 
         cd $HOME
-        curl -L http://www.eeb.uconn.edu/projects/phycas/downloads/v2.0.x/phycas-2.0.x-src.tar.gz > phycas-2.0.x-src.tar.gz
-        tar zxvf phycas-2.0.x-src.tar.gz
-        cd phycas-2.0.x
+        curl -L http://www.eeb.uconn.edu/projects/phycas/downloads/v2.0/phycas-2.0.1-src.tar.gz > phycas-2.0.1-src.tar.gz
+        tar zxvf phycas-2.0.1-src.tar.gz
+        cd phycas-2.0.1
 
-    c.  Copy build.sh from scripts directory to $HOME/phycas-2.0.x and in the
-    copy specify values for these variables:
+    c.  Copy build.sh from scripts directory to $HOME/phycas-2.0.1:
+
+    		cp scripts/build.sh .
+
+    d.	Edit the copied build.sh file as follows:
+
+			PHYCAS_VERSION="2.0.1"
             OSTYPE="linux"
             BOOST_ROOT="$HOME/boost_1_55_0"
             BJAM_DIR="$BOOST_ROOT/tools/build/v2/engine/bin.linuxx86_64"
-            PYTHON_ROOT="/opt/python/bin/python" (or whatever path to your python interpreter you supplied to $HOME/boost_1_55_0/bootstrap.sh)
+            PYTHON_ROOT="/usr/bin/python" (or whatever path to your python interpreter you supplied to $HOME/boost_1_55_0/bootstrap.sh)
             NCL_INSTALL_DIR="/usr/local" (or "$HOME/nclib" if you do not have sudo privileges)
 
-    d.  Now run it
+    e.  Now run it
 
-        cd $HOME/phycas-2.0.x
+        cd $HOME/phycas-2.0.1
         ./build.sh
 
-    e.  Copy $HOME/phycas/phycas to your site-packages directory (or unpack the
-    $HOME/phycas/phycas-2.0.x-linux.tar.gz file there) to complete the
+    f.  Copy $HOME/phycas/phycas to your site-packages directory (or unpack the
+    $HOME/phycas/phycas-2.0.1-linux.tar.gz file there) to complete the
     installation (if you lack sudo privileges, go to step f). To find out where
     your Python's site-packages directory is located, use the following command
     in Python 2.7:
@@ -230,14 +234,14 @@ in your site-packages directory.
 
         python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()"
 
-    f. If you lack sudo privileges, you can specify these before invoking python:
+    g. If you lack sudo privileges, you can specify these before invoking python:
 
-        export PYTHONPATH="$HOME/phycas-2.0.x"
-        export LD_LIBRARY_PATH="$HOME/phycas-2.0.x/phycas/conversions:$HOME/nclib/lib/ncl"
+        export PYTHONPATH="$HOME/phycas-2.0.1"
+        export LD_LIBRARY_PATH="$HOME/phycas-2.0.1/phycas/conversions:$HOME/nclib/lib/ncl"
 
         The PYTHONPATH environmental variable tells Python where to find the
         phycas module (the phycas module is the phycas directory nested within
-        $HOME/phycas-2.0.x). The LD_LIBRARY_PATH allows the operating system to
+        $HOME/phycas-2.0.1). The LD_LIBRARY_PATH allows the operating system to
         locate dynamic link libraries needed when Phycas is running. When Phycas
         is built, all dynamic link libraries except for NCL are copied into the
         conversions directory, and the NCL dynamic link library will end up
@@ -251,8 +255,8 @@ in your site-packages directory.
         #$ -S /bin/bash
         #$ -cwd
         #$ -N myjobname
-        export PYTHONPATH="$HOME/phycas-2.0.x"
-        export LD_LIBRARY_PATH="$HOME/phycas-2.0.x/phycas/conversions:$HOME/nclib/lib/ncl"
+        export PYTHONPATH="$HOME/phycas-2.0.1"
+        export LD_LIBRARY_PATH="$HOME/phycas-2.0.1/phycas/conversions:$HOME/nclib/lib/ncl"
         /usr/bin/python runphycas.py
 
         Assuming the current directory contains a file named runphycas.py
@@ -261,9 +265,9 @@ in your site-packages directory.
 
         qsub myjob.sh
 
-    g. You should now run the tests to ensure that Phycas was installed correctly:
+    h. You should now run the tests to ensure that Phycas was installed correctly:
 
-        cd $HOME/phycas-2.0.x/tests
+        cd $HOME/phycas-2.0.1/tests
         python runall.py
 
         After the tests are finished, the file diffs.txt should contain only the
