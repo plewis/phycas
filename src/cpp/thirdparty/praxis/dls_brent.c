@@ -36,7 +36,7 @@
 |			 1. Allocate and initialize a praxis object using newPraxisData:
 |
 |					PraxisData * praxd = newPraxisData(x, n, single_precision);
-|					
+|
 |				  		x = array for parameter vector (must be large enough to store n doubles)
 |						n = number of parameters in function being optimized
 |						single_precision = true if function evaluation is only done at single-precision accuracy,
@@ -46,9 +46,9 @@
 |			    the convergence will be)
 |
 |			 3. Invoke the praxis routine:
-|		 		
+|
 |			 		fx_opt = praxis(tol, h, n, f, data, praxd);
-|					
+|
 |						tol   = tolerance limit used to test for convergence (if passed as 0, a default of 1e-5
 |						        will be used)
 |						h     = maximum step size used to test for convergence (if passed as 0, a default of 1.0
@@ -58,7 +58,7 @@
 |						data  = an option pointer to arbitrary data that the function may need to compute its value;
 |						        if the function needs no additional data, pass NULL
 |						praxd = a praxis object previously allocated by newPraxisData
-|						
+|
 |					On return, fx_opt will be the value of the minimized function, and praxd->h will contain the
 |					corresponding optimized parameter values.
 |
@@ -220,7 +220,7 @@ PUBLIC PraxisData * newPraxisData(
 			}
 		praxd->glimit = 100.0;		/* Brent's setting, but caller can modify if needed for stability */
 		}
-	
+
 	return praxd;
 	}
 
@@ -248,7 +248,7 @@ PUBLIC void deletePraxisData(
 PRIVATE double extrapolateParabola(FxnPoint a, FxnPoint b, FxnPoint c)
 	{
 	double x;
-	
+
 	double b_minus_a = b.x - a.x;
 	double b_minus_c = b.x - c.x;
 	double t = b_minus_a*(b.fx - c.fx);
@@ -271,10 +271,10 @@ PRIVATE double extrapolateParabola(FxnPoint a, FxnPoint b, FxnPoint c)
 		else
 			x = c.x;
 		}
-		
+
 	return x;
 	}
-	
+
 /*----------------------------------------------------------------------------------------------------------------------
 |
 |	Magnifies a potential bracketing interval using the golden ratio.
@@ -308,10 +308,10 @@ PUBLIC DoublePair bracketMinimum(
 	{
 	FxnPoint	a, b, c, u;
 	DoublePair	bracket = STRUCT_ZERO;
-	
+
 	if (glimit == 0.0)
 		glimit = 100.0;
-	
+
 	a.fx = fxn(&a_guess, data); RETURN_IF_ABORTED(bracket)
 	b.fx = fxn(&b_guess, data); RETURN_IF_ABORTED(bracket)
 	a.x = a_guess;
@@ -468,7 +468,7 @@ PUBLIC double localMin(
 #	if defined(CHECK_LOCALMIN_PROGRESS)
 		dls_printf("x <= %.6g, f(x)=%f\n", x.x, x.fx);
 #	endif
-	
+
 	/* Main loop */
 
 	for (iter = 0; iter < MAX_ITER; iter++)
@@ -500,7 +500,7 @@ PUBLIC double localMin(
 			e = d;	/* lint complains about possible use of 'd' before being set, but it's not a problem because e=0
 			           first time through, so "fabs(e) > tol" test fails */
 			}
-			
+
 		/* Take parabolic-interpolation or golden-section step (note that Brent's Algol procedure had an error;
 		   p > q*(a-x) is correct) */
 		if ((fabs(p) < fabs(0.5*q*r)) && (p > q*(a - x.x)) && (p < q*(b - x.x)))
@@ -524,7 +524,7 @@ PUBLIC double localMin(
 			u.x = x.x + d;
 		else if (d > 0.0)
 			u.x = x.x + tol;
-		else 
+		else
 			u.x = x.x - tol;
 
 		u.fx = f(&u.x, data);	RETURN_IF_ABORTED(0.0)
@@ -581,7 +581,7 @@ PUBLIC double minimizeBrent1D(
 	DoublePair bracket = bracketMinimum(a, b, f, data, glimit);
 	if (gAborted)
 		return 0.0;
-	
+
 	return localMin(bracket.a, bracket.b, eps, t, f, data, px);
 	}
 
@@ -610,7 +610,7 @@ PRIVATE double praxis_FLin(PraxisLocal *pld, int j, double lambda, double *x, do
 		double qa = lambda*(lambda - qd1)/(qd0*(qd0 + qd1));
 		double qb = (lambda + qd0)*(qd1 - lambda)/(qd0*qd1);
 		double qc = lambda*(lambda + qd0)/(qd1*(qd0 + qd1));
-		
+
 		/* Previous three points were stored as follows: x' in q0, x'' in x, and x''' in q1 */
 		for (i = 0; i < n; i++)
 			xnew[i] = qa*q0[i] + qb*x[i] + qc*q1[i];
@@ -642,18 +642,18 @@ PRIVATE void praxis_Min(
 	int		i, k;
 	Bool	success, dz;
 	double	x1, x2, xm, f0, f2, fm, d1, d2, t2, s, sf1, sx1;
-	
+
 	/* Copy args passed by reference to locals (will pass back at end) */
 	d2 = *pd2;
 	x1 = *px1;
-	
+
 	sf1 = f1;
 	sx1 = x1;
 	k = 0;
 	xm = 0.0;
 	f0 = fm = pld->fx;
 	dz = (d2 < pld->machEps);	/* if true, we need f''(0) */
-	
+
 	/* Find step size */
 	s = 0.0;
 	for (i = 0; i < pld->n; i++)
@@ -688,7 +688,7 @@ PRIVATE void praxis_Min(
 		xm = x1;
 		fm = f1;
 		}
-	
+
 	/* Find a distance x2 ("lambda*") that approximately minimizes f in the chosen direction */
 	do	{
 		if (dz)
@@ -707,8 +707,8 @@ PRIVATE void praxis_Min(
 				}
 			d2 = (x2*(f1 - f0) - x1*(f2 - f0))/(x1*x2*(x1 - x2));
 			}
-	
-		/* Estimate first derivative at 0 */	
+
+		/* Estimate first derivative at 0 */
 		d1 = (f1 - f0)/x1 - x1*d2;
 		dz = TRUE;
 
@@ -739,7 +739,7 @@ PRIVATE void praxis_Min(
 				}
 			}
 			while (!success);
-		}		
+		}
 		while (!success);
 
 	pld->nl++;	/* increment counter for number of line searches */
@@ -748,7 +748,7 @@ PRIVATE void praxis_Min(
 		x2 = xm;
 	else
 		fm = f2;
-		
+
 	/* Get new estimate of second derivative */
 	if (fabs(x2*(x2 - x1)) > pld->esmall)
 		d2 = (x2*(f1 - f0) - x1*(fm - f0))/(x1*x2*(x1 - x2));
@@ -764,7 +764,7 @@ PRIVATE void praxis_Min(
 		pld->fx = sf1;
 		x1 = sx1;
 		}
-		
+
 	/* Update x for linear search but not for parabolic search */
 	if (j >= 0)
 		{
@@ -792,7 +792,7 @@ PRIVATE void praxis_Quad(PraxisLocal *pld, double *x, double *q0, double *q1, do
 	s = pld->fx;
 	pld->fx = pld->qf1;
 	pld->qf1 = s;
-	
+
 	qd1 = 0.0;
 	for (i = 0; i < n; i++)
 		{
@@ -848,7 +848,7 @@ PRIVATE void praxis_MinFit(double eps, double tol, double **ab, double *q,
 	int			i, j, k, l, l2, kt;
 	Bool		doCancellation;
 	double		c, f, g, h, s, x, y, z;
-	
+
 	dls_assert(n > 0);		/* to suppress static analyzer warnings about uninitialized variables */
 
 	/* Householder's reduction to bidiagonal form */
@@ -882,7 +882,7 @@ PRIVATE void praxis_MinFit(double eps, double tol, double **ab, double *q,
 		s = 0.0;
 		for (j = l; j < n; j++)
 			s += ab[i][j]*ab[i][j];
-		
+
 		if (s < tol)
 			g = 0.0;
 		else
@@ -906,7 +906,7 @@ PRIVATE void praxis_MinFit(double eps, double tol, double **ab, double *q,
 		if (y > x)
 			x = y;
 		}
-	
+
 	/* Accumulation of right-hand transformations */
 	for (i = n - 1; i >= 0; i--)
 		{
@@ -930,13 +930,13 @@ PRIVATE void praxis_MinFit(double eps, double tol, double **ab, double *q,
 		g = e[i];
 		l = i;
 		}
-		
+
 	/* Diagonalization of the bidiagonal form */
 	eps *= x;
 	for (k = n - 1; k >= 0; k--)
 		{
 		kt = 0;
-		
+
 		test_splitting:
 
 		if (++kt > 30)
@@ -985,10 +985,10 @@ PRIVATE void praxis_MinFit(double eps, double tol, double **ab, double *q,
 				s = -f/h;
 				}
 			}
-		
+
 		z = q[k];
 		if (l != k)
-			{			
+			{
 			/* Shift from bottom 2x2 minor */
 			x = q[l];
 			y = q[k - 1];
@@ -998,7 +998,7 @@ PRIVATE void praxis_MinFit(double eps, double tol, double **ab, double *q,
 			g = sqrt(f*f + 1.0);
 			s = (f < 0.0) ? f - g : f + g;
 			f = ((x - z)*(x + z) + h*(y/s - h))/x;
-				
+
 			/* Next QR transformation */
 			c = s = 1.0;
 			for (i = l + 1; i <= k; i++)
@@ -1050,7 +1050,7 @@ PRIVATE void praxis_MinFit(double eps, double tol, double **ab, double *q,
 			q[k] = x;
 			goto test_splitting;
 			}
-		
+
 		if (z < 0.0)
 			{
 			/* q[k] is made non-negative */
@@ -1119,12 +1119,12 @@ PUBLIC double praxis(
 	double **	v = praxd->v;
 	double *	d = praxd->work;
 	double *	x = praxd->x;
-	
+
 	if (tol <= 0.0)
 		tol = 1e-5;
 	if (h <= 0.0)
 		h = 1.0;
-	
+
 	/* Partition work space provided by caller into arrays used here */
 	q0 = d + n;
 	q1 = q0 + n;
@@ -1145,9 +1145,9 @@ PUBLIC double praxis(
 	vsmall = pld.esmall*pld.esmall;
 	large = 1.0/pld.esmall;
 	vlarge = 1.0/vsmall;
-	
+
 	pld.praxisSeed = 1;		/* starting seed for random number generator */
-	
+
 	/* Heuristic numbers:
 	   - if axes may be badly scaled (which should be avoided if possible), set scbd=10, otherwise 1
 	   - if the problem is known to be ill-conditioned, set illc=TRUE, otherwise FALSE
@@ -1184,12 +1184,12 @@ PUBLIC double praxis(
 #	endif
 
 	/* ------ main loop ------ */
-	
+
 	for (;;)
 		{
 		double sf = d[0];
 		double s = d[0] = 0.0;
-		
+
 		/* Minimize along first direction */
 		debug_praxis(("%*ccalling praxis_Min at 200\n", DBG_SPACES, ' '));
 		praxis_Min(&pld, 0, 2, x, q0, q1, v, &d[0], &s, pld.fx, FALSE, f, data);
@@ -1204,7 +1204,7 @@ PUBLIC double praxis(
 			for (i = 1; i < n; i++)
 				d[i] = 0.0;
 			}
-	
+
 		for (k = 1; k < n; k++)
 			{
 			for (i = 0; i < n; i++)
@@ -1258,7 +1258,7 @@ PUBLIC double praxis(
 				else
 					break;
 				}
-			
+
 			for (k2 = 0; k2 < k; k2++)
 				{
 				/* Minimize along "conjugate" directions */
@@ -1267,7 +1267,7 @@ PUBLIC double praxis(
 				praxis_Min(&pld, k2, 2, x, q0, q1, v, &d[k2], &s, pld.fx, FALSE, f, data);
 				RETURN_IF_ABORTED(0.0)
 				}
-	
+
 			f1 = pld.fx;
 			pld.fx = sf;
 			lds = 0.0;
@@ -1293,7 +1293,7 @@ PUBLIC double praxis(
 				d[k] = 0.0;
 				for (i = 0; i < n; i++)
 					v[i][k] = y[i]/lds;
-								
+
 				/* ... and minimize along it */
 				debug_praxis(("%*ccalling praxis_Min at 203\n", DBG_SPACES, ' '));
 				praxis_Min(&pld, k, 4, x, q0, q1, v, &d[k], &lds, f1, TRUE, f, data);
@@ -1315,7 +1315,7 @@ PUBLIC double praxis(
 			for (i = 0; i < n; i++)
 				t2 += x[i]*x[i];
 			t2 = pld.m2*sqrt(t2) + pld.toler;
-			
+
 			/* See if step length exceeds half the tolerance (stopping criterion) */
 			kt = (pld.ldt > 0.5*t2) ? 0 : kt + 1;
 			debug_praxis(("%*cChecking convergence: ldt=%g t2=%g kt=%d ktm=%d\n", DBG_SPACES, ' ',
@@ -1333,12 +1333,12 @@ PUBLIC double praxis(
 				return pld.fx;
 				}
 			}
-		
+
 		/* Try quadratic extrapolation in case we are stuck in a curved valley */
 		debug_praxis(("%*cQuad\n", DBG_SPACES, ' '));
 		praxis_Quad(&pld, x, q0, q1, v, f, data);
 		RETURN_IF_ABORTED(0.0)
-	
+
 		/* Calculate V = U.(D^(-1/2))  (note: 'v' currently contains U) */
 		dn = 0.0;
 		for (i = 0; i < n; i++)
@@ -1379,7 +1379,7 @@ PUBLIC double praxis(
 					sl = 1.0/scbd;
 					z[i] = scbd;
 					}
-					
+
 				/* DLS 11apr02: erratum published in Mathematics of Computation TE 520 (1975):1166, found when I got
 				   the 2002 Dover edition of Brent's book and checked the web site given there */
 				for (j = 0; j < n; j++)
@@ -1435,7 +1435,7 @@ PUBLIC double praxis(
 			else
 				d[i] = 1.0/(s*s);
 			}
-			
+
 		/* Sort new eigenvalues and eigenvectors */
 		praxis_SortDV(d, v, (unsigned)n);
 
@@ -1446,7 +1446,7 @@ PUBLIC double praxis(
 		illc = (pld.m2*d[0] > pld.dmin);
 		}
 	}
-	
+
 #if defined(STANDALONE)	/* These routines are ordinarily provided by the "dls" package, but are duplicated here in
 						   order to make this file distributable as a standalone version. */
 
@@ -1487,12 +1487,12 @@ PRIVATE void * setMatrixRowPtrs(void *a_arg, void *p_arg, unsigned nrows, unsign
 		a[i] = p;
 		p += rowBytes;
 		}
-		
+
 	return a_arg;
 	}
 
 /*----------------------------------------------------------------------------------------------------------------------
-|	
+|
 |	Allocates and initializes a 'nrows' x 'ncols' matrix of arbitrary type.
 |
 |	Storage is allocated for both a vector of row pointers and the matrix itself.  The matrix is contained in a single
@@ -1547,12 +1547,12 @@ static double	ran3[127];
 |
 |	Initialization/seed function for Brent's random number generator.
 */
-PRIVATE void ranInit(int r)
+PUBLIC void ranInit(int r)
 	{
 	if (r < 0)
 		r = -r;
 	r = (r % 8190) + 1;
-		
+
 	ran2 = 127;
 	while (ran2 > 0)
 		{
@@ -1591,7 +1591,7 @@ PRIVATE double randUni(int *pSeed)
 #if defined(CHECK_PROGRESS)
 
 PRIVATE void showPraxisProgress(PraxisData *praxd, PraxisLocal *pld, int flag)
-	{	
+	{
 	int i;
 
 	if (pld->nf == 1)
@@ -1607,7 +1607,7 @@ PRIVATE void showPraxisProgress(PraxisData *praxd, PraxisLocal *pld, int flag)
 			}
 		printf("\n");
 		}
-	
+
 	dls_printf("%7d%7d%2c%15g", pld->nf, pld->nl, (flag == 0) ? ' ' : flag, pld->fx);
 	if (g_fmin != DBL_MIN)
 		dls_printf("%15g", pld->fx - g_fmin);
@@ -1661,7 +1661,7 @@ PRIVATE double helix(double *x, void * data)
 		t = atan(x[1]/x[0])/6.283185307179586;		/* 6.28... = 2 x pi */
 	if (x[0] < 0.0)
 		t += 0.5;
-	
+
 	y = x[2] - 10.0*t;
 	return 100.0*(y*y + (r - 1.0)*(r - 1.0)) + x[2]*x[2];
 	}
@@ -1689,9 +1689,9 @@ PRIVATE double chebyquad(double *x, void *data)
 	int		i, j;
 	double	f;
 	Bool	even;
-	
+
 	ChebyData * cd = data;
-	
+
 	double delta = 0.0;
 	for (j = 0; j < cd->n; j++)
 		{
@@ -1740,14 +1740,14 @@ PRIVATE int runPraxisTest(
 	{
 	unsigned i;
 	double z;
-	
+
 	PraxisData * praxd = newPraxisData(x, n, FALSE);
 	if (praxd == NULL)
 		return RC_Error;
 
 	ranInit(ranInitSeed);
 	g_fmin = f_min;				/* for progress output */
-		
+
 	praxd->illc = illc;
 	dls_printf("\n-------------------------\n\n%s (n=%d h=%g):\n\n", sfunc, n, h);
 	dls_printf("f(x) evaluated at theoretical optimum = %.13g (should be about %g)\n\n", f(x_opt, data), f_min);
@@ -1779,7 +1779,7 @@ PUBLIC int checkPraxis(void)
 
 #	define N_MAX 8
 	double x[N_MAX], x_opt[N_MAX], y[N_MAX], ti[N_MAX], tminus[N_MAX];
-	
+
 	/* Sanity check on random-number generator (doesn't evaluate quality; just makes sure nothing is blatantly wrong) */
 	double sum = 0.0;
 	ranInit(4);
@@ -1790,12 +1790,12 @@ PUBLIC int checkPraxis(void)
 	printf("\nmean of %d random numbers = %f (should be about 0.5)\n", n, sum/n);
 
 	/* Rosenbrock test */
-	x[0] = -1.2; x_opt[0] = 1.0; 
+	x[0] = -1.2; x_opt[0] = 1.0;
 	x[1] =  1.0; x_opt[1] = 1.0;
 	runPraxisTest("Rosenbrock", ros, NULL, 2, x, 1.0, 0.0, 4, FALSE, x_opt);
 
 	/* Helix test */
-	x[0] = -1.0; x_opt[0] = 1.0; 
+	x[0] = -1.0; x_opt[0] = 1.0;
 	x[1] =  0.0; x_opt[1] = 0.0;
 	x[2] =  0.0; x_opt[2] = 0.0;
 	runPraxisTest("Helix", helix, NULL, 3, x, 1.0, 0.0, 4, FALSE, x_opt);
@@ -1806,7 +1806,7 @@ PUBLIC int checkPraxis(void)
 	x[2] =  0.0; x_opt[2] = 0.0;
 	x[3] =  1.0; x_opt[3] = 0.0;
 	runPraxisTest("Singular", sing, NULL, 4, x, 1.0, 0.0, 2, TRUE, x_opt);
-	
+
 	/* Chebyquad tests... */
 	chebyData.y = y;
 	chebyData.ti = ti;
@@ -1889,7 +1889,7 @@ PRIVATE void checkLocalmin(void)
 |
 |	Runs tests corresponding to examples from Brent's book.
 |
-|	The tests can be be performed as follows: 
+|	The tests can be be performed as follows:
 |
 |		cc -o testpraxis -O -DTEST_BRENT dls_brent.c
 |		./testpraxis

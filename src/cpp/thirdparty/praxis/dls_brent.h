@@ -57,7 +57,9 @@ extern double		praxis(double tol, double h, int n, MinimizeFxn fxn, void *dataPt
 extern double		localMin(double, double, double, double, MinimizeFxn, void *, double *);
 extern double		minimizeBrent1D(double a, double b, double eps, double t, double glimit, MinimizeFxn fxn,
 					                void * dataPtr, double *px);
+
 extern int			checkPraxis(void);
+extern void			ranInit(int r);
 
 #ifdef __cplusplus
 }
