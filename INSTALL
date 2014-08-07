@@ -220,9 +220,9 @@ in your site-packages directory.
     e.  Now run it
 
         cd $HOME/phycas-2.0.1
-        ./build.sh
+        sudo ./build.sh
 
-    f.  Copy $HOME/phycas/phycas to your site-packages directory (or unpack the
+    f.  Copy $HOME/phycas-2.0.1/phycas to your site-packages directory (or unpack the
     $HOME/phycas/phycas-2.0.1-linux.tar.gz file there) to complete the
     installation (if you lack sudo privileges, go to step f). To find out where
     your Python's site-packages directory is located, use the following command
@@ -230,9 +230,13 @@ in your site-packages directory.
 
         python -c "import site; print site.getsitepackages()"
 
-        or this command if using Python 2.6:
+    or this command if using Python 2.6:
 
         python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()"
+
+    Then copy the phycas package into one of the site-package directories output above; e.g.:
+
+    	sudo cp $HOME/phycas-2.0.1/phycas /usr/lib/python2.7/site-packages
 
     g. If you lack sudo privileges, you can specify these before invoking python:
 

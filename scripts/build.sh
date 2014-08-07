@@ -109,6 +109,7 @@ elif [ "$OSTYPE" == "clang" ]; then
     sed -e 's|PHYCAS_DIR="PLEASE_SUPPLY"|PHYCAS_DIR="phycas"|' -i '' ./fixit.sh
     sed -e 's|NCL_DYLIB_DIR="PLEASE_SUPPLY"|NCL_DYLIB_DIR="'$NCL_INSTALL_DIR'"|' -i '' ./fixit.sh
     sed -e 's|PYTHON_DYLIB_DIR="PLEASE_SUPPLY"|PYTHON_DYLIB_DIR="'$PYTHON_DYLIB_DIR'"|' -i '' ./fixit.sh
+    ./fixit.sh
     tar zcvf phycas-${PHYCAS_VERSION}-mac.tar.gz phycas
 else
     echo No tar file created because \$OSTYPE was neither \"linux\" nor \"clang\"

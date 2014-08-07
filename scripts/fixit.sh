@@ -100,6 +100,7 @@ install_name_tool -change "$NCL_DYLIB_DIR/lib/ncl/libncl-2.1.18.dylib" "@loader_
 # libboost_thread.dylib references libncl.dylib and libboost_system
 install_name_tool -change "$NCL_DYLIB_DIR/lib/ncl/libncl-2.1.18.dylib" "@loader_path/../lib/libncl.dylib" libboost_thread.dylib
 install_name_tool -change "libboost_system.dylib" "@loader_path/../lib/libboost_system.dylib" libboost_thread.dylib
+install_name_tool -change "libboost_atomic.dylib" "@loader_path/../lib/libboost_atomic.dylib" libboost_thread.dylib
 
 # libboost_python.dylib references libpython2.7.dylib
 install_name_tool -change "$PYTHON_DYLIB_DIR/libpython2.7.dylib" "@loader_path/../lib/libpython2.7.dylib" libboost_python.dylib
