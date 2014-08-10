@@ -277,7 +277,6 @@ bool LargetSimonMove::update()
 		{
 		p->setLastLnLike(curr_ln_like);
         accept();
-		return true;
 		}
 	else
 		{
@@ -286,8 +285,13 @@ bool LargetSimonMove::update()
 
 		PHYCAS_ASSERT(!prev_likelihood_root || prev_likelihood_root->IsInternal());
 		likelihood->useAsLikelihoodRoot(prev_likelihood_root);
-		return false;
 		}
+
+    //POLTMP
+    lambda = p->adaptUpdater(lambda, nattempts, accepted);
+    //std::cerr << boost::str(boost::format("~~~> log(lambda) = %.5f <~~~") % log(lambda)) << std::endl;
+
+	return accepted;
 	}
 
 /*----------------------------------------------------------------------------------------------------------------------

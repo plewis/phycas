@@ -133,14 +133,14 @@ bool BushMove::update()
 		{
 		p->setLastLnLike(curr_ln_like);
 		accept();
-		return true;
 		}
 	else
 		{
 		curr_ln_like = p->getLastLnLike();
 		revert();
-		return false;
 		}
+
+    return accepted;
 	}
 
 /*----------------------------------------------------------------------------------------------------------------------

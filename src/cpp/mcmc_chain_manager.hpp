@@ -73,7 +73,6 @@ class MCMCChainManager : public MCMCChainManagerThisShPtr
 
 		void 					releaseUpdaters();
 
-
 		void					addMove(MCMCUpdaterShPtr p);
 		void					addModelParam(MCMCUpdaterShPtr p);
 		void					addEdgeLenParam(MCMCUpdaterShPtr p);
@@ -114,6 +113,10 @@ class MCMCChainManager : public MCMCChainManagerThisShPtr
 		void 					setRefTree(TreeShPtr t);
 		unsigned 				calcRFDistance(TreeShPtr ref_tree) const;
 
+		void					setAdapting(bool is_burning_in);
+		void					setTargetAcceptanceRate(double target_rate);
+        double                  adaptUpdater(double tuning, unsigned nattempts, bool accepted) const;
+
         JointPriorManagerShPtr  getJointPriorManager() {return _joint_prior_manager;}
 
 	public:
@@ -140,6 +143,9 @@ class MCMCChainManager : public MCMCChainManagerThisShPtr
 		TreeShPtr				ref_tree;				/**< A reference tree for the data set being analyzed that can be used to compare to the current tree. Ok to leave set to nothing. */
 
         JointPriorManagerShPtr  _joint_prior_manager;   /**< Maintains the value of the prior density for the current state of the chain */
+
+        bool                    adapting;               /**< If true, chains are still in the burn-in phase where updaters can be tuned. */
+        double                  accept_target;          /**< The target acceptance rate (proportion) for all Metropolis-Hastings updaters. */
 
 		MCMCUpdaterIter			moves_begin;			/**< Iterator positioned at the first move */
 		MCMCUpdaterIter			moves_end;				/**< Iterator positioned just beyond the last move */

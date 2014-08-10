@@ -168,6 +168,9 @@ bool TreeScalerMove::update()
 	double ln_accept_ratio		= curr_posterior - prev_posterior + ln_hastings;
 
     double lnu = std::log(rng->Uniform());
+
+    bool accepted = false;
+
 	if (ln_accept_ratio >= 0.0 || lnu <= ln_accept_ratio)
 		{
 	    if (save_debug_info)
@@ -176,7 +179,7 @@ bool TreeScalerMove::update()
 			}
 		p->setLastLnLike(curr_ln_like);
 		accept();
-		return true;
+		accepted = true;
 		}
 	else
 		{
@@ -186,10 +189,13 @@ bool TreeScalerMove::update()
 			}
 		curr_ln_like = p->getLastLnLike();
 		revert();
-		return false;
+		accepted = false;
 		}
 
-    return true;
+    //POLTMP
+    lambda = p->adaptUpdater(lambda, nattempts, accepted);
+
+    return accepted;
 	}
 
 /*----------------------------------------------------------------------------------------------------------------------

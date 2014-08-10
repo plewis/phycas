@@ -128,6 +128,8 @@ BOOST_PYTHON_MODULE(_LikelihoodExt)
         ;
 	class_<phycas::MCMCChainManager, boost::noncopyable, boost::shared_ptr<phycas::MCMCChainManager> >("MCMCChainManagerBase", init<JointPriorManagerShPtr>())
 		.def("finalize", &MCMCChainManager::finalize)
+		.def("setAdapting", &MCMCChainManager::setAdapting)
+		.def("setTargetAcceptanceRate", &MCMCChainManager::setTargetAcceptanceRate)
 		.def("recalcLnWorkingPrior", &MCMCChainManager::recalcLnWorkingPrior)
 		.def("addMove", &MCMCChainManager::addMove)
 		.def("addModelParam", &MCMCChainManager::addModelParam)

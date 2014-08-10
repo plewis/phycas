@@ -292,6 +292,29 @@ void MCMCUpdater::setWeight(unsigned w)
 	}
 
 /*----------------------------------------------------------------------------------------------------------------------
+|   In derived classes this function can be used to perform autotuning of Metropolis proposals to match a target
+|   acceptance rate.
+*/
+void MCMCUpdater::autotune()
+    {
+    }
+
+/*----------------------------------------------------------------------------------------------------------------------
+|   Returns the move-specific tuning parameter.
+*/
+double MCMCUpdater::getTuningParameter() const
+    {
+    return 0.0;
+    }
+
+/*----------------------------------------------------------------------------------------------------------------------
+|   Sets the move-specific tuning parameter.
+*/
+void MCMCUpdater::setTuningParameter()
+    {
+    }
+
+/*----------------------------------------------------------------------------------------------------------------------
 |	Sets the value of the move-specific data member used to determine the size of a step when exploring the posterior
 |   distribution. This base class version does nothing; override in derived classes to set the tuning parameter
 |   appropriately.

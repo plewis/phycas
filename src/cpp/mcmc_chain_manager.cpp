@@ -561,9 +561,47 @@ void MCMCChainManager::addMCMCUpdaters(
 |	The MCMCChainManager constructor.
 */
 MCMCChainManager::MCMCChainManager(JointPriorManagerShPtr jpm)
-  : last_ln_like(0.0), last_ln_prior(0.0), dirty(true), _joint_prior_manager(jpm)
+  : last_ln_like(0.0), last_ln_prior(0.0), dirty(true), _joint_prior_manager(jpm), adapting(false), accept_target(0.4)
 	{
 	}
+
+/*----------------------------------------------------------------------------------------------------------------------
+|   Informs the object whether the chains are in the burn-in period. This affects the behavior of 
+|   MCMCChainManager::adaptUpdater, which is called by all Metropolis-Hastings updaters after each proposed step.
+*/
+void MCMCChainManager::setAdapting(bool is_burning_in)
+    {
+    adapting = is_burning_in;
+    }
+
+/*----------------------------------------------------------------------------------------------------------------------
+|   Sets value of `accept_target' data member to supplied `target_rate', which is assumed to be a proportion between
+|   0.0 and 1.0.
+*/
+void MCMCChainManager::setTargetAcceptanceRate(double target_rate)
+    {
+    PHYCAS_ASSERT(target_rate > 0.0);
+    PHYCAS_ASSERT(target_rate < 1.0);
+    accept_target = target_rate;
+    }
+
+/*----------------------------------------------------------------------------------------------------------------------
+|	Adjusts tuning parameter of a Metropolis-Hastings updater. See Prokaj, Vilmos. 2009. Proposal selection for MCMC
+|   simulation. pp. 61-65 in Sakalauskas L., C. Skiadas and E. K. Zavadskas (eds.), Applied stochastic models and data
+|   analysis, the XIII International converence (ASMDA-2009), June 30-July 3, 2009, Vilnius, Lithuania.
+*/
+double MCMCChainManager::adaptUpdater(double tuning, unsigned nattempts, bool accepted) const
+    {
+    if (adapting)
+        {
+        double gamma_n = 10.0/(100.0 + (double)nattempts);
+        if (accepted)
+            tuning *= 1.0 + gamma_n*(1.0 - accept_target)/(2.0*accept_target);
+        else
+            tuning *= 1.0 - gamma_n*0.5;
+        }
+    return tuning;
+    }
 
 /*----------------------------------------------------------------------------------------------------------------------
 |	Calculates the Robinson-Foulds distance between the supplied reference tree and the current tree (i.e. tree held by

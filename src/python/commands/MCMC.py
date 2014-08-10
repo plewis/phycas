@@ -49,6 +49,7 @@ class MCMC(PhycasCommand):
                 ("bush_move_debug",        False,    "If set to true, TreeViewer will pop up on each Bush move update showing edges affected by the proposed move", BoolArgValidate),
                 ("slice_weight",               1,    "Slice sampled parameters will be updated this many times per cycle", IntArgValidate(min=0)),
                 ("slice_max_units",         1000,    "Max. number of units used in slice sampling", IntArgValidate(min=0)),
+                ("target_accept_rate",       0.4,    "An attempt will be made to achieve this acceptance rate (proportion) during the burn-in phase. Not applicable if burnin is set to 0.", FloatArgValidate(min=0,max=1)),
                 ("adapt_first",              100,    "Adaptation of slice samplers is performed the first time at cycle adapt_first. Subsequent adaptations wait twice the number of cycles as the previous adaptation. Thus, adaptation n occurs at cycle adapt_first*(2**(n - 1)). The total number of adaptations that will occur during an MCMC run is [ln(adapt_first + ncycles) - ln(adapt_first)]/ln(2)", IntArgValidate(min=0)),
                 ("adapt_simple_param",       0.5,    "Slice sampler adaptation parameter", FloatArgValidate(min=0.01)),
                 ("min_heat_power",           0.5,    "Power of the hottest chain when nchains > 1", FloatArgValidate(min=0.01)),

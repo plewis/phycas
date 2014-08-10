@@ -127,6 +127,10 @@ class MCMCUpdater : public AdHocDensity, public boost::enable_shared_from_this<M
         bool                        isNoHeating() const;
         double                      setCurrLnPrior(double x);
 
+        double                      getTuningParameter() const;
+        void                        setTuningParameter();
+        void                        autotune();
+
         TreeLikeShPtr               getTreeLikelihood();
         TreeShPtr                   getTree();
 

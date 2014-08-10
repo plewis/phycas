@@ -41,7 +41,7 @@ DirichletMove::DirichletMove() : MCMCUpdater()
 	is_move = true;
 	dim = 0;
 	boldness = 0.0;
-	max_psi = 1.0;
+	min_psi = 1.0;
 	max_psi = 300.0;
 	psi = max_psi;
 	reset();
@@ -284,6 +284,8 @@ bool DirichletMove::update()
 
     double lnu = std::log(rng->Uniform());
 
+    bool accepted = false;
+
 	if (ln_accept_ratio >= 0.0 || lnu <= ln_accept_ratio)
 		{
 	    if (save_debug_info)
@@ -303,7 +305,7 @@ bool DirichletMove::update()
 		p->setLastLnLike(curr_ln_like);
 
 		accept();
-		return true;
+		accepted = true;
 		}
 	else
 		{
@@ -324,8 +326,18 @@ bool DirichletMove::update()
 		curr_ln_like	= p->getLastLnLike();
 
 		revert();
-		return false;
+		accepted = false;
 		}
+
+    //POLTMP
+    double inverse_psi = 1.0/psi;
+    inverse_psi = p->adaptUpdater(inverse_psi, nattempts, accepted);
+    psi = 1.0/inverse_psi;
+
+    //POLTMP double accept_pct = 100.0*naccepts/nattempts;
+    //POLTMP std::cerr << boost::str(boost::format("~~~> psi = %.5f, accept = %.1f") % psi % accept_pct) << std::endl;
+
+    return accepted;
 	}
 
 /*----------------------------------------------------------------------------------------------------------------------
