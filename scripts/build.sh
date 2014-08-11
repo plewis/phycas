@@ -102,6 +102,7 @@ scripts/copy_src_python.sh
 # This creates a tar.gz file of the phycas directory to make it easy to distribute
 # the phycas module
 if [ "$OSTYPE" == "linux" ]; then
+    cp $NCL_INSTALL_DIR/lib/ncl/* phycas/conversions
     tar zcvf phycas-${PHYCAS_VERSION}-linux.tar.gz phycas
 elif [ "$OSTYPE" == "clang" ]; then
     # First fix dylibs and so file internal paths so that phycas module can be moved around

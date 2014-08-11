@@ -30,7 +30,7 @@ class RefDistImpl(CommonFunctions):
 
         """
         CommonFunctions.__init__(self, opts)
-        self.burnin = None
+        self.skip = None
         self.epsilon = None
         self.rooted = None
         self.refdistf = None
@@ -311,12 +311,12 @@ class RefDistImpl(CommonFunctions):
         reference distribution definition string.
 
         """
-        burnin = self.opts.burnin
+        skip = self.opts.skip
         lines = open(paramfname, 'r').readlines()
         headers = lines[1].split()
 
         # Sanity checks
-        self.phycassert(len(lines) >= 3 + burnin, "File '%s' does not look like a parameter file (only %d lines, but expecting at least %d lines)" % (paramfname, len(lines), burnin+3))
+        self.phycassert(len(lines) >= 3 + skip, "File '%s' does not look like a parameter file (only %d lines, but expecting at least %d lines)" % (paramfname, len(lines), skip+3))
         self.phycassert(headers[1] != 'beta', "Not expecting to see a column labeled 'beta' in parameter file; params should be a parameter file from an ordinary MCMC analysis, not one produced by a Stepping-stone analysis")
 
         # Create params dictionary such that, for example, params['lnL'] is a list of
@@ -324,7 +324,7 @@ class RefDistImpl(CommonFunctions):
         params = {}
         for h in headers:
             params[h] = []
-        row_start = 2 + burnin  # first line ID, second line headers
+        row_start = 2 + skip  # first line ID, second line headers
         for i,line in enumerate(lines[row_start:]):
             parts = line.split()
             if len(parts) != len(headers):
@@ -682,7 +682,7 @@ class RefDistImpl(CommonFunctions):
             t.setRooted()
             n_int_edges += 1
         for tree_def in self.stored_tree_defs:
-            if num_trees < self.opts.burnin:
+            if num_trees < self.opts.skip:
                 num_trees += 1
                 continue
             num_trees += 1
@@ -831,7 +831,7 @@ class RefDistImpl(CommonFunctions):
         file.
 
         """
-        self.burnin = self.opts.burnin
+        self.skip = self.opts.skip
         self.epsilon = self.opts.epsilon
         self.rooted = self.opts.rooted
         self.out_refdist_file_name = self.opts.out.refdistfile._getFilename()

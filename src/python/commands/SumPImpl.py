@@ -329,7 +329,7 @@ class ParamSummarizer(CommonFunctions):
         ess = n*(1.0 - r)/(1.0 + r)
         return (r,ess)
 
-    def marginal_likelihood(self, headers, lines, burnin):
+    def marginal_likelihood(self, headers, lines, skip):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
         Estimates the marginal likelihood for the Stepping Stone/Thermodynamic
@@ -337,7 +337,7 @@ class ParamSummarizer(CommonFunctions):
         size for each parameter/beta combination. The supplied list headers
         holds the column headers from the param file. The parameter names are
         taken from this. The supplied lines is a list of lines from the param
-        file. The supplied burnin indicates the number of initial lines to
+        file. The supplied skip indicates the number of initial lines to
         ignore (usually will be 1 because the starting values of all
         parameters is always output and should always be skipped).
 
@@ -351,7 +351,7 @@ class ParamSummarizer(CommonFunctions):
         params = {}
         for h in headers:
             params[h] = {}
-        row_start = 2 + burnin  # first line holds the ID, second line are the headers
+        row_start = 2 + skip  # first line holds the ID, second line are the headers
         curr_beta = None
         for i,line in enumerate(lines[row_start:]):
             parts = line.split()
@@ -536,7 +536,7 @@ class ParamSummarizer(CommonFunctions):
 
         return tuple(s)
 
-    def std_summary(self, headers, lines, burnin):
+    def std_summary(self, headers, lines, skip):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
         Produces a table of summary statistics for each parameter using the
@@ -544,7 +544,7 @@ class ParamSummarizer(CommonFunctions):
         the standard mcmc case. The supplied list headers holds the column
         headers from the param file. The parameter names are taken from this.
         The supplied lines is a list of lines from the param file. The
-        supplied burnin indicates the number of initial lines to ignore
+        supplied skip indicates the number of initial lines to ignore
         (usually will be 1 because the starting values of all parameters is
         always output and should always be skipped). See documentation for
         the summary_stats function for a list of summary statistics computed.
@@ -555,7 +555,7 @@ class ParamSummarizer(CommonFunctions):
         params = {}
         for h in headers:
             params[h] = []
-        row_start = 2 + burnin  # first line ID, second line headers
+        row_start = 2 + skip  # first line ID, second line headers
         for i,line in enumerate(lines[row_start:]):
             parts = line.split()
             if len(parts) != len(headers):
@@ -609,7 +609,7 @@ class ParamSummarizer(CommonFunctions):
             self._cpoInfoFile = sp.open(self.stdout)
         return self._cpoInfoFile
 
-    def cpo_summary(self, lines, burnin):
+    def cpo_summary(self, lines, skip):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
             Produces an R file containing commands for producing a plot of CPO
@@ -625,7 +625,7 @@ class ParamSummarizer(CommonFunctions):
 
         # Create nsites lists, each of which holds all log-site-likelihood values sampled from one site
         loglikes = [[] for i in range(nsites)]
-        for line in lines[burnin:]:
+        for line in lines[skip:]:
             parts = line.split()
             assert len(parts) == nsites
             for i,logx in enumerate(parts):
@@ -775,7 +775,7 @@ class ParamSummarizer(CommonFunctions):
                 if self._cpoInfoFile:
                     self.optsout.cpoinfo.close()
 
-    def cpo_summary_obsolete(self, lines, burnin):
+    def cpo_summary_obsolete(self, lines, skip):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
         Produces an R file containing commands for producing a plot of CPO
@@ -888,29 +888,29 @@ class ParamSummarizer(CommonFunctions):
                     self.optsout.cpoplot.close()
 
     def handleFile(self, fn):
-        burnin = self.opts.burnin
+        skip = self.opts.skip
         lines = open(fn, 'r').readlines()
         marglike = None
-        if len(lines) < 3 + burnin:
+        if len(lines) < 3 + skip:
             self.output("File '%s' does not look like a parameter file (too few lines)")
         else:
             headers = lines[1].split()
             if headers[1] == 'beta':
                 try:
-                    marglike = self.marginal_likelihood(headers, lines, burnin)
+                    marglike = self.marginal_likelihood(headers, lines, skip)
                 except InvalidNumberOfColumnsError, e:
                     print e
             else:
-                marglike = self.std_summary(headers, lines, burnin)
+                marglike = self.std_summary(headers, lines, skip)
         return marglike
 
     def handleCPOFile(self, cpofn):
-        burnin = self.opts.burnin
+        skip = self.opts.skip
         lines = open(cpofn, 'r').readlines()
-        if len(lines) < 3 + burnin:
+        if len(lines) < 3 + skip:
             self.output("File '%s' does not look like a site likelihood file (too few lines)" % cpofn)
         else:
-            self.cpo_summary(lines, burnin)
+            self.cpo_summary(lines, skip)
 
     def run(self):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|

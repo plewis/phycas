@@ -48,15 +48,22 @@
 %\usepackage{upquote}
 %\newfont{\mytt}{cmtt10 at 10pt}
 
-\newcommand{\currPhycasMajorVersion}{2.0}			% TODO: CHECK PRIOR TO NEW RELEASE
-\newcommand{\currMajorVersionReleaseDate}{4 July 2014} % TODO: CHECK PRIOR TO NEW RELEASE
+\newcommand{\currPhycasMajorVersion}{2.1}					% TODO: CHECK PRIOR TO NEW RELEASE
+\newcommand{\currMajorVersionReleaseDate}{11 July 2014}		% TODO: CHECK PRIOR TO NEW RELEASE
 
-\newcommand{\currPhycasMinorVersion}{2.0.1}			% TODO: CHECK PRIOR TO NEW RELEASE
-\newcommand{\currMinorVersionReleaseDate}{5 August 2014} % TODO: CHECK PRIOR TO NEW RELEASE
+%\newcommand{\currPhycasMajorVersion}{2.0}
+%\newcommand{\currMajorVersionReleaseDate}{4 July 2014}
+
+\newcommand{\currPhycasMinorVersion}{2.1.0}					% TODO: CHECK PRIOR TO NEW RELEASE
+\newcommand{\currMinorVersionReleaseDate}{11 August 2014}	% TODO: CHECK PRIOR TO NEW RELEASE
+
+%\newcommand{\currPhycasMinorVersion}{2.0.1}
+%\newcommand{\currMinorVersionReleaseDate}{5 August 2014}
+
 \newcommand{\currPyVersion}{2.7}
-\newcommand{\windistrfilename}{phycas-2.0.1-win.zip}			% TODO: CHECK PRIOR TO NEW RELEASE
-\newcommand{\macdistrfilename}{phycas-2.0.1-mac.tar.gz}			% TODO: CHECK PRIOR TO NEW RELEASE
-\newcommand{\linuxdistrfilename}{phycas-2.0.1-src.tar.gz}			% TODO: CHECK PRIOR TO NEW RELEASE
+\newcommand{\windistrfilename}{phycas-2.0.1-win.zip}		% TODO: CHECK PRIOR TO NEW RELEASE
+\newcommand{\macdistrfilename}{phycas-2.0.1-mac.tar.gz}		% TODO: CHECK PRIOR TO NEW RELEASE
+\newcommand{\linuxdistrfilename}{phycas-2.0.1-src.tar.gz}	% TODO: CHECK PRIOR TO NEW RELEASE
 \newcommand{\distrfolder}{\pathname{phycas}}
 
 \newcommand{\trademark}[1]{#1${}^{\mbox{\tiny TM}}$}
@@ -751,6 +758,8 @@ mcmc.data_source = 'sample.nex'
 # Conduct a Markov chain Monte Carlo (MCMC) analysis 
 # that samples from the posterior distribution
 mcmc.ncycles = 10000
+mcmc.burnin = 1000
+mcmc.target_accept_rate = 0.3
 mcmc.sample_every = 100
 mcmc.report_every = 100
 #mcmc.starting_tree_source = TreeCollection(newick='(1:.01,2:0.01,(3:0.01,4:0.01):0.01)')
@@ -769,14 +778,14 @@ mcmc()
 
 # Summarize the posterior distribution of model parameters
 sump.file = 'params.p'
-sump.burnin = 1
+sump.skip = 1
 sump.out.log.prefix = 'sump-log'
 sump.out.log.mode = REPLACE
 sump()
 
 # Summarize the posterior distribution of tree topologies and clades
 sumt.trees = 'trees.t'
-sumt.burnin = 1
+sumt.skip = 1
 sumt.tree_credible_prob = 0.95 
 sumt.save_splits_pdf = True
 sumt.save_trees_pdf = True
@@ -850,6 +859,14 @@ The file name is specified as a string, so be sure to surround the file name wit
 mcmc.ncycles = 10000
 \end{verbatim}
 \pointup\ The setting \opt{mcmc}{ncycles} determines the length of the MCMC run. Cycles in \phycas\ are {\em not} the same as generations in \mrbayes. About two orders of magnitude {\em fewer} \phycas\ cycles are needed than \mrbayes\ generations, so a 10000 cycle \phycas\ run corresponds (roughly) to a 1,000,000 generation \mrbayes\ run. This does not mean that \phycas\ runs faster (or slower) than \mrbayes; it simply means that \phycas\ does more work during a single ``cycle'' than \mrbayes\ does in one ``generation.'' In short, \phycas\ attempts to update every non-edge-length parameter at least once during a cycle, and updates many (but not all) edge length parameters as well, whereas \mrbayes\ chooses a parameter at random to update in each of its generations.\footnote{To compare the speed of \mrbayes\ with \phycas, you should compare the time it takes, on average, to calculate the likelihood, which is the most computationally expensive task either program performs. \phycas\ reports this average value at the end of a run. \mrbayes\ computes the likelihood roughly one time per generation if you specify \code{mcmcp nrun=1 nchain=1}. Also, be sure to compare the two programs under the same model and on the same dataset and with the same computer!}
+\end{samepage}
+
+\begin{samepage}
+\begin{verbatim}
+mcmc.burnin = 1000
+mcmc.mcmc.target_accept_rate = 0.3
+\end{verbatim}
+\pointup\ The setting \opt{mcmc}{burnin} determines the length of the burn-in phase of the MCMC simulation. A burn-in cycle is identical to any other cycle in \phycas\ except that (1) no samples are taken during the burn-in phase and (2) updaters are autotuned during the burn-in but not during the later sampling phase of MCMC. Autotuning is the process by which the updaters are tuned to have optimal efficiency. By default, the slice width of the slice sampler \citep{Neal2003a} used by many parameter updaters (e.g. those responsible for updating the gamma shape parameter, edge lengths and edge length hyperparameters, the transition-transversion rate ratio, and the proportion of invariable sites) is adjusted every \opt{mcmc}{adapt\_slice\_samplers\_every} cycles during the burn-in phase, and the tuning parameter of Metropolis-Hastings updaters (e.g. those responsible for updating the tree topology, for scaling all edges in a tree simultaneously, and for updating all base frequencies, codon frequencies, subset relative rates, or GTR exchangeabilities simultaneously) is adjusted every cycle during the burn-in phase in an attempt to achieve the target acceptance rate specified by \opt{mcmc}{target\_accept\_rate} using the method of \citet{Prokaj:2009tu}. Some updaters may not be able to achieve the target acceptance rate (especially true of the Larget-Simon tree topology updater), so you should not be alarmed if not all updaters reach the goal. Slice samplers ignore \opt{mcmc}{target\_accept\_rate} because the goal for them is to minimize the number of log-likelihood calculations, not to acheive a particular target acceptance rate.
 \end{samepage}
 
 \begin{samepage}
@@ -940,11 +957,11 @@ mcmc()
 \begin{verbatim}
 # Summarize the posterior distribution of model parameters
 sump.file = 'params.p'
-sump.burnin = 1
+sump.skip = 1
 sump()
 \end{verbatim}
 
-The setting \opt{sump}{file} specifies the name of the parameter file to analyze. The setting \opt{sump}{burnin} is the number of lines of parameter values to skip. This value should always be at least 1 because the first line in the tree file represents the starting values, which do not represent a valid sample from the posterior distribution. All statistics computed by the \cmd{sump} method are based on the number of sampled trees remaining after the burn-in samples have been removed from consideration. For example, if there are 101 lines of sampled parameters in the input parameter file, and \opt{sump}{burnin} is 1, all posterior probabilities will be computed using 100 in the denominator (not 101).
+The setting \opt{sump}{file} specifies the name of the parameter file to analyze. The setting \opt{sump}{skip} is the number of lines of parameter values to skip. This value should always be at least 1 because the first line in the tree file represents the starting values, which do not represent a valid sample from the posterior distribution. All statistics computed by the \cmd{sump} method are based on the number of sampled trees remaining after the burn-in samples have been removed from consideration. For example, if there are 101 lines of sampled parameters in the input parameter file, and \opt{sump}{skip} is 1, all posterior probabilities will be computed using 100 in the denominator (not 101).
 \end{samepage}
 
 \begin{samepage}
@@ -981,10 +998,10 @@ A word about \indexed{autocorrelation} is in order. If MCMC samples are highly a
 \begin{verbatim}
 # Summarize the posterior distribution of tree topologies and clades
 sumt.trees = 'trees.t'
-sumt.burnin = 1
+sumt.skip = 1
 \end{verbatim}
 
-\pointup\ The setting \opt{sumt}{trees} specifies the name of the tree file to analyze. Note that you need not run the \cmd{sumt} command from the same script that starts the MCMC analysis; all this command needs is the name of an existing tree file, and thus it can be run at any time. The setting \opt{sumt}{burnin} is the number of sampled tree topologies to skip. As with the \opt{sump}{burnin} setting, this value should always be at least 1 because the first tree in the tree file is the starting tree, which is never a valid sample from the posterior distribution. All statistics computed by the \cmd{sumt} method are based on the number of sampled trees remaining after the burn-in trees have been removed from consideration. For example, if there are 101 trees in the input tree file, and \opt{sumt}{burnin} is 1, all posterior probabilities will be computed using 100 in the denominator (not 101).
+\pointup\ The setting \opt{sumt}{trees} specifies the name of the tree file to analyze. Note that you need not run the \cmd{sumt} command from the same script that starts the MCMC analysis; all this command needs is the name of an existing tree file, and thus it can be run at any time. The setting \opt{sumt}{skip} is the number of sampled tree topologies to skip. As with the \opt{sump}{skip} setting, this value should always be at least 1 because the first tree in the tree file is the starting tree, which is never a valid sample from the posterior distribution. All statistics computed by the \cmd{sumt} method are based on the number of sampled trees remaining after the burn-in trees have been removed from consideration. For example, if there are 101 trees in the input tree file, and \opt{sumt}{skip} is 1, all posterior probabilities will be computed using 100 in the denominator (not 101).
 \end{samepage}
 
 \begin{samepage}
@@ -1256,14 +1273,14 @@ Most parts of this script have been described in previous sections, so this sect
 \begin{verbatim}
 # Estimate the marginal likelihood using the Generalized Stepping-stone (GSS) method
 # Estimate the reference distribution to use with Generalized SS
-refdist.burnin = 1
+refdist.skip = 1
 refdist.params = 'params.p'
 refdist.trees = 'trees.t'
 refdist.out.refdistfile = 'refdist.txt'
 refdist.out.refdistfile.mode = REPLACE
 refdist()
 \end{verbatim}
-\pointup\ This section appears after the line \code{mcmc()}. A short MCMC analysis has been conducted, as usual exploring the posterior distribution, and the purpose of this section is to summarize the posterior distribution and generate the reference distribution that will be used in the stepping-stone analysis. The settings \opt{refdist}{params} and \opt{refdist}{trees} specify the parameter and tree files, respectively, that were generated by the previous MCMC analysis. The setting \opt{refdist}{burnin} is set to \optval{1} to skip the starting values in both the parameter and tree file. The \opt{refdist}{refdistfile} determines the name of the reference distribution file that will be generated, and the \opt{refdist}{refdistfile.mode} setting says to replace this file if one by that name already exists. Finally, \code{refdist()} causes the \pathname{refdist.txt} file to be created.
+\pointup\ This section appears after the line \code{mcmc()}. A short MCMC analysis has been conducted, as usual exploring the posterior distribution, and the purpose of this section is to summarize the posterior distribution and generate the reference distribution that will be used in the stepping-stone analysis. The settings \opt{refdist}{params} and \opt{refdist}{trees} specify the parameter and tree files, respectively, that were generated by the previous MCMC analysis. The setting \opt{refdist}{skip} is set to \optval{1} to skip the starting values in both the parameter and tree file. The \opt{refdist}{refdistfile} determines the name of the reference distribution file that will be generated, and the \opt{refdist}{refdistfile.mode} setting says to replace this file if one by that name already exists. Finally, \code{refdist()} causes the \pathname{refdist.txt} file to be created.
 \end{samepage}
 
 \begin{samepage}
@@ -1382,7 +1399,7 @@ cpo()
 \begin{verbatim}
 # Run sump command to summarize CPO values saved during MCMC
 sump.file = 'params.p'
-sump.burnin = 1
+sump.skip = 1
 sump.cpofile = 'sitelikes.txt'
 sump.cpo_cutoff = 0.1
 sump.out.log.prefix = 'sump-log'
@@ -2047,9 +2064,14 @@ model.num_rates = 4
 \section{Release notes}\label{section:releasenotes}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{What's new in version 2.1?} %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Phycas 2.1 was released on 11-August-2014. The current version is \currPhycasMinorVersion; see the CHANGES file for information about what has changed for minor releases. Version 2.1 differs from 2.0 in that autotuning was implemented for Metropolis-Hastings updaters. The method used for autotuning is that of \citet{Prokaj:2009tu}. Autotuning is only performed during the burnin phase, and  thus it is important to specify a burnin period using \opt{mcmc}{burnin} if you want autotuning to be applied. Importantly, autotuning of slice samplers (used by most updaters) has now been moved to the burnin phase also (previously slice samplers were autotuned throughout an MCMC analysis, but this practice is incorrect if the marginal distribution being sampled is multimodal). You may notice that the cycle reported is now a negative number during the burnin period. This is normal: the first cycle is the negative of the specified value of burnin and sampling begins when cycle equals 0. Because burnin now has additional significance, the \opt{sump}{burnin}, \opt{sumt}{burnin} and \opt{refdist}{burnin} options have now been changed to \opt{sump}{skip},\opt{sump}{skip} and \opt{sump}{skip}, respectively, to better indicate that these settings simply indicate the number of lines to skip. The tutorial (in this manual) and examples (in the examples directory) have been modified to reflect these changes.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{What's new in version 2.0?} %%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Version \currPhycasMajorVersion\ was released on \currMajorVersionReleaseDate. The current version is \currPhycasMinorVersion; see the CHANGES file for information about what has changed for minor releases. The jump to version 2.0 is marked by the addition of a second posterior predictive method (GG) to go along with Conditional Predictive Ordinates (CPO), the Rannala-Zhu-Yang tree length prior, as well as the \cmd{scriptgen} command that simplifies creation of \python\ scripts that perform \phycas\ analyses. The \cmd{scriptgen} command will be introduced in this manual to generate all scripts used in tutorials. 
+Version 2.0 was released on 4-July-2014. The jump to version 2.0 is marked by the addition of a second posterior predictive method (GG) to go along with Conditional Predictive Ordinates (CPO), the Rannala-Zhu-Yang tree length prior, as well as the \cmd{scriptgen} command that simplifies creation of \python\ scripts that perform \phycas\ analyses. The \cmd{scriptgen} command will be introduced in this manual to generate all scripts used in tutorials. 
 
 The Rannala-Zhu-Yang tree length prior \citet{RannalaZhuYang2011} provides an elegant solution to the problem of undue influence of edge length prior choice on the induced tree length prior. Rather than placing a prior on individual edge length parameters and allowing them to collectively define the tree length prior, Rannala, Zhu and Yang suggest placing a prior instead on the tree length and letting that determine the individual edge length priors. This approach effectively eliminates the gross overestimation of tree length sometimes observed in Bayesian phylogenetic analyses, while allowing a flat prior on edge length proportions given the tree length. \phycas\ now provides a choice between the new tree length prior and the classical edge length priors offered by previous versions of the software.
 

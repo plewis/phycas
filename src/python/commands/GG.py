@@ -10,7 +10,7 @@ class GG(PhycasCommand):
                 ("params",          None,           "Name of file containing parameter samples", FileExistsValidate),
                 ("trees",           None,           "Name of file containing tree samples", TreeSourceValidate),
                 ("nreps",           1,              "The number of replicate simulations to do every MCMC sample", IntArgValidate(min=0)),
-                ("burnin",          1,              "Number of starting samples to skip when computing Gelfand-Ghosh measures", IntArgValidate(min=1)),
+                ("skip  ",          1,              "Number of starting samples to skip when computing Gelfand-Ghosh measures", IntArgValidate(min=1)),
                 ("kvalues",         [1.0],          "Vector of overall measures (one for each k in kvalues)")
                 ] + PhycasCommand._getRNGOptions()
                 )

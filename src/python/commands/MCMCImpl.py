@@ -1199,7 +1199,7 @@ class MCMCImpl(CommonFunctions):
             #POLTMP     self.last_adaptation = cycle + 1
             if cycle < 0:
                 self.adaptSliceSamplers()
-            if self.doThisCycle(cycle, self.burnin, self.opts.adapt_first):
+            if self.doThisCycle(cycle, self.burnin, self.opts.adapt_slice_samplers_every):
                 self.reportUpdaterEfficiency()
 
             # Recalculate joint prior to avoid creeping round-off error

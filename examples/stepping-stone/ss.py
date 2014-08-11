@@ -147,7 +147,7 @@ mcmc.slice_weight = 1
 mcmc.starting_tree_source = TreeCollection(newick=user_tree_def)
 mcmc.debugging = False
 mcmc.fix_topology = True
-mcmc.adapt_first = 2
+mcmc.adapt_slice_samplers_every = 10
 mcmc.sample_every = 1
 mcmc.report_every = 100
 
@@ -155,6 +155,7 @@ mcmc.burnin = 500
 mcmc.ncycles = 10000
 mcmc.sample_every = 10
 mcmc.report_every = 1000
+mcmc.target_accept_rate = 0.3
 mcmc()
 
 refdist.burnin = 1

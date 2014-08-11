@@ -61,7 +61,7 @@ class GGImpl(CommonFunctions):
                                                 #   where tree_id is a list of split representations uniquely identifying a particular tree
                                                 #   and j is the index of the (j+1)th sample from that tree. The keys in the dictionary (e.g. '-**-**--')
                                                 #   are string representations of splits and the values are log-transformed edge lengths
-        self.sample_size                = None  # self.sample_size[tid] is the sample size (after burnin is removed) for tree tid
+        self.sample_size                = None  # self.sample_size[tid] is the sample size (after skip samples have been removed) for tree tid
         self.log_like                   = None  # list of log likelihood values gleaned from the params file
         self.log_prior                  = None  # list of log prior values gleaned from the params file
         self.log_posterior              = None  # list of log posterior values gleaned from the params file
@@ -96,38 +96,6 @@ class GGImpl(CommonFunctions):
         self.gg_Dm                  = []            # vector of overall measures (one for each k in kvalues)
         self.gg_num_post_pred_reps  = 0.0           # counts total number of posterior predictive simulations performed
         self.gg_total               = 0
-
-        # The data members below are needed only because an MCMCManager object is created
-        #self.heat_vector = [1.0]        # specifies that just one chain will be created with power 1.0
-
-        #self.gg_bincount_filename   = opts.gg_bincount_filename
-        #self.gg_postpred_prefix     = opts.gg_postpred_prefix
-        #self.datafname              = phycas.data_file_name
-        #self.paramfname             = phycas.gg_pfile
-        #self.treefname              = phycas.gg_tfile
-        #self.rnseed                 = opts.random_seed
-        #self.num_rates              = phycas.num_rates
-
-        #self.gg_nreps               = opts.nreps
-        #self.gg_kvect               = opts.kvalues
-        #self.gg_burnin              = opts.burnin
-        #self.heat_vector            = [1.0]
-
-        #self.ok = True
-        #if self.ok:
-        #    if os.path.exists(self.paramfname):
-        #        self.pfile = file(self.paramfname, 'r')
-        #    else:
-        #        self.ok = False
-        #        print 'Parameter file specified (%s) does not exist' % self.paramfname
-        #        sys.exit()
-        #if self.ok:
-        #    if os.path.exists(self.paramfname):
-        #        self.tfile = file(self.treefname, 'r')
-        #    else:
-        #        self.ok = False
-        #        print 'Tree file specified (%s) does not exist' % self.treefname
-        #        sys.exit()
 
     def _openBinCountsFile(self):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
@@ -202,9 +170,9 @@ class GGImpl(CommonFunctions):
         parameters) in the list self.param_headers.
 
         """
-        burnin = self.opts.burnin
+        skip = self.opts.skip
         self.param_file_lines = open(input_params, 'r').readlines()
-        self.stdout.phycassert(len(self.param_file_lines) >= 3 + burnin, "File '%s' does not look like a parameter file (too few lines)")
+        self.stdout.phycassert(len(self.param_file_lines) >= 3 + skip, "File '%s' does not look like a parameter file (too few lines)")
         self.param_headers = self.param_file_lines[1].split()
         self.stdout.phycassert(self.param_headers[1] != 'beta', "File '%s' appears to be the result of a stepping-stone analysis. This method requires a sample from the posterior (not power posterior) distribution." % input_params)
 
@@ -440,12 +408,12 @@ class GGImpl(CommonFunctions):
         # Initialize the data member that will hold all information about parameter samples
         self.parameters = {}
 
-        # eliminate burnin samples as well as 2 header lines
-        post_burnin_paramvects = self.param_file_lines[self.opts.burnin+2:]
+        # eliminate skip samples as well as 2 header lines
+        post_burnin_paramvects = self.param_file_lines[self.opts.skip+2:]
 
-        # eliminate burnin samples
+        # eliminate skip samples
         post_burnin_trees = None
-        post_burnin_trees = self.stored_trees[self.opts.burnin:]
+        post_burnin_trees = self.stored_trees[self.opts.skip:]
         # post_burnin_paramvects and post_burnin_trees should now be the same length
         self.phycassert(len(post_burnin_paramvects) == len(post_burnin_trees), 'lists of trees and parameters have different lengths')
 
@@ -525,7 +493,7 @@ class GGImpl(CommonFunctions):
         self.output('  k values:')
         for kvalue in self.opts.kvalues:
             self.output('    %f' % kvalue)
-        self.output('  samples skipped:    %d' % self.opts.burnin)
+        self.output('  samples skipped:    %d' % self.opts.skip)
         self.output()
 
     def outputDataInfo(self):

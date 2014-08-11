@@ -6,7 +6,7 @@ import copy
 class SumP(PhycasCommand):
     def __init__(self):
         args = (
-                   ("burnin",   1, "Number of lines from the input list of trees to skip (first line stores starting parameter values, so this value should normally be at least 1)", IntArgValidate(min=0)),
+                   ("skip",   1, "Number of lines from the input list of trees to skip (first line stores starting parameter values, so this value should normally be at least 1)", IntArgValidate(min=0)),
                    ("file",    "", "Name of file containing sampled parameter values", FileExistsValidate),
                    ("cpo_cutoff", 0.10, "Identify sites with lowest CPO values. If cpo_cutoff=0.1, for example, then the lowest 10% of sites will be identified", ProbArgValidate()),
                    ("cpofile", "", "Name of file containing sampled site likelihoods for calculation of Conditional Predictive Ordinates (CPO)", FileExistsValidate),

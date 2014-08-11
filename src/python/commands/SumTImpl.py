@@ -635,7 +635,7 @@ class TreeSummarizer(CommonFunctions):
                 pct_done = 100.0*curr_tree/num_stored_trees
                 self.stdout.info('  %.1f%% done' % pct_done)
 
-            if num_trees < self.opts.burnin:
+            if num_trees < self.opts.skip:
                 num_trees += 1
                 continue
             num_trees += 1

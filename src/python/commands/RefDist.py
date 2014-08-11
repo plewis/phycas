@@ -6,10 +6,10 @@ import copy
 
 class RefDist(PhycasCommand):
     def __init__(self):
-        args = (    ("trees",       None,   "A source of trees (list of trees or the name of the input tree file) to be summarized. Required for multi-tree-topology generalized stepping-stone analysis", TreeSourceValidate),
-                    ("params",      None,   "Name of file containing sampled parameter values. Required.", FileExistsValidate),
-                    ("burnin",      1,      "Number of trees from the input list of trees to skip", IntArgValidate(min=0)),
-                    ("epsilon",     0.01,   "Fraction of total sample size used to ensure 0 < split posterior < 1", ProbArgValidate()),
+        args = (    ("trees",        None,   "A source of trees (list of trees or the name of the input tree file) to be summarized. Required for multi-tree-topology generalized stepping-stone analysis", TreeSourceValidate),
+                    ("params",       None,   "Name of file containing sampled parameter values. Required.", FileExistsValidate),
+                    ("skip",            1,      "Number of trees from the input list of trees to skip", IntArgValidate(min=0)),
+                    ("epsilon",      0.01,   "Fraction of total sample size used to ensure 0 < split posterior < 1", ProbArgValidate()),
                     ("rooted",      False,  "Set to True if trees are rooted; otherwise, leave set to default value of False to assume trees are unrooted", BoolArgValidate),
                 )
         o = PhycasCommandOutputOptions()

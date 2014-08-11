@@ -143,7 +143,7 @@ class ScriptGenImpl(CommonFunctions):
     def sump_analysis(self, cpo = False, title = "Summarize the posterior distribution of model parameters"):
         self.scriptf.write("# %s\n" % title)
         self.scriptf.write("sump.file = 'params.p'\n")
-        self.scriptf.write("sump.burnin = %d\n" % sump.burnin)
+        self.scriptf.write("sump.skip = %d\n" % sump.skip)
         if cpo:
             self.scriptf.write("sump.cpofile = 'sitelikes.txt'\n")
             self.scriptf.write("sump.cpo_cutoff = 0.1\n")
@@ -154,7 +154,7 @@ class ScriptGenImpl(CommonFunctions):
     def sumt_analysis(self, title = "Summarize the posterior distribution of tree topologies and clades"):
         self.scriptf.write("# %s\n" % title)
         self.scriptf.write("sumt.trees = 'trees.t'\n")
-        self.scriptf.write("sumt.burnin = %d\n" % sumt.burnin)
+        self.scriptf.write("sumt.skip = %d\n" % sumt.skip)
         self.scriptf.write("sumt.tree_credible_prob = %g  # set to 1.0 if you want KL information to be estimated\n" % sumt.tree_credible_prob)
         self.scriptf.write("sumt.save_splits_pdf = %s  # if True, may get really large PDF file if tree_credible_prob = 1.0 and number of sampled splits is large\n" % sumt.save_splits_pdf)
         self.scriptf.write("sumt.save_trees_pdf = %s   # if True, may get really large PDF file if tree_credible_prob = 1.0 and number of sampled trees is large\n" % sumt.save_trees_pdf)
@@ -169,6 +169,8 @@ class ScriptGenImpl(CommonFunctions):
     def mcmc_analysis(self, execute = True, title = "Conduct a Markov chain Monte Carlo (MCMC) analysis that samples from the posterior distribution"):
         self.scriptf.write("# %s\n" % title)
         self.scriptf.write("mcmc.ncycles = %g\n" % mcmc.ncycles)
+        self.scriptf.write("mcmc.burnin = %g\n" % mcmc.burnin)
+        self.scriptf.write("mcmc.target_accept_rate = %g\n" % mcmc.target_accept_rate)
         self.scriptf.write("mcmc.sample_every = %g\n" % mcmc.sample_every)
         self.scriptf.write("mcmc.report_every = %g\n" % mcmc.report_every)
         self.scriptf.write("#mcmc.starting_tree_source = TreeCollection(newick='(1:.01,2:0.01,(3:0.01,4:0.01):0.01)')\n")
@@ -193,6 +195,8 @@ class ScriptGenImpl(CommonFunctions):
     def polytomy_analysis(self, execute = True, title = "Conduct a Markov chain Monte Carlo (MCMC) analysis that samples polytomous (as well as fully-resolved) tree topologies"):
         self.scriptf.write("# %s\n" % title)
         self.scriptf.write("mcmc.ncycles = %g\n" % mcmc.ncycles)
+        self.scriptf.write("mcmc.burnin = %g\n" % mcmc.burnin)
+        self.scriptf.write("mcmc.target_accept_rate = %g\n" % mcmc.target_accept_rate)
         self.scriptf.write("mcmc.sample_every = %g\n" % mcmc.sample_every)
         self.scriptf.write("mcmc.report_every = %g\n" % mcmc.report_every)
         self.scriptf.write("#mcmc.starting_tree_source = TreeCollection(newick='(1:.01,2:0.01,(3:0.01,4:0.01):0.01)')\n")
@@ -224,24 +228,24 @@ class ScriptGenImpl(CommonFunctions):
 
     def refdist_analysis(self, title = "Estimate the reference distribution to use with Generalized SS"):
         self.scriptf.write("# %s\n" % title)
-        self.scriptf.write("refdist.burnin = %g\n" % refdist.burnin)
+        self.scriptf.write("refdist.skip = %g\n" % refdist.skip)
         self.scriptf.write("refdist.params = 'params.p'\n")
         self.scriptf.write("refdist.trees = 'trees.t'\n")
         self.scriptf.write("refdist.out.refdistfile = 'refdist.txt'\n")
         self.scriptf.write("refdist.out.refdistfile.mode = REPLACE\n")
         self.scriptf.write("refdist()\n\n")
 
-    def idr_analysis(self, title = "Estimate the marginal likelihood using the Inflated Density Ratio (IDR) method"):
-        self.mcmc_analysis()
-        self.scriptf.write("# %s\n" % title)
-        self.scriptf.write("idr.burnin = 1\n")
-        self.scriptf.write("idr.data_source = '%s'\n" % self.opts.datafile)
-        self.scriptf.write("idr.params = 'params.p'\n")
-        self.scriptf.write("idr.trees = 'trees.t'\n")
-        self.scriptf.write("idr.autork = True\n")
-        self.scriptf.write("idr.out.log.prefix = 'idr-log'\n")
-        self.scriptf.write("idr.out.log.mode = REPLACE\n")
-        self.scriptf.write("idr()\n\n")
+    #def idr_analysis(self, title = "Estimate the marginal likelihood using the Inflated Density Ratio (IDR) method"):
+    #    self.mcmc_analysis()
+    #    self.scriptf.write("# %s\n" % title)
+    #    self.scriptf.write("idr.burnin = 1\n")
+    #    self.scriptf.write("idr.data_source = '%s'\n" % self.opts.datafile)
+    #    self.scriptf.write("idr.params = 'params.p'\n")
+    #    self.scriptf.write("idr.trees = 'trees.t'\n")
+    #    self.scriptf.write("idr.autork = True\n")
+    #    self.scriptf.write("idr.out.log.prefix = 'idr-log'\n")
+    #    self.scriptf.write("idr.out.log.mode = REPLACE\n")
+    #    self.scriptf.write("idr()\n\n")
 
     def steppingstone_analysis(self, title = "Estimate the marginal likelihood using the Generalized Stepping-stone (GSS) method"):
         self.mcmc_analysis("Conduct MCMC analysis for purpose of generating a reference distribution")
@@ -277,7 +281,7 @@ class ScriptGenImpl(CommonFunctions):
 
         self.scriptf.write("# Running sump on the param file output by the ss command will calculate the marginal likelihood estimate\n")
         self.scriptf.write("sump.file = 'ss-params.p'\n")
-        self.scriptf.write("sump.burnin = 1\n")
+        self.scriptf.write("sump.skip = 1\n")
         self.scriptf.write("sump.out.log.prefix = 'ss-sump-log'\n")
         self.scriptf.write("sump.out.log.mode = REPLACE\n")
         self.scriptf.write("sump()\n\n")
@@ -355,8 +359,8 @@ class ScriptGenImpl(CommonFunctions):
             self.polytomy_analysis()
         elif self.opts.analysis == 'cpo':
             self.cpo_analysis()
-        elif self.opts.analysis == 'idr':
-            self.idr_analysis()
+        #elif self.opts.analysis == 'idr':
+        #    self.idr_analysis()
         elif self.opts.analysis == 'ss':
             self.steppingstone_analysis()
 

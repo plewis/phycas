@@ -1,4 +1,4 @@
-_phycas_revision = '2.0.1'
+_phycas_revision = '2.1.0'
 
 '''Root of the phycas package.'''
 #__all__ = [

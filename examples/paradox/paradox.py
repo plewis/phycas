@@ -5,6 +5,9 @@
 from phycas import *
 from math import exp
 
+# Specify pseudorandom number seed explicitly so that we can "replay" an analysis
+setMasterSeed(98765)
+
 # Set up the substitution model
 model.type      = 'hky'   # use the Hasegawa-Kishino-Yano (1985) model
 model.num_rates = 4        # add discrete gamma rate heterogeneity with 4 rate categories
@@ -61,27 +64,18 @@ mcmc.data_source = file_contents.characters
 # We would like to start with a random tree, so we will create tree source
 # that generates random trees for the taxa that we have in our data set.
 
-# So that we can "replay" an analysis (if we would like to), we should set the
-# seed on a pseudorandom number generator and give that random number generator
-# to the MCMC command and the randomtree simulator
-
-# first create the random number generator
-rng = probdist.Lot()
-# now set the seed to a positive integer
-rng.setSeed(13957)
-
-mcmc.rng = rng
-mcmc.starting_tree_source = randomtree(rng=rng)
-
-# Let slice sampler have maximum freedom to extend slice
-mcmc.slice_max_units = 0
+# This sets the target acceptance rate for Metropolis-Hastings updaters. Adaptation
+# of updaters only occurs during the burnin, so specify a burnin phase that is long
+# enough to allow the updators to reach the target
+mcmc.burnin = 1000
+mcmc.target_accept_rate = 0.3
 
 # Tell Phycas that we want to run the MCMC analysis for 2000 cycles.
 # Note that a cycle in Phycas differs from a generation in MrBayes.
 # A cycle involves updating each non-branch-length parameter in the model
 # as well as a certain number of Metropolis-Hastings updates of branch
 # lengths and tree topology.
-mcmc.ncycles = 2000
+mcmc.ncycles = 10000
 mcmc.sample_every = 10    # save tree and parameters every 10 cycles
 
 # Specify the names of the files that will store the trees and parameter values
@@ -94,19 +88,14 @@ mcmc.out.params.mode = REPLACE
 mcmc.out.log.prefix = 'output'
 mcmc.out.log.mode = REPLACE
 
-# Choose a pseudorandom number seed so that we can later repeat the analysis exactly if we so desire
-mcmc.random_seed = 13957
-
 # Finally, call mcmc(), which starts the MCMC analysis.
-#mcmc.report_every = 1   # POL temporary
-#mcmc.uf_num_edges = 5   # POL temporary
 mcmc()
 
 # Summarize the trees, creating pdf files sumt_splits.pdf and sumt_trees.pdf
 # as well as a tree file named sumt_trees.tre
 sumt.outgroup_taxon = 'Oedogonium cardiacum'
 sumt.trees          = 'trees.t'
-sumt.burnin         = 101
+sumt.burnin         = 1
 sumt.out.log.prefix = 'output'
 sumt.out.log.mode   = APPEND
 sumt()
