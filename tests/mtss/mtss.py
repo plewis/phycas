@@ -20,23 +20,25 @@ mcmc.starting_tree_source = TreeCollection(newick='(1:0.130765,2:0.001,(3:0.0866
 
 mcmc.data_source = 'rokas-4taxa-25sites.nex'
 mcmc.fix_topology = False
+mcmc.burnin = 500
 mcmc.ncycles = 5000
 mcmc.sample_every = 10
-mcmc.report_every = 1000
+mcmc.report_every = 100
+mcmc.report_efficiency_every = 1000
 mcmc.out.log = prefix + '.txt'
 mcmc.out.log.mode = REPLACE
 mcmc.out.trees = prefix + '.t'
 mcmc.out.trees.mode = REPLACE
 mcmc.out.params = prefix + '.p'
 mcmc.out.params.mode = REPLACE
-#mcmc()
+mcmc()
 
-#refdist.burnin = 1
-#refdist.params = prefix + '.p'
-#refdist.trees = prefix + '.t'
-#refdist.out.refdistfile = prefix + 'ref.txt'
-#refdist.out.refdistfile.mode = REPLACE
-#refdist()
+refdist.skip = 1
+refdist.params = prefix + '.p'
+refdist.trees = prefix + '.t'
+refdist.out.refdistfile = prefix + 'ref.txt'
+refdist.out.refdistfile.mode = REPLACE
+refdist()
 
 mcmc.out.log = prefix + 'ss.txt'
 mcmc.out.log.mode = REPLACE
@@ -47,23 +49,26 @@ mcmc.out.params.mode = REPLACE
 
 mcmc.ls_move_weight = 50
 
+mcmc.report_efficiency_every = 500
+
 ss.nstones = 10
+ss.burnin = 200
 ss.ncycles = 500
 ss.sample_every = 1
-ss.report_every = 500
+ss.report_every = 100
 ss.refdist_is_prior = False
 ss.refdistfile = prefix + 'ref.txt'
 ss.shape1 = 1.0
 ss.shape2 = 1.0
 ss()
 
-sump.burnin = 1
+sump.skip = 1
 sump.file = prefix + 'ss.p'
 sump.out.log = prefix + 'sump.txt'
 sump.out.log.mode = REPLACE
 sump()
 
-sumt.burnin = 1
+sumt.skip = 1
 sumt.trees = prefix + 'ss.t'
 sumt.out.log = prefix + 'sumt.txt'
 sumt.out.log.mode = REPLACE

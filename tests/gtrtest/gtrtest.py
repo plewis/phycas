@@ -13,10 +13,6 @@ model.gamma_shape = 0.5
 model.pinvar_model = True
 
 model.edgelen_prior = Exponential(1.0)
-#model.separate_edgelen_hyper = False
-
-model.update_freqs_separately = False
-model.update_relrates_separately = False
 
 mcmc.out.log = 'output.txt'
 mcmc.out.log.mode = REPLACE
@@ -28,12 +24,12 @@ mcmc.out.params.prefix = 'gtr_test'
 mcmc.out.params.mode = REPLACE
 
 mcmc.nchains = 1
-mcmc.burnin = 500
-mcmc.ncycles = 2000
-mcmc.sample_every = 1
-mcmc.report_every = 100
-mcmc.adapt_first = 100
+mcmc.burnin = 50
 mcmc.target_accept_rate = 0.3
+mcmc.ncycles = 200
+mcmc.sample_every = 1
+mcmc.report_every = 10
+mcmc.report_efficiency_every = 50
 mcmc.verbose = True
 mcmc.ls_move_weight = 100
 mcmc.tree_scaler_weight = 1

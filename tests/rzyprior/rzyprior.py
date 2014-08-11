@@ -26,10 +26,11 @@ mcmc.out.params.prefix = 'rzy-explore-prior'
 mcmc.out.params.mode = REPLACE
 
 mcmc.nchains = 1
+mcmc.burnin = 500
 mcmc.ncycles = 5000
 mcmc.sample_every = 1
 mcmc.report_every = 100
-mcmc.adapt_first = 2
+mcmc.report_efficiency_every = 1000
 mcmc.verbose = True
 mcmc.ls_move_weight = 100
 mcmc.tree_scaler_weight = 1

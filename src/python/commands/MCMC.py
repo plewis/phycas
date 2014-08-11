@@ -50,7 +50,7 @@ class MCMC(PhycasCommand):
                 ("slice_weight",                 1,    "Slice sampled parameters will be updated this many times per cycle", IntArgValidate(min=0)),
                 ("slice_max_units",           1000,    "Max. number of units used in slice sampling", IntArgValidate(min=0)),
                 ("target_accept_rate",         0.3,    "An attempt will be made to achieve this acceptance rate (proportion) during the burn-in phase. Not applicable if burnin is set to 0.", FloatArgValidate(min=0,max=1)),
-                ("adapt_slice_samplers_every", 100,  "Adaptation of slice samplers is performed only during burnin and at the rate specified here.", IntArgValidate(min=0)),
+                ("report_efficiency_every",    100,    "Number of cycles between reports of updater efficiency.", IntArgValidate(min=0)),
                 ("adapt_simple_param",         0.5,    "Slice sampler adaptation parameter", FloatArgValidate(min=0.01)),
                 ("min_heat_power",             0.5,    "Power of the hottest chain when nchains > 1", FloatArgValidate(min=0.01)),
                 ("heat_vector",               None,    "List of heating powers, one of which should be 1.0 (default value None causes this vector to be generated using min_heat_pwer)"),

@@ -8,6 +8,7 @@ class SS(PhycasCommand):
                    ("shape1",           1.0,    "The first shape parameter of the distribution used to determine the beta values to be sampled. This distribution is, confusingly, a Beta distribution. Thus, if both shape1 and shape2 are set to 1, beta values will be chosen at uniform intervals from 0 to 1.", FloatArgValidate(greaterthan=0.0)),
                    ("shape2",           1.0,    "The second shape parameter of the distribution used to determine the beta values to be sampled. This distribution is, confusingly, a Beta distribution. Thus, if both shape1 and shape2 are set to 1, beta values will be chosen at uniform intervals from 0 to 1.", FloatArgValidate(greaterthan=0.0)),
                    ("ncycles",          500,    "The number of sampling cycles per stone (ratio).", IntArgValidate()),
+                   ("burnin",            50,    "The number of burn-in cycles per stone (ratio).", IntArgValidate()),
                    ("sample_every",       1,    "The current tree topology and model parameter values will be sampled after this many cycles have elapsed since the last sample was taken", IntArgValidate(min=0)),
                    ("report_every",     100,    "A progress report will be displayed after this many cycles have elapsed since the last progress report", IntArgValidate(min=0)),
                    ("refdist_is_prior", False,  "If True, the prior will be used as the reference distribution; if False, the reference distribution definition will be that specified in refdistfile", BoolArgValidate),
@@ -69,10 +70,13 @@ class SS(PhycasCommand):
     def __call__(self, **kwargs):
         self.set(**kwargs)
         self.checkSanity()
+
         prev_report_every = mcmc.report_every
         mcmc.report_every = self.report_every
+
         prev_sample_every = mcmc.sample_every
         mcmc.sample_every = self.sample_every
+
         mcmc.doing_steppingstone_sampling = True
         mcmc.ssobj = self
         mcmc.ss_heating_likelihood = False
@@ -84,5 +88,6 @@ class SS(PhycasCommand):
         mcmc.ssobj = None
         self.sampled_betas = mcmc.ss_sampled_betas
         self.sampled_likes = mcmc.ss_sampled_likes
+
         mcmc.report_every = prev_report_every
         mcmc.sample_every = prev_sample_every

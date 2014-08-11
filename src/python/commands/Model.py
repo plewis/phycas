@@ -9,7 +9,6 @@ class Model(PhycasCommand):
         args = (
                 ("type",                       'hky',                                "Can be 'jc', 'hky', 'gtr' or 'codon'", EnumArgValidate(['jc', 'hky', 'gtr', 'codon'])),
                 ("relrate_prior",              Dirichlet([1.0,1.0,1.0,1.0,1.0,1.0]), "The joint prior distribution for all six GTR relative rate parameters. Used only if update_relrates_separately is False."),
-                ("relrate_param_prior",        Exponential(1.0),                     "The prior distribution for individual GTR relative rate parameters.  Used only if update_relrates_separately is true."),
                 ("relrates",                   [1.0, 4.0, 1.0, 1.0, 4.0, 1.0] ,      "The current values for GTR relative rates. These should be specified in this order: A<->C, A<->G, A<->T, C<->G, C<->T, G<->T."),
                 ("fix_relrates",               False,                                "If True, GTR relative rates will not be modified during the course of an MCMC analysis", BoolArgValidate),
                 ("kappa_prior",                Exponential(1.0),                     "The prior distribution for the kappa parameter in an HKY model"),
@@ -29,8 +28,7 @@ class Model(PhycasCommand):
                 ("scaling_factor",             1.0,                                  "The current value of scaling_factor, used to rescale edge lengths (primarily for use with the gain or loss model). This parameter should be fixed if a partition model is providing subset-specific rates, otherwise there will be nonidentifibility issues", FloatArgValidate(greaterthan=0.0)),
                 ("scaling_factor_prior",       Exponential(1.0),                     "The prior distribution for scaling_factor, used to rescale edge lengths"),
                 ("fix_scaling_factor",         True,                                 "If True, the scaling_factor parameter will not be modified during the course of an MCMC analysis", BoolArgValidate),
-                ("state_freq_prior",           Dirichlet([1.0, 1.0, 1.0, 1.0]),      "The joint prior distribution for the relative state frequency parameters. Used only if update_freqs_separately is False."),
-                ("state_freq_param_prior",     Exponential(1.0),                     "The prior distribution for the individual base frequency parameters; these parameters, when normalized to sum to 1, represent the equilibrium proportions of the nucleotide states. Used only if update_freqs_separately is True."),
+                ("state_freq_prior",           Dirichlet([1.0, 1.0, 1.0, 1.0]),      "The joint prior distribution for the relative state frequency parameters."),
                 ("state_freqs",                [0.25, 0.25, 0.25, 0.25],             "The current values for the four base frequency parameters"),
                 ("fix_freqs",                  False,                                "If True, the base frequencies will not be modified during the course of an MCMC analysis", BoolArgValidate),
                 ("edgelen_hyperprior",         InverseGamma(2.1,1.0/1.1),            "The prior distribution for the hyperparameter that serves as the mean of an Exponential edge length prior. If set to None, a non-hierarchical model will be used with respect to edge lengths. Note that specifying an edge length hyperprior will cause internal and external edge length priors to be Exponential distributions (regardless of what you assign to internal_edgelen_prior, external_edgelen_prior or edgelen_prior)."),
@@ -48,8 +46,10 @@ class Model(PhycasCommand):
         # The data members added below should be hidden from the user because they are for use by phycas developers.
         # The roundabout way of introducing these data members is necessary because PhycasCommand.__setattr__ tries
         # to prevent users from adding new data members (to prevent accidental misspellings from causing problems)
-        self.__dict__["update_freqs_separately"]    = False     # If True, state frequencies will be individually updated using slice sampling; if False, they will be updated jointly using a Metropolis-Hastings move (generally both faster and better).
-        self.__dict__["update_relrates_separately"] = False     # If True, GTR relative rates will be individually updated using slice sampling; if False, they will be updated jointly using a Metropolis-Hastings move (generally both faster and better).
+        self.__dict__["update_freqs_separately"]    = False                 # If True, state frequencies will be individually updated using slice sampling; if False, they will be updated jointly using a Metropolis-Hastings move (generally both faster and better).
+        self.__dict__["state_freq_param_prior"]     = Exponential(1.0)      # The prior distribution for the individual base frequency parameters; these parameters, when normalized to sum to 1, represent the equilibrium proportions of the nucleotide states. Used only if update_freqs_separately is True.
+        self.__dict__["update_relrates_separately"] = False                 # If True, GTR relative rates will be individually updated using slice sampling; if False, they will be updated jointly using a Metropolis-Hastings move (generally both faster and better).
+        self.__dict__["relrate_param_prior"]        = Exponential(1.0)      # The prior distribution for individual GTR relative rate parameters.  Used only if update_relrates_separately is true.
 
     def checkPriorSupport(self):
         """

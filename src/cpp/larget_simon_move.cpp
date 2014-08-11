@@ -82,17 +82,17 @@ double LargetSimonMove::sampleWorkingPrior() const
 	return 0.0;
 	}
 
-static bool warned = false;
+//static bool warned = false;
 /*----------------------------------------------------------------------------------------------------------------------
 |	Returns true, overriding the base class (MCMCUpdater) version.
 */
 bool LargetSimonMove::isPriorSteward() const
 	{
 	//@MTH@ Warning future bug!!!
-	if (!warned) {
-	    std::cerr << "\n\nWARNING: HACKY workaround in LargetSimonMove::isPriorSteward() - always returning true!!!\n\n\n\n";
-	    warned = true;
-	}
+	//if (!warned) {
+	//    std::cerr << "\n\nWARNING: HACKY workaround in LargetSimonMove::isPriorSteward() - always returning true!!!\n\n\n\n";
+	//    warned = true;
+	//}
 	return use_ref_dist; //bool(topo_prob_calc);
 	}
 

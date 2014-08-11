@@ -58,9 +58,11 @@ model.edgelen_hyperprior = InverseGamma(2.10000, 0.90909)
 mcmc.data_source = 'simHKY.nex'
 
 # Conduct a Markov chain Monte Carlo (MCMC) analysis that samples from the posterior distribution
+mcmc.burnin  = 100
 mcmc.ncycles = 500
 mcmc.sample_every = 10
 mcmc.report_every = 100
+mcmc.report_efficiency_every = 250
 #mcmc.starting_tree_source = TreeCollection(newick='(1:.01,2:0.01,(3:0.01,4:0.01):0.01)')
 #mcmc.starting_tree_source = TreeCollection(filename='nexustreefile.tre')
 mcmc.fix_topology = False
@@ -79,14 +81,14 @@ mcmc()
 
 # Summarize the posterior distribution of model parameters
 sump.file = 'params.p'
-sump.burnin = 1
+sump.skip = 1
 sump.out.log.prefix = 'sump-log'
 sump.out.log.mode = REPLACE
 sump()
 
 # Summarize the posterior distribution of tree topologies and clades
 sumt.trees = 'trees.t'
-sumt.burnin = 1
+sumt.skip = 1
 sumt.tree_credible_prob = 0.95  # set to 1.0 if you want KL information to be estimated
 sumt.save_splits_pdf = True  # if True, may get really large PDF file if tree_credible_prob = 1.0 and number of sampled splits is large
 sumt.save_trees_pdf = True   # if True, may get really large PDF file if tree_credible_prob = 1.0 and number of sampled trees is large

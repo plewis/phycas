@@ -67,15 +67,15 @@ mcmc.data_source = file_contents.characters
 # This sets the target acceptance rate for Metropolis-Hastings updaters. Adaptation
 # of updaters only occurs during the burnin, so specify a burnin phase that is long
 # enough to allow the updators to reach the target
-mcmc.burnin = 1000
-mcmc.target_accept_rate = 0.3
+#mcmc.burnin = 1000
+#mcmc.target_accept_rate = 0.3
 
 # Tell Phycas that we want to run the MCMC analysis for 2000 cycles.
 # Note that a cycle in Phycas differs from a generation in MrBayes.
 # A cycle involves updating each non-branch-length parameter in the model
 # as well as a certain number of Metropolis-Hastings updates of branch
 # lengths and tree topology.
-mcmc.ncycles = 10000
+mcmc.ncycles = 11000
 mcmc.sample_every = 10    # save tree and parameters every 10 cycles
 
 # Specify the names of the files that will store the trees and parameter values
@@ -95,7 +95,7 @@ mcmc()
 # as well as a tree file named sumt_trees.tre
 sumt.outgroup_taxon = 'Oedogonium cardiacum'
 sumt.trees          = 'trees.t'
-sumt.burnin         = 1
+sumt.burnin         = 101
 sumt.out.log.prefix = 'output'
 sumt.out.log.mode   = APPEND
 sumt()

@@ -13,10 +13,6 @@ model.gamma_shape = 0.5
 model.pinvar_model = True
 
 model.edgelen_prior = Exponential(1.0)
-#model.separate_edgelen_hyper = False
-
-model.update_freqs_separately = True
-model.update_relrates_separately = True
 
 mcmc.out.log.prefix = 'nchains_test'
 mcmc.out.log.mode = REPLACE
@@ -29,9 +25,11 @@ mcmc.out.params.mode = REPLACE
 
 mcmc.nchains = 4
 mcmc.ncycles = 100
+mcmc.burnin = 50
+mcmc.target_accept_rate = 0.3
 mcmc.sample_every = 1
-mcmc.report_every = 10
-mcmc.adapt_first = 2
+mcmc.report_every = 20
+mcmc.report_efficiency_every = 50
 mcmc.verbose = True
 mcmc.ls_move_weight = 100
 mcmc.tree_scaler_weight = 1

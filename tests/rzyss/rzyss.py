@@ -26,10 +26,11 @@ mcmc.out.params.prefix = 'rzy-ss'
 mcmc.out.params.mode = REPLACE
 
 mcmc.nchains = 1
+mcmc.ncycles = 100
 mcmc.ncycles = 500
 mcmc.sample_every = 1
-mcmc.report_every = 50
-mcmc.adapt_first = 2
+mcmc.report_every = 100
+mcmc.report_efficiency_every = 500
 mcmc.verbose = True
 mcmc.tree_scaler_weight = 1
 mcmc.slice_weight = 1
@@ -47,6 +48,10 @@ refdist.out.refdistfile.prefix = 'rzy-ss-refdist'
 refdist.out.refdistfile.mode = REPLACE
 refdist()
 
+mcmc.report_every = 20
+mcmc.report_efficiency_every = 200
+
+ss.burnin  = 20
 ss.ncycles = 100
 ss.nstones = 11
 ss.shape1 = 1.0

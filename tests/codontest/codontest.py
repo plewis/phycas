@@ -16,14 +16,13 @@ model.state_freqs               = [1.0/61.0]*61
 model.state_freq_prior          = Dirichlet([1.0]*61)
 model.state_freq_param_prior    = Exponential(1.0)
 
-model.update_freqs_separately   = False
-
 mcmc.nchains                    = 1
+mcmc.burnin                     = 10
 mcmc.ncycles                    = 20
-mcmc.sample_every               = 10
+mcmc.sample_every               = 1
 mcmc.report_every               = 1
+mcmc.report_efficiency_every    = 5
 mcmc.ndecimals                  = 5
-mcmc.adapt_first                = 2
 mcmc.verbose                    = True
 
 mcmc.ls_move_weight             = 0

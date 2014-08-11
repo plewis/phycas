@@ -1066,15 +1066,36 @@ class MCMCImpl(CommonFunctions):
 
     #POLTMP def computeTimeRemaining(self, secs, ndone, ntotal):
     def computeTimeRemaining(self, secs, cycle_start, cycle_stop, cycle):
-        ndone = cycle - cycle_start
+        if self.opts.doing_steppingstone_sampling:
+            num_betas_completed = self.ss_sampled_betas.index(self.ss_beta)
+            num_betas_total = len(self.ss_sampled_betas)
+        else:
+            num_betas_completed = 0
+            num_betas_total = 1
+
+        ndone  = (cycle_stop - cycle_start)*num_betas_completed + (cycle - cycle_start)
+        ntotal = (cycle_stop - cycle_start)*num_betas_total
+
         if ndone < 1:
             return ''
-
-        ntotal = cycle_stop - cycle_start
 
         days_remaining = 0
         hours_remaining = 0
         secs_remaining = float(secs)*(float(ntotal)/float(ndone) - 1.0)
+
+        #print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+        #print '~~~ secs                =',secs
+        #print '~~~ cycle_start         =',cycle_start
+        #print '~~~ cycle_stop          =',cycle_stop
+        #print '~~~ cycle               =',cycle
+        #print '~~~ num_betas_completed =',num_betas_completed
+        #print '~~~ num_betas_total     =',num_betas_total
+        #print '~~~ ndone               =',ndone
+        #print '~~~ ntotal              =',ntotal
+        #print '~~~ ntotal/ndone        =',(float(ntotal)/float(ndone))
+        #print '~~~ secs_remaining      =',secs_remaining
+        #print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+
         time_left = []
         if secs_remaining > 86400.0:
             days_remaining = math.floor(secs_remaining/86400.0)
@@ -1199,7 +1220,7 @@ class MCMCImpl(CommonFunctions):
             #POLTMP     self.last_adaptation = cycle + 1
             if cycle < 0:
                 self.adaptSliceSamplers()
-            if self.doThisCycle(cycle, self.burnin, self.opts.adapt_slice_samplers_every):
+            if self.doThisCycle(cycle, self.burnin, self.opts.report_efficiency_every):
                 self.reportUpdaterEfficiency()
 
             # Recalculate joint prior to avoid creeping round-off error
@@ -1211,8 +1232,8 @@ class MCMCImpl(CommonFunctions):
                 done = True
 
         #POLTMP self.cycle_start += self.burnin + self.ncycles
-        self.cycle_start = self.cycle_stop
-        self.cycle_stop = self.cycle_start + self.ncycles
+        #POLTMP self.cycle_start = self.cycle_stop
+        #POLTMP self.cycle_stop = self.cycle_start + self.ncycles
 
 
     #def _isTreeLengthPriorBeingUsed(self):
@@ -1367,7 +1388,7 @@ class MCMCImpl(CommonFunctions):
                 else:
                     s = phylogeny.SplitBase()
                     s.createFromPattern(split_rep)
-                    print split_rep, v, s.createPatternRepresentation()
+                    #print split_rep, v, s.createPatternRepresentation()
                     topo_ref_dist_calculator.setEdgeLenDist(s, v)
         return topo_ref_dist_calculator, ref_dist_map
 
@@ -1398,10 +1419,10 @@ class MCMCImpl(CommonFunctions):
                             split_key = 'split_%s' % u.getSplitReprAsString()
                             d = ref_dist_map[split_key].cloneAndSetLot(self._getLot())
                         u.setWorkingPrior(d)
-                        self.output('  %s = %s' % (updater_name, u.getWorkingPriorDescr()))
+                        #self.output('  %s = %s' % (updater_name, u.getWorkingPriorDescr()))
                     elif u.computesMultivariatePrior():
                         u.setMultivariateWorkingPrior(ref_dist_map[updater_name].cloneAndSetLot(self._getLot()))
-                        self.output('  %s = %s' % (updater_name, u.getWorkingPriorDescr()))
+                        #self.output('  %s = %s' % (updater_name, u.getWorkingPriorDescr()))
                     elif u.computesTopologyPrior():
                         u.setReferenceDistribution(topo_ref_dist_calculator)
 
@@ -1476,11 +1497,12 @@ class MCMCImpl(CommonFunctions):
         for self.ss_beta_index, self.ss_beta in enumerate(self.ss_sampled_betas):
             self.ss_sampled_likes.append([])
             chain.setPower(self.ss_beta)
-            boldness = 100.0*(1.0 - self.ss_beta)
-            chain.setBoldness(boldness)
-            self.output('Setting chain boldness to %g based on beta = %g' % (boldness,self.ss_beta))
+            #POLTMP boldness = 100.0*(1.0 - self.ss_beta)
+            #POLTMP chain.setBoldness(boldness)
+            #POLTMP self.output('Setting chain boldness to %g based on beta = %g' % (boldness,self.ss_beta))
             #POLTMP self.cycle_stop = self.opts.burnin + len(self.ss_sampled_betas)*self.opts.ssobj.ncycles
             self.ncycles = self.opts.ssobj.ncycles
+            self.burnin = self.opts.ssobj.burnin
 
             chain.chain_manager.setTargetAcceptanceRate(self.opts.target_accept_rate) #POLTMP
             chain.chain_manager.setAdapting(True) #POLTMP
@@ -1490,9 +1512,10 @@ class MCMCImpl(CommonFunctions):
             #POLTMP else:
             #POLTMP     self.burnin = self.opts.burnin
             #POLTMP     self.cycle_start = 0
-            self.burnin = self.opts.burnin
+            #self.burnin = self.opts.burnin
             self.cycle_start = -self.burnin
-            self.cycle_stop = len(self.ss_sampled_betas)*self.opts.ssobj.ncycles
+            #POLTMP self.cycle_stop = len(self.ss_sampled_betas)*self.opts.ssobj.ncycles
+            self.cycle_stop = self.opts.ssobj.ncycles
 
             if self.ss_beta == 0.0:
                 self.mainMCMCLoop(explore_prior=True)
