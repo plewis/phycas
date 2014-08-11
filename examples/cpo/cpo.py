@@ -31,9 +31,11 @@ partition.addSubset(thirds,  m3, 'Third codon positions')
 partition()
 
 # Compute conditional predictive ordinates (CPO) for each site and for the entire data set
-mcmc.ncycles = 11000
+mcmc.burnin = 1000
+mcmc.ncycles = 10000
 mcmc.sample_every = 10
 mcmc.report_every = 100
+mcmc.report_efficiency_every = 1000
 #mcmc.starting_tree_source = TreeCollection(newick='(1:.01,2:0.01,(3:0.01,4:0.01):0.01)')
 mcmc.fix_topology = False
 mcmc.out.log = 'mcmcoutput.txt'
@@ -47,7 +49,7 @@ cpo()
 
 # Run sump command to summarize CPO values saved during MCMC
 sump.file = 'params.p'
-sump.burnin = 101
+sump.skip = 0
 sump.cpofile = 'sitelikes.txt'
 sump.out.log.prefix = 'sump-log'
 sump.out.log.mode = REPLACE
@@ -55,7 +57,7 @@ sump()
 
 # Summarize the posterior distribution of tree topologies and clades
 sumt.trees = 'trees.t'
-sumt.burnin = 101
+sumt.skip = 0
 sumt.out.log.prefix = 'sumt-log'
 sumt.out.log.mode = REPLACE
 sumt.out.trees.prefix = 'sumt-trees'
