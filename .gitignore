@@ -60,3 +60,10 @@ manual.pdf
 phycas-2.0.0-mac.zip
 doc/phycas-manual-2.0.0.pdf
 phycas-2.0.0-mac.tar.gz
+examples/cpo/clean.sh
+examples/cpo/go.sh
+examples/stepping-stone/clean.sh
+examples/stepping-stone/go.sh
+examples/paradox/clean.sh
+examples/paradox/go.sh
+
