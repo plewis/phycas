@@ -125,6 +125,25 @@ class MCMCImpl(CommonFunctions):
             else:
                 p.resetDiagnostics()
 
+    def debugShowTuningParameters(self):
+        #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
+        """
+        Shows value of tuning parameter for each Metropolis-Hastings updater
+        that can be tuned.
+
+        """
+        s = '\n\nTuning parameter values for all tunable Metropolis-Hastings updaters:'
+        for k in range(self.opts.nchains):
+            c = self.mcmc_manager.chains[k]
+            chain_manager = c.chain_manager
+            s += '\n  Chain %d (power = %.3f):' % (k+1, c.heating_power)
+            for p in chain_manager.getAllUpdaters():
+                if not p.hasSliceSampler():
+                    nm = p.getName()
+                    tp = p.getTuningParameter()
+                    s += '\n    %12.5f <-- %s' % (tp, nm)
+        print s
+
     def reportUpdaterEfficiency(self):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
@@ -1137,6 +1156,8 @@ class MCMCImpl(CommonFunctions):
 
         CPP_UPDATER = True # if False, uses python obsoleteUpdateAllUpdaters
 
+        self.debugShowTuningParameters()
+
         #POLTMP for cycle in xrange(self.burnin + self.ncycles):
         cycle = self.cycle_start
         done = False
@@ -1222,6 +1243,7 @@ class MCMCImpl(CommonFunctions):
                 self.adaptSliceSamplers()
             if self.doThisCycle(cycle, self.burnin, self.opts.report_efficiency_every):
                 self.reportUpdaterEfficiency()
+                self.debugShowTuningParameters()
 
             # Recalculate joint prior to avoid creeping round-off error
             jpm = self.mcmc_manager.getColdChainManager().getJointPriorManager()
@@ -1230,6 +1252,7 @@ class MCMCImpl(CommonFunctions):
             cycle += 1  #POLTMP
             if cycle == self.cycle_stop:
                 done = True
+                raw_input('..')
 
         #POLTMP self.cycle_start += self.burnin + self.ncycles
         #POLTMP self.cycle_start = self.cycle_stop
