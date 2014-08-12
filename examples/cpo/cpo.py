@@ -1,5 +1,8 @@
 from phycas import *
 
+# Specify pseudorandom number seed explicitly so that we can "replay" an analysis
+setMasterSeed(98765)
+
 # Set up GTR model
 model.type = 'gtr'
 model.relrate_prior = Dirichlet((1.0, 1.0, 1.0, 1.0, 1.0, 1.0))

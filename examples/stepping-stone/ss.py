@@ -1,5 +1,6 @@
 from phycas import *
 
+# Specify pseudorandom number seed explicitly so that we can "replay" an analysis
 setMasterSeed(13579)
 
 fnprefix = 'marshall-codon'
@@ -154,9 +155,9 @@ mcmc.ncycles = 10000
 mcmc.sample_every = 10
 mcmc.report_every = 100
 mcmc.report_efficiency_every = 1000
-mcmc()
+#mcmc()
 
-refdist.burnin = 1
+refdist.skip = 1
 refdist.params = mcmcprefix+'.p'
 refdist.trees = mcmcprefix+'.t'
 refdist.out.refdistfile = 'refdist.txt'
