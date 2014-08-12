@@ -399,7 +399,7 @@ class MarkovChain(LikelihoodCore):
             else:
                 self.subset_relrates_move.setWeight(self.parent.opts.subset_relrates_weight)
                 #POLTMP2  sPOLTMP elf.subset_relrates_move.setPosteriorTuningParam(self.parent.opts.subset_relrates_psi)
-                elf.subset_relrates_move.setTuningParameter(self.parent.opts.subset_relrates_psi)
+                self.subset_relrates_move.setTuningParameter(self.parent.opts.subset_relrates_psi)
                 #POLTMP2  self.subset_relrates_move.setPriorTuningParam(self.parent.opts.subset_relrates_psi0)
             self.subset_relrates_move.setTree(self.tree)
             self.subset_relrates_move.setModel(None)    # the model data member is ignored in this case; instead, the partition model stores the parameters

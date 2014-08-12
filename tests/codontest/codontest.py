@@ -38,8 +38,7 @@ mcmc.starting_tree_source       = TreeCollection(newick='(8:0.56880388,(((3:0.40
 mcmc.rng                        = rng
 mcmc.data_source                = blob.characters
 
-mcmc.state_freq_psi             = 3000.0     # max_psi
-mcmc.state_freq_psi0            = 2.0        # min_psi
+mcmc.state_freq_psi             = 3000.0
 
 mcmc.out.log                    = None
 
