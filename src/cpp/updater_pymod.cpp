@@ -130,10 +130,14 @@ void updater_pymod()
 	class_<phycas::TreeScalerMove, bases<phycas::MCMCUpdater>,
 		boost::noncopyable, boost::shared_ptr<phycas::TreeScalerMove> >("TreeScalerMove")
 		.def("update", &phycas::TreeScalerMove::update)
+		.def("setTuningParameter", &phycas::TreeScalerMove::setTuningParameter)
+		.def("getTuningParameter", &phycas::TreeScalerMove::getTuningParameter)
 		;
 	class_<phycas::DirichletMove, bases<phycas::MCMCUpdater>,
 		boost::noncopyable, boost::shared_ptr<phycas::DirichletMove> >("DirichletMove")
 		.def("setDimension", &phycas::DirichletMove::setDimension)
+		.def("setTuningParameter", &phycas::DirichletMove::setTuningParameter)
+		.def("getTuningParameter", &phycas::DirichletMove::getTuningParameter)
 		;
 	class_<phycas::SubsetRelRatesMove, bases<phycas::DirichletMove>,
 		boost::noncopyable, boost::shared_ptr<phycas::SubsetRelRatesMove> >("SubsetRelRatesMove")
