@@ -310,7 +310,7 @@ double MCMCUpdater::getTuningParameter() const
 /*----------------------------------------------------------------------------------------------------------------------
 |   Sets the move-specific tuning parameter.
 */
-void MCMCUpdater::setTuningParameter()
+void MCMCUpdater::setTuningParameter(double x)
     {
     }
 
@@ -319,29 +319,29 @@ void MCMCUpdater::setTuningParameter()
 |   distribution. This base class version does nothing; override in derived classes to set the tuning parameter
 |   appropriately.
 */
-void MCMCUpdater::setPosteriorTuningParam(
-  double x) /**< is the new value of the tuning parameter */
-	{
-	}
+//POLTMP2 void MCMCUpdater::setPosteriorTuningParam(
+//POLTMP2   double x) /**< is the new value of the tuning parameter */
+//POLTMP2 	{
+//POLTMP2 	}
 
 /*----------------------------------------------------------------------------------------------------------------------
 |	Sets the value of the move-specific data member used to determine the size of a step when exploring the prior
 |   distribution. This base class version does nothing; override in derived classes to set the tuning parameter
 |   appropriately.
 */
-void MCMCUpdater::setPriorTuningParam(
-  double x) /**< is the new value of the tuning parameter */
-	{
-	}
+//POLTMP2 void MCMCUpdater::setPriorTuningParam(
+//POLTMP2   double x) /**< is the new value of the tuning parameter */
+//POLTMP2 	{
+//POLTMP2 	}
 
 /*----------------------------------------------------------------------------------------------------------------------
 |	Sets the boldness of proposals. The meaning of boldness is interpreted individually by derived classes.
 */
-void MCMCUpdater::setBoldness(
-  double b) /**< is the new boldness value */
-	{
-	//std::cerr << "Calling default (do-nothing) MCMCUpdater::setBoldness for updater named " << name << std::endl;
-	}
+//POLTMP2 void MCMCUpdater::setBoldness(
+//POLTMP2   double b) /**< is the new boldness value */
+//POLTMP2 	{
+//POLTMP2 	//std::cerr << "Calling default (do-nothing) MCMCUpdater::setBoldness for updater named " << name << std::endl;
+//POLTMP2 	}
 
 /*----------------------------------------------------------------------------------------------------------------------
 |	Sets the value of data member `slice_max_units', which is the maximum number of units used for slice sampling

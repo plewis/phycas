@@ -896,7 +896,7 @@ void LargetSimonMove::reset()
 /*----------------------------------------------------------------------------------------------------------------------
 |	Provides a way of setting the value for the private data member `lambda'.
 */
-void LargetSimonMove::setLambda(double x)
+void LargetSimonMove::setTuningParameter(double x)
 	{
 	lambda = x;
 	}
@@ -904,7 +904,7 @@ void LargetSimonMove::setLambda(double x)
 /*----------------------------------------------------------------------------------------------------------------------
 |	Provides read access to the private data member `lambda'.
 */
-double LargetSimonMove::getLambda() const
+double LargetSimonMove::getTuningParameter() const
 	{
 	return lambda;
 	}
@@ -951,39 +951,39 @@ bool LargetSimonMove::topologyChanged() const
 |	Sets the value for the data member 'min_lambda', which is the tuning parameter used for exploring the posterior
 |   distribution in this move.
 */
-void LargetSimonMove::setPosteriorTuningParam(
-  double x) /* is the new value for `min_lambda' */
-	{
-	min_lambda = x;
-	}
+//POLTMP2 void LargetSimonMove::setPosteriorTuningParam(
+//POLTMP2   double x) /* is the new value for `min_lambda' */
+//POLTMP2 	{
+//POLTMP2 	min_lambda = x;
+//POLTMP2 	}
 
 /*----------------------------------------------------------------------------------------------------------------------
 |	Sets the value for the data member `max_lambda', which is the tuning parameter used for exploring the prior
 |   distribution in this move.
 */
-void LargetSimonMove::setPriorTuningParam(
-  double x) /* is the new value for `max_lambda' */
-	{
-	max_lambda = x;
-	}
+//POLTMP2 void LargetSimonMove::setPriorTuningParam(
+//POLTMP2   double x) /* is the new value for `max_lambda' */
+//POLTMP2 	{
+//POLTMP2 	max_lambda = x;
+//POLTMP2 	}
 
 /*----------------------------------------------------------------------------------------------------------------------
 |	Sets the value for the data member 'lambda', which is the tuning parameter for this move, based on a boldness value
 |	that ranges from 0 (least bold) to 100 (most bold). Simple linear interpolation is used (i.e. a boldness of 50
 |   results in `lambda' halfway between `min_lambda' and `max_lambda').
 */
-void LargetSimonMove::setBoldness(
-  double x) /* is the new boldness value */
-	{
-	boldness = x;
-	if (boldness < 0.0)
-		boldness = 0.0;
-	else if (boldness > 100.0)
-		boldness = 100.0;
-
-    // compute lambda from boldness value
-	lambda = min_lambda + (max_lambda - min_lambda)*boldness/100.0;
-	}
+//POLTMP2 void LargetSimonMove::setBoldness(
+//POLTMP2   double x) /* is the new boldness value */
+//POLTMP2 	{
+//POLTMP2 	boldness = x;
+//POLTMP2 	if (boldness < 0.0)
+//POLTMP2 		boldness = 0.0;
+//POLTMP2 	else if (boldness > 100.0)
+//POLTMP2 		boldness = 100.0;
+//POLTMP2
+//POLTMP2     // compute lambda from boldness value
+//POLTMP2 	lambda = min_lambda + (max_lambda - min_lambda)*boldness/100.0;
+//POLTMP2 	}
 
 }	// namespace phycas
 

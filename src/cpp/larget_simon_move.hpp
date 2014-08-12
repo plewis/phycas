@@ -64,8 +64,8 @@ class LargetSimonMove : public MCMCUpdater
 						virtual ~LargetSimonMove();
 
 		unsigned		getWhichCase() const;
-		void			setLambda(double x);
-		double			getLambda() const;
+		void			setTuningParameter(double x);
+		double			getTuningParameter() const;
 		bool			topologyChanged() const;
 		void			defaultProposeNewState();
 		void			starTreeProposeNewState();
@@ -80,9 +80,9 @@ class LargetSimonMove : public MCMCUpdater
 		//
 		double			recalcWorkingPrior() const;
 		bool 			isPriorSteward() const;
-        virtual void    setPosteriorTuningParam(double x);
-        virtual void    setPriorTuningParam(double x);
-		virtual void	setBoldness(double x);
+        //POLTMP2 virtual void    setPosteriorTuningParam(double x);
+        //POLTMP2 virtual void    setPriorTuningParam(double x);
+		//POLTMP2 virtual void	setBoldness(double x);
 		virtual bool	update();
 		virtual double	getLnHastingsRatio() const;
 		virtual double	getLnJacobian() const;
@@ -92,9 +92,9 @@ class LargetSimonMove : public MCMCUpdater
 
 	private:
 
-		double			    boldness;		            /**< Ranges from 0 to 100 and determines the boldness of the move */
-        double              min_lambda;                 /**< The tuning parameter used for exploring the posterior distribution */
-        double              max_lambda;                 /**< The tuning parameter used for exploring the prior distribution */
+		//POLTMP2 double			    boldness;		            /**< Ranges from 0 to 100 and determines the boldness of the move */
+        //POLTMP2 double              min_lambda;                 /**< The tuning parameter used for exploring the posterior distribution */
+        //POLTMP2 double              max_lambda;                 /**< The tuning parameter used for exploring the prior distribution */
 		double			    lambda;						/**< The tuning parameter for this move (the factor used in modifying backbone length) */
 
 		//TreeNode *		    ndBase;						/**< Most ancestral node involved in the move, used as the center of the likelihood calcuation (and in revert) */

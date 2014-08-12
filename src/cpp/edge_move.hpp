@@ -75,12 +75,12 @@ class EdgeMove : public MCMCUpdater
 
 		// Accessors
 		//
-		double						getLambda() const;
+		double						getTuningParameter() const;
 		//bool						addEdgeMoveProposed() const;
 
 		// Modifiers
 		//
-		void						setLambda(double x);
+		void						setTuningParameter(double x);
 		//void						setEdgeLenDistMean(double mean);
 
 		// Utilities
@@ -90,9 +90,9 @@ class EdgeMove : public MCMCUpdater
 
 		// These are virtual functions in the MCMCUpdater base class
 		//
-        virtual void                setPosteriorTuningParam(double x);
-        virtual void                setPriorTuningParam(double x);
-		virtual void	            setBoldness(double x);
+        //POLTMP2 virtual void                setPosteriorTuningParam(double x);
+        //POLTMP2 virtual void                setPriorTuningParam(double x);
+		//POLTMP2 virtual void	            setBoldness(double x);
 		virtual bool				update();
 		virtual double				getLnHastingsRatio() const;
 		virtual double				getLnJacobian() const;
@@ -106,10 +106,10 @@ class EdgeMove : public MCMCUpdater
 
 	private:
 
-		double			            boldness;		/**< Ranges from 0 to 100 and determines the boldness of the move */
+		//POLTMP2 double			            boldness;		/**< Ranges from 0 to 100 and determines the boldness of the move */
         double                      lambda;         /**< the tuning parameter used for this move */
-        double                      min_lambda;     /**< the tuning parameter used for exploring the posterior distribution */
-        double                      max_lambda;     /**< the tuning parameter used for exploring the prior distribution */
+        //POLTMP2 double                      min_lambda;     /**< the tuning parameter used for exploring the posterior distribution */
+        //POLTMP2 double                      max_lambda;     /**< the tuning parameter used for exploring the prior distribution */
 
 		double						origEdgelen;	/**< Length of modified edge saved (in case revert is necessary) */
 		TreeNode *					origNode;		/**< Node owning the modified edge (in case revert is necessary) */

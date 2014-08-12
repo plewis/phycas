@@ -43,47 +43,57 @@ TreeScalerMove::TreeScalerMove() : MCMCUpdater()
     forward_scaler = 1.0;
     reverse_scaler = 1.0;
     lambda = 0.5;
-    min_lambda = 0.5;
-    max_lambda = 0.5;
+    //POLTMP2 min_lambda = 0.5;
+    //POLTMP2 max_lambda = 0.5;
+	}
+
+/*----------------------------------------------------------------------------------------------------------------------
+|	Sets the value for the data member 'lambda', which is the tuning parameter used for exploring the posterior
+|   distribution in this move.
+*/
+void TreeScalerMove::setTuningParameter(
+  double x) /* is the new value for `lambda' */
+	{
+	lambda = x;
 	}
 
 /*----------------------------------------------------------------------------------------------------------------------
 |	Sets the value for the data member 'min_lambda', which is the tuning parameter used for exploring the posterior
 |   distribution in this move.
 */
-void TreeScalerMove::setPosteriorTuningParam(
-  double x) /* is the new value for `min_lambda' */
-	{
-	min_lambda = x;
-	}
+//POLTMP2 void TreeScalerMove::setPosteriorTuningParam(
+//POLTMP2   double x) /* is the new value for `min_lambda' */
+//POLTMP2 	{
+//POLTMP2 	min_lambda = x;
+//POLTMP2 	}
 
 /*----------------------------------------------------------------------------------------------------------------------
 |	Sets the value for the data member `max_lambda', which is the tuning parameter used for exploring the prior
 |   distribution in this move.
 */
-void TreeScalerMove::setPriorTuningParam(
-  double x) /* is the new value for `max_lambda' */
-	{
-	max_lambda = x;
-	}
+//POLTMP2 void TreeScalerMove::setPriorTuningParam(
+//POLTMP2   double x) /* is the new value for `max_lambda' */
+//POLTMP2 	{
+//POLTMP2 	max_lambda = x;
+//POLTMP2 	}
 
 /*----------------------------------------------------------------------------------------------------------------------
 |	Sets the value for the data member 'lambda', which is the tuning parameter for this move, based on a boldness value
 |	that ranges from 0 (least bold) to 100 (most bold). Simple linear interpolation is used (i.e. a boldness of 50
 |   results in `lambda' halfway between `min_lambda' and `max_lambda').
 */
-void TreeScalerMove::setBoldness(
-  double x) /* is the new boldness value */
-	{
-	boldness = x;
-	if (boldness < 0.0)
-		boldness = 0.0;
-	else if (boldness > 100.0)
-		boldness = 100.0;
-
-    // compute lambda from boldness value
-	lambda = min_lambda + (max_lambda - min_lambda)*boldness/100.0;
-	}
+//POLTMP2 void TreeScalerMove::setBoldness(
+//POLTMP2   double x) /* is the new boldness value */
+//POLTMP2 	{
+//POLTMP2 	boldness = x;
+//POLTMP2 	if (boldness < 0.0)
+//POLTMP2 		boldness = 0.0;
+//POLTMP2 	else if (boldness > 100.0)
+//POLTMP2 		boldness = 100.0;
+//POLTMP2
+//POLTMP2     // compute lambda from boldness value
+//POLTMP2 	lambda = min_lambda + (max_lambda - min_lambda)*boldness/100.0;
+//POLTMP2 	}
 
 /*----------------------------------------------------------------------------------------------------------------------
 |	Returns the natural log of the Hastings ratio for this move. The Hastings ratio is (`mstar'/`m')^n, where `mstar' is

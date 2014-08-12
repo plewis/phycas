@@ -40,10 +40,11 @@ DirichletMove::DirichletMove() : MCMCUpdater()
 	{
 	is_move = true;
 	dim = 0;
-	boldness = 0.0;
-	min_psi = 1.0;
-	max_psi = 300.0;
-	psi = max_psi;
+	//POLTMP2 boldness = 0.0;
+	//POLTMP2 min_psi = 1.0;
+	//POLTMP2 max_psi = 300.0;
+	//POLTMP2 psi = max_psi;
+	psi = 300.0;
 	reset();
 	}
 
@@ -59,7 +60,7 @@ void DirichletMove::reset()
 /*----------------------------------------------------------------------------------------------------------------------
 |	Sets the value for the data member 'psi', which is the tuning parameter for this move.
 */
-void DirichletMove::setPsi(
+void DirichletMove::setTuningParameter(
   double x) /* is the new value for psi */
 	{
 	psi = x;
@@ -70,21 +71,21 @@ void DirichletMove::setPsi(
 |   The minimum value is used whenever boldness comes into play, for example during a path sampling analysis when the
 |   target distribution changes from posterior to prior and boldness is adjusted accordingly.
 */
-void DirichletMove::setPriorTuningParam(
-  double x) /* is the new value for max_psi */
-	{
-	min_psi = x;
-	}
+//POLTMP2 void DirichletMove::setPriorTuningParam(
+//POLTMP2   double x) /* is the new value for max_psi */
+//POLTMP2 	{
+//POLTMP2 	min_psi = x;
+//POLTMP2 	}
 
 /*----------------------------------------------------------------------------------------------------------------------
 |	Sets the value for the data member 'max_psi', which is the maximum value of the tuning parameter for this move.
 |   The maximum value is the default value, used for exploring the posterior distribution.
 */
-void DirichletMove::setPosteriorTuningParam(
-  double x) /* is the new value for max_psi */
-	{
-	max_psi = x;
-	}
+//POLTMP2 void DirichletMove::setPosteriorTuningParam(
+//POLTMP2   double x) /* is the new value for max_psi */
+//POLTMP2 	{
+//POLTMP2 	max_psi = x;
+//POLTMP2 	}
 
 /*----------------------------------------------------------------------------------------------------------------------
 |	Sets the value for the data member 'dim', which is the number of parameters updated jointly by this move.
@@ -103,28 +104,28 @@ void DirichletMove::setDimension(
 |	distribution that can be used for sampling is a flat dirichlet, however, so if any of the parameters are less than
 |	1 after multiplication by `psi', they are simply set to 1.
 */
-void DirichletMove::setBoldness(
-  double x) /* is the new boldness value */
-	{
-	boldness = x;
-	if (boldness < 0.0)
-		boldness = 0.0;
-	else if (boldness > 100.0)
-		boldness = 100.0;
-
-    //  Assume:
-    //    min_psi = 5
-    //    max_psi = 300
-    //
-    //  psi = min_psi + (max_psi - min_psi)*(100 - boldness)/100
-    //
-    //  boldness   psi calculation
-    //      0      5 + (300 - 5)*(100 - 0)/100   = 300
-    //    100      5 + (300 - 5)*(100 - 100)/100 = 5
-    //
-	psi = min_psi + (max_psi - min_psi)*(100.0-boldness)/100.0;
-	//std::cerr << boost::str(boost::format("####### DirichletMove::setBoldness(%.5f), boldness = %.5f, psi = %.5f, max_psi = %.5f, min_psi = %.5f") % x % boldness % psi % max_psi % min_psi) << std::endl;
-	}
+//POLTMP2 void DirichletMove::setBoldness(
+//POLTMP2   double x) /* is the new boldness value */
+//POLTMP2 	{
+//POLTMP2 	boldness = x;
+//POLTMP2 	if (boldness < 0.0)
+//POLTMP2 		boldness = 0.0;
+//POLTMP2 	else if (boldness > 100.0)
+//POLTMP2 		boldness = 100.0;
+//POLTMP2
+//POLTMP2     //  Assume:
+//POLTMP2     //    min_psi = 5
+//POLTMP2     //    max_psi = 300
+//POLTMP2     //
+//POLTMP2     //  psi = min_psi + (max_psi - min_psi)*(100 - boldness)/100
+//POLTMP2     //
+//POLTMP2     //  boldness   psi calculation
+//POLTMP2     //      0      5 + (300 - 5)*(100 - 0)/100   = 300
+//POLTMP2     //    100      5 + (300 - 5)*(100 - 100)/100 = 5
+//POLTMP2     //
+//POLTMP2 	psi = min_psi + (max_psi - min_psi)*(100.0-boldness)/100.0;
+//POLTMP2 	//std::cerr << boost::str(boost::format("####### DirichletMove::setBoldness(%.5f), boldness = %.5f, psi = %.5f, max_psi = %.5f, min_psi = %.5f") % x % boldness % psi % max_psi % min_psi) << std::endl;
+//POLTMP2 	}
 
 /*----------------------------------------------------------------------------------------------------------------------
 |	Provides read access to the data member 'dim', which is the number of parameters updated jointly by this move.
@@ -137,7 +138,7 @@ unsigned DirichletMove::getDimension() const
 /*----------------------------------------------------------------------------------------------------------------------
 |	Provides read access to the data member 'psi', which is the tuning parameter for this move.
 */
-double DirichletMove::getPsi() const
+double DirichletMove::getTuningParameter() const
 	{
 	return psi;
 	}

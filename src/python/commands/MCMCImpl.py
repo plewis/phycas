@@ -1497,9 +1497,9 @@ class MCMCImpl(CommonFunctions):
         for self.ss_beta_index, self.ss_beta in enumerate(self.ss_sampled_betas):
             self.ss_sampled_likes.append([])
             chain.setPower(self.ss_beta)
-            #POLTMP boldness = 100.0*(1.0 - self.ss_beta)
-            #POLTMP chain.setBoldness(boldness)
-            #POLTMP self.output('Setting chain boldness to %g based on beta = %g' % (boldness,self.ss_beta))
+            #POLTMP2 boldness = 100.0*(1.0 - self.ss_beta)
+            #POLTMP2 chain.setBoldness(boldness)
+            #POLTMP2 self.output('Setting chain boldness to %g based on beta = %g' % (boldness,self.ss_beta))
             #POLTMP self.cycle_stop = self.opts.burnin + len(self.ss_sampled_betas)*self.opts.ssobj.ncycles
             self.ncycles = self.opts.ssobj.ncycles
             self.burnin = self.opts.ssobj.burnin

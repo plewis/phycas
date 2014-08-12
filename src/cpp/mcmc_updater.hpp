@@ -128,7 +128,7 @@ class MCMCUpdater : public AdHocDensity, public boost::enable_shared_from_this<M
         double                      setCurrLnPrior(double x);
 
         double                      getTuningParameter() const;
-        void                        setTuningParameter();
+        void                        setTuningParameter(double x);
         void                        autotune();
 
         TreeLikeShPtr               getTreeLikelihood();
@@ -143,9 +143,9 @@ class MCMCUpdater : public AdHocDensity, public boost::enable_shared_from_this<M
 		// Modifiers
 		virtual void                setName(const std::string & s);
 		virtual void                setWeight(unsigned w);
-		virtual void                setBoldness(double b);
-        virtual void                setPosteriorTuningParam(double x);
-        virtual void                setPriorTuningParam(double x);
+		//POLTMP2 virtual void                setBoldness(double b);
+        //POLTMP2 virtual void                setPosteriorTuningParam(double x);
+        //POLTMP2 virtual void                setPriorTuningParam(double x);
         void                        setMaxUnits(unsigned max_units);
 		virtual void                setLot(LotShPtr p);
 		virtual void                setTree(TreeShPtr p);
