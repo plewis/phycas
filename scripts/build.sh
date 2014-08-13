@@ -16,10 +16,6 @@ export OSTYPE="PLEASE_SUPPLY"
 # e.g. export BOOST_ROOT="$HOME/boost_1_55_0"
 export BOOST_ROOT="PLEASE_SUPPLY"
 
-# The path to your b2 (i.e bjam) executable
-# e.g. export BJAM_DIR="$BOOST_ROOT/tools/build/v2/engine/bin.linuxx86_64"
-export BJAM_DIR="PLEASE_SUPPLY"
-
 # The path to your python interpreter (download from https://www.python.org/)
 # e.g. export PYTHON_ROOT="/opt/python/bin/python"
 export PYTHON_ROOT="PLEASE_SUPPLY"
@@ -52,11 +48,6 @@ if [ "$BOOST_ROOT" == "PLEASE_SUPPLY" ] || [ ! -e "$BOOST_ROOT" ]; then
     exit 1
 fi
 
-if [ "$BJAM_DIR" == "PLEASE_SUPPLY" ] || [ ! -e "$BJAM_DIR/bjam" ]; then
-    echo Please edit $0 and specify a valid directory for BJAM_DIR
-    exit 1
-fi
-
 if [ "$PYTHON_ROOT" == "PLEASE_SUPPLY" ] || ( [ ! -e "$PYTHON_ROOT" ] ||  [ ! -f "$PYTHON_ROOT" ]); then
     echo Please edit $0 and specify a valid path to the Python interpreter for PYTHON_ROOT \(you should be able to start Python if you execute the supplied value\)
     exit 1
@@ -71,7 +62,7 @@ fi
 export PYTHON_DYLIB_DIR=`$PYTHON_ROOT -c "import sys; print sys.prefix"`/lib
 
 # Modify PATH so that bjam executable can be found
-export PATH="$BJAM_DIR:${PATH}"
+export PATH="$BOOST_ROOT:${PATH}"
 
 # This is needed for bjam to find boost-build.jam
 export BOOST_BUILD_PATH="$BOOST_ROOT"

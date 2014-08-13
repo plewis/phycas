@@ -60,10 +60,20 @@ std::vector<double> const & SubsetProportions::getSubsetProportions() const
 void SubsetProportions::recalcLogProdP()
     {
 	_log_prod_p = 0.0;
-    std::vector<double>::const_reverse_iterator rit = _subset_proportions.rbegin();
-    for (++rit; rit != _subset_proportions.rend(); ++rit)
+
+    // This version generates an (incorrect) error at compile time using some older compilers, e.g.
+    // "gcc version 4.0.1 (Apple Computer, Inc. build 5367)"
+    //std::vector<double>::const_reverse_iterator rit = _subset_proportions.rbegin();
+    //for (++rit; rit != _subset_proportions.rend(); ++rit)
+    //    {
+	//	_log_prod_p += log(*rit);
+    //    }
+
+    unsigned nproportions = (unsigned)_subset_proportions.size();
+    std::vector<double>::const_iterator it = _subset_proportions.begin();
+    for (unsigned i = 1; i < nproportions; ++it, ++i)
         {
-		_log_prod_p += log(*rit);
+		_log_prod_p += log(*it);
         }
     }
 
