@@ -280,6 +280,8 @@ bool SubsetRelRatesMove::update()
 
     double lnu = std::log(rng->Uniform());
 
+    bool accepted = false;
+
 	if (ln_accept_ratio >= 0.0 || lnu <= ln_accept_ratio)
 		{
 	    if (save_debug_info)
@@ -300,7 +302,7 @@ bool SubsetRelRatesMove::update()
 		p->setLastLnLike(curr_ln_like);
 
 		accept();
-		return true;
+		accepted = true;
 		}
 	else
 		{
@@ -321,7 +323,14 @@ bool SubsetRelRatesMove::update()
 			}
 		curr_ln_like	= p->getLastLnLike();
 		revert();
-		return false;
+		accepted = false;
 		}
+
+    //POLTMP
+    double inverse_psi = 1.0/psi;
+    inverse_psi = p->adaptUpdater(inverse_psi, nattempts, accepted);
+    psi = 1.0/inverse_psi;
+
+    return accepted;
 	}
 
