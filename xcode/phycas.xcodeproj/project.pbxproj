@@ -11,6 +11,7 @@
 			isa = PBXAggregateTarget;
 			buildConfigurationList = D1716A9119DF59E300FFB5A6 /* Build configuration list for PBXAggregateTarget "Everything" */;
 			buildPhases = (
+				D1D95B3B19E0170100177F48 /* CopyFiles */,
 			);
 			dependencies = (
 				D1716A9F19DF5A0300FFB5A6 /* PBXTargetDependency */,
@@ -26,8 +27,6 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		D120CA2719DF2320005322F7 /* conversions.h in Headers */ = {isa = PBXBuildFile; fileRef = D120CA2619DF2320005322F7 /* conversions.h */; };
-		D120CA2919DF2320005322F7 /* conversionsPriv.h in Headers */ = {isa = PBXBuildFile; fileRef = D120CA2819DF2320005322F7 /* conversionsPriv.h */; };
 		D120CA2F19DF238E005322F7 /* basic_lot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B0F193C14DF000719F1 /* basic_lot.cpp */; };
 		D120CA3019DF238E005322F7 /* basic_tree_node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B11193C14DF000719F1 /* basic_tree_node.cpp */; };
 		D120CA3119DF238E005322F7 /* basic_tree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B13193C14DF000719F1 /* basic_tree.cpp */; };
@@ -38,8 +37,6 @@
 		D120CA3619DF238E005322F7 /* tree_manip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777BAD193C14DF000719F1 /* tree_manip.cpp */; };
 		D120CA3919DF244E005322F7 /* libpython2.7.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D120CA3719DF243B005322F7 /* libpython2.7.dylib */; };
 		D120CA3B19DF246B005322F7 /* libncl-2.1.18.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D120CA3A19DF246B005322F7 /* libncl-2.1.18.dylib */; };
-		D120CA4519DF24DC005322F7 /* probdist.h in Headers */ = {isa = PBXBuildFile; fileRef = D120CA4419DF24DC005322F7 /* probdist.h */; };
-		D120CA4719DF24DC005322F7 /* probdistPriv.h in Headers */ = {isa = PBXBuildFile; fileRef = D120CA4619DF24DC005322F7 /* probdistPriv.h */; };
 		D120CA4D19DF2566005322F7 /* basic_cdf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B0D193C14DF000719F1 /* basic_cdf.cpp */; };
 		D120CA4E19DF2566005322F7 /* basic_lot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B0F193C14DF000719F1 /* basic_lot.cpp */; };
 		D120CA4F19DF2566005322F7 /* boost_assertion_failed.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B16193C14DF000719F1 /* boost_assertion_failed.cpp */; };
@@ -60,14 +57,10 @@
 		D120CA5E19DF2582005322F7 /* ipmpar.c in Sources */ = {isa = PBXBuildFile; fileRef = D1777B96193C14DF000719F1 /* ipmpar.c */; };
 		D120CA6019DF25C4005322F7 /* libpython2.7.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D120CA3719DF243B005322F7 /* libpython2.7.dylib */; };
 		D120CA6119DF25E0005322F7 /* libncl-2.1.18.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D120CA3A19DF246B005322F7 /* libncl-2.1.18.dylib */; };
-		D120CA6919DF2600005322F7 /* datamatrix.h in Headers */ = {isa = PBXBuildFile; fileRef = D120CA6819DF2600005322F7 /* datamatrix.h */; };
-		D120CA6B19DF2600005322F7 /* datamatrixPriv.h in Headers */ = {isa = PBXBuildFile; fileRef = D120CA6A19DF2600005322F7 /* datamatrixPriv.h */; };
 		D120CA7119DF262D005322F7 /* boost_assertion_failed.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B16193C14DF000719F1 /* boost_assertion_failed.cpp */; };
 		D120CA7219DF262D005322F7 /* data_matrix_pymod.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B24193C14DF000719F1 /* data_matrix_pymod.cpp */; };
 		D120CA7319DF263B005322F7 /* libpython2.7.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D120CA3719DF243B005322F7 /* libpython2.7.dylib */; };
 		D120CA7519DF2652005322F7 /* libncl-2.1.18.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D120CA3A19DF246B005322F7 /* libncl-2.1.18.dylib */; };
-		D120CA7D19DF2756005322F7 /* likelihood.h in Headers */ = {isa = PBXBuildFile; fileRef = D120CA7C19DF2756005322F7 /* likelihood.h */; };
-		D120CA7F19DF2756005322F7 /* likelihoodPriv.h in Headers */ = {isa = PBXBuildFile; fileRef = D120CA7E19DF2756005322F7 /* likelihoodPriv.h */; };
 		D120CA8519DF297A005322F7 /* basic_cdf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B0D193C14DF000719F1 /* basic_cdf.cpp */; };
 		D120CA8619DF297A005322F7 /* basic_lot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B0F193C14DF000719F1 /* basic_lot.cpp */; };
 		D120CA8719DF297A005322F7 /* basic_tree_node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B11193C14DF000719F1 /* basic_tree_node.cpp */; };
@@ -149,8 +142,6 @@
 		D1ABC0A819DF359200E03A8B /* libncl-2.1.18.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D120CA3A19DF246B005322F7 /* libncl-2.1.18.dylib */; };
 		D1ABC0A919DF35DA00E03A8B /* tree_manip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777BAD193C14DF000719F1 /* tree_manip.cpp */; };
 		D1ABC0AA19DF361200E03A8B /* dls_brent.c in Sources */ = {isa = PBXBuildFile; fileRef = D1777B9C193C14DF000719F1 /* dls_brent.c */; };
-		D1ABC0B219DF362600E03A8B /* phylogeny.h in Headers */ = {isa = PBXBuildFile; fileRef = D1ABC0B119DF362600E03A8B /* phylogeny.h */; };
-		D1ABC0B419DF362600E03A8B /* phylogenyPriv.h in Headers */ = {isa = PBXBuildFile; fileRef = D1ABC0B319DF362600E03A8B /* phylogenyPriv.h */; };
 		D1ABC0BA19DF366900E03A8B /* basic_cdf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B0D193C14DF000719F1 /* basic_cdf.cpp */; };
 		D1ABC0BB19DF366900E03A8B /* basic_lot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B0F193C14DF000719F1 /* basic_lot.cpp */; };
 		D1ABC0BC19DF366900E03A8B /* basic_tree_node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B11193C14DF000719F1 /* basic_tree_node.cpp */; };
@@ -164,9 +155,6 @@
 		D1ABC0C419DF366900E03A8B /* tree_manip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777BAD193C14DF000719F1 /* tree_manip.cpp */; };
 		D1ABC0C619DF368E00E03A8B /* libncl-2.1.18.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D120CA3A19DF246B005322F7 /* libncl-2.1.18.dylib */; };
 		D1ABC0C719DF369800E03A8B /* libpython2.7.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D120CA3719DF243B005322F7 /* libpython2.7.dylib */; };
-		D1ABC0CF19DF36B900E03A8B /* readnexus.h in Headers */ = {isa = PBXBuildFile; fileRef = D1ABC0CE19DF36B900E03A8B /* readnexus.h */; };
-		D1ABC0D119DF36B900E03A8B /* readnexusPriv.h in Headers */ = {isa = PBXBuildFile; fileRef = D1ABC0D019DF36B900E03A8B /* readnexusPriv.h */; };
-		D1ABC0D319DF36B900E03A8B /* readnexus.cp in Sources */ = {isa = PBXBuildFile; fileRef = D1ABC0D219DF36B900E03A8B /* readnexus.cp */; };
 		D1ABC0D719DF36F200E03A8B /* basic_cdf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B0D193C14DF000719F1 /* basic_cdf.cpp */; };
 		D1ABC0D819DF36F200E03A8B /* basic_lot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B0F193C14DF000719F1 /* basic_lot.cpp */; };
 		D1ABC0D919DF36F200E03A8B /* boost_assertion_failed.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B16193C14DF000719F1 /* boost_assertion_failed.cpp */; };
@@ -179,6 +167,73 @@
 		D1ABC0E019DF36F200E03A8B /* ipmpar.c in Sources */ = {isa = PBXBuildFile; fileRef = D1777B96193C14DF000719F1 /* ipmpar.c */; };
 		D1ABC0E219DF370500E03A8B /* libncl-2.1.18.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D120CA3A19DF246B005322F7 /* libncl-2.1.18.dylib */; };
 		D1ABC0E319DF370F00E03A8B /* libpython2.7.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D120CA3719DF243B005322F7 /* libpython2.7.dylib */; };
+		D1D95B1419E0163100177F48 /* __init__.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1521FFA193B756F007ADBB5 /* __init__.py */; };
+		D1D95B1519E0166100177F48 /* __init__.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1522022193B756F007ADBB5 /* __init__.py */; };
+		D1D95B1619E0166100177F48 /* _BernoulliDist.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1522023193B756F007ADBB5 /* _BernoulliDist.py */; };
+		D1D95B1719E0166100177F48 /* _BetaDist.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1522024193B756F007ADBB5 /* _BetaDist.py */; };
+		D1D95B1819E0166100177F48 /* _BetaPrimeDist.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1522025193B756F007ADBB5 /* _BetaPrimeDist.py */; };
+		D1D95B1919E0166100177F48 /* _BinomialDist.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1522026193B756F007ADBB5 /* _BinomialDist.py */; };
+		D1D95B1A19E0166100177F48 /* _DirichletDist.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1522027193B756F007ADBB5 /* _DirichletDist.py */; };
+		D1D95B1B19E0166100177F48 /* _ExponentialDist.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1522028193B756F007ADBB5 /* _ExponentialDist.py */; };
+		D1D95B1C19E0166100177F48 /* _GammaDist.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1522029193B756F007ADBB5 /* _GammaDist.py */; };
+		D1D95B1D19E0166100177F48 /* _ImproperUniformDist.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D152202A193B756F007ADBB5 /* _ImproperUniformDist.py */; };
+		D1D95B1E19E0166100177F48 /* _InverseGammaDist.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D152202B193B756F007ADBB5 /* _InverseGammaDist.py */; };
+		D1D95B1F19E0166100177F48 /* _LognormalDist.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D152202C193B756F007ADBB5 /* _LognormalDist.py */; };
+		D1D95B2019E0166100177F48 /* _Lot.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D152202D193B756F007ADBB5 /* _Lot.py */; };
+		D1D95B2119E0166100177F48 /* _MVNormalDist.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D152202E193B756F007ADBB5 /* _MVNormalDist.py */; };
+		D1D95B2219E0166100177F48 /* _NormalDist.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D152202F193B756F007ADBB5 /* _NormalDist.py */; };
+		D1D95B2319E0166100177F48 /* _PyDistributionBase.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1522030193B756F007ADBB5 /* _PyDistributionBase.py */; };
+		D1D95B2419E0166100177F48 /* _RectangularMatrix.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1522031193B756F007ADBB5 /* _RectangularMatrix.py */; };
+		D1D95B2519E0166100177F48 /* _RelRateDist.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1522032193B756F007ADBB5 /* _RelRateDist.py */; };
+		D1D95B2619E0166100177F48 /* _SliceSampler.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1522033193B756F007ADBB5 /* _SliceSampler.py */; };
+		D1D95B2719E0166100177F48 /* _SquareMatrix.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1522034193B756F007ADBB5 /* _SquareMatrix.py */; };
+		D1D95B2819E0166100177F48 /* _StopWatch.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1522035193B756F007ADBB5 /* _StopWatch.py */; };
+		D1D95B2919E0166100177F48 /* _UniformDist.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1522036193B756F007ADBB5 /* _UniformDist.py */; };
+		D1D95B2A19E0166C00177F48 /* __init__.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1521FFC193B756F007ADBB5 /* __init__.py */; };
+		D1D95B2B19E0166C00177F48 /* _DataMatrix.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1521FFD193B756F007ADBB5 /* _DataMatrix.py */; };
+		D1D95B2C19E0167600177F48 /* __init__.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1521FFF193B756F007ADBB5 /* __init__.py */; };
+		D1D95B2D19E0167600177F48 /* _MCMCChainManager.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1522000193B756F007ADBB5 /* _MCMCChainManager.py */; };
+		D1D95B2E19E0167600177F48 /* _Model.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1522001193B756F007ADBB5 /* _Model.py */; };
+		D1D95B2F19E0167600177F48 /* _QMatrix.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1522002193B756F007ADBB5 /* _QMatrix.py */; };
+		D1D95B3019E0167600177F48 /* _SimData.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1522003193B756F007ADBB5 /* _SimData.py */; };
+		D1D95B3119E0167600177F48 /* _TopoPriorCalculator.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1522004193B756F007ADBB5 /* _TopoPriorCalculator.py */; };
+		D1D95B3219E0167600177F48 /* _TreeLengthDist.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1522005193B756F007ADBB5 /* _TreeLengthDist.py */; };
+		D1D95B3319E0167600177F48 /* _TreeLikelihood.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1522006193B756F007ADBB5 /* _TreeLikelihood.py */; };
+		D1D95B3419E0168000177F48 /* __init__.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D152201C193B756F007ADBB5 /* __init__.py */; };
+		D1D95B3519E0168000177F48 /* _Split.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D152201D193B756F007ADBB5 /* _Split.py */; };
+		D1D95B3619E0168000177F48 /* _Tree.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D152201E193B756F007ADBB5 /* _Tree.py */; };
+		D1D95B3719E0168000177F48 /* _TreeManip.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D152201F193B756F007ADBB5 /* _TreeManip.py */; };
+		D1D95B3819E0168000177F48 /* _TreeNode.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1522020193B756F007ADBB5 /* _TreeNode.py */; };
+		D1D95B3919E0168F00177F48 /* __init__.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1522038193B756F007ADBB5 /* __init__.py */; };
+		D1D95B3A19E0168F00177F48 /* _NexusReader.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1522039193B756F007ADBB5 /* _NexusReader.py */; };
+		D1D95B3C19E0172000177F48 /* __init__.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1521FDC193B756F007ADBB5 /* __init__.py */; };
+		D1D95B3D19E0172000177F48 /* Commands.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1521FDD193B756F007ADBB5 /* Commands.py */; };
+		D1D95B3E19E0172000177F48 /* CPO.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1521FDE193B756F007ADBB5 /* CPO.py */; };
+		D1D95B3F19E0172000177F48 /* CPOImpl.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1521FDF193B756F007ADBB5 /* CPOImpl.py */; };
+		D1D95B4019E0172000177F48 /* GG.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1521FE0193B756F007ADBB5 /* GG.py */; };
+		D1D95B4119E0172000177F48 /* GGImpl.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1521FE1193B756F007ADBB5 /* GGImpl.py */; };
+		D1D95B4219E0172000177F48 /* Like.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1521FE2193B756F007ADBB5 /* Like.py */; };
+		D1D95B4319E0172000177F48 /* LikeImpl.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1521FE3193B756F007ADBB5 /* LikeImpl.py */; };
+		D1D95B4419E0172000177F48 /* LikelihoodCore.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1521FE4193B756F007ADBB5 /* LikelihoodCore.py */; };
+		D1D95B4519E0172000177F48 /* MarkovChain.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1521FE5193B756F007ADBB5 /* MarkovChain.py */; };
+		D1D95B4619E0172000177F48 /* MCMC.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1521FE6193B756F007ADBB5 /* MCMC.py */; };
+		D1D95B4719E0172000177F48 /* MCMCImpl.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1521FE7193B756F007ADBB5 /* MCMCImpl.py */; };
+		D1D95B4819E0172000177F48 /* MCMCManager.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1521FE8193B756F007ADBB5 /* MCMCManager.py */; };
+		D1D95B4919E0172000177F48 /* Model.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1521FE9193B756F007ADBB5 /* Model.py */; };
+		D1D95B4A19E0172000177F48 /* Partition.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1521FEA193B756F007ADBB5 /* Partition.py */; };
+		D1D95B4B19E0172000177F48 /* RandomTree.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1521FEC193B756F007ADBB5 /* RandomTree.py */; };
+		D1D95B4C19E0172000177F48 /* RandomTreeImpl.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1521FED193B756F007ADBB5 /* RandomTreeImpl.py */; };
+		D1D95B4D19E0172000177F48 /* RefDist.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1521FEE193B756F007ADBB5 /* RefDist.py */; };
+		D1D95B4E19E0172000177F48 /* RefDistImpl.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1521FEF193B756F007ADBB5 /* RefDistImpl.py */; };
+		D1D95B4F19E0172000177F48 /* ScriptGen.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1521FF0193B756F007ADBB5 /* ScriptGen.py */; };
+		D1D95B5019E0172000177F48 /* ScriptGenImpl.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1521FF1193B756F007ADBB5 /* ScriptGenImpl.py */; };
+		D1D95B5119E0172000177F48 /* Sim.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1521FF2193B756F007ADBB5 /* Sim.py */; };
+		D1D95B5219E0172000177F48 /* SimImpl.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1521FF3193B756F007ADBB5 /* SimImpl.py */; };
+		D1D95B5319E0172000177F48 /* SS.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1521FF4193B756F007ADBB5 /* SS.py */; };
+		D1D95B5419E0172000177F48 /* SumP.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1521FF5193B756F007ADBB5 /* SumP.py */; };
+		D1D95B5519E0172000177F48 /* SumPImpl.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1521FF6193B756F007ADBB5 /* SumPImpl.py */; };
+		D1D95B5619E0172100177F48 /* SumT.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1521FF7193B756F007ADBB5 /* SumT.py */; };
+		D1D95B5719E0172100177F48 /* SumTImpl.py in CopyFiles */ = {isa = PBXBuildFile; fileRef = D1521FF8193B756F007ADBB5 /* SumTImpl.py */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -233,6 +288,27 @@
 			dstPath = /Users/plewis/Documents/software/phycas/phycas/probdist;
 			dstSubfolderSpec = 0;
 			files = (
+				D1D95B1519E0166100177F48 /* __init__.py in CopyFiles */,
+				D1D95B1619E0166100177F48 /* _BernoulliDist.py in CopyFiles */,
+				D1D95B1719E0166100177F48 /* _BetaDist.py in CopyFiles */,
+				D1D95B1819E0166100177F48 /* _BetaPrimeDist.py in CopyFiles */,
+				D1D95B1919E0166100177F48 /* _BinomialDist.py in CopyFiles */,
+				D1D95B1A19E0166100177F48 /* _DirichletDist.py in CopyFiles */,
+				D1D95B1B19E0166100177F48 /* _ExponentialDist.py in CopyFiles */,
+				D1D95B1C19E0166100177F48 /* _GammaDist.py in CopyFiles */,
+				D1D95B1D19E0166100177F48 /* _ImproperUniformDist.py in CopyFiles */,
+				D1D95B1E19E0166100177F48 /* _InverseGammaDist.py in CopyFiles */,
+				D1D95B1F19E0166100177F48 /* _LognormalDist.py in CopyFiles */,
+				D1D95B2019E0166100177F48 /* _Lot.py in CopyFiles */,
+				D1D95B2119E0166100177F48 /* _MVNormalDist.py in CopyFiles */,
+				D1D95B2219E0166100177F48 /* _NormalDist.py in CopyFiles */,
+				D1D95B2319E0166100177F48 /* _PyDistributionBase.py in CopyFiles */,
+				D1D95B2419E0166100177F48 /* _RectangularMatrix.py in CopyFiles */,
+				D1D95B2519E0166100177F48 /* _RelRateDist.py in CopyFiles */,
+				D1D95B2619E0166100177F48 /* _SliceSampler.py in CopyFiles */,
+				D1D95B2719E0166100177F48 /* _SquareMatrix.py in CopyFiles */,
+				D1D95B2819E0166100177F48 /* _StopWatch.py in CopyFiles */,
+				D1D95B2919E0166100177F48 /* _UniformDist.py in CopyFiles */,
 				D1716A8819DF595100FFB5A6 /* _ProbDistExt.so in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -243,6 +319,8 @@
 			dstPath = /Users/plewis/Documents/software/phycas/phycas/datamatrix;
 			dstSubfolderSpec = 0;
 			files = (
+				D1D95B2A19E0166C00177F48 /* __init__.py in CopyFiles */,
+				D1D95B2B19E0166C00177F48 /* _DataMatrix.py in CopyFiles */,
 				D1716A8A19DF596800FFB5A6 /* _DataMatrixExt.so in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -253,6 +331,14 @@
 			dstPath = /Users/plewis/Documents/software/phycas/phycas/likelihood;
 			dstSubfolderSpec = 0;
 			files = (
+				D1D95B2C19E0167600177F48 /* __init__.py in CopyFiles */,
+				D1D95B2D19E0167600177F48 /* _MCMCChainManager.py in CopyFiles */,
+				D1D95B2E19E0167600177F48 /* _Model.py in CopyFiles */,
+				D1D95B2F19E0167600177F48 /* _QMatrix.py in CopyFiles */,
+				D1D95B3019E0167600177F48 /* _SimData.py in CopyFiles */,
+				D1D95B3119E0167600177F48 /* _TopoPriorCalculator.py in CopyFiles */,
+				D1D95B3219E0167600177F48 /* _TreeLengthDist.py in CopyFiles */,
+				D1D95B3319E0167600177F48 /* _TreeLikelihood.py in CopyFiles */,
 				D1716A8C19DF598200FFB5A6 /* _LikelihoodExt.so in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -263,6 +349,11 @@
 			dstPath = /Users/plewis/Documents/software/phycas/phycas/phylogeny;
 			dstSubfolderSpec = 0;
 			files = (
+				D1D95B3419E0168000177F48 /* __init__.py in CopyFiles */,
+				D1D95B3519E0168000177F48 /* _Split.py in CopyFiles */,
+				D1D95B3619E0168000177F48 /* _Tree.py in CopyFiles */,
+				D1D95B3719E0168000177F48 /* _TreeManip.py in CopyFiles */,
+				D1D95B3819E0168000177F48 /* _TreeNode.py in CopyFiles */,
 				D1716A8E19DF59AE00FFB5A6 /* _PhylogenyExt.so in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -273,6 +364,7 @@
 			dstPath = /Users/plewis/Documents/software/phycas/phycas/conversions;
 			dstSubfolderSpec = 0;
 			files = (
+				D1D95B1419E0163100177F48 /* __init__.py in CopyFiles */,
 				D180114319E0106A00DD270B /* libpython2.7.dylib in CopyFiles */,
 				D180114219E0106500DD270B /* libncl-2.1.18.dylib in CopyFiles */,
 				D180114119E0105C00DD270B /* libboost_python.dylib in CopyFiles */,
@@ -286,7 +378,46 @@
 			dstPath = /Users/plewis/Documents/software/phycas/phycas/readnexus;
 			dstSubfolderSpec = 0;
 			files = (
+				D1D95B3919E0168F00177F48 /* __init__.py in CopyFiles */,
+				D1D95B3A19E0168F00177F48 /* _NexusReader.py in CopyFiles */,
 				D1716A8F19DF59BE00FFB5A6 /* _ReadNexusExt.so in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D1D95B3B19E0170100177F48 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /Users/plewis/Documents/software/phycas/phycas/commands;
+			dstSubfolderSpec = 0;
+			files = (
+				D1D95B3C19E0172000177F48 /* __init__.py in CopyFiles */,
+				D1D95B3D19E0172000177F48 /* Commands.py in CopyFiles */,
+				D1D95B3E19E0172000177F48 /* CPO.py in CopyFiles */,
+				D1D95B3F19E0172000177F48 /* CPOImpl.py in CopyFiles */,
+				D1D95B4019E0172000177F48 /* GG.py in CopyFiles */,
+				D1D95B4119E0172000177F48 /* GGImpl.py in CopyFiles */,
+				D1D95B4219E0172000177F48 /* Like.py in CopyFiles */,
+				D1D95B4319E0172000177F48 /* LikeImpl.py in CopyFiles */,
+				D1D95B4419E0172000177F48 /* LikelihoodCore.py in CopyFiles */,
+				D1D95B4519E0172000177F48 /* MarkovChain.py in CopyFiles */,
+				D1D95B4619E0172000177F48 /* MCMC.py in CopyFiles */,
+				D1D95B4719E0172000177F48 /* MCMCImpl.py in CopyFiles */,
+				D1D95B4819E0172000177F48 /* MCMCManager.py in CopyFiles */,
+				D1D95B4919E0172000177F48 /* Model.py in CopyFiles */,
+				D1D95B4A19E0172000177F48 /* Partition.py in CopyFiles */,
+				D1D95B4B19E0172000177F48 /* RandomTree.py in CopyFiles */,
+				D1D95B4C19E0172000177F48 /* RandomTreeImpl.py in CopyFiles */,
+				D1D95B4D19E0172000177F48 /* RefDist.py in CopyFiles */,
+				D1D95B4E19E0172000177F48 /* RefDistImpl.py in CopyFiles */,
+				D1D95B4F19E0172000177F48 /* ScriptGen.py in CopyFiles */,
+				D1D95B5019E0172000177F48 /* ScriptGenImpl.py in CopyFiles */,
+				D1D95B5119E0172000177F48 /* Sim.py in CopyFiles */,
+				D1D95B5219E0172000177F48 /* SimImpl.py in CopyFiles */,
+				D1D95B5319E0172000177F48 /* SS.py in CopyFiles */,
+				D1D95B5419E0172000177F48 /* SumP.py in CopyFiles */,
+				D1D95B5519E0172000177F48 /* SumPImpl.py in CopyFiles */,
+				D1D95B5619E0172100177F48 /* SumT.py in CopyFiles */,
+				D1D95B5719E0172100177F48 /* SumTImpl.py in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -294,23 +425,11 @@
 
 /* Begin PBXFileReference section */
 		D120CA2419DF2320005322F7 /* _ConversionsExt.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = _ConversionsExt.so; sourceTree = BUILT_PRODUCTS_DIR; };
-		D120CA2619DF2320005322F7 /* conversions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = conversions.h; sourceTree = "<group>"; };
-		D120CA2819DF2320005322F7 /* conversionsPriv.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = conversionsPriv.h; sourceTree = "<group>"; };
-		D120CA2A19DF2320005322F7 /* conversions.cp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = conversions.cp; sourceTree = "<group>"; };
 		D120CA3719DF243B005322F7 /* libpython2.7.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpython2.7.dylib; path = ../../../libraries/pydbg/lib/libpython2.7.dylib; sourceTree = "<group>"; };
 		D120CA3A19DF246B005322F7 /* libncl-2.1.18.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libncl-2.1.18.dylib"; path = "../../../libraries/ncl/lib/ncl/libncl-2.1.18.dylib"; sourceTree = "<group>"; };
 		D120CA4219DF24DC005322F7 /* _ProbDistExt.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = _ProbDistExt.so; sourceTree = BUILT_PRODUCTS_DIR; };
-		D120CA4419DF24DC005322F7 /* probdist.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = probdist.h; sourceTree = "<group>"; };
-		D120CA4619DF24DC005322F7 /* probdistPriv.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = probdistPriv.h; sourceTree = "<group>"; };
-		D120CA4819DF24DC005322F7 /* probdist.cp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = probdist.cp; sourceTree = "<group>"; };
 		D120CA6619DF2600005322F7 /* _DataMatrixExt.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = _DataMatrixExt.so; sourceTree = BUILT_PRODUCTS_DIR; };
-		D120CA6819DF2600005322F7 /* datamatrix.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = datamatrix.h; sourceTree = "<group>"; };
-		D120CA6A19DF2600005322F7 /* datamatrixPriv.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = datamatrixPriv.h; sourceTree = "<group>"; };
-		D120CA6C19DF2600005322F7 /* datamatrix.cp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = datamatrix.cp; sourceTree = "<group>"; };
 		D120CA7A19DF2756005322F7 /* _LikelihoodExt.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = _LikelihoodExt.so; sourceTree = BUILT_PRODUCTS_DIR; };
-		D120CA7C19DF2756005322F7 /* likelihood.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = likelihood.h; sourceTree = "<group>"; };
-		D120CA7E19DF2756005322F7 /* likelihoodPriv.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = likelihoodPriv.h; sourceTree = "<group>"; };
-		D120CA8019DF2756005322F7 /* likelihood.cp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = likelihood.cp; sourceTree = "<group>"; };
 		D1521FDC193B756F007ADBB5 /* __init__.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = __init__.py; path = src/python/commands/__init__.py; sourceTree = PHYCAS_ROOT; };
 		D1521FDD193B756F007ADBB5 /* Commands.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = Commands.py; path = src/python/commands/Commands.py; sourceTree = PHYCAS_ROOT; };
 		D1521FDE193B756F007ADBB5 /* CPO.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = CPO.py; path = src/python/commands/CPO.py; sourceTree = PHYCAS_ROOT; };
@@ -563,13 +682,7 @@
 		D1777BB8193C14DF000719F1 /* xprobdist.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xprobdist.hpp; sourceTree = "<group>"; };
 		D180113A19E00EFD00DD270B /* libboost_python.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_python.dylib; path = ../../../libraries/debugboostlib/lib/libboost_python.dylib; sourceTree = "<group>"; };
 		D1ABC0AF19DF362600E03A8B /* _PhylogenyExt.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = _PhylogenyExt.so; sourceTree = BUILT_PRODUCTS_DIR; };
-		D1ABC0B119DF362600E03A8B /* phylogeny.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = phylogeny.h; sourceTree = "<group>"; };
-		D1ABC0B319DF362600E03A8B /* phylogenyPriv.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = phylogenyPriv.h; sourceTree = "<group>"; };
-		D1ABC0B519DF362600E03A8B /* phylogeny.cp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = phylogeny.cp; sourceTree = "<group>"; };
 		D1ABC0CC19DF36B900E03A8B /* _ReadNexusExt.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = _ReadNexusExt.so; sourceTree = BUILT_PRODUCTS_DIR; };
-		D1ABC0CE19DF36B900E03A8B /* readnexus.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = readnexus.h; sourceTree = "<group>"; };
-		D1ABC0D019DF36B900E03A8B /* readnexusPriv.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = readnexusPriv.h; sourceTree = "<group>"; };
-		D1ABC0D219DF36B900E03A8B /* readnexus.cp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = readnexus.cp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -636,46 +749,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		D120CA2519DF2320005322F7 /* conversions */ = {
-			isa = PBXGroup;
-			children = (
-				D120CA2619DF2320005322F7 /* conversions.h */,
-				D120CA2819DF2320005322F7 /* conversionsPriv.h */,
-				D120CA2A19DF2320005322F7 /* conversions.cp */,
-			);
-			path = conversions;
-			sourceTree = "<group>";
-		};
-		D120CA4319DF24DC005322F7 /* probdist */ = {
-			isa = PBXGroup;
-			children = (
-				D120CA4419DF24DC005322F7 /* probdist.h */,
-				D120CA4619DF24DC005322F7 /* probdistPriv.h */,
-				D120CA4819DF24DC005322F7 /* probdist.cp */,
-			);
-			path = probdist;
-			sourceTree = "<group>";
-		};
-		D120CA6719DF2600005322F7 /* datamatrix */ = {
-			isa = PBXGroup;
-			children = (
-				D120CA6819DF2600005322F7 /* datamatrix.h */,
-				D120CA6A19DF2600005322F7 /* datamatrixPriv.h */,
-				D120CA6C19DF2600005322F7 /* datamatrix.cp */,
-			);
-			path = datamatrix;
-			sourceTree = "<group>";
-		};
-		D120CA7B19DF2756005322F7 /* likelihood */ = {
-			isa = PBXGroup;
-			children = (
-				D120CA7C19DF2756005322F7 /* likelihood.h */,
-				D120CA7E19DF2756005322F7 /* likelihoodPriv.h */,
-				D120CA8019DF2756005322F7 /* likelihood.cp */,
-			);
-			path = likelihood;
-			sourceTree = "<group>";
-		};
 		D1521FDB193B756F007ADBB5 /* commands */ = {
 			isa = PBXGroup;
 			children = (
@@ -847,12 +920,6 @@
 				D120CA3719DF243B005322F7 /* libpython2.7.dylib */,
 				D1681903193B7102004AAAD5 /* Python sources */,
 				D168190D193B730E004AAAD5 /* C++ sources */,
-				D120CA2519DF2320005322F7 /* conversions */,
-				D120CA4319DF24DC005322F7 /* probdist */,
-				D120CA6719DF2600005322F7 /* datamatrix */,
-				D120CA7B19DF2756005322F7 /* likelihood */,
-				D1ABC0B019DF362600E03A8B /* phylogeny */,
-				D1ABC0CD19DF36B900E03A8B /* readnexus */,
 				D1681902193B7102004AAAD5 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -1111,26 +1178,6 @@
 			path = praxis;
 			sourceTree = "<group>";
 		};
-		D1ABC0B019DF362600E03A8B /* phylogeny */ = {
-			isa = PBXGroup;
-			children = (
-				D1ABC0B119DF362600E03A8B /* phylogeny.h */,
-				D1ABC0B319DF362600E03A8B /* phylogenyPriv.h */,
-				D1ABC0B519DF362600E03A8B /* phylogeny.cp */,
-			);
-			path = phylogeny;
-			sourceTree = "<group>";
-		};
-		D1ABC0CD19DF36B900E03A8B /* readnexus */ = {
-			isa = PBXGroup;
-			children = (
-				D1ABC0CE19DF36B900E03A8B /* readnexus.h */,
-				D1ABC0D019DF36B900E03A8B /* readnexusPriv.h */,
-				D1ABC0D219DF36B900E03A8B /* readnexus.cp */,
-			);
-			path = readnexus;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -1138,8 +1185,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D120CA2719DF2320005322F7 /* conversions.h in Headers */,
-				D120CA2919DF2320005322F7 /* conversionsPriv.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1147,8 +1192,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D120CA4719DF24DC005322F7 /* probdistPriv.h in Headers */,
-				D120CA4519DF24DC005322F7 /* probdist.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1156,8 +1199,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D120CA6B19DF2600005322F7 /* datamatrixPriv.h in Headers */,
-				D120CA6919DF2600005322F7 /* datamatrix.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1165,8 +1206,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D120CA7D19DF2756005322F7 /* likelihood.h in Headers */,
-				D120CA7F19DF2756005322F7 /* likelihoodPriv.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1174,8 +1213,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D1ABC0B219DF362600E03A8B /* phylogeny.h in Headers */,
-				D1ABC0B419DF362600E03A8B /* phylogenyPriv.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1183,8 +1220,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D1ABC0CF19DF36B900E03A8B /* readnexus.h in Headers */,
-				D1ABC0D119DF36B900E03A8B /* readnexusPriv.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1524,7 +1559,6 @@
 				D1ABC0DE19DF36F200E03A8B /* read_nexus_pymod.cpp in Sources */,
 				D1ABC0DF19DF36F200E03A8B /* dcdflib.c in Sources */,
 				D1ABC0E019DF36F200E03A8B /* ipmpar.c in Sources */,
-				D1ABC0D319DF36B900E03A8B /* readnexus.cp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
