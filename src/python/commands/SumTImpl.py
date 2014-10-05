@@ -355,7 +355,7 @@ class TreeSummarizer(CommonFunctions):
         #      sample not containing the split)
         #   2. sliding window and cumulative plots, such as those produced by AWTY
         #
-        # Each split and its lesser child provide the keys to joint_split_map, for which values equal
+        # Each split and its child splits provide the keys to joint_split_map, for which values equal
         # the number of times that joint combination of splits appears in any tree. This allows
         # calculation of the conditional clade probabilities used to estimate posterior probabilities
         # of tree topologies (see Larget, B. 2013. The estimation of tree posterior probabilities
@@ -423,9 +423,6 @@ class TreeSummarizer(CommonFunctions):
                 split_map[ss] = [1, edge_len, self.num_trees_considered]
 
         if not nd.isTip():
-            #print '------------------------'
-            #print '%d joint_split_map keys' % (len(joint_split_map.keys()),)
-
             # Store split in joint_split_map, or update count if already in map
             stuple = (ss,)
             if stuple in joint_split_map.keys():
@@ -433,11 +430,7 @@ class TreeSummarizer(CommonFunctions):
             else:
                 joint_split_map[stuple] = 1
 
-            #print ss,joint_split_map[stuple]
-
-            # Grab splits of child nodes and make tuple comprising
-            #NEWWAY s plus all of the child splits
-            #OLDWAY s plus all but one of the child splits
+            # Grab splits of child nodes and make tuple comprising split and splits of all children
             child = nd.getLeftChild()
             slist = []
             while child:
@@ -446,16 +439,7 @@ class TreeSummarizer(CommonFunctions):
                 slist.append(cc)
                 child = child.getRightSib()
             slist.sort()
-            #OLDWAY stuple = tuple([ss] + slist[:-1])
-            stuple = tuple([ss] + slist[:])   #NEWWAY
-
-            #print 'slist:'
-            #for s in slist:
-            #    print '  ',s
-            #print 'stuple:'
-            #for s in stuple:
-            #    print '  ',s
-            #raw_input('debug stop')
+            stuple = tuple([ss] + slist[:])
 
             # Store split in joint_split_map, or update count if already in map
             if stuple in joint_split_map.keys():
