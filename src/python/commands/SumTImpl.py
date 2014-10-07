@@ -7,6 +7,78 @@ from phycas.utilities.PhycasCommand import *
 from phycas.utilities.CommonFunctions import CommonFunctions
 from phycas.utilities.PDFTree import PDFTree
 
+class CCDTree(object):
+    def __init__(self):
+        self.nodes = {} # key is split, value is CCDNode containing a map associating counts with ctuples
+        self.rootsplit = None
+        self.H = None
+
+    def show(self, output):
+        if self.rootsplit is None:
+            output.info('root not found')
+        else:
+            output.info('root split: %s' % self.rootsplit)
+
+        for s in self.nodes.keys():
+            if s == self.rootsplit:
+                output.info('\n%s (root)' % s)
+            else:
+                output.info('\n%s' % s)
+            v = self.nodes[s]
+            for ctuple in v.children.keys():
+                output.info('%6d <-- %s' % (v.children[ctuple], '|'.join(ctuple)))
+
+    def _calcH(self, h0, p0, c0):
+        H = h0
+        for prob,ctuple in zip(p0, c0):
+            for s in ctuple:
+                if s in self.nodes.keys():
+                    h, p, c = self.nodes[s].calcH()
+                    H += prob*self._calcH(h, p, c)
+        return H
+
+    def calcH(self):
+        assert self.rootsplit is not None, 'cannot compute H because basal split could not be identified'
+        h, p, ctuples = self.nodes[self.rootsplit].calcH()
+        self.H = self._calcH(h, p, ctuples)
+        return self.H
+
+    def update(self, s, ctuple, isroot):
+        if isroot:
+            self.rootsplit = s
+        if s in self.nodes.keys():
+            v = self.nodes[s]
+            v.increment(ctuple)
+        else:
+            self.nodes[s] = CCDNode(ctuple)
+
+class CCDNode(object):
+    def __init__(self, ctuple):
+        self.children = {ctuple:1}
+        self.total = None
+        self.h = None
+        self.p = None
+
+    def increment(self, ctuple):
+        if ctuple in self.children.keys():
+            self.children[ctuple] += 1
+        else:
+            self.children[ctuple] = 1
+
+    def calcH(self):
+        self.total = 0.0
+        sum_terms = 0.0
+        freqs = []
+        for k in self.children.keys():
+            n = float(self.children[k])
+            self.total += n
+            freqs.append(n)
+            sum_terms += n*math.log(n)
+        sum_terms -= self.total*math.log(self.total)
+        self.h = -sum_terms/self.total
+        self.p = [(f/self.total) for f in freqs]
+        return (self.h, self.p, self.children.keys())
+
 class TreeSummarizer(CommonFunctions):
     #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
     """
@@ -339,7 +411,7 @@ class TreeSummarizer(CommonFunctions):
 
         return True
 
-    def recordTreeInMaps(self, tree, split_lookup, split_map, joint_split_map, tree_key):
+    def recordTreeInMaps(self, tree, split_lookup, split_map, joint_split_map, ccd_tree, tree_key):
         # Each split found in any tree is associated with a list by the dictionary split_map
         #   The list is organized as follows:
         #   - element 0 is the number of times the split was seen over all sampled trees
@@ -388,10 +460,10 @@ class TreeSummarizer(CommonFunctions):
                 edge_len = has_edge_lens and nd.getEdgeLen() or 1.0
                 treelen += edge_len
                 # OLDWAY self.recordNodeInMaps(nd, split_map, tree_key, is_tip_node, edge_len)
-                self.recordNodeInMaps(nd, split_lookup, split_map, joint_split_map, tree_key, edge_len)
+                self.recordNodeInMaps(nd, split_lookup, split_map, joint_split_map, ccd_tree, tree_key, edge_len)
         return treelen
 
-    def recordNodeInMaps(self, nd, split_lookup, split_map, joint_split_map, tree_key, edge_len):
+    def recordNodeInMaps(self, nd, split_lookup, split_map, joint_split_map, ccd_tree, tree_key, edge_len):
         # Grab the split and invert it if necessary to attain a standard polarity
         s = nd.getSplit()
         if (not self.rooted_trees) and s.isBitSet(0):
@@ -446,6 +518,8 @@ class TreeSummarizer(CommonFunctions):
                 joint_split_map[stuple] += 1
             else:
                 joint_split_map[stuple] = 1
+
+            ccd_tree.update(ss, tuple(slist), nd.getParent().isRoot())
 
     def findBestParentSplit(self, curr_stuple, joint_split_map):
         best_parent_key = None
@@ -538,6 +612,10 @@ class TreeSummarizer(CommonFunctions):
         assert log_best_posterior > -log_num_possible_topol, 'log_best_posterior () <= -log_num_possible_topol (), which should not be possible' % (log_best_posterior,-log_num_possible_topol)
         return log_best_posterior + log_num_possible_topol
 
+    def debugShowCCDTree(self, ccd_tree):
+        self.stdout.info('\nCCD Tree:')
+        ccd_tree.show(self.stdout)
+
     def debugShowJointSplitFreqs(self, joint_split_map, log_num_possible_topol):
         max_joint_split_freq = 0.0
         best_stuple = None
@@ -586,6 +664,7 @@ class TreeSummarizer(CommonFunctions):
         split_lookup = {}   # keys are string representations of splits, values are split objects
         split_map = {}
         joint_split_map = {}
+        ccd_tree = CCDTree()
 
         # key is list of splits, value is tuple(count, newick, treelen, 1st time seen, 2nd time seen, ...)
         tree_map = {}
@@ -639,7 +718,7 @@ class TreeSummarizer(CommonFunctions):
                 split_field_width = ntips
             t.recalcAllSplits(ntips)
 
-            treelen = self.recordTreeInMaps(t, split_lookup, split_map, joint_split_map, tree_key)
+            treelen = self.recordTreeInMaps(t, split_lookup, split_map, joint_split_map, ccd_tree, tree_key)
 
             # Update tree_map, which is a map with keys equal to lists of internal node splits
             # and values equal to 2-element lists containing the frequency and newick tree
@@ -885,6 +964,16 @@ class TreeSummarizer(CommonFunctions):
                 KLupper = KL_max
 
             KL_near_upper = self.calcKLupper(joint_split_map, KL_max)
+
+            lindleyH = ccd_tree.calcH()
+            lindleyH0 = KL_max
+            lindleyI = -(lindleyH - lindleyH0)
+            lindleyIpct = 100.0*lindleyI/KL_max
+            self.stdout.info('\nLindley information measure:')
+            self.stdout.info('  Posterior entropy:  %.5f' % lindleyH)
+            self.stdout.info('  Prior entropy:      %.5f' % lindleyH0)
+            self.stdout.info('  Information gain:   %.5f' % lindleyI)
+            self.stdout.info('  %% max. information: %.5f' % lindleyIpct)
 
             self.stdout.info('\nTopological information content:')
             self.stdout.info('  Number of taxa: %.5f' % KL_ntax)
