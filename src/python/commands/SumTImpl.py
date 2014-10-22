@@ -9,41 +9,133 @@ from phycas.utilities.PDFTree import PDFTree
 
 class CCDTree(object):
     def __init__(self):
-        self.nodes = {} # key is split, value is CCDNode containing a map associating counts with ctuples
+        self.nodes = {} # key is split, value is CCDNode containing a map associating ctuple keys with count values
         self.rootsplit = None
         self.H = None
 
-    def show(self, output):
+    def lfact(self, n):
+        """
+        Returns log(n!)
+        """
+        if n == 0 or n == 1:
+            return 0.0
+        return math.lgamma(n+1)
+
+    def lognrooted(self, y):
+        fy = float(y)
+        log_num_rooted_trees = 0.0
+        if y > 2:
+            log_num_rooted_trees = self.lfact(2.*fy-3) - (fy-2)*math.log(2.0) - self.lfact(fy-2)
+        return log_num_rooted_trees
+
+    def countbits(self, s):
+        return sum([c == '*' and 1 or 0 for c in s])
+
+    def showCCDTree(self, output):
+        ntotal = 0
         if self.rootsplit is None:
             output.info('root not found')
         else:
             output.info('root split: %s' % self.rootsplit)
+            v = self.nodes[self.rootsplit]
+            ntotal = sum(v.children.values())
+
+        assert ntotal > 0, 'root has no children in CCDTree.showCCDTree function'
+
+        totalIw = 0.0
 
         for s in self.nodes.keys():
-            if s == self.rootsplit:
-                output.info('\n%s (root)' % s)
-            else:
-                output.info('\n%s' % s)
             v = self.nodes[s]
+            n = sum(v.children.values())
+            p = float(n)/ntotal
+            if s == self.rootsplit:
+                output.info('\n%s (root) prob = %g' % (s,p))
+            else:
+                output.info('\n%s prob = %g' % (s,p))
+
+            h = 0.0
+            nset = self.countbits(s)
+            hp = self.lognrooted(nset)
             for ctuple in v.children.keys():
-                output.info('%6d <-- %s' % (v.children[ctuple], '|'.join(ctuple)))
+                nchild = v.children[ctuple]
+                pchild = float(nchild)/ntotal
+                pchild /= p
+                h -= pchild*math.log(pchild)
+                nsetleft  = self.countbits(ctuple[0])
+                nsetright = self.countbits(ctuple[1])
+                hp -= pchild*(self.lognrooted(nsetleft) + self.lognrooted(nsetright))
+                output.info('%6d %.5f <-- %s' % (nchild, pchild, '|'.join(ctuple)))
+            I = hp - h
+            w = p
+            Iw = I*w
+            totalIw += Iw
+            output.info('h   = %g' % h)
+            output.info('hp  = %g' % hp)
+            output.info('I   = %g' % I)
+            output.info('w   = %g' % w)
+            output.info('w*I = %g' % Iw)
+        output.info('total I = %g' % totalIw)
 
-    def _calcH(self, h0, p0, c0):
-        H = h0
-        for prob,ctuple in zip(p0, c0):
-            for s in ctuple:
-                if s in self.nodes.keys():
-                    h, p, c = self.nodes[s].calcH()
-                    H += prob*self._calcH(h, p, c)
-        return H
-
-    def calcH(self):
+    def calcI(self, output = None):
         assert self.rootsplit is not None, 'cannot compute H because basal split could not be identified'
-        h, p, ctuples = self.nodes[self.rootsplit].calcH()
-        self.H = self._calcH(h, p, ctuples)
-        return self.H
 
-    def update(self, s, ctuple, isroot):
+        v = self.nodes[self.rootsplit]
+        ntotal = sum(v.children.values())
+        totalH  = 0.0
+        totalHp = 0.0
+        totalI  = 0.0
+        results = []
+        for s in self.nodes.keys():
+            v = self.nodes[s]
+            n = sum(v.children.values())
+            p = float(n)/ntotal
+            H = 0.0
+            nset = self.countbits(s)
+            Hp = self.lognrooted(nset)
+            for ctuple in v.children.keys():
+                nchild = v.children[ctuple]
+                pchild = float(nchild)/ntotal
+                pchild /= p
+                H -= pchild*math.log(pchild)
+                nsetleft  = self.countbits(ctuple[0])
+                nsetright = self.countbits(ctuple[1])
+                Hp -= pchild*(self.lognrooted(nsetleft) + self.lognrooted(nsetright))
+            I = Hp - H
+            w = p
+            results.append((H, Hp, I*w, w, s))
+            totalH  += H*w
+            totalHp += Hp*w
+            totalI  += I*w
+
+        if output is not None:
+            output.info('\nInformation partitioned by clade:')
+            output.info('  %12s %12s %12s %12s %12s   %s' % ('H', 'Hp', 'I', '% max. I', 'prob', 'clade'))
+            totalPct = 0.0
+            for H, Hp, I, prob, clade in results:
+                if I > 0.0:
+                    pct = 100.0*I/totalI
+                    totalPct += pct
+                    output.info('  %12.5f %12.5f %12.5f %12.1f %12.5f   %s' % (H, Hp, I, pct, prob, clade))
+            output.info('  %12.5f %12.5f %12.5f %12s' % (totalH, totalHp, totalI, totalPct))
+
+        return (totalH, totalHp, totalI)
+
+    #def _calcH(self, h0, p0, c0):
+    #    H = h0
+    #    for prob,ctuple in zip(p0, c0):
+    #        for s in ctuple:
+    #            if s in self.nodes.keys():
+    #                h, p, c = self.nodes[s].calcH()
+    #                H += prob*self._calcH(h, p, c)
+    #    return H
+    #
+    #def calcH(self):
+    #    assert self.rootsplit is not None, 'cannot compute H because basal split could not be identified'
+    #    h, p, ctuples = self.nodes[self.rootsplit].calcH()
+    #    self.H = self._calcH(h, p, ctuples)
+    #    return self.H
+
+    def updateCCDTree(self, s, ctuple, isroot):
         if isroot:
             self.rootsplit = s
         if s in self.nodes.keys():
@@ -57,7 +149,9 @@ class CCDNode(object):
         self.children = {ctuple:1}
         self.total = None
         self.h = None
+        self.hp = None
         self.p = None
+        self.I = None
 
     def increment(self, ctuple):
         if ctuple in self.children.keys():
@@ -65,19 +159,19 @@ class CCDNode(object):
         else:
             self.children[ctuple] = 1
 
-    def calcH(self):
-        self.total = 0.0
-        sum_terms = 0.0
-        freqs = []
-        for k in self.children.keys():
-            n = float(self.children[k])
-            self.total += n
-            freqs.append(n)
-            sum_terms += n*math.log(n)
-        sum_terms -= self.total*math.log(self.total)
-        self.h = -sum_terms/self.total
-        self.p = [(f/self.total) for f in freqs]
-        return (self.h, self.p, self.children.keys())
+    #def calcH(self):
+    #    self.total = 0.0
+    #    sum_terms = 0.0
+    #    freqs = []
+    #    for k in self.children.keys():
+    #        n = float(self.children[k])
+    #        self.total += n
+    #        freqs.append(n)
+    #        sum_terms += n*math.log(n)
+    #    sum_terms -= self.total*math.log(self.total)
+    #    self.h = -sum_terms/self.total
+    #    self.p = [(f/self.total) for f in freqs]
+    #    return (self.h, self.p, self.children.keys())
 
 class TreeSummarizer(CommonFunctions):
     #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
@@ -519,7 +613,7 @@ class TreeSummarizer(CommonFunctions):
             else:
                 joint_split_map[stuple] = 1
 
-            ccd_tree.update(ss, tuple(slist), nd.getParent().isRoot())
+            ccd_tree.updateCCDTree(ss, tuple(slist), nd.getParent().isRoot())
 
     def findBestParentSplit(self, curr_stuple, joint_split_map):
         best_parent_key = None
@@ -614,7 +708,8 @@ class TreeSummarizer(CommonFunctions):
 
     def debugShowCCDTree(self, ccd_tree):
         self.stdout.info('\nCCD Tree:')
-        ccd_tree.show(self.stdout)
+        ccd_tree.showCCDTree(self.stdout)
+        raw_input('...')
 
     def debugShowJointSplitFreqs(self, joint_split_map, log_num_possible_topol):
         max_joint_split_freq = 0.0
@@ -851,6 +946,7 @@ class TreeSummarizer(CommonFunctions):
         larget_cum_prob = 0.0
         larget_max_prob = 0.0
         num_distinct_topologies = 0
+        lindleyHnaive = 0.0
         KL_sum = 0.0
         KL_max = None
         KL_ntax = None
@@ -870,6 +966,7 @@ class TreeSummarizer(CommonFunctions):
                 # Determine the posterior probability and cumulative posterior probability
                 post_prob = float(v[0])/float(self.num_trees_considered)
                 cum_prob += post_prob
+                lindleyHnaive -= post_prob*math.log(post_prob)
                 if cum_prob > self.opts.tree_credible_prob:
                     # stop after the current tree
                     done = True
@@ -965,37 +1062,51 @@ class TreeSummarizer(CommonFunctions):
 
             KL_near_upper = self.calcKLupper(joint_split_map, KL_max)
 
-            lindleyH = ccd_tree.calcH()
-            lindleyH0 = KL_max
-            lindleyI = -(lindleyH - lindleyH0)
-            lindleyIpct = 100.0*lindleyI/KL_max
-            self.stdout.info('\nLindley information measure:')
-            self.stdout.info('  Posterior entropy:  %.5f' % lindleyH)
-            self.stdout.info('  Prior entropy:      %.5f' % lindleyH0)
-            self.stdout.info('  Information gain:   %.5f' % lindleyI)
-            self.stdout.info('  %% max. information: %.5f' % lindleyIpct)
+            # temporary!
+            #self.debugShowCCDTree(ccd_tree)
 
-            self.stdout.info('\nTopological information content:')
-            self.stdout.info('  Number of taxa: %.5f' % KL_ntax)
-            self.stdout.info('  KL maximum (log of total number of distinct tree topologies): %.5f' % KL_max)
-            self.stdout.info('  Naive estimate based on %d distinct tree topologies:' % num_distinct_topologies)
-            self.stdout.info('    KL naive estimate:           %.5f' % (KL_sum + KL_max,))
-            self.stdout.info('    KL naive (%% of max.):       %.5f' % (100.0*(KL_sum + KL_max)/KL_max,))
-            self.stdout.info('  Bounds based on %d distinct tree topologies and %.5f cumulative probability:' % (num_distinct_topologies, larget_cum_prob))
-            self.stdout.info('    KL lower bound (%% of max.): %.5f' % (100.0*KLlower/KL_max,))  # not correct for polytomy analyses
-            self.stdout.info('    KL upper bound (%% of max.): %.5f' % (100.0*KLupper/KL_max,))  # not correct for polytomy analyses
-            if KL_near_upper < KLupper:
-                self.stdout.info('  Near upper bound based on conditional clade probabilities:')
-                self.stdout.info('    KL near upper bound:              %.5f' % KL_near_upper)
-                self.stdout.info('    KL near upper bound (%% of max.): %.5f' % (100.0*KL_near_upper/KL_max,))  # not correct for polytomy analyses
-            self.stdout.info('  Notes:')
-            self.stdout.info('  1) the naive estimate uses sample frequencies of tree topologies (does not account for unsampled posterior mass);')
-            self.stdout.info('  2) the lower bound assumes all unsampled tree topologies have equal posterior probability;')
-            self.stdout.info('  3) the upper bound assumes one unsampled tree topology has all unsampled posterior mass;')
-            if KL_near_upper < KLupper:
-                self.stdout.info('  4) the near upper bound assumes 1/p tree topologies have maximum posterior probability p,')
-                self.stdout.info('     and all remaining topologies have posterior zero, where p is determined from sample')
-                self.stdout.info('     conditional clade distribution')
+            lindleyH, lindleyHp, lindleyI = ccd_tree.calcI(self.stdout)
+            lindleyH0 = KL_max
+            lindleyIpct = 100.0*lindleyI/KL_max
+            self.stdout.info('\nLindley information based on conditional clade distribution:')
+            self.stdout.info('  Posterior entropy:   %.5f' % lindleyH)
+            self.stdout.info('  Prior entropy:       %.5f' % lindleyH0)
+            self.stdout.info('  Information gain:    %.5f' % lindleyI)
+            self.stdout.info('  %% max. information:  %.5f' % lindleyIpct)
+
+            self.stdout.info('\nLarget coverage:')
+            self.stdout.info('  Distinct tree topologies: %d' % num_distinct_topologies)
+            self.stdout.info('  Posterior coverage:       %.5f' % larget_cum_prob)
+
+            lindleyInaive = -(lindleyHnaive - lindleyH0)
+            lindleyIpctnaive = 100.0*lindleyInaive/KL_max
+            self.stdout.info('\nLindley information based on observed tree topology distribution:')
+            self.stdout.info('  Posterior entropy:   %.5f' % lindleyHnaive)
+            self.stdout.info('  Prior entropy:       %.5f' % lindleyH0)
+            self.stdout.info('  Information gain:    %.5f' % lindleyInaive)
+            self.stdout.info('  %% max. information:  %.5f' % lindleyIpctnaive)
+
+            #self.stdout.info('\nTopological information content:')
+            #self.stdout.info('  Number of taxa: %.5f' % KL_ntax)
+            #self.stdout.info('  KL maximum (log of total number of distinct tree topologies): %.5f' % KL_max)
+            #self.stdout.info('  Naive estimate based on %d distinct tree topologies:' % num_distinct_topologies)
+            #self.stdout.info('    KL naive estimate:           %.5f' % (KL_sum + KL_max,))
+            #self.stdout.info('    KL naive (%% of max.):       %.5f' % (100.0*(KL_sum + KL_max)/KL_max,))
+            #self.stdout.info('  Bounds based on %d distinct tree topologies and %.5f cumulative probability:' % (num_distinct_topologies, larget_cum_prob))
+            #self.stdout.info('    KL lower bound (%% of max.): %.5f' % (100.0*KLlower/KL_max,))  # not correct for polytomy analyses
+            #self.stdout.info('    KL upper bound (%% of max.): %.5f' % (100.0*KLupper/KL_max,))  # not correct for polytomy analyses
+            #if KL_near_upper < KLupper:
+            #    self.stdout.info('  Near upper bound based on conditional clade probabilities:')
+            #    self.stdout.info('    KL near upper bound:              %.5f' % KL_near_upper)
+            #    self.stdout.info('    KL near upper bound (%% of max.): %.5f' % (100.0*KL_near_upper/KL_max,))  # not correct for polytomy analyses
+            #self.stdout.info('  Notes:')
+            #self.stdout.info('  1) the naive estimate uses sample frequencies of tree topologies (does not account for unsampled posterior mass);')
+            #self.stdout.info('  2) the lower bound assumes all unsampled tree topologies have equal posterior probability;')
+            #self.stdout.info('  3) the upper bound assumes one unsampled tree topology has all unsampled posterior mass;')
+            #if KL_near_upper < KLupper:
+            #    self.stdout.info('  4) the near upper bound assumes 1/p tree topologies have maximum posterior probability p,')
+            #    self.stdout.info('     and all remaining topologies have posterior zero, where p is determined from sample')
+            #    self.stdout.info('     conditional clade distribution')
 
         self.stdout.info('\nSaving distinct tree topologies...')
         self.save_trees(summary_short_name_list, summary_full_name_list, summary_tree_list)
