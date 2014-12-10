@@ -247,7 +247,9 @@ class MarkovChain(LikelihoodCore):
                 else:
                     if mspec.external_edgelen_prior is not None:
                         #print '~~~~~> mspec.external_edgelen_prior is not None'
-                        m.setExternalEdgeLenPrior(mspec.external_edgelen_prior.cloneAndSetLot(self.r))
+                        #m.setExternalEdgeLenPrior(mspec.external_edgelen_prior.cloneAndSetLot(self.r))
+                        zzz = mspec.external_edgelen_prior.cloneAndSetLot(self.r)
+                        m.setExternalEdgeLenPrior(zzz)
                     if mspec.internal_edgelen_prior is not None:
                         #print '~~~~~> mspec.internal_edgelen_prior is not None'
                         m.setInternalEdgeLenPrior(mspec.internal_edgelen_prior.cloneAndSetLot(self.r))

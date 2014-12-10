@@ -535,6 +535,7 @@ class TreeSummarizer(CommonFunctions):
         #       allows the number and extent of each sojourn to be computed
         nd = tree.getFirstPreorder()
         assert nd.isRoot(), 'the first preorder node should be the root'
+        #print '>>> %s %s' % (nd.getSplit().createPatternRepresentation(),nd.isRoot() and "(root)" or "")
         #split_vec = []
         treelen = 0.0
         has_edge_lens = tree.hasEdgeLens()
@@ -553,7 +554,6 @@ class TreeSummarizer(CommonFunctions):
                 # Grab the edge length
                 edge_len = has_edge_lens and nd.getEdgeLen() or 1.0
                 treelen += edge_len
-                # OLDWAY self.recordNodeInMaps(nd, split_map, tree_key, is_tip_node, edge_len)
                 self.recordNodeInMaps(nd, split_lookup, split_map, joint_split_map, ccd_tree, tree_key, edge_len)
         return treelen
 
@@ -613,6 +613,8 @@ class TreeSummarizer(CommonFunctions):
             else:
                 joint_split_map[stuple] = 1
 
+            #print '~~~ %s %s' % (ss,nd.getParent().isRoot() and "(parent is root)" or "")
+            #raw_input('...')
             ccd_tree.updateCCDTree(ss, tuple(slist), nd.getParent().isRoot())
 
     def findBestParentSplit(self, curr_stuple, joint_split_map):
@@ -806,7 +808,6 @@ class TreeSummarizer(CommonFunctions):
             # Build the tree
             tree_def.buildTree(t)
             t.rectifyNames(self.taxon_labels)
-            #ntips = t.getNTips()
             ntips = t.getNObservables()
             if ntips > split_field_width:
                 # this is necessary only if number of taxa varies from tree to tree
@@ -830,17 +831,19 @@ class TreeSummarizer(CommonFunctions):
                 # tree topology has not yet been seen
                 tree_map[k] = [1, tree_def, treelen, self.num_trees_considered]
 
+        #raw_input('...stop now...')
+
         self.stdout.info('\nSummary of sampled trees:')
         self.stdout.info('-------------------------')
         self.stdout.info('Tree source: %s' %  str(input_trees))
         self.stdout.info('Total number of trees in file = %d' % num_trees)
         self.stdout.info('Number of trees considered = %d' % self.num_trees_considered)
         self.stdout.info('Number of distinct tree topologies found = %d' % len(tree_map.keys()))
-        #self.stdout.info('Number of distinct splits found = %d' % (len(split_map.keys()) - t.getNTips()))
         self.stdout.info('Number of distinct splits found = %d' % (len(split_map.keys()) - t.getNObservables()))
         if self.num_trees_considered == 0:
             self.stdout.info('\nSumT finished.')
             return
+
         # Sort the splits from highest posterior probabilty to lowest
         split_vect = split_map.items()
         c = lambda x,y: cmp(y[1][0], x[1][0])
@@ -932,6 +935,8 @@ class TreeSummarizer(CommonFunctions):
         summary_short_name_list = ['majrule']
         summary_full_name_list = ['Majority-rule Consensus']
         summary_tree_list = [majrule]
+
+        # treelen = self.recordTreeInMaps(t, split_lookup, split_map, joint_split_map, ccd_tree, tree_key)
 
         # Output summary of tree topologies
         self.stdout.info('\nTree topology (topology), frequency (freq.), mean tree length (TL),')

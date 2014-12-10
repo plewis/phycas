@@ -25,6 +25,11 @@ export PYTHON_ROOT="PLEASE_SUPPLY"
 # e.g. export NCL_INSTALL_DIR="$HOME/nclib"
 export NCL_INSTALL_DIR="PLEASE_SUPPLY"
 
+# Provide the directory into which all Phycas files will be copied. This directory
+# will be compressed into a tar.gz file for distribution.
+# e.g. export PHYCAS_STAGE="$HOME/software/phycas/phycas"
+export PHYCAS_STAGE="PLEASE_SUPPLY"
+
 ######## You should not need to change anything below here #######
 
 if [ ! -e "scripts/fixit.sh" ]; then
@@ -48,13 +53,28 @@ if [ "$BOOST_ROOT" == "PLEASE_SUPPLY" ] || [ ! -e "$BOOST_ROOT" ]; then
     exit 1
 fi
 
-if [ "$PYTHON_ROOT" == "PLEASE_SUPPLY" ] || ( [ ! -e "$PYTHON_ROOT" ] ||  [ ! -f "$PYTHON_ROOT" ]); then
+if [ "$PYTHON_ROOT" == "PLEASE_SUPPLY" ] || ( [ ! -e "$PYTHON_ROOT" ] ||  [ ! -f "$PYTHON_ROOT" ] ); then
     echo Please edit $0 and specify a valid path to the Python interpreter for PYTHON_ROOT \(you should be able to start Python if you execute the supplied value\)
     exit 1
 fi
 
 if [ "$NCL_INSTALL_DIR" == "PLEASE_SUPPLY" ] || [ ! -e "$NCL_INSTALL_DIR" ]; then
     echo Please edit $0 and specify a valid directory for NCL_INSTALL_DIR
+    exit 1
+fi
+
+if [ "PHYCAS_STAGE" == "PLEASE_SUPPLY" ]; then
+    echo Please edit $0 and specify a valid directory for PHYCAS_STAGE
+    exit 1
+fi
+
+# Get the Phycas version number (used in creating the tar.gz file for distribution)
+getversion() {head -n 1 src/python/__init__.py | egrep -o "([0-9.]+)"}
+if [ -e "src/python/__init__.py" ]; then
+    export PHYCAS_VERSION=`getversion`
+    echo "PHYCAS_VERSION = $PHYCAS_VERSION"
+else
+    echo Could not find version \(e.g. \"2.0.0\"\) number
     exit 1
 fi
 
@@ -87,8 +107,8 @@ fi
 # bjam -j2 variant=release link=shared install
 
 # This copies Python files for each extension as well as the examples and tests folders
-# into the phycas directory
-scripts/copy_src_python.sh
+# into the phycas directory specified by PHYCAS_STAGE (which will be deleted if it exists)
+scripts/copy_src_python.sh $PHYCAS_STAGE
 
 # This creates a tar.gz file of the phycas directory to make it easy to distribute
 # the phycas module
@@ -102,7 +122,7 @@ elif [ "$OSTYPE" == "clang" ]; then
     sed -e 's|NCL_DYLIB_DIR="PLEASE_SUPPLY"|NCL_DYLIB_DIR="'$NCL_INSTALL_DIR'"|' -i '' ./fixit.sh
     sed -e 's|PYTHON_DYLIB_DIR="PLEASE_SUPPLY"|PYTHON_DYLIB_DIR="'$PYTHON_DYLIB_DIR'"|' -i '' ./fixit.sh
     ./fixit.sh
-    tar zcvf phycas-${PHYCAS_VERSION}-mac.tar.gz phycas
+    tar zcf phycas-${PHYCAS_VERSION}-mac.tar.gz phycas
 else
     echo No tar file created because \$OSTYPE was neither \"linux\" nor \"clang\"
 fi
