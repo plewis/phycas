@@ -40,11 +40,11 @@ mcmc.starting_tree_source = randomtree(n_taxa=len(blob.taxon_labels), rng=rng)
 mcmc.rng = rng
 mcmc.data_source = blob.characters
 
-import wingdbstub
-
-if 'WINGDB_ACTIVE' in os.environ:
-    print 'Success starting debugger'
-else:
-    print 'Failed to start debugger'
+# import wingdbstub
+#
+# if 'WINGDB_ACTIVE' in os.environ:
+#     print 'Success starting debugger'
+# else:
+#     print 'Failed to start debugger'
 
 mcmc()

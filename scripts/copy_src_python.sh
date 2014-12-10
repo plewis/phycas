@@ -26,9 +26,6 @@
 #   copy_src_python.sh
 #
 
-echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-echo "Command line arguments:"
-echo "  number --> $#"
 if [[ -z "$1" ]]; then
     # No command line arguments provided
     # Assume script is being run by build.sh from the directory containing Jamroot
@@ -43,10 +40,11 @@ else
     PHYCAS_STAGE="$PHYCAS_ROOT/phycas"
 fi
 
-echo "RUNNING_FROM_XCODE --> $RUNNING_FROM_XCODE"
-echo "BUILT_PRODUCTS_DIR --> $BUILT_PRODUCTS_DIR"
-echo "PHYCAS_STAGE       --> $PHYCAS_STAGE"
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+echo "$0 starting..."
+echo "RUNNING_FROM_XCODE --> $RUNNING_FROM_XCODE"
+#echo "BUILT_PRODUCTS_DIR --> $BUILT_PRODUCTS_DIR"
+#echo "PHYCAS_STAGE       --> $PHYCAS_STAGE"
 
 ##########################################################
 # Check that we are being run from the correct directory #
@@ -74,36 +72,35 @@ cp src/python/__init__.py $PHYCAS_STAGE
 ########################################
 # Copy files for conversions extension #
 ########################################
-echo "RUNNING_FROM_XCODE = $RUNNING_FROM_XCODE"
 if [[ $RUNNING_FROM_XCODE -eq 1 ]]; then
-    echo "should not be here"
     mkdir $PHYCAS_STAGE/conversions
     cp $BUILT_PRODUCTS_DIR/_ConversionsExt.so $PHYCAS_STAGE/conversions
     cp src/python/conversions/*.py $PHYCAS_STAGE/conversions
     cp $BOOST_ROOT/lib/libboost_python.dylib $PHYCAS_STAGE/conversions
     cp $NCL_ROOT/lib/ncl/libncl-2.1.18.dylib $PHYCAS_STAGE/conversions
     cp $PYTHON_ROOT/lib/libpython2.7.dylib $PHYCAS_STAGE/conversions
-elif [[ ! -e "./phycas/conversions" ]]; then
-    echo "should be here"
-    echo $0 expected to find a directory named "phycas/conversions" inside `pwd`
-    exit 1
+else
+    if [[ ! -e "phycas/conversions" ]]; then
+        echo $0 expected to find a directory named "phycas/conversions" inside `pwd`
+        exit 1
+    fi
 
     rm -f phycas/conversions/*.py
-    cp ./src/python/conversions/*.py phycas/conversions
+    cp src/python/conversions/*.py phycas/conversions
 fi
-echo "abort exit"
-exit 1
 
 #######################################
 # Copy files for datamatrix extension #
 #######################################
-if [[ $RUNNING_FROM_XCODE ]]; then
+if [[ $RUNNING_FROM_XCODE -eq 1 ]]; then
     mkdir $PHYCAS_STAGE/datamatrix
     cp $BUILT_PRODUCTS_DIR/_DataMatrixExt.so $PHYCAS_STAGE/datamatrix
     cp src/python/datamatrix/*.py $PHYCAS_STAGE/datamatrix
-elif [[ ! -e "phycas/datamatrix" ]]; then
-    echo $0 expected to find a directory named "phycas/datamatrix" inside `pwd`
-    exit 1
+else
+    if [[ ! -e "phycas/datamatrix" ]]; then
+        echo $0 expected to find a directory named "phycas/datamatrix" inside `pwd`
+        exit 1
+    fi
 
     rm -f phycas/datamatrix/*.py
     cp src/python/datamatrix/*.py phycas/datamatrix
@@ -112,13 +109,15 @@ fi
 #######################################
 # Copy files for likelihood extension #
 #######################################
-if [[ $RUNNING_FROM_XCODE ]]; then
+if [[ $RUNNING_FROM_XCODE -eq 1 ]]; then
     mkdir $PHYCAS_STAGE/likelihood
     cp $BUILT_PRODUCTS_DIR/_LikelihoodExt.so $PHYCAS_STAGE/likelihood
     cp src/python/likelihood/*.py $PHYCAS_STAGE/likelihood
-elif [[ ! -e "phycas/likelihood" ]]; then
-    echo $0 expected to find a directory named "phycas/likelihood" inside `pwd`
-    exit 1
+else
+    if [[ ! -e "phycas/likelihood" ]]; then
+        echo $0 expected to find a directory named "phycas/likelihood" inside `pwd`
+        exit 1
+    fi
 
     rm -f phycas/likelihood/*.py
     cp src/python/likelihood/*.py phycas/likelihood
@@ -127,13 +126,15 @@ fi
 ######################################
 # Copy files for phylogeny extension #
 ######################################
-if [[ $RUNNING_FROM_XCODE ]]; then
+if [[ $RUNNING_FROM_XCODE -eq 1 ]]; then
     mkdir $PHYCAS_STAGE/phylogeny
     cp $BUILT_PRODUCTS_DIR/_PhylogenyExt.so $PHYCAS_STAGE/phylogeny
     cp src/python/phylogeny/*.py $PHYCAS_STAGE/phylogeny
-elif [[ ! -e "phycas/phylogeny" ]]; then
-    echo $0 expected to find a directory named "phycas/phylogeny" inside `pwd`
-    exit 1
+else
+    if [[ ! -e "phycas/phylogeny" ]]; then
+        echo $0 expected to find a directory named "phycas/phylogeny" inside `pwd`
+        exit 1
+    fi
 
     rm -f phycas/phylogeny/*.py
     cp src/python/phylogeny/*.py phycas/phylogeny
@@ -142,13 +143,15 @@ fi
 #####################################
 # Copy files for probdist extension #
 #####################################
-if [[ $RUNNING_FROM_XCODE ]]; then
+if [[ $RUNNING_FROM_XCODE -eq 1 ]]; then
     mkdir $PHYCAS_STAGE/probdist
     cp $BUILT_PRODUCTS_DIR/_ProbDistExt.so $PHYCAS_STAGE/probdist
     cp src/python/probdist/*.py $PHYCAS_STAGE/probdist
-elif [[ ! -e "phycas/probdist" ]]; then
-    echo $0 expected to find a directory named "phycas/probdist" inside `pwd`
-    exit 1
+else
+    if [[ ! -e "phycas/probdist" ]]; then
+        echo $0 expected to find a directory named "phycas/probdist" inside `pwd`
+        exit 1
+    fi
 
     rm -f phycas/probdist/*.py
     cp src/python/probdist/*.py phycas/probdist
@@ -157,13 +160,15 @@ fi
 ######################################
 # Copy files for readnexus extension #
 ######################################
-if [[ $RUNNING_FROM_XCODE ]]; then
+if [[ $RUNNING_FROM_XCODE -eq 1 ]]; then
     mkdir $PHYCAS_STAGE/readnexus
     cp $BUILT_PRODUCTS_DIR/_ReadNexusExt.so $PHYCAS_STAGE/readnexus
     cp src/python/readnexus/*.py $PHYCAS_STAGE/readnexus
-elif [[ ! -e "phycas/readnexus" ]]; then
-    echo $0 expected to find a directory named "phycas/readnexus" inside `pwd`
-    exit 1
+else
+    if [[ ! -e "phycas/readnexus" ]]; then
+        echo $0 expected to find a directory named "phycas/readnexus" inside `pwd`
+        exit 1
+    fi
 
     rm -f phycas/readnexus/*.py
     cp src/python/readnexus/*.py phycas/readnexus
@@ -172,19 +177,21 @@ fi
 ################################
 # Copy files for pdfgen module #
 ################################
-if [[ $RUNNING_FROM_XCODE ]]; then
+if [[ $RUNNING_FROM_XCODE -eq 1 ]]; then
     mkdir $PHYCAS_STAGE/pdfgen
     cp src/python/pdfgen/*.py $PHYCAS_STAGE/pdfgen
     cp -R src/python/pdfgen/AFM $PHYCAS_STAGE/pdfgen
-elif [[ ! -e "phycas/pdfgen" ]]; then
-    cd phycas
-    rm -rf pdfgen
-    mkdir pdfgen
-    if [ $? -ne 0 ]; then
-        echo $0 could not create pdfgen directory inside `pwd`
-        exit 1
+else
+    if [[ ! -e "phycas/pdfgen" ]]; then
+        cd phycas
+        rm -rf pdfgen
+        mkdir pdfgen
+        if [ $? -ne 0 ]; then
+            echo $0 could not create pdfgen directory inside `pwd`
+            exit 1
+        fi
+        cd ..
     fi
-    cd ..
 
     cp src/python/pdfgen/*.py phycas/pdfgen
     cp -R src/python/pdfgen/AFM phycas/pdfgen
@@ -193,38 +200,41 @@ fi
 ####################################
 # Copy files for treeviewer module #
 ####################################
-if [[ $RUNNING_FROM_XCODE ]]; then
+if [[ $RUNNING_FROM_XCODE -eq 1 ]]; then
     mkdir $PHYCAS_STAGE/treeviewer
     cp src/python/treeviewer/*.py $PHYCAS_STAGE/treeviewer
-elif [[ ! -e "phycas/treeviewer" ]]; then
-    cd phycas
-    rm -rf treeviewer
-    mkdir treeviewer
-    if [ $? -ne 0 ]; then
-        echo $0 could not create treeviewer directory inside `pwd`
-        exit 1
+else
+    if [[ ! -e "phycas/treeviewer" ]]; then
+        cd phycas
+        rm -rf treeviewer
+        mkdir treeviewer
+        if [ $? -ne 0 ]; then
+            echo $0 could not create treeviewer directory inside `pwd`
+            exit 1
+        fi
+        cd ..
     fi
-    cd ..
 
-    cd phycas/treeviewer
     cp src/python/treeviewer/*.py phycas/treeviewer
 fi
 
 ###################################
 # Copy files for utilities module #
 ###################################
-if [[ $RUNNING_FROM_XCODE ]]; then
+if [[ $RUNNING_FROM_XCODE -eq 1 ]]; then
     mkdir $PHYCAS_STAGE/utilities
     cp src/python/utilities/*.py $PHYCAS_STAGE/utilities
-elif [[ ! -e "phycas/utilities" ]]; then
-    cd phycas
-    rm -rf utilities
-    mkdir utilities
-    if [ $? -ne 0 ]; then
-        echo $0 could not create utilities directory inside `pwd`
-        exit 1
+else
+    if [[ ! -e "phycas/utilities" ]]; then
+        cd phycas
+        rm -rf utilities
+        mkdir utilities
+        if [ $? -ne 0 ]; then
+            echo $0 could not create utilities directory inside `pwd`
+            exit 1
+        fi
+        cd ..
     fi
-    cd ..
 
     cp src/python/utilities/*.py phycas/utilities
 fi
@@ -232,18 +242,20 @@ fi
 ##################################
 # Copy files for commands module #
 ##################################
-if [[ $RUNNING_FROM_XCODE ]]; then
+if [[ $RUNNING_FROM_XCODE -eq 1 ]]; then
     mkdir $PHYCAS_STAGE/commands
     cp src/python/commands/*.py $PHYCAS_STAGE/commands
-elif [[ ! -e "phycas/commands" ]]; then
-    cd phycas
-    rm -rf commands
-    mkdir commands
-    if [ $? -ne 0 ]; then
-        echo $0 could not create commands directory inside `pwd`
-        exit 1
+else
+    if [[ ! -e "phycas/commands" ]]; then
+        cd phycas
+        rm -rf commands
+        mkdir commands
+        if [ $? -ne 0 ]; then
+            echo $0 could not create commands directory inside `pwd`
+            exit 1
+        fi
+        cd ..
     fi
-    cd ..
 
     cp src/python/commands/*.py phycas/commands
 fi
@@ -251,19 +263,21 @@ fi
 ##############
 # Copy tests #
 ##############
-if [[ $RUNNING_FROM_XCODE ]]; then
+if [[ $RUNNING_FROM_XCODE -eq 1 ]]; then
     mkdir $PHYCAS_STAGE/tests
     cp -R tests/* $PHYCAS_STAGE/tests
     cp scripts/wingdbstub.py $PHYCAS_STAGE/tests/gtrtest
-elif [[ ! -e "phycas/tests" ]]; then
-    cd phycas
-    rm -rf tests
-    mkdir tests
-    if [ $? -ne 0 ]; then
-        echo $0 could not create tests directory inside `pwd`
-        exit 1
+else
+    if [[ ! -e "phycas/tests" ]]; then
+        cd phycas
+        rm -rf tests
+        mkdir tests
+        if [ $? -ne 0 ]; then
+            echo $0 could not create tests directory inside `pwd`
+            exit 1
+        fi
+        cd ..
     fi
-    cd ..
 
     cp -R tests/* phycas/tests
 fi
@@ -271,20 +285,22 @@ fi
 #################
 # Copy examples #
 #################
-if [[ $RUNNING_FROM_XCODE ]]; then
+if [[ $RUNNING_FROM_XCODE -eq 1 ]]; then
     mkdir $PHYCAS_STAGE/examples
     cp -R examples/* $PHYCAS_STAGE/examples
-elif [[ ! -e "phycas/examples" ]]; then
-    cd phycas
-    rm -rf examples
-    mkdir examples
-    if [ $? -ne 0 ]; then
-        echo $0 could not create examples directory inside `pwd`
-        exit 1
+else
+    if [[ ! -e "phycas/examples" ]]; then
+        cd phycas
+        rm -rf examples
+        mkdir examples
+        if [ $? -ne 0 ]; then
+            echo $0 could not create examples directory inside `pwd`
+            exit 1
+        fi
+        cd ..
     fi
-    cd ..
 
     cp -R examples/* phycas/examples
 fi
 
-echo "done here"
+echo "$0 done."
