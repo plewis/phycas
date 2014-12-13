@@ -29,6 +29,9 @@ NCL_DYLIB_DIR="PLEASE_SUPPLY"
 # e.g. PYTHON_DYLIB_DIR=/System/Library/Frameworks/Python.framework/Versions/2.7/lib
 PYTHON_DYLIB_DIR="PLEASE_SUPPLY"
 
+echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+echo "$0 starting..."
+
 # Make sure user knows that this script may fail if not run as root
 if [[ $EUID -ne 0 ]]; then
   echo "If fixit.sh fails, it may be because you need to run it as root user \(try \"sudo ./fixit.sh\"\)" 1>&2
@@ -154,3 +157,5 @@ install_name_tool -change "libboost_chrono.dylib" "@loader_path/../lib/libboost_
 install_name_tool -change "libboost_system.dylib" "@loader_path/../lib/libboost_system.dylib" _ReadNexusExt.so
 
 cd $CWD
+
+echo "$0 done."

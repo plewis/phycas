@@ -55,7 +55,7 @@
 //#	pragma warning(disable: 4996)	// warning about loss of data when converting size_t to int
 #endif
 
-#include "src/cpp/phycas_config.h"
+#include "phycas_config.h"
 
 #endif	/* defined(__cplusplus) */
 #endif	/* STD_FORCE_INCLUDE_HPP */

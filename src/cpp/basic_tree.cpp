@@ -1798,9 +1798,27 @@ void Tree::BuildFromString(
 								--i;
 								break;
 								}
+
+                            // handle embedded comments
+                            if (ch == '[')
+                                {
+                                for (++i; i != newick.end(); ++i)
+                                    {
+                                    ch = *i;
+                                    if (ch == '[')
+                                        throw XPhylogeny("nested comments are not allowed in tree definitions");
+                                    if (ch == ']')
+                                        {
+                                        ++i;
+                                        ch = *i;
+                                        break;
+                                        }
+                                    }
+                                }
+
 							bool valid = (ch =='e' || ch == 'E' || ch =='.' || ch == '-' || ch == '+' || isdigit(ch));
 							if (!valid)
-								throw XPhylogeny("invalid branch length character");
+								throw XPhylogeny(boost::str(boost::format("invalid branch length character (%c)") % ch));
 							workspace << ch;
 							}
 						double brlen = atof(workspace.c_str());

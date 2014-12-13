@@ -201,70 +201,71 @@ install datamatrix : _DataMatrixExt : <location>phycas/datamatrix ;
 
 # Build and install the likelihood extension
 alias likelihood_sources
-  : src/cpp/tree_likelihood.cpp
-    src/cpp/prior_distribution.cpp
-    src/cpp/numsum.cpp
-    src/cpp/joint_prior_manager.cpp
-    src/cpp/basic_cdf.cpp
+  : src/cpp/basic_cdf.cpp
     src/cpp/basic_lot.cpp
     src/cpp/basic_tree.cpp
     src/cpp/basic_tree_node.cpp
+    src/cpp/binary_model.cpp
     src/cpp/boost_assertion_failed.cpp
     src/cpp/bush_move.cpp
     src/cpp/codon_model.cpp
     src/cpp/cond_likelihood.cpp
     src/cpp/cond_likelihood_storage.cpp
+    src/cpp/dirichlet_distribution.cpp
+    src/cpp/dirichlet_move.cpp
     src/cpp/discrete_gamma_shape_param.cpp
-    src/cpp/thirdparty/dcdflib/src/dcdflib.c
-    src/cpp/edgelen_master_param.cpp
     src/cpp/edge_move.cpp
+    src/cpp/edgelen_master_param.cpp
     src/cpp/gtr.cpp
     src/cpp/gtr_rate_param.cpp
     src/cpp/hky.cpp
     src/cpp/hyperprior_param.cpp
-    src/cpp/jc.cpp
-    src/cpp/kappa_param.cpp
     src/cpp/internal_data.cpp
-    src/cpp/binary_model.cpp
     src/cpp/irreversible_model.cpp
-    src/cpp/thirdparty/dcdflib/src/ipmpar.c
+    src/cpp/jc.cpp
+    src/cpp/joint_prior_manager.cpp
+    src/cpp/kappa_param.cpp
     src/cpp/larget_simon_move.cpp
     src/cpp/likelihood_loops.cpp
-    src/cpp/model.cpp
     src/cpp/likelihood_pymod.cpp
     src/cpp/linalg.c
     src/cpp/lognormal.cpp
-    src/cpp/model_pymod.cpp
     src/cpp/mcmc_chain_manager.cpp
     src/cpp/mcmc_param.cpp
     src/cpp/mcmc_updater.cpp
+    src/cpp/model.cpp
+    src/cpp/model_pymod.cpp
+    src/cpp/numsum.cpp
     src/cpp/omega_param.cpp
+    src/cpp/partition_model.cpp
     src/cpp/phycas_string.cpp
     src/cpp/pinvar_param.cpp
-    src/cpp/thirdparty/praxis/dls_brent.c
+    src/cpp/prior_distribution.cpp
     src/cpp/probability_distribution.cpp
-    src/cpp/dirichlet_distribution.cpp
+    src/cpp/q_matrix.cpp
     src/cpp/rectangular_matrix.cpp
     src/cpp/relative_rate_distribution.cpp
-    src/cpp/q_matrix.cpp
+    src/cpp/rel_rates_move.cpp
     src/cpp/sim_data.cpp
     src/cpp/slice_sampler.cpp
     src/cpp/split.cpp
     src/cpp/square_matrix.cpp
-    src/cpp/dirichlet_move.cpp
     src/cpp/state_freq_move.cpp
-    src/cpp/rel_rates_move.cpp
-    src/cpp/subset_relrates_move.cpp
     src/cpp/state_freq_param.cpp
     src/cpp/subset_proportions.cpp
+    src/cpp/subset_relrates_move.cpp
+    src/cpp/thirdparty/dcdflib/src/dcdflib.c
+    src/cpp/thirdparty/dcdflib/src/ipmpar.c
+    src/cpp/thirdparty/praxis/dls_brent.c
     src/cpp/tip_data.cpp
     src/cpp/topo_prior_calculator.cpp
-    src/cpp/partition_model.cpp
     src/cpp/tree_length_distribution.cpp
+    src/cpp/tree_likelihood.cpp
     src/cpp/tree_scaler_move.cpp
     src/cpp/underflow_manager.cpp
     src/cpp/updater_pymod.cpp
     [ obj likelihood_tree_manip_obj : src/cpp/tree_manip.cpp tool_specific_requirements ]
+
     tool_specific_requirements ;
 python-extension _LikelihoodExt : likelihood_sources ;
 install likelihood : _LikelihoodExt : <location>phycas/likelihood ;

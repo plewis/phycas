@@ -1,19 +1,16 @@
 #!/bin/bash
 
 # This script expects certain environmental variables (BOOST_ROOT, PYTHON_ROOT,
-# NCL_INSTALL_DIR, PHYCAS_VERSION) to be defined before it is run. Examples of the
+# NCL_INSTALL_DIR) to be defined before it is run. Examples of the
 # necessary definitions are commented out below; modify appropriately for your
 # installation.
-
-# Specify the version number (used in creating the tar.gz file for distribution)
-export PHYCAS_VERSION="PLEASE_SUPPLY"
 
 # Specify "linux" or "clang" (for MacOS Mavericks) or "windows" (for Windows)
 # e.g. export OSTYPE="linux"
 export OSTYPE="PLEASE_SUPPLY"
 
 # The path to the root of your boost installation (download from http://www.boost.org/)
-# e.g. export BOOST_ROOT="$HOME/boost_1_55_0"
+# e.g. export BOOST_ROOT="$HOME/boost_1_56_0"
 export BOOST_ROOT="PLEASE_SUPPLY"
 
 # The path to your python interpreter (download from https://www.python.org/)
@@ -25,6 +22,10 @@ export PYTHON_ROOT="PLEASE_SUPPLY"
 # e.g. export NCL_INSTALL_DIR="$HOME/nclib"
 export NCL_INSTALL_DIR="PLEASE_SUPPLY"
 
+# Provide the directory into which all Phycas files will be copied. This directory
+# will be compressed into a tar.gz file for distribution.
+# export PHYCAS_STAGE="$HOME/software/phycas/phycas"
+
 ######## You should not need to change anything below here #######
 
 if [ ! -e "scripts/fixit.sh" ]; then
@@ -33,10 +34,10 @@ if [ ! -e "scripts/fixit.sh" ]; then
     exit 1
 fi
 
-if [ "$PHYCAS_VERSION" == "PLEASE_SUPPLY" ]; then
-    echo Please edit $0 and specify a valid version \(e.g. \"2.0.0\"\) for PHYCAS_VERSION
-    exit 1
-fi
+#if [ "$PHYCAS_VERSION" == "PLEASE_SUPPLY" ]; then
+#    echo Please edit $0 and specify a valid version \(e.g. \"2.0.0\"\) for PHYCAS_VERSION
+#    exit 1
+#fi
 
 if [ "$OSTYPE" == "PLEASE_SUPPLY" ] || ( [ "$OSTYPE" != "linux" ] && [ "$OSTYPE" != "clang" ] && [ "$OSTYPE" != "windows" ] ); then
     echo Please edit $0 and specify a valid string for OSTYPE \(either \"linux\", \"clang\" or \"windows\"\)
@@ -48,13 +49,30 @@ if [ "$BOOST_ROOT" == "PLEASE_SUPPLY" ] || [ ! -e "$BOOST_ROOT" ]; then
     exit 1
 fi
 
-if [ "$PYTHON_ROOT" == "PLEASE_SUPPLY" ] || ( [ ! -e "$PYTHON_ROOT" ] ||  [ ! -f "$PYTHON_ROOT" ]); then
+if [ "$PYTHON_ROOT" == "PLEASE_SUPPLY" ] || ( [ ! -e "$PYTHON_ROOT" ] ||  [ ! -f "$PYTHON_ROOT" ] ); then
     echo Please edit $0 and specify a valid path to the Python interpreter for PYTHON_ROOT \(you should be able to start Python if you execute the supplied value\)
     exit 1
 fi
 
 if [ "$NCL_INSTALL_DIR" == "PLEASE_SUPPLY" ] || [ ! -e "$NCL_INSTALL_DIR" ]; then
     echo Please edit $0 and specify a valid directory for NCL_INSTALL_DIR
+    exit 1
+fi
+
+#if [ "PHYCAS_STAGE" == "PLEASE_SUPPLY" ]; then
+#    echo Please edit $0 and specify a valid directory for PHYCAS_STAGE
+#    exit 1
+#fi
+
+# Get the Phycas version number (used in creating the tar.gz file for distribution)
+getversion(){
+/usr/bin/head -n 1 src/python/__init__.py | egrep -o "([0-9.]+)"
+}
+if [ -e "src/python/__init__.py" ]; then
+    export PHYCAS_VERSION=`getversion`
+    echo "PHYCAS_VERSION = $PHYCAS_VERSION"
+else
+    echo Could not find version \(e.g. \"2.0.0\"\) number
     exit 1
 fi
 
@@ -102,7 +120,7 @@ elif [ "$OSTYPE" == "clang" ]; then
     sed -e 's|NCL_DYLIB_DIR="PLEASE_SUPPLY"|NCL_DYLIB_DIR="'$NCL_INSTALL_DIR'"|' -i '' ./fixit.sh
     sed -e 's|PYTHON_DYLIB_DIR="PLEASE_SUPPLY"|PYTHON_DYLIB_DIR="'$PYTHON_DYLIB_DIR'"|' -i '' ./fixit.sh
     ./fixit.sh
-    tar zcvf phycas-${PHYCAS_VERSION}-mac.tar.gz phycas
+    tar zcf phycas-${PHYCAS_VERSION}-mac.tar.gz phycas
 else
     echo No tar file created because \$OSTYPE was neither \"linux\" nor \"clang\"
 fi
