@@ -1,19 +1,16 @@
 #!/bin/bash
 
 # This script expects certain environmental variables (BOOST_ROOT, PYTHON_ROOT,
-# NCL_INSTALL_DIR, PHYCAS_VERSION) to be defined before it is run. Examples of the
+# NCL_INSTALL_DIR) to be defined before it is run. Examples of the
 # necessary definitions are commented out below; modify appropriately for your
 # installation.
-
-# Specify the version number (used in creating the tar.gz file for distribution)
-export PHYCAS_VERSION="PLEASE_SUPPLY"
 
 # Specify "linux" or "clang" (for MacOS Mavericks) or "windows" (for Windows)
 # e.g. export OSTYPE="linux"
 export OSTYPE="PLEASE_SUPPLY"
 
 # The path to the root of your boost installation (download from http://www.boost.org/)
-# e.g. export BOOST_ROOT="$HOME/boost_1_55_0"
+# e.g. export BOOST_ROOT="$HOME/boost_1_56_0"
 export BOOST_ROOT="PLEASE_SUPPLY"
 
 # The path to your python interpreter (download from https://www.python.org/)
@@ -27,8 +24,7 @@ export NCL_INSTALL_DIR="PLEASE_SUPPLY"
 
 # Provide the directory into which all Phycas files will be copied. This directory
 # will be compressed into a tar.gz file for distribution.
-# e.g. export PHYCAS_STAGE="$HOME/software/phycas/phycas"
-export PHYCAS_STAGE="PLEASE_SUPPLY"
+# export PHYCAS_STAGE="$HOME/software/phycas/phycas"
 
 ######## You should not need to change anything below here #######
 
@@ -38,10 +34,10 @@ if [ ! -e "scripts/fixit.sh" ]; then
     exit 1
 fi
 
-if [ "$PHYCAS_VERSION" == "PLEASE_SUPPLY" ]; then
-    echo Please edit $0 and specify a valid version \(e.g. \"2.0.0\"\) for PHYCAS_VERSION
-    exit 1
-fi
+#if [ "$PHYCAS_VERSION" == "PLEASE_SUPPLY" ]; then
+#    echo Please edit $0 and specify a valid version \(e.g. \"2.0.0\"\) for PHYCAS_VERSION
+#    exit 1
+#fi
 
 if [ "$OSTYPE" == "PLEASE_SUPPLY" ] || ( [ "$OSTYPE" != "linux" ] && [ "$OSTYPE" != "clang" ] && [ "$OSTYPE" != "windows" ] ); then
     echo Please edit $0 and specify a valid string for OSTYPE \(either \"linux\", \"clang\" or \"windows\"\)
@@ -63,13 +59,15 @@ if [ "$NCL_INSTALL_DIR" == "PLEASE_SUPPLY" ] || [ ! -e "$NCL_INSTALL_DIR" ]; the
     exit 1
 fi
 
-if [ "PHYCAS_STAGE" == "PLEASE_SUPPLY" ]; then
-    echo Please edit $0 and specify a valid directory for PHYCAS_STAGE
-    exit 1
-fi
+#if [ "PHYCAS_STAGE" == "PLEASE_SUPPLY" ]; then
+#    echo Please edit $0 and specify a valid directory for PHYCAS_STAGE
+#    exit 1
+#fi
 
 # Get the Phycas version number (used in creating the tar.gz file for distribution)
-getversion() {head -n 1 src/python/__init__.py | egrep -o "([0-9.]+)"}
+getversion(){
+/usr/bin/head -n 1 src/python/__init__.py | egrep -o "([0-9.]+)"
+}
 if [ -e "src/python/__init__.py" ]; then
     export PHYCAS_VERSION=`getversion`
     echo "PHYCAS_VERSION = $PHYCAS_VERSION"
@@ -107,8 +105,8 @@ fi
 # bjam -j2 variant=release link=shared install
 
 # This copies Python files for each extension as well as the examples and tests folders
-# into the phycas directory specified by PHYCAS_STAGE (which will be deleted if it exists)
-scripts/copy_src_python.sh $PHYCAS_STAGE
+# into the phycas directory
+scripts/copy_src_python.sh
 
 # This creates a tar.gz file of the phycas directory to make it easy to distribute
 # the phycas module
