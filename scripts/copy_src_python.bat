@@ -30,6 +30,13 @@ DEL /Q *.py libncl.lib
 COPY ..\..\src\python\conversions\*.py .
 CD ..
 
+REM ###############################################
+REM # Copy Nexus Class Library DLL                #
+REM ###############################################
+
+ECHO Copying ncl.dll to %cd%\conversions...
+COPY %NCL_INSTALL_DIR%\bin\msvc-12.0\release\threading-multi\ncl.dll conversions
+
 REM ##############################################
 REM # Copy python files for datamatrix extension #
 REM ##############################################

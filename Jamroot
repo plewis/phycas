@@ -108,7 +108,7 @@ else {
     }
 
     echo "---------------------------------------------------------" ;
-	<library-path>$(BOOST_ROOT)/stage/lib
+	# <library-path>$(BOOST_ROOT)/stage/lib
     project phycas
       : requirements
           <library>/boost/python//boost_python
