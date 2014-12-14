@@ -10,12 +10,15 @@ SET BOOST_ROOT=%HOMEDRIVE%\boost_1_56_0
 REM The path to your python installation (download from https://www.python.org/)
 SET PYTHON_ROOT=%HOMEDRIVE%\Python27
 
+REM The path to the Visual Studio dynamic link libraries  
+SET VCREDIST="C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\redist\x86\Microsoft.VC120.CRT"
+
 REM Modify PATH so that bjam executable can be found. This assumes bjam is just
 REM inside $BOOST_ROOT, which will be the case if bootstrap.bat was run
 SET PATH=%PATH%;%BOOST_ROOT%
 
 REM This is needed for bjam to find its way
-SET BOOST_BUILD_PATH=%HOMEDRIVE%\boost_1_55_0\tools\build\v2
+SET BOOST_BUILD_PATH=%HOMEDRIVE%\boost_1_56_0\tools\build\v2
 
 REM Provide path to preinstalled Nexus Class Library
 REM (download from http://sourceforge.net/projects/ncl/)
@@ -30,7 +33,7 @@ REM This command initiates the build
 echo Running bjam release...
 REM SET BJAMDIR=%HOMEPATH%\Documents\libraries\bin
 REM SET VCROOT="C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\Tools\..\..\VC\"
-%HOMEDRIVE%\boost-build-engine\bin\bjam.exe -q release
+%HOMEDRIVE%\boost-build-engine\bin\bjam.exe -q address-model=32 architecture=x86 release
 
-CALL scripts\copy_src_python.bat
+CALL scripts\copy_src_python.bat %VCREDIST%
 

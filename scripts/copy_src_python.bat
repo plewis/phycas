@@ -1,3 +1,6 @@
+SET VSREDIST=%1%
+ECHO Visual studio redist directory is %VSREDIST%
+PAUSE Press return to continue...
 @ECHO OFF
 
 REM ############################################################################
@@ -28,6 +31,9 @@ CD conversions
 ECHO Copying files to %cd%...
 DEL /Q *.py libncl.lib
 COPY ..\..\src\python\conversions\*.py .
+COPY %VSREDIST%\msvcp120.dll .
+COPY %VSREDIST%\msvcr120.dll .
+COPY %VSREDIST%\vccorlib120.dll .
 CD ..
 
 REM ###############################################
