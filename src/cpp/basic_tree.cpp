@@ -2635,6 +2635,25 @@ bool Tree::IsRooted() const
 	}
 
 /*----------------------------------------------------------------------------------------------------------------------
+|	Returns true if tree is not fully resolved, false if the `nInternals` is `nTips`-2 (unrooted) or `nTips`-1 (rooted).
+*/
+bool Tree::IsPolytomous() const
+	{
+    bool is_polytomous = true;
+    if (IsRooted())
+        {
+        if (nInternals == nTips - 1)
+            is_polytomous = false;
+        }
+    else
+        {
+        if (nInternals == nTips - 2)
+            is_polytomous = false;
+        }
+	return is_polytomous;
+	}
+
+/*----------------------------------------------------------------------------------------------------------------------
 |	Returns current value of the `hasEdgelens' data member.
 */
 bool Tree::HasEdgeLens() const

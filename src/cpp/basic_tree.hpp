@@ -101,6 +101,7 @@ class Tree : public boost::enable_shared_from_this<Tree>
 		//
 		bool					RootValid() const;
 		bool					IsRooted() const;
+		bool					IsPolytomous() const;
 		bool					HasEdgeLens() const;
 		bool					PreorderDirty() const;
 		bool					TipNumbersSetUsingNames() const;

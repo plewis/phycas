@@ -281,6 +281,22 @@ class Tree(TreeBase):
         """
         return TreeBase.isRooted(self)
 
+    def isPolytomous(self):
+        #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
+        """
+        Returns True if tree is not fully resolved, or False if every internal
+        node has degree 3 (except the root node, if tree is rooted, which has
+        degree 2).
+
+        >>> from phycas.phylogeny import *
+        >>> t7 = Tree()
+        >>> t7.buildFromString('(fish,shark,(bird, mammal))')
+        >>> print t7.isPoytomous()
+        False
+
+        """
+        return TreeBase.isPolytomous(self)
+
     #def hasEdgeLens(self):
     #    #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
     #    """

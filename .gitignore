@@ -67,3 +67,6 @@ examples/stepping-stone/go.sh
 examples/paradox/clean.sh
 examples/paradox/go.sh
 
+scripts/copy_tests.sh
+scripts/wingdbstub.py
+xcode/phycas_build_settings.txt

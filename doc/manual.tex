@@ -48,22 +48,28 @@
 %\usepackage{upquote}
 %\newfont{\mytt}{cmtt10 at 10pt}
 
-\newcommand{\currPhycasMajorVersion}{2.1}					% TODO: CHECK PRIOR TO NEW RELEASE
-\newcommand{\currMajorVersionReleaseDate}{13 August 2014}	% TODO: CHECK PRIOR TO NEW RELEASE
+\newcommand{\currPhycasMajorVersion}{2.2}					% TODO: CHECK PRIOR TO NEW RELEASE
+\newcommand{\currMajorVersionReleaseDate}{14 December 2014}	% TODO: CHECK PRIOR TO NEW RELEASE
+
+%\newcommand{\currPhycasMajorVersion}{2.1}
+%\newcommand{\currMajorVersionReleaseDate}{13 August 2014}
 
 %\newcommand{\currPhycasMajorVersion}{2.0}
 %\newcommand{\currMajorVersionReleaseDate}{4 July 2014}
 
-\newcommand{\currPhycasMinorVersion}{2.1.0}					% TODO: CHECK PRIOR TO NEW RELEASE
-\newcommand{\currMinorVersionReleaseDate}{13 August 2014}	% TODO: CHECK PRIOR TO NEW RELEASE
+\newcommand{\currPhycasMinorVersion}{2.2.0}					% TODO: CHECK PRIOR TO NEW RELEASE
+\newcommand{\currMinorVersionReleaseDate}{14 December 2014}	% TODO: CHECK PRIOR TO NEW RELEASE
+
+%\newcommand{\currPhycasMinorVersion}{2.1.0}	
+%\newcommand{\currMinorVersionReleaseDate}{13 August 2014}
 
 %\newcommand{\currPhycasMinorVersion}{2.0.1}
 %\newcommand{\currMinorVersionReleaseDate}{5 August 2014}
 
 \newcommand{\currPyVersion}{2.7}
-\newcommand{\windistrfilename}{phycas-2.1.0-win.zip}		% TODO: CHECK PRIOR TO NEW RELEASE
-\newcommand{\macdistrfilename}{phycas-2.1.0-mac.tar.gz}		% TODO: CHECK PRIOR TO NEW RELEASE
-\newcommand{\linuxdistrfilename}{phycas-2.1.0-src.tar.gz}	% TODO: CHECK PRIOR TO NEW RELEASE
+\newcommand{\windistrfilename}{phycas-2.2.0-win.zip}		% TODO: CHECK PRIOR TO NEW RELEASE
+\newcommand{\macdistrfilename}{phycas-2.2.0-mac.tar.gz}		% TODO: CHECK PRIOR TO NEW RELEASE
+\newcommand{\linuxdistrfilename}{phycas-2.2.0-src.tar.gz}	% TODO: CHECK PRIOR TO NEW RELEASE
 \newcommand{\distrfolder}{\pathname{phycas}}
 
 \newcommand{\trademark}[1]{#1${}^{\mbox{\tiny TM}}$}
@@ -2064,9 +2070,14 @@ model.num_rates = 4
 \section{Release notes}\label{section:releasenotes}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{What's new in version 2.2?} %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Phycas 2.2 was released on 14-December-2014. The current version is \currPhycasMinorVersion; see the CHANGES file for information about what has changed for minor releases. The biggest change from Version 2.1 is that the sumt command now computes both the overall Lindley Information \citep{Lindley:1956js} as well as Lindley Information partitioned by clade using Larget's \citet{Larget:2013gs} conditional clade distribution. Both of these new features are documented in an upcoming paper by Lewis et al. that has been submitted to Systematic Biology. All other modifications involve minor bug fixes, including a fix for the Windows version, which unfortunately never worked for version 2.1. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{What's new in version 2.1?} %%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Phycas 2.1 was released on 11-August-2014. The current version is \currPhycasMinorVersion; see the CHANGES file for information about what has changed for minor releases. Version 2.1 differs from 2.0 in that autotuning was implemented for Metropolis-Hastings updaters. The method used for autotuning is that of \citet{Prokaj:2009tu}. Autotuning is only performed during the burnin phase, and  thus it is important to specify a burnin period using \opt{mcmc}{burnin} if you want autotuning to be applied. Importantly, autotuning of slice samplers (used by most updaters) has now been moved to the burnin phase also (previously slice samplers were autotuned throughout an MCMC analysis, but this practice is incorrect if the marginal distribution being sampled is multimodal). You may notice that the cycle reported is now a negative number during the burnin period. This is normal: the first cycle is the negative of the specified value of burnin and sampling begins when cycle equals 0. Because burnin now has additional significance, the \opt{sump}{burnin}, \opt{sumt}{burnin} and \opt{refdist}{burnin} options have now been changed to \opt{sump}{skip},\opt{sump}{skip} and \opt{sump}{skip}, respectively, to better indicate that these settings simply indicate the number of lines to skip. The tutorial (in this manual) and examples (in the examples directory) have been modified to reflect these changes.
+Phycas 2.1 was released on 13-August-2014. See the CHANGES file for information about what has changed for minor releases. Version 2.1 differs from 2.0 in that autotuning was implemented for Metropolis-Hastings updaters. The method used for autotuning is that of \citet{Prokaj:2009tu}. Autotuning is only performed during the burnin phase, and  thus it is important to specify a burnin period using \opt{mcmc}{burnin} if you want autotuning to be applied. Importantly, autotuning of slice samplers (used by most updaters) has now been moved to the burnin phase also (previously slice samplers were autotuned throughout an MCMC analysis, but this practice is incorrect if the marginal distribution being sampled is multimodal). You may notice that the cycle reported is now a negative number during the burnin period. This is normal: the first cycle is the negative of the specified value of burnin and sampling begins when cycle equals 0. Because burnin now has additional significance, the \opt{sump}{burnin}, \opt{sumt}{burnin} and \opt{refdist}{burnin} options have now been changed to \opt{sump}{skip},\opt{sump}{skip} and \opt{sump}{skip}, respectively, to better indicate that these settings simply indicate the number of lines to skip. The tutorial (in this manual) and examples (in the examples directory) have been modified to reflect these changes.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{What's new in version 2.0?} %%%%%%%%%%

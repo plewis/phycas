@@ -789,6 +789,7 @@ class TreeSummarizer(CommonFunctions):
         sojourn_field_width = 2 + math.floor(math.log10(float(num_stored_trees)))
 
         curr_tree = 0
+        polytomous_trees_found = False
         for tree_def in self.stored_tree_defs:
             curr_tree += 1
             if curr_tree % (num_stored_trees//10) == 0:
@@ -809,6 +810,8 @@ class TreeSummarizer(CommonFunctions):
             tree_def.buildTree(t)
             t.rectifyNames(self.taxon_labels)
             ntips = t.getNObservables()
+            if t.isPolytomous():
+                polytomous_trees_found = True
             if ntips > split_field_width:
                 # this is necessary only if number of taxa varies from tree to tree
                 split_field_width = ntips
@@ -1027,10 +1030,12 @@ class TreeSummarizer(CommonFunctions):
                 num_distinct_topologies += 1
                 self.stdout.info('%8d %s %10.5f %s %s %s %10.5f %10.5f %10.5f %10.5f %10.5f %10.5f' % (i+1, freq_str, avgTL, s0_str, sk_str, k_str, post_prob, cum_prob, log_larget_post_prob, larget_post_prob, larget_cum_prob, larget_max_prob))
 
-        if self.opts.tree_credible_prob <= 0.0:
-            self.stdout.info('\nKL not available (re-run sumt command with sumt.tree_credible_prob = 1.0)')
+        if polytomous_trees_found:
+            self.stdout.info('\nLindley information not available because some tree topologies are not fully resolved')
+        elif self.opts.tree_credible_prob <= 0.0:
+            self.stdout.info('\nLindley information not available (re-run sumt command with sumt.tree_credible_prob = 1.0)')
         elif self.opts.tree_credible_prob < 1.0:
-            self.stdout.info('\nKL should be based on all sampled trees (re-run sumt command with sumt.tree_credible_prob = 1.0)')
+            self.stdout.info('\nLindley information should be based on all sampled trees (re-run sumt command with sumt.tree_credible_prob = 1.0)')
         else:
             effective_KLmax = larget_cum_prob*KL_max
             KL = KL_sum + effective_KLmax
