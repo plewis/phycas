@@ -1,7 +1,6 @@
-SET VSREDIST=%1%
-ECHO Visual studio redist directory is %VSREDIST%
-PAUSE Press return to continue...
 @ECHO OFF
+
+SET VSREDIST=%1%
 
 REM ############################################################################
 REM # Copy master __init__.py file, plus LICENCE, CHANGES, README, and INSTALL #
