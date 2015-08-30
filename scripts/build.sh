@@ -30,7 +30,7 @@ export NCL_INSTALL_DIR="PLEASE_SUPPLY"
 
 if [ ! -e "scripts/fixit.sh" ]; then
     echo You seem to be running this script from the wrong directory
-    echo Please copy build.sh from scripts directory to its parent directory and run from there
+    echo "*** ERROR *** Please copy build.sh from scripts directory to its parent directory and run from there"
     exit 1
 fi
 
@@ -40,27 +40,27 @@ fi
 #fi
 
 if [ "$OSTYPE" == "PLEASE_SUPPLY" ] || ( [ "$OSTYPE" != "linux" ] && [ "$OSTYPE" != "clang" ] && [ "$OSTYPE" != "windows" ] ); then
-    echo Please edit $0 and specify a valid string for OSTYPE \(either \"linux\", \"clang\" or \"windows\"\)
+    echo "*** ERROR *** Please edit $0 and specify a valid string for OSTYPE \(either \"linux\", \"clang\" or \"windows\"\)"
     exit 1
 fi
 
 if [ "$BOOST_ROOT" == "PLEASE_SUPPLY" ] || [ ! -e "$BOOST_ROOT" ]; then
-    echo Please edit $0 and specify a valid directory for BOOST_ROOT
+    echo "*** ERROR *** Please edit $0 and specify a valid directory for BOOST_ROOT"
     exit 1
 fi
 
 if [ "$PYTHON_ROOT" == "PLEASE_SUPPLY" ] || ( [ ! -e "$PYTHON_ROOT" ] ||  [ ! -f "$PYTHON_ROOT" ] ); then
-    echo Please edit $0 and specify a valid path to the Python interpreter for PYTHON_ROOT \(you should be able to start Python if you execute the supplied value\)
+    echo "*** ERROR *** Please edit $0 and specify a valid path to the Python interpreter for PYTHON_ROOT \(you should be able to start Python if you execute the supplied value\)"
     exit 1
 fi
 
 if [ "$NCL_INSTALL_DIR" == "PLEASE_SUPPLY" ] || [ ! -e "$NCL_INSTALL_DIR" ]; then
-    echo Please edit $0 and specify a valid directory for NCL_INSTALL_DIR
+    echo "*** ERROR *** Please edit $0 and specify a valid directory for NCL_INSTALL_DIR"
     exit 1
 fi
 
 #if [ "PHYCAS_STAGE" == "PLEASE_SUPPLY" ]; then
-#    echo Please edit $0 and specify a valid directory for PHYCAS_STAGE
+#    echo "*** ERROR *** Please edit $0 and specify a valid directory for PHYCAS_STAGE"
 #    exit 1
 #fi
 
@@ -72,7 +72,7 @@ if [ -e "src/python/__init__.py" ]; then
     export PHYCAS_VERSION=`getversion`
     echo "PHYCAS_VERSION = $PHYCAS_VERSION"
 else
-    echo Could not find version \(e.g. \"2.0.0\"\) number
+    echo "*** ERROR *** Could not find version \(e.g. \"2.0.0\"\) number"
     exit 1
 fi
 
