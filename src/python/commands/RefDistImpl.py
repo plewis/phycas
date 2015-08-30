@@ -70,17 +70,19 @@ class RefDistImpl(CommonFunctions):
         Creates a Lognormal reference distribution for a univariate sample x.
 
         """
-        self.phycassert(len(x) > self.min_sample_size, 'sample size (%d) must be at least %d to create a Lognormal reference distribution' % (len(x), self.min_sample_size))
-        n = len(x)
         sum_of_log_values = 0.0
         sum_of_log_squares = 0.0
+        nvalid = 0
         for v in x:
-            logv = math.log(v)
-            sum_of_log_values += logv
-            sum_of_log_squares += logv*logv
+            if v > 0:
+                nvalid += 1
+                logv = math.log(v)
+                sum_of_log_values += logv
+                sum_of_log_squares += logv*logv
 
-        logmean = sum_of_log_values/float(n)
-        logvar = (sum_of_log_squares - float(n)*logmean*logmean)/float(n-1)
+        self.phycassert(nvalid > self.min_sample_size, 'sample size (%d) must be at least %d to create a Lognormal reference distribution' % (nvalid, self.min_sample_size))
+        logmean = sum_of_log_values/float(nvalid)
+        logvar = (sum_of_log_squares - float(nvalid)*logmean*logmean)/float(nvalid-1)
         logsd = math.sqrt(logvar)
         d = Lognormal(logmean, logsd)
         return d.__str__()
