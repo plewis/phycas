@@ -70,3 +70,9 @@ examples/paradox/go.sh
 scripts/copy_tests.sh
 scripts/wingdbstub.py
 xcode/phycas_build_settings.txt
+saved_bin
+saved_dist
+build-anaconda.sh
+deploy-anaconda.sh
+deploy-local.sh
+phycas-2.2.0-mac.tar.gz
