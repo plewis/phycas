@@ -727,7 +727,7 @@ class ParamSummarizer(CommonFunctions):
                             subset_logCPOs[subset_index].append(cpomap[site_number])
                             tally[subset_index] += inworst
                             break
-                    assert which_subset is not None
+                    self.phycassert(which_subset is not None, "Failed to determine the partition subset to which site number %d belongs" % (site_number))
                     self._cpoInfoFile.write('%12d\t%12.5f\t%12s\t%12d\n' % (site_number,cpomap[site_number], which_subset, inworst))
                 self._cpoInfoFile.write('END_LOG_CPO_TABLE\n')
 
