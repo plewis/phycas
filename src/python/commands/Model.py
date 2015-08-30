@@ -189,11 +189,21 @@ class Model(PhycasCommand):
         memo[self] = new_model
         return new_model
 
+    def checkModelParameters(self, cf):
+        # check relrates
+        cf.phycassert(len(self.relrates) == 6, 'number of elements of model.relrates should be 6 (found %d instead)' % (len(self.relrates),))
+
+        # check state_freqs
+        print sum(self.state_freqs)
+        cf.phycassert(math.fabs(sum(self.state_freqs)-1.0) < .0001, 'sum of state frequencies should be 1.0 (found %.3f instead)' % (sum(self.state_freqs),))
+        cf.phycassert(len(self.state_freqs) == 4, 'number of elements of model.relrates should be 4 (found %d instead)' % (len(self.state_freqs),))
+
     def __call__(self, **kwargs):
         cf = CommonFunctions(self)
         cf.phycassert(not self.update_freqs_separately, 'update_freqs_separately is no longer allowed')
         cf.phycassert(not self.update_relrates_separately, 'update_freqs_separately is no longer allowed')
         self.set(**kwargs)
+        self.checkModelParameters(cf)
         return self.saveas()
 
 
