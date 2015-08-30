@@ -114,12 +114,6 @@
 		D120CAB719DF29FA005322F7 /* state_freq_param.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B82193C14DF000719F1 /* state_freq_param.cpp */; };
 		D120CAB819DF29FA005322F7 /* subset_proportions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B87193C14DF000719F1 /* subset_proportions.cpp */; };
 		D120CAB919DF29FA005322F7 /* subset_relrates_move.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B89193C14DF000719F1 /* subset_relrates_move.cpp */; };
-		D180113B19E00EFD00DD270B /* libboost_python.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D180113A19E00EFD00DD270B /* libboost_python.dylib */; };
-		D180113C19E00F1A00DD270B /* libboost_python.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D180113A19E00EFD00DD270B /* libboost_python.dylib */; };
-		D180113D19E00F3200DD270B /* libboost_python.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D180113A19E00EFD00DD270B /* libboost_python.dylib */; };
-		D180113E19E00F4100DD270B /* libboost_python.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D180113A19E00EFD00DD270B /* libboost_python.dylib */; };
-		D180113F19E00F5100DD270B /* libboost_python.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D180113A19E00EFD00DD270B /* libboost_python.dylib */; };
-		D180114019E00F5E00DD270B /* libboost_python.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D180113A19E00EFD00DD270B /* libboost_python.dylib */; };
 		D1ABC09C19DF33A500E03A8B /* dcdflib.c in Sources */ = {isa = PBXBuildFile; fileRef = D1777B94193C14DF000719F1 /* dcdflib.c */; };
 		D1ABC09D19DF33A500E03A8B /* ipmpar.c in Sources */ = {isa = PBXBuildFile; fileRef = D1777B96193C14DF000719F1 /* ipmpar.c */; };
 		D1ABC09F19DF33A500E03A8B /* tip_data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777BA4193C14DF000719F1 /* tip_data.cpp */; };
@@ -158,6 +152,7 @@
 		D1ABC0E019DF36F200E03A8B /* ipmpar.c in Sources */ = {isa = PBXBuildFile; fileRef = D1777B96193C14DF000719F1 /* ipmpar.c */; };
 		D1ABC0E219DF370500E03A8B /* libncl-2.1.18.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D120CA3A19DF246B005322F7 /* libncl-2.1.18.dylib */; };
 		D1ABC0E319DF370F00E03A8B /* libpython2.7.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D120CA3719DF243B005322F7 /* libpython2.7.dylib */; };
+		D1BA84A71A696999006C0260 /* libboost_python.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D1BA84A61A696999006C0260 /* libboost_python.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -479,9 +474,9 @@
 		D1777BB6193C14DF000719F1 /* xphycas.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xphycas.hpp; sourceTree = "<group>"; };
 		D1777BB7193C14DF000719F1 /* xphylogeny.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xphylogeny.hpp; sourceTree = "<group>"; };
 		D1777BB8193C14DF000719F1 /* xprobdist.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xprobdist.hpp; sourceTree = "<group>"; };
-		D180113A19E00EFD00DD270B /* libboost_python.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_python.dylib; path = ../../../libraries/debugboostlib/lib/libboost_python.dylib; sourceTree = "<group>"; };
 		D1ABC0AF19DF362600E03A8B /* _PhylogenyExt.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = _PhylogenyExt.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		D1ABC0CC19DF36B900E03A8B /* _ReadNexusExt.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = _ReadNexusExt.so; sourceTree = BUILT_PRODUCTS_DIR; };
+		D1BA84A61A696999006C0260 /* libboost_python.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_python.dylib; path = ../../../libraries/boostlib/lib/libboost_python.dylib; sourceTree = "<group>"; };
 		D1FF50A11A33C0110022EF24 /* codontest */ = {isa = PBXFileReference; lastKnownFileType = folder; path = codontest; sourceTree = "<group>"; };
 		D1FF50A21A33C0110022EF24 /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; path = data; sourceTree = "<group>"; };
 		D1FF50A31A33C0110022EF24 /* exploreprior */ = {isa = PBXFileReference; lastKnownFileType = folder; path = exploreprior; sourceTree = "<group>"; };
@@ -508,7 +503,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D180113B19E00EFD00DD270B /* libboost_python.dylib in Frameworks */,
+				D1BA84A71A696999006C0260 /* libboost_python.dylib in Frameworks */,
 				D120CA3B19DF246B005322F7 /* libncl-2.1.18.dylib in Frameworks */,
 				D120CA3919DF244E005322F7 /* libpython2.7.dylib in Frameworks */,
 			);
@@ -518,7 +513,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D180113C19E00F1A00DD270B /* libboost_python.dylib in Frameworks */,
 				D120CA6119DF25E0005322F7 /* libncl-2.1.18.dylib in Frameworks */,
 				D120CA6019DF25C4005322F7 /* libpython2.7.dylib in Frameworks */,
 			);
@@ -528,7 +522,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D180113D19E00F3200DD270B /* libboost_python.dylib in Frameworks */,
 				D120CA7519DF2652005322F7 /* libncl-2.1.18.dylib in Frameworks */,
 				D120CA7319DF263B005322F7 /* libpython2.7.dylib in Frameworks */,
 			);
@@ -538,7 +531,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D180113E19E00F4100DD270B /* libboost_python.dylib in Frameworks */,
 				D1ABC0A819DF359200E03A8B /* libncl-2.1.18.dylib in Frameworks */,
 				D1ABC0A619DF33C600E03A8B /* libpython2.7.dylib in Frameworks */,
 			);
@@ -548,7 +540,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D180113F19E00F5100DD270B /* libboost_python.dylib in Frameworks */,
 				D1ABC0C719DF369800E03A8B /* libpython2.7.dylib in Frameworks */,
 				D1ABC0C619DF368E00E03A8B /* libncl-2.1.18.dylib in Frameworks */,
 			);
@@ -558,7 +549,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D180114019E00F5E00DD270B /* libboost_python.dylib in Frameworks */,
 				D1ABC0E319DF370F00E03A8B /* libpython2.7.dylib in Frameworks */,
 				D1ABC0E219DF370500E03A8B /* libncl-2.1.18.dylib in Frameworks */,
 			);
@@ -767,8 +757,8 @@
 		D16818F8193B7102004AAAD5 = {
 			isa = PBXGroup;
 			children = (
+				D1BA84A61A696999006C0260 /* libboost_python.dylib */,
 				D101CFC81A352B89000BE89A /* scripts */,
-				D180113A19E00EFD00DD270B /* libboost_python.dylib */,
 				D120CA3A19DF246B005322F7 /* libncl-2.1.18.dylib */,
 				D120CA3719DF243B005322F7 /* libpython2.7.dylib */,
 				D1681903193B7102004AAAD5 /* Python sources */,
