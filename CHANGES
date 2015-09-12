@@ -5,10 +5,8 @@ We have started a new CHANGES file starting with version 2.0.0 because 2.0.0 is
 the version associated with the official published release note describing
 Phycas.
 
-Version 2.0.1
+Version 2.2.1
 -------------
-Posted 5-August-2014
-Added chain swap information to the updater summary when mcmc.nchains > 1 (and removed
-the debugging output that cluttered the console previously). Parameter file now only
-includes the log-likelihood for the cold chain (previously nchains log-likelihoods were
-included in each row except the header row, which only included one "lnL" header).
+30-August-2015
+Fixed bug in lognormal reference distribution estimation that caused a math domain error.
+

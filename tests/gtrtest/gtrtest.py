@@ -12,7 +12,7 @@ model.num_rates = 4
 model.gamma_shape = 0.5
 model.pinvar_model = True
 
-model.state_freqs = [.1,.2,.3,.4,.5]
+model.state_freqs = [.1,.2,.3,.4]
 
 model.edgelen_prior = Exponential(1.0)
 

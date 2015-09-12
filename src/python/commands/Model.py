@@ -1,4 +1,4 @@
-import copy
+import copy,math
 from phycas.utilities.CommonFunctions import CommonFunctions
 from phycas.utilities.PhycasCommand import *
 from phycas.probdist import Beta, Exponential, InverseGamma, Dirichlet
