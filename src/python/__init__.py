@@ -217,6 +217,9 @@ cpo = CPO()
 from commands.GG import GG
 gg = GG()
 
+from commands.PWK import PWK
+pwk = PWK()
+
 from commands.ScriptGen import ScriptGen
 scriptgen = ScriptGen()
 

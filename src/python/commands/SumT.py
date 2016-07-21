@@ -5,7 +5,7 @@ import copy
 class SumT(PhycasCommand):
     def __init__(self):
         args = (   ("outgroup_taxon",      None,           "Set to the taxon name of the tip serving as the outgroup for display rooting purposes (note: at this time outgroup can consist of just one taxon)"),
-                   ("trees",               TreeCollection(),   "A source of trees (list of trees or to the name of the input tree file) to be summarized. This setting should not be None at the time the sumt method is called.", TreeSourceValidate),
+                   ("trees",               TreeCollection(),   "A source of trees (list of trees or the name of the input tree file) to be summarized. This setting should not be None at the time the sumt method is called.", TreeSourceValidate),
                    ("skip",              1,              "Number of trees from the input list of trees to skip", IntArgValidate(min=0)),
                    ("tree_credible_prob",  0.95,           "Include just enough trees in the <sumt_trees_prefix>.tre and <sumt_trees_prefix>.pdf files such that the cumulative posterior probability is greater than this value", ProbArgValidate()),
                    ("useGUI",              True,           "If True, and if wxPython is installed, a graphical user interface (GUI) will be used to display, and allow manipulation of, AWTY plots", BoolArgValidate),

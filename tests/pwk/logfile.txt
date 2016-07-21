@@ -1,0 +1,186 @@
+
+Reading Trees from the file 'mcmc.run1.t'...
+Compiling list of tree topologies...
+  10.0% done
+  20.0% done
+  30.0% done
+  40.0% done
+  50.0% done
+  60.0% done
+  70.0% done
+  80.0% done
+  90.0% done
+  100.0% done
+
+Summary of sampled trees:
+-------------------------
+Tree source: Collection of 111113 trees in memory. Trees from the file 'mcmc.run1.t'
+Total number of trees in file = 111113
+Number of trees considered = 100000
+Number of distinct tree topologies found = 15
+Tree topology summary:
+
+  Topology number: 1
+  Number of trees with this topology: 189
+  Newick of first tree with this topology: (2:0.01335,(3:0.00412,((6:0.00208,4:0.00158):0.03773,5:0.00736):0.00014):0.00106,1:0.09511)
+  Mean tree length: 0
+  Topology ID:
+    --****
+    ---***
+    ---*-*
+  Indices of trees with this topology (first tree has index 1, not 0):
+    300,445,564,1775,2487,...,99925
+
+  Topology number: 2
+  Number of trees with this topology: 267
+  Newick of first tree with this topology: (2:0.00796,5:0.00544,(((6:0.00071,4:0.00234):0.03817,3:0.00546):0.00401,1:0.09936):0.00153)
+  Mean tree length: 0
+  Topology ID:
+    -*--*-
+    --**-*
+    ---*-*
+  Indices of trees with this topology (first tree has index 1, not 0):
+    50,280,462,2174,2311,...,99513
+
+  Topology number: 3
+  Number of trees with this topology: 1106
+  Newick of first tree with this topology: (3:0.00799,5:0.00321,(2:0.01420,((6:0.00240,4:0.00206):0.03013,1:0.10687):0.00245):0.00345)
+  Mean tree length: 0
+  Topology ID:
+    -**-*-
+    --*-*-
+    ---*-*
+  Indices of trees with this topology (first tree has index 1, not 0):
+    66,120,371,449,510,...,99957
+
+  Topology number: 4
+  Number of trees with this topology: 687
+  Newick of first tree with this topology: (2:0.01392,((3:0.01396,5:0.00184):0.00115,(6:0.00070,4:0.00362):0.02829):0.00612,1:0.10260)
+  Mean tree length: 0
+  Topology ID:
+    --****
+    --*-*-
+    ---*-*
+  Indices of trees with this topology (first tree has index 1, not 0):
+    728,773,810,1091,1780,...,100000
+
+  Topology number: 5
+  Number of trees with this topology: 227
+  Newick of first tree with this topology: (5:0.00534,(3:0.01182,2:0.01500):0.00593,((6:0.00021,4:0.00111):0.03314,1:0.14898):0.01355)
+  Mean tree length: 0
+  Topology ID:
+    -**-*-
+    -**---
+    ---*-*
+  Indices of trees with this topology (first tree has index 1, not 0):
+    1331,1605,1609,2402,3746,...,99926
+
+  Topology number: 6
+  Number of trees with this topology: 43
+  Newick of first tree with this topology: (2:0.01862,(5:0.00304,(6:0.00289,4:0.00151):0.03743):0.00259,(3:0.00639,1:0.10609):0.00059)
+  Mean tree length: 0
+  Topology ID:
+    -*-***
+    ---***
+    ---*-*
+  Indices of trees with this topology (first tree has index 1, not 0):
+    10028,12203,20825,23956,24165,...,97794
+
+  Topology number: 7
+  Number of trees with this topology: 1234
+  Newick of first tree with this topology: (2:0.01855,(((6:0.00025,4:0.00137):0.03152,3:0.00623):0.00404,5:0.00426):0.00191,1:0.10824)
+  Mean tree length: 0
+  Topology ID:
+    --****
+    --**-*
+    ---*-*
+  Indices of trees with this topology (first tree has index 1, not 0):
+    15,39,81,207,323,...,99865
+
+  Topology number: 8
+  Number of trees with this topology: 66633
+  Newick of first tree with this topology: (6:0.00098,4:0.00209,(2:0.01399,(3:0.00895,(5:0.00200,1:0.09672):0.00118):0.00244):0.04168)
+  Mean tree length: 0
+  Topology ID:
+    -***-*
+    -*-*-*
+    ---*-*
+  Indices of trees with this topology (first tree has index 1, not 0):
+    1,2,3,4,5,...,99999
+
+  Topology number: 9
+  Number of trees with this topology: 80
+  Newick of first tree with this topology: (6:0.00064,4:0.00094,(((5:0.00300,2:0.02340):0.00319,3:0.00706):0.00625,1:0.09786):0.03030)
+  Mean tree length: 0
+  Topology ID:
+    -**-*-
+    -*--*-
+    ---*-*
+  Indices of trees with this topology (first tree has index 1, not 0):
+    2904,4644,5178,5430,6000,...,96064
+
+  Topology number: 10
+  Number of trees with this topology: 14757
+  Newick of first tree with this topology: (5:0.00243,((6:0.00408,4:0.00448):0.03663,2:0.00626):0.00615,(3:0.00779,1:0.09902):0.00089)
+  Mean tree length: 0
+  Topology ID:
+    -*-***
+    -*-*-*
+    ---*-*
+  Indices of trees with this topology (first tree has index 1, not 0):
+    16,42,82,89,103,...,99986
+
+  Topology number: 11
+  Number of trees with this topology: 64
+  Newick of first tree with this topology: (3:0.00608,2:0.00698,(((6:0.00009,4:0.00142):0.03687,5:0.00024):0.00189,1:0.06397):0.00292)
+  Mean tree length: 0
+  Topology ID:
+    -**---
+    ---***
+    ---*-*
+  Indices of trees with this topology (first tree has index 1, not 0):
+    4909,6036,6647,7147,7474,...,95877
+
+  Topology number: 12
+  Number of trees with this topology: 1974
+  Newick of first tree with this topology: (6:0.00125,4:0.00226,(3:0.00657,(2:0.01889,(5:0.00394,1:0.07793):0.00216):0.00510):0.03770)
+  Mean tree length: 0
+  Topology ID:
+    -***-*
+    --**-*
+    ---*-*
+  Indices of trees with this topology (first tree has index 1, not 0):
+    48,49,117,151,187,...,99920
+
+  Topology number: 13
+  Number of trees with this topology: 17
+  Newick of first tree with this topology: (5:0.00441,2:0.01427,((6:0.00120,4:0.00028):0.03144,(3:0.00465,1:0.08537):0.00673):0.00099)
+  Mean tree length: 0
+  Topology ID:
+    -*-***
+    -*--*-
+    ---*-*
+  Indices of trees with this topology (first tree has index 1, not 0):
+    1896,9021,15893,30927,40144,...,98246
+
+  Topology number: 14
+  Number of trees with this topology: 12557
+  Newick of first tree with this topology: (2:0.01138,(6:0.00281,4:0.00176):0.03879,((5:0.00618,3:0.00513):0.00181,1:0.09411):0.00333)
+  Mean tree length: 0
+  Topology ID:
+    -*-*-*
+    --*-*-
+    ---*-*
+  Indices of trees with this topology (first tree has index 1, not 0):
+    7,8,22,28,31,...,99998
+
+  Topology number: 15
+  Number of trees with this topology: 165
+  Newick of first tree with this topology: (6:0.00029,4:0.00254,((2:0.01001,3:0.00452):0.00035,(5:0.00371,1:0.09337):0.00231):0.03439)
+  Mean tree length: 0
+  Topology ID:
+    -***-*
+    -**---
+    ---*-*
+  Indices of trees with this topology (first tree has index 1, not 0):
+    580,838,874,905,1654,...,98545
