@@ -224,6 +224,8 @@
 		D120CA4219DF24DC005322F7 /* _ProbDistExt.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = _ProbDistExt.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		D120CA6619DF2600005322F7 /* _DataMatrixExt.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = _DataMatrixExt.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		D120CA7A19DF2756005322F7 /* _LikelihoodExt.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = _LikelihoodExt.so; sourceTree = BUILT_PRODUCTS_DIR; };
+		D1277F2F1D46995200D34EDF /* varcov_matrix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = varcov_matrix.cpp; sourceTree = "<group>"; };
+		D1277F301D46995200D34EDF /* varcov_matrix.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = varcov_matrix.hpp; sourceTree = "<group>"; };
 		D1521FDC193B756F007ADBB5 /* __init__.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = __init__.py; path = src/python/commands/__init__.py; sourceTree = PHYCAS_ROOT; };
 		D1521FDD193B756F007ADBB5 /* Commands.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = Commands.py; path = src/python/commands/Commands.py; sourceTree = PHYCAS_ROOT; };
 		D1521FDE193B756F007ADBB5 /* CPO.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = CPO.py; path = src/python/commands/CPO.py; sourceTree = PHYCAS_ROOT; };
@@ -906,6 +908,8 @@
 				D1777B6D193C14DF000719F1 /* probdist_pymod.cpp */,
 				D1777B6E193C14DF000719F1 /* q_matrix.cpp */,
 				D1777B6F193C14DF000719F1 /* q_matrix.hpp */,
+				D1277F2F1D46995200D34EDF /* varcov_matrix.cpp */,
+				D1277F301D46995200D34EDF /* varcov_matrix.hpp */,
 				D1777B70193C14DF000719F1 /* read_nexus_pymod.cpp */,
 				D1777B71193C14DF000719F1 /* rectangular_matrix.cpp */,
 				D1777B72193C14DF000719F1 /* rectangular_matrix.hpp */,

@@ -29,6 +29,7 @@
 #include "jc.hpp"
 #include "hky.hpp"
 #include "codon_model.hpp"
+#include "varcov_matrix.hpp"
 
 using namespace boost::python;
 using namespace phycas;
@@ -44,6 +45,13 @@ void model_pymod()
 		.def("getQMatrix", &QMatrix::getQMatrix)
 		.def("getEigenVectors", &QMatrix::getEigenVectors)
 		.def("getEigenValues", &QMatrix::getEigenValues)
+		;
+	class_<VarCovMatrix, boost::noncopyable>("VarCovMatrixBase")
+		.def("getDimension", &VarCovMatrix::getDimension)
+		.def("getEigenVectors", &VarCovMatrix::getEigenVectors)
+		.def("getEigenValues", &VarCovMatrix::getEigenValues)
+        .def("getVarCovMatrix", &VarCovMatrix::getVarCovMatrix)
+        .def("setVarCovMatrix", &VarCovMatrix::setVarCovMatrix)
 		;
 #endif
 	class_<phycas::Model, boost::noncopyable, boost::shared_ptr<phycas::Model> >("Model", no_init)

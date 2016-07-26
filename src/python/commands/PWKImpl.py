@@ -86,7 +86,7 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
         # Now, create param_map from log_params
         param_map = {}
         for k in tree_map.keys():
-            indices = tree_map[k][3:]
+            indices = tree_map[k][3]
             v = []
             for i in indices:
                 param_vector_i = log_params[i-1][:]
@@ -96,7 +96,11 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
         log_params = None # hoping this will trigger garbage collection
         return param_map
 
-    def recordNodeInMaps(self, nd, tree_key, edge_len):
+    def recordNodeInMaps(self, nd, splits_in_tree, split_weights):
+        # nd is a node in the tree
+        # splits_in_tree is a list, and this function will add the split corresponding to nd to this list
+        # split_weights maps splits to edge lengths, and this function will add a key,value pair for nd
+
         # Grab the split and invert it if necessary to attain a standard polarity
         s = nd.getSplit()
         #if (not self.rooted_trees) and s.isBitSet(0):
@@ -106,42 +110,64 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
         # Create a string representation of the split
         ss = s.createPatternRepresentation()
 
-        # Add string represention of the split to the tree_key list, which
+        # Add edge length to split_weights map
+        split_weights[ss] = nd.getEdgeLen()
+
+        # Add string represention of the split to the splits_in_tree list, which
         # will be used to uniquely identify the tree topology
         is_pendant_edge = nd.isTip() or nd.getParent().isRoot()
         if not is_pendant_edge:
-            tree_key.append(ss)
+            splits_in_tree.append(ss)
 
-    def recordTreeInMaps(self, tree, tree_key):
+    def recordTreeInMaps(self, tree, edge_map):
+        # First build tree_key and create split_weights dict which maps splits
+        # to edge lengths
+        splits_in_tree = []
+        split_weights = {}
         nd = tree.getFirstPreorder()
         assert nd.isRoot(), 'the first preorder node should be the root'
         treelen = 0.0
         has_edge_lens = tree.hasEdgeLens()
+        assert has_edge_lens, 'PWK requires trees to have edge lengths'
 
         while True:
             nd = nd.getNextPreorder()
             if not nd:
                 break
             else:
-                edge_len = has_edge_lens and nd.getEdgeLen() or 1.0
-                treelen += edge_len
-                self.recordNodeInMaps(nd, tree_key, edge_len)
-        return treelen
+                treelen += nd.getEdgeLen()
+                self.recordNodeInMaps(nd, splits_in_tree, split_weights)
+
+        splits_in_tree.sort()
+        tree_key = tuple(splits_in_tree)
+
+        # Now that we have tree_key, add log-transformed edge lengths to log_edge_lengths list
+        if tree_key in edge_map.keys():
+            log_edge_lengths = [[] for s in range(len(split_weights))]
+            for (split,edgelen) in split_weights.items():
+                i = edge_map[tree_key][split]
+                log_edge_lengths[i] = math.log(edgelen)
+        else:
+            log_edge_lengths = []
+            edge_map[tree_key] = {}
+            for i,(split,edgelen) in enumerate(split_weights.items()):
+                edge_map[tree_key][split] = i
+                log_edge_lengths.append(math.log(edgelen))
+
+        return treelen, tree_key, log_edge_lengths
 
     def processTrees(self, trees, skip):
         # Read trees and create tree_map:
         #  key   = tree ID
-        #  value = list
+        #  value = list containing the following elements:
         #     0: number of trees with this topology (n)
         #     1: newick tree description
         #     2: mean tree length
-        #     3: index (starting with 1) of first sample with this topology
-        #     4: index of second sample with this topology
-        #     .
-        #     .
-        #     .
-        #   n+2: index of (n)th sample with this topology
-        
+        #     3: list (length n) of indices of samples having this topology (first is 1, not 0)
+        #     4: list (length n) of lists (length number of edges) of log-transformed edge lengths
+        #     5: edge_map (key = split, value = index into tree_map[4] lists), ensures that edge lengths
+        #           are always in the same order in the parameter vector
+
         # Check to make sure user specified an input tree file
         input_trees = self.opts.trees
         self.stdout.phycassert(input_trees, 'trees cannot be None or empty when pwk method is called')
@@ -149,8 +175,12 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
         num_trees = 0
         self.num_trees_considered = 0
 
-        # key is list of splits, value is tuple(count, newick, treelen, 1st time seen, 2nd time seen, ...)
+        # key is list of splits (a tree ID), value is tuple(count, newick, treelen, 1st time seen, 2nd time seen, ...)
         tree_map = {}
+
+        # key is list of splits (a tree ID), value is a dictionary mapping each split in the key to an index in a list
+        # of edge lengths
+        edge_map = {}
 
         # Open sumt_tfile_name and read trees therein
         self.stdout.info('\nReading %s...' % str(input_trees))
@@ -184,10 +214,6 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
             num_trees += 1
             self.num_trees_considered += 1
 
-            # Create a tree key, which is a list of internal node splits that can be
-            # used to uniquely identify a tree topology
-            tree_key = []
-
             # Build the tree
             tree_def.buildTree(t)
             t.rectifyNames(self.taxon_labels)
@@ -199,23 +225,24 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
                 split_field_width = ntips
             t.recalcAllSplits(ntips)
 
-            treelen = self.recordTreeInMaps(t, tree_key)
+            # Create a tree key, which is a list of internal node splits that can be
+            # used to uniquely identify a tree topology
+            treelen, tree_key, log_edge_lengths = self.recordTreeInMaps(t, edge_map)
 
             # Update tree_map, which is a map with keys equal to lists of internal node splits
             # and values equal to 2-element lists containing the frequency and newick tree
             # description
-            tree_key.sort()
-            k = tuple(tree_key)
-            if k in tree_map.keys():
+            if tree_key in tree_map.keys():
                 # tree topology has been seen before
-                entry = tree_map[k]
+                entry = tree_map[tree_key]
                 entry[0] += 1           # increment count of times this tree topology has been seen
                 # entry[1] is the newick tree description for the first tree with this topology
                 entry[2] += treelen     # add treelen to sum of tree lengths
-                entry.append(self.num_trees_considered)
+                entry[3].append(self.num_trees_considered)
+                entry[4].append(log_edge_lengths)
             else:
                 # tree topology has not yet been seen
-                tree_map[k] = [1, tree_def, treelen, self.num_trees_considered]
+                tree_map[tree_key] = [1, tree_def, treelen, [self.num_trees_considered], [log_edge_lengths]]
 
         self.stdout.info('\nSummary of sampled trees:')
         self.stdout.info('-------------------------')
@@ -237,9 +264,9 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
             self.stdout.info('  Indices of trees with this topology (first tree has index 1, not 0):')
             n = tree_map[k][0]
             if n > 5:
-                self.stdout.info('    %s,...,%d' % (','.join(['%d' % m for m in tree_map[k][3:8]]),tree_map[k][-1]))
+                self.stdout.info('    %s,...,%d' % (','.join(['%d' % m for m in tree_map[k][3][:5]]),tree_map[k][3][-1]))
             else:
-                self.stdout.info('    %s' % ','.join(tree_map[k][3:]))
+                self.stdout.info('    %s' % ','.join(['%d' % m for m in tree_map[k][3]]))
 
         if self.num_trees_considered == 0:
             self.stdout.info('\npwk was not provided with any trees.')
@@ -254,6 +281,24 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
             param_headers = param_lines[1].split()
         param_map = self.transformParameters(param_headers, param_lines, tree_map, skip)
         return param_map
+
+    def standardizeParamsOneTopology(self, param_map, tree_map, treeID):
+        # create a list v of vectors each containing all parameters
+        # and calculate mean parameter vector
+        log_params = param_map[treeID]
+        log_edgelens = tree_map[treeID][4]
+        v = []
+        n = 0
+        mean_vect = [0.0]*(len(log_params[0]) + len(log_edgelens[0]))
+        for p,e in zip(log_params, log_edgelens):
+            pe = p+e
+            v.append(pe)
+            for i,x in enumerate(pe):
+                mean_vect[i] += x
+            n += 1
+        for i in range(len(mean_vect)):
+            mean_vect[i] /= float(n)
+        return v, mean_vect
 
     def estimateMargLike(self, params, trees):
         marglike = None
@@ -273,8 +318,13 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
         #for (count,key) in sorted_tree_IDs:
         #    print '%d = %d' % (tree_map[key][0], len(param_map[key]))
 
+        # Loop over tree topologies
+        for k in tree_map.keys():
+            v, mean_vect = self.standardizeParamsOneTopology(param_map, tree_map, k)
 
         # *** BEGIN AGAIN HERE ***
+        V = likelihood.VarCovMatrixBase();
+        V.setVarCovMatrix([1,2,3,2,1,4,3,4,1])
 
         return marglike
 
