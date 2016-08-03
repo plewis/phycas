@@ -145,6 +145,7 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
         n = len(lines_not_skipped)
         raw_params = []
         log_likelihoods = []
+        log_priors = []
         for i,line in enumerate(lines_not_skipped):
             parts = line.split()
             if len(parts) != len(param_headers):
@@ -155,6 +156,8 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
                     p.append(float(x))
                 elif h == 'lnL':
                     log_likelihoods.append(float(x))
+                elif h == 'lnPrior':
+                    log_priors.append(float(x))
             raw_params.append(p)
 
         print 'raw_params has length %d' % len(raw_params)
@@ -163,19 +166,23 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
         # Now, create param_map from raw_params
         param_map = {}
         lnL_map = {}
+        lnP_map = {}
         for k in tree_map.keys():
             indices = tree_map[k][3]
             lnL = []
+            lnP = []
             v = []
             for i in indices:
                 param_vector_i = raw_params[i-1][:]
                 v.append(param_vector_i)
                 lnL.append(log_likelihoods[i-1])
+                lnP.append(log_priors[i-1])
             param_map[k] = v
             lnL_map[k] = lnL
+            lnP_map[k] = lnP
 
         raw_params = None
-        return param_map, lnL_map
+        return param_map, lnL_map, lnP_map
 
     def recordNodeInMaps(self, nd, splits_in_tree, split_weights):
         # nd is a node in the tree
@@ -389,21 +396,18 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
                 pos = edge_map[ss]
                 nd.setEdgeLen(edge_lengths[pos])
 
-    def processOneTopology(self, lnL_map, param_map, tree_map, treeID):
-        print '*** new tree topology ***'
-
-        # create a list v of vectors each containing all parameters
-        # and calculate mean parameter vector
+    def debugCheckKernelOneTopology(self, lnL_map, lnP_map, param_map, tree_map, treeID):
+        # get list of vectors each containing untransformed parameters
         untransformed_param_vectors = param_map[treeID]
 
+        # get list of vectors each containing untransformed edge lengths
         untransformed_edgelens = tree_map[treeID][4]
+        edge_map = tree_map[treeID][5]
 
         # n is the number of samples for this tree topology
         n = len(untransformed_param_vectors)
-        self.phycassert(len(untransformed_edgelens) == n, "Number of observations differs for params and trees in PWKImple.py standardizeParamsOneTopology function")
-
-        # p is the number of parameters
-        p = len(untransformed_param_vectors[0]) + len(untransformed_edgelens[0])
+        self.phycassert(len(untransformed_edgelens) == n, 'Number of observations differs for params (%d) and trees (%d) in PWKImple.py debugCheckKernelOneTopology function' % (n, len(untransformed_edgelens)))
+        self.phycassert(tree_map[treeID][0] == n, 'Number of parameter vectors (%d) does not match number of samples (%d) in PWKImple.py debugCheckKernelOneTopology function' % (n, tree_map[treeID][0]))
 
         # get cold chain and obtain parameter names from it
         cold_chain = pwk_mcmc_impl.mcmc_manager.getColdChain()
@@ -414,48 +418,57 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
         newick.buildTree(cold_chain.tree)
         cold_chain.likelihood.prepareForLikelihood(cold_chain.tree)
 
-        # set edge lengths
-        self.replaceEdgeLengths(cold_chain.tree, untransformed_edgelens[0], tree_map[treeID][5])
+        # loop through all trees sampled with this topology, calculating the log-likelihood and log-prior for each
+        print '%d trees were sampled with this topology:' % n,newick
+        print '%12s %12s %12s %12s %12s %12s %12s' % ('index', 'lnL', 'lnLcf', 'lnLdiff', 'lnP', 'lnPcf', 'lnPdiff')
+        for i in range(n):
+            index = tree_map[treeID][3][i]
+            evect = untransformed_edgelens[i]
+            pvect = untransformed_param_vectors[i]
+            lnLcf = lnL_map[treeID][i]
+            lnPcf = lnP_map[treeID][i]
 
-        # transform parameter vector and send to model
-        param_vect = self.transformParamVector(untransformed_param_vectors[0], param_names)
-        cold_chain.partition_model.setTransformedParameters(param_vect, cold_chain.tree)
-        cold_chain.likelihood.recalcRelativeRates()
+            # set edge lengths
+            self.replaceEdgeLengths(cold_chain.tree, evect, edge_map)
 
-        # sanity check
-        param_values = cold_chain.partition_model.getUntransformedParameters()
-        print '\nSanity check:'
-        print 'model:',cold_chain.partition_model.getModel(0).getModelName()
-        print 'tree:',cold_chain.tree.makeNewick()
-        for name,value in zip(param_names,param_values):
-            print '>>> ',name,'-->',value
+            # transform parameter vector and send to model
+            param_vect = self.transformParamVector(pvect, param_names)
+            cold_chain.partition_model.setTransformedParameters(param_vect, cold_chain.tree)
+            cold_chain.likelihood.replaceModel(cold_chain.partition_model) # trigger cold_chain.likelihood.recalcRelativeRates() call and invalidation of CLAs
 
-        # calculate log likelihood and compare with value in param file
-        print 'calculating likelihood...'
-        lnL = cold_chain.likelihood.calcLnL(cold_chain.tree)
-        print 'lnL =',lnL,' (',lnL_map[treeID][0],')'
-        print 'n =',n
-        print 'index of this tree =',tree_map[treeID][3][0]
-        #print 'cold_chain.tree.makeNewick() =',cold_chain.tree.makeNewick()
-        print 'newick =',newick
-        raw_input('..')
+            # uncomment to examine value of each parameter
+            #param_values = cold_chain.partition_model.getUntransformedParameters()
+            #print '\nSanity check:'
+            #print 'model:',cold_chain.partition_model.getModel(0).getModelName()
+            #print 'tree:',cold_chain.tree.makeNewick()
+            #for name,value in zip(param_names,param_values):
+            #    print '>>> ',name,'-->',value
+            #raw_input('..')
 
-        if False:
-            # Create a PWKMargLike object to manage the calculations
-            V = likelihood.PWKMargLikeBase(n, p)
-            V.copyNewick(tree_map[treeID][1])
+            # calculate log likelihood and compare with value in param file
+            lnL = cold_chain.likelihood.calcLnL(cold_chain.tree)
+            jpm = cold_chain.partition_model.getJointPriorManager()
+            lnP = jpm.getLogJointPrior()
+            print '%12d %12.5f %12.5f %12.5f %12.5f %12.5f %12.5f' % (index, lnL, lnLcf, math.fabs(lnL-lnLcf), lnP, lnPcf, math.fabs(lnP-lnPcf))
 
-            # Inform V of the parameter types
-            nedges = len(log_edgelens[0])
-            ptypes = [1]*nedges + param_type[:]
-            V.setParamTypes(ptypes)
-
-            # Add all parameter vectors to V and
-            for q,e in zip(log_params, log_edgelens):
-                eq = e+q
-                V.copyParamVector(eq)
-
-            V.estimateMargLike()
+    #def processOneTopology(self, lnL_map, lnP_map, param_map, tree_map, treeID):
+    #    print '*** new tree topology ***'
+    #
+    #    # Create a PWKMargLike object to manage the calculations
+    #    V = likelihood.PWKMargLikeBase(n, p)
+    #    V.copyNewick(tree_map[treeID][1])
+    #
+    #    # Inform V of the parameter types
+    #    nedges = len(log_edgelens[0])
+    #    ptypes = [1]*nedges + param_type[:]
+    #    V.setParamTypes(ptypes)
+    #
+    #    # Add all parameter vectors to V and
+    #    for q,e in zip(log_params, log_edgelens):
+    #        eq = e+q
+    #        V.copyParamVector(eq)
+    #
+    #    V.estimateMargLike()
 
     def estimateMargLike(self, params, trees):
         marglike = None
@@ -470,7 +483,7 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
 
         # Open the parameter file and process lines, separating parameter vectors according to tree topology
         # and creating param_map in which keys are tree IDs and values are lists of parameter vectors
-        param_map, lnL_map = self.processParams(params, tree_map, skip)
+        param_map, lnL_map, lnP_map = self.processParams(params, tree_map, skip)
 
         # Loop over tree topologies
         print '\nLooping over tree topologies:'
@@ -478,7 +491,9 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
             print '  n = ',n,', k =',k
             if n >= self.opts.minsample:
                 print 'Including topology with %d samples' % n
-                self.processOneTopology(lnL_map, param_map, tree_map, k)
+                self.debugCheckKernelOneTopology(lnL_map, lnP_map, param_map, tree_map, k)
+                raw_input('..')
+                #self.processOneTopology(lnL_map, lnP_map, param_map, tree_map, k)
             else:
                 print 'Excluding topology with %d samples' % n
 
