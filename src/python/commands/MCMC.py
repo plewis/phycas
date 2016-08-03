@@ -96,6 +96,9 @@ class MCMC(PhycasCommand):
         #self.__dict__["ss_single_edgelen_ref_dist"] = False
         self.__dict__["ssobj"] = None
 
+        # The data members added below are hidden from the user because they are set by the pwk command
+        self.__dict__["doing_pwk"] = False
+
         # The data members added below are hidden from the user because they are used internally when the users specifies a filename for cpofile
         self.__dict__["saving_sitelikes"] = False
         self.__dict__["sitelikef"] = None
@@ -122,23 +125,25 @@ class MCMC(PhycasCommand):
         c = copy.deepcopy(self)
         mcmc_impl = MCMCImpl(c)
 
-        if self.save_sitelikes:
-            mcmc_impl.siteLikeFileOpen()
-            if mcmc_impl.sitelikef:
-                self.saving_sitelikes = True
-            else:
-                self.saving_sitelikes = False
-                print 'Could not open the sitelike file'
+        if self.doing_pwk:
+            return mcmc_impl
+        else:
+            if self.save_sitelikes:
+                mcmc_impl.siteLikeFileOpen()
+                if mcmc_impl.sitelikef:
+                    self.saving_sitelikes = True
+                else:
+                    self.saving_sitelikes = False
+                    print 'Could not open the sitelike file'
 
-        mcmc_impl.setSiteLikeFile(self.sitelikef)
+            mcmc_impl.setSiteLikeFile(self.sitelikef)
 
-        mcmc_impl.run()
+            mcmc_impl.run()
 
-        self.ss_sampled_betas = mcmc_impl.ss_sampled_betas
-        self.ss_sampled_likes = mcmc_impl.ss_sampled_likes
+            self.ss_sampled_betas = mcmc_impl.ss_sampled_betas
+            self.ss_sampled_likes = mcmc_impl.ss_sampled_likes
 
-        if self.saving_sitelikes:
-            mcmc_impl.siteLikeFileClose()
+            if self.saving_sitelikes:
+                mcmc_impl.siteLikeFileClose()
 
-        mcmc_impl.unsetSiteLikeFile()
-
+            mcmc_impl.unsetSiteLikeFile()

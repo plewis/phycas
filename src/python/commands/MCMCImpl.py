@@ -529,7 +529,8 @@ class MCMCImpl(CommonFunctions):
 
         self.mcmc_manager.createChains()
         self.storeRefTreeIfSupplied()
-        self.openParameterAndTreeFiles()
+        if not self.opts.doing_pwk:
+            self.openParameterAndTreeFiles()
 
         cold_chain = self.mcmc_manager.getColdChain()
         all_missing = cold_chain.likelihood.getListOfAllMissingSites()

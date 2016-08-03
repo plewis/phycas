@@ -243,7 +243,7 @@ alias likelihood_sources
     src/cpp/prior_distribution.cpp
     src/cpp/probability_distribution.cpp
     src/cpp/q_matrix.cpp
-    src/cpp/varcov_matrix.cpp
+    src/cpp/pwk_marglike.cpp
     src/cpp/rectangular_matrix.cpp
     src/cpp/relative_rate_distribution.cpp
     src/cpp/rel_rates_move.cpp

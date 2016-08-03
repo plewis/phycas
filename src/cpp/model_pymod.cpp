@@ -29,7 +29,7 @@
 #include "jc.hpp"
 #include "hky.hpp"
 #include "codon_model.hpp"
-#include "varcov_matrix.hpp"
+#include "pwk_marglike.hpp"
 
 using namespace boost::python;
 using namespace phycas;
@@ -46,12 +46,11 @@ void model_pymod()
 		.def("getEigenVectors", &QMatrix::getEigenVectors)
 		.def("getEigenValues", &QMatrix::getEigenValues)
 		;
-	class_<VarCovMatrix, boost::noncopyable>("VarCovMatrixBase")
-		.def("getDimension", &VarCovMatrix::getDimension)
-		.def("getEigenVectors", &VarCovMatrix::getEigenVectors)
-		.def("getEigenValues", &VarCovMatrix::getEigenValues)
-        .def("getVarCovMatrix", &VarCovMatrix::getVarCovMatrix)
-        .def("setVarCovMatrix", &VarCovMatrix::setVarCovMatrix)
+	class_<PWKMargLike, boost::noncopyable>("PWKMargLikeBase", init<unsigned,unsigned>())
+        .def("copyNewick", &PWKMargLike::copyNewick)
+        .def("copyParamTypes", &PWKMargLike::copyParamTypes)
+        .def("copyParamVector", &PWKMargLike::copyParamVector)
+        .def("estimateMargLike", &PWKMargLike::estimateMargLike)
 		;
 #endif
 	class_<phycas::Model, boost::noncopyable, boost::shared_ptr<phycas::Model> >("Model", no_init)
