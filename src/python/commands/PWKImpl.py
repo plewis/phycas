@@ -39,10 +39,64 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
         """
         CommonFunctions.__init__(self, opts)
 
+    def logJacobianForEdgelens(self, log_edgelens):
+        return sum(log_edgelens)
+
+    def logJacobianForModelParams(self, log_modelparams, free_param_names):
+        log_jacobian = 0.0
+        xchgsum = 1.0
+        freqsum = 1.0
+
+        #print '~~~~~~~~~~~~~~~~~~~~~~~~~~~begin'
+        #print 'logJacobianForModelParams:'
+
+        for h,logx in zip(free_param_names, log_modelparams):
+            m = re.match('(\d+)_(.+)',h)
+            assert m is not None
+            the_subset = int(m.group(1))
+            the_param_name = m.group(2)
+            if the_param_name in ['edgelen_hyper', 'pinvar', 'gamma_shape', 'rAC', 'rAG', 'rAT', 'rCG', 'rCT', 'rGT', 'freqA', 'freqC', 'freqG', 'freqT']:
+                try:
+                    if the_param_name == 'gamma_shape':
+                        log_jacobian += logx
+                        #print '%12.5f %s' % (logx,the_param_name)
+                    elif the_param_name == 'edgelen_hyper':
+                        log_jacobian += logx
+                        #print '%12.5f %s' % (logx,the_param_name)
+                    elif the_param_name == 'pinvar':
+                        # logx = Y = log(pinvar) - log(1 - pinvar)
+                        # X = e^Y / (1 + e^Y)
+                        # dX/dY = X (1-X)
+                        # log(dX/dY) = log(X) - log(1-X) = Y - 2 log(1 + e^Y)
+                        log_jacobian += logx - 2.0*math.log(1.0 + math.exp(logx))
+                        #print '%12.5f %s' % (logx - 2.0*math.log(1.0 + math.exp(logx)),the_param_name)
+                    elif the_param_name in ['freqC', 'freqG', 'freqT']:
+                        log_jacobian += logx
+                        freqsum += math.exp(logx)
+                        #print '%12.5f %s' % (logx,the_param_name)
+                    elif the_param_name in ['rAG', 'rAT', 'rCG', 'rCT', 'rGT']:
+                        log_jacobian += logx
+                        xchgsum += math.exp(logx)
+                        #print '%12.5f %s' % (logx,the_param_name)
+                except ValueError:
+                    print 'ValueError for h = %s, logx = %g' % (h, logx)
+        log_jacobian -= 4.0*math.log(freqsum)
+        log_jacobian -= 6.0*math.log(xchgsum)
+
+        #print '%12.5f 4.0*math.log(freqsum)' % (4.0*math.log(freqsum),)
+        #print '%12.5f 6.0*math.log(xchgsum)' % (6.0*math.log(xchgsum),)
+        #print '~~~~~~~~~~~~~~~~~~~~~~~~~~~end'
+
+        return log_jacobian
+
     def transformParamVector(self, pvalues, pnames):
+        # Log-transforms parameter values in pvalues (log ratio transform used for GTR exchangeabilities and nucleotide frequencies)
+        # Returns the transformed parameter vector
+        assert len(pvalues) == len(pnames), 'Number of parameters (%d) does not equal number of parameter names (%d) in transformParamVector' % (len(pvalues), len(pnames))
         p = []
         logpiA = None
         logrAC = None
+
         for h,x in zip(pnames,pvalues):
             m = re.match('(\d+)_(.+)',h)
             assert m is not None
@@ -60,10 +114,12 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
                     elif the_param_name == 'freqA':
                         logpiA = logx
                     elif the_param_name in ['freqC', 'freqG', 'freqT']:
+                        assert logpiA is not None, 'expecting freqA to come before freqC, freqG, and freqT'
                         p.append(logx - logpiA)
                     elif the_param_name == 'rAC':
                         logrAC = logx
                     elif the_param_name in ['rAG', 'rAT', 'rCG', 'rCT', 'rGT']:
+                        assert logrAC is not None, 'expecting rAC to come before rAG, rAT, rCG, rCT, and rGT'
                         p.append(logx - logrAC)
                 except ValueError:
                     print 'log(%s) failed for %s' % (x,h)
@@ -137,7 +193,9 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
         return param_type, param_map
 
     def segregateParamsByTopology(self, param_headers, param_lines, tree_map, skip):
-        # Creates map in which keys are treeIDs and values are lists of raw parameter vectors
+        # Creates param_map, lnL_map, lnP_map in which key=treeID and values are:
+        # lists of raw parameter vectors (param_map), log-likelihoods (lnL_map), or
+        # log joint priors (lnP_map)
 
         # Store post-burnin parameter vectors in one big list raw_params
         row_start = 2 + skip  # first line ID, second line headers
@@ -163,7 +221,7 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
         print 'raw_params has length %d' % len(raw_params)
         print 'log_likelihoods has length %d' % len(log_likelihoods)
 
-        # Now, create param_map from raw_params
+        # Now, create param_map, lnL_map, and lnP_map from raw_params
         param_map = {}
         lnL_map = {}
         lnP_map = {}
@@ -370,7 +428,7 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
         # Read trees and create param_map:
         #
         # param_map is a dictionary in which:
-        #   key   = treeID
+        #   key   = treeID (tuple of strings, each representing a split)
         #   value = list of parameter vectors for one tree topology
         #
         param_lines = open(params, 'r').readlines()
@@ -396,6 +454,48 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
                 pos = edge_map[ss]
                 nd.setEdgeLen(edge_lengths[pos])
 
+    def calcLogKernel(self, transformed_parameters, newick, edge_map, V):
+        # Recalculates log kernel given a list of parameter values in `transformed_parameters'
+        # (log-transformed edge lengths followed by log-transformed substitution model parameters)
+        # A tree is built from the supplied TreeCollection variable `newick', `edge_map' provides
+        # the index for each edge length in `transformed_parameters' given a string representation
+        # of a split in the tree, and `V' provides the log Jacobian for the standardization.
+        nedges = len(edge_map)
+
+        # Get the cold chain, which has the tree and partition model and knows how to compute the likelihood
+        cold_chain = pwk_mcmc_impl.mcmc_manager.getColdChain()
+        free_param_names = cold_chain.partition_model.getFreeParameterNames()
+        assert len(transformed_parameters) == nedges + len(free_param_names), 'length of transformed_parameters vector (%d) does not equal the number of edge lengths (%d) plus the number of free parameters (%d) in calcLogKernel' % (len(transformed_parameters), nedges, len(free_param_names))
+
+        # Build the tree using the supplied TreeCollection variable `newick'
+        newick.buildTree(cold_chain.tree)
+        cold_chain.likelihood.prepareForLikelihood(cold_chain.tree)
+
+        # Set edge lengths (log-transformed edge lengths come first in transformed_parameters list)
+        edge_lengths = [math.exp(log_edgelen) for log_edgelen in transformed_parameters[:nedges]]
+        self.replaceEdgeLengths(cold_chain.tree, edge_lengths, edge_map)
+
+        # Send parameters to model (model parameters come last in transformed_parameters list)
+        cold_chain.partition_model.setTransformedParameters(transformed_parameters[nedges:], cold_chain.tree)
+        cold_chain.likelihood.replaceModel(cold_chain.partition_model) # trigger cold_chain.likelihood.recalcRelativeRates() call and invalidation of CLAs
+
+        # Calculate the three components of the log kernel: log likelihood, log prior, and log Jacobian
+        lnL = cold_chain.likelihood.calcLnL(cold_chain.tree)
+        lnP = cold_chain.partition_model.getJointPriorManager().getLogJointPrior()
+        lnJs =  V.logJacobianForStandardization()
+        lnJe = self.logJacobianForEdgelens(transformed_parameters[:nedges])
+        lnJp = self.logJacobianForModelParams(transformed_parameters[nedges:], free_param_names)
+        lnJ = lnJe + lnJp + lnJs
+
+        #print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+        #print 'lnJ (edge lengths)       =',lnJe
+        #print 'lnJ (substitution model) =',lnJp
+        #print 'lnJ (standardization)    =',lnJs
+        #print 'lnJ (total)              =',lnJ
+        #print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+
+        return (lnL, lnP, lnJe, lnJp, lnJs, free_param_names)
+
     def debugCheckKernelOneTopology(self, lnL_map, lnP_map, param_map, tree_map, treeID):
         # get list of vectors each containing untransformed parameters
         untransformed_param_vectors = param_map[treeID]
@@ -411,7 +511,8 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
 
         # get cold chain and obtain parameter names from it
         cold_chain = pwk_mcmc_impl.mcmc_manager.getColdChain()
-        param_names = cold_chain.partition_model.getAllParameterNames()
+        all_param_names = cold_chain.partition_model.getAllParameterNames()
+        free_param_names = cold_chain.partition_model.getFreeParameterNames()
 
         # set tree topology
         newick = tree_map[treeID][1]
@@ -432,7 +533,8 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
             self.replaceEdgeLengths(cold_chain.tree, evect, edge_map)
 
             # transform parameter vector and send to model
-            param_vect = self.transformParamVector(pvect, param_names)
+            param_vect = self.transformParamVector(pvect, all_param_names)
+            lnJ_log_transformation = self.logJacobianForModelParams(param_vect, free_param_names)
             cold_chain.partition_model.setTransformedParameters(param_vect, cold_chain.tree)
             cold_chain.likelihood.replaceModel(cold_chain.partition_model) # trigger cold_chain.likelihood.recalcRelativeRates() call and invalidation of CLAs
 
@@ -441,7 +543,7 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
             #print '\nSanity check:'
             #print 'model:',cold_chain.partition_model.getModel(0).getModelName()
             #print 'tree:',cold_chain.tree.makeNewick()
-            #for name,value in zip(param_names,param_values):
+            #for name,value in zip(all_param_names,param_values):
             #    print '>>> ',name,'-->',value
             #raw_input('..')
 
@@ -451,62 +553,313 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
             lnP = jpm.getLogJointPrior()
             print '%12d %12.5f %12.5f %12.5f %12.5f %12.5f %12.5f' % (index, lnL, lnLcf, math.fabs(lnL-lnLcf), lnP, lnPcf, math.fabs(lnP-lnPcf))
 
-    #def processOneTopology(self, lnL_map, lnP_map, param_map, tree_map, treeID):
-    #    print '*** new tree topology ***'
-    #
-    #    # Create a PWKMargLike object to manage the calculations
-    #    V = likelihood.PWKMargLikeBase(n, p)
-    #    V.copyNewick(tree_map[treeID][1])
-    #
-    #    # Inform V of the parameter types
-    #    nedges = len(log_edgelens[0])
-    #    ptypes = [1]*nedges + param_type[:]
-    #    V.setParamTypes(ptypes)
-    #
-    #    # Add all parameter vectors to V and
-    #    for q,e in zip(log_params, log_edgelens):
-    #        eq = e+q
-    #        V.copyParamVector(eq)
-    #
-    #    V.estimateMargLike()
+    def debugShowUntransformedAndTransformedParams(row, untransformed_param_vector, transformed_param_vector):
+        print '\nrow = %d' % row
+        cold_chain = pwk_mcmc_impl.mcmc_manager.getColdChain()
+        tmp_free_param_names = cold_chain.partition_model.getFreeParameterNames()
+        for paramname,uval,tval in zip(tmp_free_param_names, untransformed_param_vector, transformed_param_vector):
+            print '%20s %12.5f %12.5f' % (paramname, uval, tval)
+        #raw_input('..')
+
+    # calcVolume returns volume of hypersphere in n dimensions with radius r
+    # For n=2, returns pi r^2, the area of a circle with radius r
+    # For n=3, returns (4/3) pi r^3, the volume of a sphere with radius r
+    def calcVolume(self, n, r):
+        log_volume = 1.0*n*math.log(r) + 0.5*n*math.log(math.pi) - math.lgamma(0.5*n + 1.0)
+        return math.exp(log_volume);
+
+    # Returns representative log kernel value from shell whose midpoint is at radius r
+    # V should be the likelihood.VarCovBase object used to standardize the samples
+    def getRepresentativeLogKernel(self, r, delta, V, newick, edge_map):
+        nsamples = V.calcRepresentativeForShell(r, delta)
+        log_ratio_sum = V.getLogRatioSum()
+        if nsamples > 0:
+            log_kernel = V.getRepresentativeLogKernel()
+            #print 'average log kernel =', log_kernel
+
+            if False:
+                log_likelihood  = V.getRepresentativeLogLikelihood()
+                log_prior       = V.getRepresentativeLogPrior()
+                log_jacobian_edgelen = V.getRepresentativeLogJacobianEdgelen()
+                log_jacobian_substmodel = V.getRepresentativeLogJacobianSubstmodel()
+                log_jacobian_standardization = V.getRepresentativeLogJacobianStandardization()
+
+                log_params = V.getRepresentativeParamVect()
+                check_lnL, check_lnP, check_lnJ_edgelen, check_lnJ_substmodel, check_lnJ_standardization, free_param_names = self.calcLogKernel(log_params, newick, edge_map, V)
+                print
+                print 'check_lnL                        =', check_lnL
+                print 'log_likelihood                   =', log_likelihood
+                print '--> difference                   =', math.fabs(log_likelihood-check_lnL)
+
+                print 'check_lnP                        =', check_lnP
+                print 'log_prior                        =', log_prior
+                print '--> difference                   =', math.fabs(log_prior-check_lnP)
+
+                print 'check_lnJ_edgelen                =', check_lnJ_edgelen
+                print 'log_jacobian_edgelen             =', log_jacobian_edgelen
+                print '--> difference                   =', math.fabs(log_jacobian_edgelen - check_lnJ_edgelen)
+
+                print 'check_lnJ_substmodel             =', check_lnJ_substmodel
+                print 'log_jacobian_substmodel          =', log_jacobian_substmodel
+                print '--> difference                   =', math.fabs(log_jacobian_substmodel - check_lnJ_substmodel)
+
+                print 'check_lnJ_standardization        =', check_lnJ_standardization
+                print 'log_jacobian_standardization     =', log_jacobian_standardization
+                print '--> difference                   =', math.fabs(log_jacobian_standardization - check_lnJ_standardization)
+
+                print 'check kernel                     =', check_lnL + check_lnP + check_lnJ_edgelen + check_lnJ_substmodel + check_lnJ_standardization
+                print 'log_kernel                       =', log_kernel
+                print '--> difference                   =', math.fabs(log_kernel - check_lnL - check_lnP - check_lnJ_edgelen - check_lnJ_substmodel - check_lnJ_standardization)
+
+                for i,logp in enumerate(log_params):
+                    print '%15.5f' % logp,
+                    if i > 8:
+                        print ' <-- %s' % free_param_names[i-9]
+                    else:
+                        print
+        else:
+            log_params = V.getRepresentativeParamVect()
+            lnL, lnP, lnJ_edgelen, lnJ_substmodel, lnJ_standardization, free_param_names = self.calcLogKernel(log_params, newick, edge_map, V)
+            log_kernel = lnL + lnP + lnJ_edgelen + lnJ_substmodel + lnJ_standardization
+            #print 'manufactured log kernel =', log_kernel
+            #print '  lnL                 =', lnL
+            #print '  lnP                 =', lnP
+            #print '  lnJ_edgelen         =', lnJ_edgelen
+            #print '  lnJ_substmodel      =', lnJ_substmodel
+            #print '  lnJ_standardization =', lnJ_standardization
+
+        return nsamples, log_kernel, log_ratio_sum
+
+    def processOneTopology(self, lnL_map, lnP_map, param_map, tree_map, treeID):
+        debug_check_likelihoods = False
+
+        #print '*** new tree topology ***'
+
+        # Let n be the number of trees sampled for tree topology indexed by treeID
+        n = tree_map[treeID][0]
+
+        # Get cold chain and obtain parameter names from it
+        cold_chain = pwk_mcmc_impl.mcmc_manager.getColdChain()
+        all_param_names = cold_chain.partition_model.getAllParameterNames()
+        free_param_names = cold_chain.partition_model.getFreeParameterNames()
+
+        if debug_check_likelihoods:
+            print '~~~~ begin ~~~'
+            newick = tree_map[treeID][1]
+            newick.buildTree(cold_chain.tree)
+            cold_chain.likelihood.prepareForLikelihood(cold_chain.tree)
+
+        # Get list of vectors each containing untransformed parameters
+        untransformed_param_vectors = param_map[treeID]
+
+        # get list of vectors each containing untransformed edge lengths
+        untransformed_edgelens = tree_map[treeID][4]
+        edge_map = tree_map[treeID][5]
+        nedges = len(untransformed_edgelens[0])
+        assert nedges == len(edge_map.items()), 'length of untransformed_edgelens (%d) differs from number of items in edge_map (%d)' % (len(untransformed_edgelens[0]), len(edge_map.items()))
+
+        # Let p be the length of each untransformed parameter vector
+        #print 'untransformed_edgelens.__class__.__name__ =',untransformed_edgelens.__class__.__name__
+        #print 'len(untransformed_edgelens) =',len(untransformed_edgelens)
+        p = len(untransformed_edgelens[0]) + cold_chain.partition_model.getNumFreeParameters()
+
+        # Create a VarCovBase object to manage the standardization
+        V = likelihood.VarCovBase(n, p)
+
+        # Add all parameter vectors to V
+        row = 0
+        for q,e,lnl in zip(untransformed_param_vectors, untransformed_edgelens, lnL_map[treeID]):
+            # Log (or log-ratio) transform parameter vector
+            transformed_param_vector = self.transformParamVector(q, all_param_names)
+            lnJ_substitution_model = self.logJacobianForModelParams(transformed_param_vector, free_param_names)
+
+            # Log transform edge lengths
+            transformed_edgelen_vector = [math.log(edgelen) for edgelen in e]
+
+            # Add log-jacobians for edge length transformations to lnJ_log_transformation
+            lnJ_edge_lengths = sum(transformed_edgelen_vector)
+
+            # Copy transformed parameter vector, log likelihood, log prior, and log jacobian to correct row of V
+            all_params = transformed_edgelen_vector + transformed_param_vector
+            V.copyParamVector(row, all_params, lnL_map[treeID][row], lnP_map[treeID][row], lnJ_edge_lengths, lnJ_substitution_model)
+
+            if debug_check_likelihoods and row < 1:
+                test_params = all_params[:]
+                self.replaceEdgeLengths(cold_chain.tree, e, edge_map)
+                cold_chain.partition_model.setTransformedParameters(transformed_param_vector, cold_chain.tree)
+                cold_chain.likelihood.replaceModel(cold_chain.partition_model) # trigger cold_chain.likelihood.recalcRelativeRates() call and invalidation of CLAs
+                lnL = cold_chain.likelihood.calcLnL(cold_chain.tree)
+                print 'free_param_names =',free_param_names
+                print 'nedges =',nedges
+                print 'len(e) =',len(e)
+                print 'len(transformed_param_vector) =',len(transformed_param_vector)
+                print '%6d %12.5f %12.5f %12.5f' % (row,lnl,lnL,math.fabs(lnl-lnL))
+                for v in transformed_edgelen_vector:
+                    print v
+                for v,nm in zip(transformed_param_vector,free_param_names):
+                    print v,' (%s)' % nm
+                print
+
+            row += 1
+
+        # Standardize samples by subtracting the mean vector and multiplying by the variance-covariance matrix raised to the power -0.5
+        furthest_radius = V.standardizeSamples()
+
+        if debug_check_likelihoods:
+            print '~~~~ after standardization ~~~'
+            # check likelihoods again using de-standardized parameter vectors
+            for row in range(1):
+                transformed_parameter_vector = V.destandardizeSample(row)
+                print 'free_param_names =',free_param_names
+                print 'nedges =',nedges
+                print 'len(transformed_parameter_vector) =',len(transformed_parameter_vector)
+                e = [math.exp(v) for v in transformed_parameter_vector[:nedges]]
+                self.replaceEdgeLengths(cold_chain.tree, e, edge_map)
+                cold_chain.partition_model.setTransformedParameters(transformed_parameter_vector[nedges:], cold_chain.tree)
+                cold_chain.likelihood.replaceModel(cold_chain.partition_model) # trigger cold_chain.likelihood.recalcRelativeRates() call and invalidation of CLAs
+                lnL = cold_chain.likelihood.calcLnL(cold_chain.tree)
+                lnl = lnL_map[treeID][row]
+                print '%6d %12.5f %12.5f %12.5f' % (row,lnl,lnL,math.fabs(lnl-lnL))
+                for v in transformed_parameter_vector:
+                    print v
+                print
+            print '~~~~ end ~~~'
+            raw_input('..debug stop..')
+
+        # Calculate delta_r, which equals half the "thickness" of each of the K shells
+        K = self.opts.shells
+        delta_r = 0.5*furthest_radius/K;
+        print 'furthest_radius =',furthest_radius
+
+        # Loop through shells to compute the contribution of this topology to the overall log marginal likelihood
+        log_numerator   = []
+        log_denominator = []
+        volume_area_k_minus_1 = 0.0
+        print '%12s %12s %12s %s' % ('shell','radius','samples','representative log(kernel)')
+        for k in range(K):
+            # determine midpoint radius and volume of this shell
+            r_k = furthest_radius*(1.0*(k+1)/K - 1.0/(2.0*K))
+            volume_area_k  = self.calcVolume(p, r_k + delta_r)
+            log_volume_shell_k = math.log(volume_area_k - volume_area_k_minus_1)
+
+            # See if any samples fall within this shell
+            # if so, return value will be a list with one element equalling the average log kernel of these samples
+            # if not, return value will be a list representing a parameter vector of a representative point
+            newick = tree_map[treeID][1]
+            nsamples_this_shell, log_kernel_representative, log_ratio_sum = self.getRepresentativeLogKernel(r_k, delta_r, V, newick, edge_map)
+
+            log_numerator.append(log_ratio_sum)
+            log_denominator.append(log_kernel_representative + log_volume_shell_k)
+
+            print '%12d %12.5f %12d %.5f' % (k+1,r_k,nsamples_this_shell,log_kernel_representative)
+
+        log_numerator_sum = self.calculateSumTermsOnLogScale(log_numerator)
+        log_denominator_sum = self.calculateSumTermsOnLogScale(log_denominator)
+        log_contribution = log_numerator_sum - log_denominator_sum
+        return log_contribution
+
+    def calculateSumTermsOnLogScale(self, log_terms):
+        max_log_term = max(log_terms)
+        sum_of_terms = 0.0;
+        for log_term in log_terms:
+            sum_of_terms += math.exp(log_term - max_log_term);
+        sum_on_log_scale = max_log_term + math.log(sum_of_terms)
+        return sum_on_log_scale
 
     def estimateMargLike(self, params, trees):
         marglike = None
         skip = self.opts.skip
 
-        # Open the tree file and process lines
+        # Open the tree file and process lines, creating tree_map and setting self.num_trees_considered
+        # to equal the number of trees not skipped.
+        #
+        # Description of tree_map:
+        #
+        #  key   = tuple of strings (aka treeID), each string representing a single split
+        #
+        #  value = list containing the following elements:
+        #     0: number of trees with this topology (n)
+        #     1: TreeDescription (not a string, see class TreeDescription in _NexusReader.py)
+        #     2: mean tree length
+        #     3: list (length n) of indices of samples having this topology (start at 1, not 0)
+        #     4: list (length n) of lists (length nedges) of untransformed edge lengths
+        #     5: edge_map (ensures that edge lengths are always in the same order in the parameter vector)
+        #
+        # Description of edge_map:
+        #
+        #  key   = split, i.e. a string representing a single bipartition
+        #
+        #  value = index into tree_map[4] lists
+        #
         tree_map = self.processTrees(trees, skip)
 
-        # Create sorted list of tree IDs with tree having most samples first
+        # Create sorted list of (n,treeID) tuples with tree having most samples first.
+        # The lambda function is necessary because the standard sort would put least sampled tree first.
         sorted_tree_IDs = [(tree_map[k][0],k) for k in tree_map.keys()]
         sorted_tree_IDs.sort(cmp = lambda x,y: cmp(y[0],x[0]))
 
         # Open the parameter file and process lines, separating parameter vectors according to tree topology
-        # and creating param_map in which keys are tree IDs and values are lists of parameter vectors
+        # and creating param_map in which keys are treeIDs and values are lists of parameter vectors
+        #
+        # Description of param_map:
+        #
+        #  key   = treeID
+        #
+        #  value = list of parameter vectors
+        #
+        #
+        # Description of lnL_map:
+        #
+        #  key   = treeID
+        #
+        #  value = list of log-likelihood values for one tree topology
+        #
+        #
+        # Description of lnP_map:
+        #
+        #  key   = treeID
+        #
+        #  value = list of log-prior values for one tree topology
+        #
         param_map, lnL_map, lnP_map = self.processParams(params, tree_map, skip)
 
-        # Loop over tree topologies
-        print '\nLooping over tree topologies:'
-        for n,k in sorted_tree_IDs:
-            print '  n = ',n,', k =',k
+        # Loop over tree topologies and, for each topology having the minimum number of samples,
+        # compute the term of the denominator of the PWK estimation formula corresponding to this topology
+        log_denom_terms = []
+        num_trees_included = 0
+        for n,treeID in sorted_tree_IDs:
             if n >= self.opts.minsample:
-                print 'Including topology with %d samples' % n
-                self.debugCheckKernelOneTopology(lnL_map, lnP_map, param_map, tree_map, k)
-                raw_input('..')
-                #self.processOneTopology(lnL_map, lnP_map, param_map, tree_map, k)
-            else:
-                print 'Excluding topology with %d samples' % n
+                #self.debugCheckKernelOneTopology(lnL_map, lnP_map, param_map, tree_map, treeID)
 
-        return marglike
+                print '\n*** Including topology with %d samples ***' % n
+
+                # Number of trees included equals self.num_trees_considered iff sample size is
+                # at least self.opts.minsample for all tree topologies
+                num_trees_included += n
+
+                # Log marginal posterior probability of this tree topology
+                log_posterior_this_topology = math.log(n) - math.log(self.num_trees_considered)
+
+                # Compute contribution of this topology to the marginal likelihood
+                log_topology_contribution = self.processOneTopology(lnL_map, lnP_map, param_map, tree_map, treeID)
+                #log_denom_terms.append(log_posterior_this_topology + log_topology_contribution) # wrong
+                log_denom_terms.append(log_topology_contribution)
+            else:
+                print '\n*** Excluding topology with %d samples ***' % n
+
+        # Note that self.num_trees_considered cancels in the version of the PWK estimator that uses posterior probabilities in the numerator
+        log_numerator = math.log(num_trees_included) # - math.log(self.num_trees_considered)
+        log_denominator = self.calculateSumTermsOnLogScale(log_denom_terms) # - math.log(self.num_trees_considered)
+        log_marginal_likelihood = log_numerator - log_denominator
+
+        return log_marginal_likelihood
 
     def run(self):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
-        Reads the contents of the param file and decides whether to use the
-        marginal_likelihood or std_summary functions to summarize the data
-        therein. The marginal_likelihood function is called if the second
-        header is "beta"; otherwise, std_summary is called. If a cpofile
-        name has been specified, computes conditional predictive ordinates.
+        Reads the contents of the params and trees files specified, then 
+        estimates the log(marginal likelihood) using the PWK method, using
+        the number of shells specified.
 
         """
         global pwk_mcmc_impl
@@ -520,5 +873,6 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
         pwk_mcmc_impl.setup()
         mcmc.doing_pwk = False
 
-        marglike = self.estimateMargLike(self.opts.params, self.opts.trees)
-        return marglike
+        logmarglike = self.estimateMargLike(self.opts.params, self.opts.trees)
+        print '~~> log(marginal likelihood) =',logmarglike
+        return logmarglike

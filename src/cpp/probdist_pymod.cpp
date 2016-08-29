@@ -200,6 +200,7 @@ BOOST_PYTHON_MODULE(_ProbDistExt)
 		.def("setSeed", &phycas::Lot::SetSeed)
 		.def("getInitSeed", &phycas::Lot::GetInitSeed)
 		.def("uniform", &phycas::Lot::Uniform)
+		.def("normal", &phycas::Lot::Normal)
 		.def("getrandbits", &phycas::Lot::GetRandBits)
 		.def("sampleUInt", &phycas::Lot::SampleUInt)
 		;

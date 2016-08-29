@@ -224,8 +224,6 @@
 		D120CA4219DF24DC005322F7 /* _ProbDistExt.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = _ProbDistExt.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		D120CA6619DF2600005322F7 /* _DataMatrixExt.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = _DataMatrixExt.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		D120CA7A19DF2756005322F7 /* _LikelihoodExt.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = _LikelihoodExt.so; sourceTree = BUILT_PRODUCTS_DIR; };
-		D132B8941D4BE3B4002E7B82 /* pwk_marglike.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pwk_marglike.cpp; sourceTree = "<group>"; };
-		D132B8951D4BE3B4002E7B82 /* pwk_marglike.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = pwk_marglike.hpp; sourceTree = "<group>"; };
 		D1521FDC193B756F007ADBB5 /* __init__.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = __init__.py; path = src/python/commands/__init__.py; sourceTree = PHYCAS_ROOT; };
 		D1521FDD193B756F007ADBB5 /* Commands.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = Commands.py; path = src/python/commands/Commands.py; sourceTree = PHYCAS_ROOT; };
 		D1521FDE193B756F007ADBB5 /* CPO.py */ = {isa = PBXFileReference; explicitFileType = text.script.python; name = CPO.py; path = src/python/commands/CPO.py; sourceTree = PHYCAS_ROOT; };
@@ -476,6 +474,8 @@
 		D1777BB6193C14DF000719F1 /* xphycas.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xphycas.hpp; sourceTree = "<group>"; };
 		D1777BB7193C14DF000719F1 /* xphylogeny.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xphylogeny.hpp; sourceTree = "<group>"; };
 		D1777BB8193C14DF000719F1 /* xprobdist.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xprobdist.hpp; sourceTree = "<group>"; };
+		D1861F9E1D52B943004BB7CE /* varcov.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = varcov.cpp; sourceTree = "<group>"; };
+		D1861F9F1D52B943004BB7CE /* varcov.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = varcov.hpp; sourceTree = "<group>"; };
 		D1ABC0AF19DF362600E03A8B /* _PhylogenyExt.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = _PhylogenyExt.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		D1ABC0CC19DF36B900E03A8B /* _ReadNexusExt.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = _ReadNexusExt.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		D1BA84A61A696999006C0260 /* libboost_python.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_python.dylib; path = ../../../libraries/boostlib/lib/libboost_python.dylib; sourceTree = "<group>"; };
@@ -809,8 +809,6 @@
 		D168190D193B730E004AAAD5 /* C++ sources */ = {
 			isa = PBXGroup;
 			children = (
-				D132B8941D4BE3B4002E7B82 /* pwk_marglike.cpp */,
-				D132B8951D4BE3B4002E7B82 /* pwk_marglike.hpp */,
 				D1777B0D193C14DF000719F1 /* basic_cdf.cpp */,
 				D1777B0E193C14DF000719F1 /* basic_cdf.hpp */,
 				D1777B0F193C14DF000719F1 /* basic_lot.cpp */,
@@ -955,6 +953,8 @@
 				D1777BB2193C14DF000719F1 /* underflow_manager.cpp */,
 				D1777BB3193C14DF000719F1 /* underflow_manager.hpp */,
 				D1777BB4193C14DF000719F1 /* updater_pymod.cpp */,
+				D1861F9E1D52B943004BB7CE /* varcov.cpp */,
+				D1861F9F1D52B943004BB7CE /* varcov.hpp */,
 				D1777BB5193C14DF000719F1 /* xlikelihood.hpp */,
 				D1777BB6193C14DF000719F1 /* xphycas.hpp */,
 				D1777BB7193C14DF000719F1 /* xphylogeny.hpp */,

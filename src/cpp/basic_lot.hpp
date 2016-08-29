@@ -52,6 +52,7 @@ class Lot
 		unsigned				GetRandBits(unsigned nbits);
 
 		double 					Uniform();
+		double 					Normal();
 		bool					Boolean();
 
 	private:
@@ -65,6 +66,15 @@ typedef boost::shared_ptr<Lot> LotShPtr;
 inline bool Lot::Boolean()
 	{
 	return (Uniform() < 0.5);
+	}
+
+inline double Lot::Normal()
+	{
+    double u = Uniform();
+    double x = sqrt(-2.0*log(u));
+    double v = Uniform();
+    double y = cos(2.0*3.141592653589793238846*v);
+	return x*y;
 	}
 
 } // namespace phycas

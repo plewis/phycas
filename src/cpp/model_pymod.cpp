@@ -29,14 +29,13 @@
 #include "jc.hpp"
 #include "hky.hpp"
 #include "codon_model.hpp"
-#include "pwk_marglike.hpp"
+#include "varcov.hpp"
 
 using namespace boost::python;
 using namespace phycas;
 
 void model_pymod()
 	{
-#if 1
 	class_<QMatrix, boost::noncopyable>("QMatrixBase")
 		.def("getDimension", &QMatrix::getDimension)
 		.def("setRelativeRates", &QMatrix::setRelativeRates)
@@ -46,13 +45,23 @@ void model_pymod()
 		.def("getEigenVectors", &QMatrix::getEigenVectors)
 		.def("getEigenValues", &QMatrix::getEigenValues)
 		;
-	class_<PWKMargLike, boost::noncopyable>("PWKMargLikeBase", init<unsigned,unsigned>())
-        .def("copyNewick", &PWKMargLike::copyNewick)
-        .def("copyParamTypes", &PWKMargLike::copyParamTypes)
-        .def("copyParamVector", &PWKMargLike::copyParamVector)
-        .def("estimateMargLike", &PWKMargLike::estimateMargLike)
+	class_<VarCovMatrix, boost::noncopyable>("VarCovBase", init<unsigned,unsigned>())
+        //.def("copyNewick", &VarCovMatrix::copyNewick)
+        //.def("copyParamTypes", &VarCovMatrix::copyParamTypes)
+        .def("copyParamVector", &VarCovMatrix::copyParamVector)
+        .def("standardizeSamples", &VarCovMatrix::standardizeSamples)
+        .def("getLogRatioSum", &VarCovMatrix::getLogRatioSum)
+        .def("getRepresentativeLogKernel", &VarCovMatrix::getRepresentativeLogKernel)
+        .def("getRepresentativeLogLikelihood", &VarCovMatrix::getRepresentativeLogLikelihood)
+        .def("getRepresentativeLogPrior", &VarCovMatrix::getRepresentativeLogPrior)
+        .def("getRepresentativeLogJacobianEdgelen", &VarCovMatrix::getRepresentativeLogJacobianEdgelen)
+        .def("getRepresentativeLogJacobianSubstmodel", &VarCovMatrix::getRepresentativeLogJacobianSubstmodel)
+        .def("getRepresentativeLogJacobianStandardization", &VarCovMatrix::getRepresentativeLogJacobianStandardization)
+        .def("getRepresentativeParamVect", &VarCovMatrix::getRepresentativeParamVect)
+        .def("calcRepresentativeForShell", &VarCovMatrix::calcRepresentativeForShell)
+        .def("logJacobianForStandardization", &VarCovMatrix::logJacobianForStandardization)
+        .def("destandardizeSample", &VarCovMatrix::destandardizeSample)
 		;
-#endif
 	class_<phycas::Model, boost::noncopyable, boost::shared_ptr<phycas::Model> >("Model", no_init)
 		.def("fixEdgeLenHyperprior", &phycas::Model::fixEdgeLenHyperprior)
 		.def("freeEdgeLenHyperprior", &phycas::Model::freeEdgeLenHyperprior)
