@@ -570,12 +570,20 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
 
     # Returns representative log kernel value from shell whose midpoint is at radius r
     # V should be the likelihood.VarCovBase object used to standardize the samples
-    def getRepresentativeLogKernel(self, r, delta, V, newick, edge_map):
+    def getRepresentativeLogKernelPaul(self, r, delta, V, newick, edge_map):
         nsamples = V.calcRepresentativeForShell(r, delta)
         log_ratio_sum = V.getLogRatioSum()
         if nsamples > 0:
             log_kernel = V.getRepresentativeLogKernel()
             #print 'average log kernel =', log_kernel
+
+            if False:
+                log_params = V.getRepresentativeParamVect()
+                check_lnL, check_lnP, check_lnJ_edgelen, check_lnJ_substmodel, check_lnJ_standardization, free_param_names = self.calcLogKernel(log_params, newick, edge_map, V)
+                check_lnKernel = check_lnL + check_lnP + check_lnJ_edgelen + check_lnJ_substmodel + check_lnJ_standardization
+                print check_lnKernel,'<-- log kernel of chosen point'
+                print free_param_names
+                raw_input('..debug stop..')
 
             if False:
                 log_likelihood  = V.getRepresentativeLogLikelihood()
@@ -617,6 +625,7 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
                         print ' <-- %s' % free_param_names[i-9]
                     else:
                         print
+                raw_input('..debug stop..')
         else:
             log_params = V.getRepresentativeParamVect()
             lnL, lnP, lnJ_edgelen, lnJ_substmodel, lnJ_standardization, free_param_names = self.calcLogKernel(log_params, newick, edge_map, V)
@@ -630,7 +639,21 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
 
         return nsamples, log_kernel, log_ratio_sum
 
-    def processOneTopology(self, lnL_map, lnP_map, param_map, tree_map, treeID):
+    # Returns representative log kernel value from shell whose midpoint is at radius r
+    # V should be the likelihood.VarCovBase object used to standardize the samples
+    def getRepresentativeLogKernelMing(self, r, delta, V, newick, edge_map):
+        nsamples = V.calcRepresentativeForShell(r, delta)
+        log_ratio_terms = V.getLogRatioVect()
+        if nsamples > 0:
+            log_kernel = V.getRepresentativeLogKernel()
+        else:
+            log_params = V.getRepresentativeParamVect()
+            lnL, lnP, lnJ_edgelen, lnJ_substmodel, lnJ_standardization, free_param_names = self.calcLogKernel(log_params, newick, edge_map, V)
+            log_kernel = lnL + lnP + lnJ_edgelen + lnJ_substmodel + lnJ_standardization
+
+        return nsamples, log_kernel, log_ratio_terms
+
+    def processOneTopologyPaul(self, lnL_map, lnP_map, param_map, tree_map, treeID):
         debug_check_likelihoods = False
 
         #print '*** new tree topology ***'
@@ -664,7 +687,16 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
         p = len(untransformed_edgelens[0]) + cold_chain.partition_model.getNumFreeParameters()
 
         # Create a VarCovBase object to manage the standardization
-        V = likelihood.VarCovBase(n, p)
+        V = likelihood.VarCovBase('topo%d' % n, n, p)
+
+        raw_input('..debugTestStandardization starting..')
+        V.debugTestStandardization();
+        raw_input('..debugTestStandardization finished..')
+
+        edgelen_names = [""]*nedges
+        for key in edge_map.keys():
+            edgelen_names[edge_map[key]] = key
+        V.setParamNames(edgelen_names + list(free_param_names))
 
         # Add all parameter vectors to V
         row = 0
@@ -728,12 +760,131 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
 
         # Calculate delta_r, which equals half the "thickness" of each of the K shells
         K = self.opts.shells
+        furthest_radius *= float(self.opts.reach)
         delta_r = 0.5*furthest_radius/K;
-        print 'furthest_radius =',furthest_radius
+
+        debugf = open('debug_topology_details.txt', 'a')
+        debugf.write('\n*** topology with %d samples *** \n' % n)
+        debugf.write('furthest_radius = %.8f\n' % furthest_radius)
 
         # Loop through shells to compute the contribution of this topology to the overall log marginal likelihood
         log_numerator   = []
         log_denominator = []
+        volume_area_k_minus_1 = 0.0
+        debugf.write('%20s %20s %20s %20s %20s %20s\n' % ('shell','radius','samples','log kernel repr', 'log ratio sum', 'log volume'))
+        for k in range(K):
+            # determine midpoint radius and volume of this shell
+            r_k = furthest_radius*(1.0*(k+1)/K - 1.0/(2.0*K))
+            volume_area_k  = self.calcVolume(p, r_k + delta_r)
+            log_volume_shell_k = math.log(volume_area_k - volume_area_k_minus_1)
+
+            # See if any samples fall within this shell
+            # if so, return value will be a list with one element equalling the average log kernel of these samples
+            # if not, return value will be a list representing a parameter vector of a representative point
+            newick = tree_map[treeID][1]
+            nsamples_this_shell, log_kernel_representative, log_ratio_sum = self.getRepresentativeLogKernelPaul(r_k, delta_r, V, newick, edge_map)
+
+            # debugging
+            if n == 77695 and k == 49:
+                paramvects = V.getRepresentativesForShell(10, r_k, delta_r)
+                nelements = len(paramvects)
+                print '~~~~~~ debugging ~~~~~'
+                print 'r =',r_k
+                print 'lower =',r_k-delta_r
+                print 'upper =',r_k+delta_r
+                print 'p =',p
+                print 'nelements =',nelements
+                print '%20s' % 'log(kernel)',
+                for nm in edgelen_names:
+                    print '%20s' % nm,
+                for nm in free_param_names:
+                    print '%20s' % nm,
+                print
+                for which in range(0, nelements, p):
+                    check_lnL, check_lnP, check_lnJ_edgelen, check_lnJ_substmodel, check_lnJ_standardization, free_param_names = self.calcLogKernel(paramvects[which:which+p], newick, edge_map, V)
+                    check_lnKernel = check_lnL + check_lnP + check_lnJ_edgelen + check_lnJ_substmodel + check_lnJ_standardization
+                    print '%20.5f' % check_lnKernel,
+                    for pp in paramvects[which:which+p]:
+                        print '%20.5f' % pp,
+                    print
+                raw_input('..stopped at last shell of topology 77695..')
+
+            if nsamples_this_shell > 0: #temporary!
+                log_numerator.append(log_ratio_sum)
+                log_denominator.append(log_kernel_representative + log_volume_shell_k)
+
+                debugf.write('%20d %20.5f %20d %20.5f %20.5f %20.5f\n' % (k+1,r_k,nsamples_this_shell,log_kernel_representative,log_ratio_sum,log_volume_shell_k))
+        debugf.close()
+
+        log_sum_of_ratios = self.calculateSumTermsOnLogScale(log_numerator)
+        log_sum_of_volumes = self.calculateSumTermsOnLogScale(log_denominator)
+        log_contribution = log_sum_of_ratios - log_sum_of_volumes
+
+        tmpf = open('debug_breakdown.txt', 'a')
+        tmpf.write('%20d %20.5f %20.5f %35.5f\n' % (n, log_sum_of_ratios, log_sum_of_volumes, log_contribution))
+        tmpf.close()
+
+        return log_sum_of_ratios, log_sum_of_volumes, log_contribution
+
+    def processOneTopologyMing(self, lnL_map, lnP_map, param_map, tree_map, treeID):
+        # Let n be the number of trees sampled for tree topology indexed by treeID
+        n = tree_map[treeID][0]
+        #log_tree_posterior = math.log(n) - math.log(self.num_trees_considered)
+
+        # Get cold chain and obtain parameter names from it
+        cold_chain = pwk_mcmc_impl.mcmc_manager.getColdChain()
+        all_param_names = cold_chain.partition_model.getAllParameterNames()
+        free_param_names = cold_chain.partition_model.getFreeParameterNames()
+
+        # Get list of vectors each containing untransformed parameters
+        untransformed_param_vectors = param_map[treeID]
+
+        # get list of vectors each containing untransformed edge lengths
+        untransformed_edgelens = tree_map[treeID][4]
+        edge_map = tree_map[treeID][5]
+        nedges = len(untransformed_edgelens[0])
+        assert nedges == len(edge_map.items()), 'length of untransformed_edgelens (%d) differs from number of items in edge_map (%d)' % (len(untransformed_edgelens[0]), len(edge_map.items()))
+
+        # Let p be the length of each untransformed parameter vector
+        p = len(untransformed_edgelens[0]) + cold_chain.partition_model.getNumFreeParameters()
+
+        # Create a VarCovBase object to manage the standardization
+        V = likelihood.VarCovBase(n, p)
+
+        # Add all parameter vectors to V
+        row = 0
+        for q,e,lnl in zip(untransformed_param_vectors, untransformed_edgelens, lnL_map[treeID]):
+            # Log (or log-ratio) transform parameter vector
+            transformed_param_vector = self.transformParamVector(q, all_param_names)
+            lnJ_substitution_model = self.logJacobianForModelParams(transformed_param_vector, free_param_names)
+
+            # Log transform edge lengths
+            transformed_edgelen_vector = [math.log(edgelen) for edgelen in e]
+
+            # Add log-jacobians for edge length transformations to lnJ_log_transformation
+            lnJ_edge_lengths = sum(transformed_edgelen_vector)
+
+            # Copy transformed parameter vector, log likelihood, log prior, and log jacobian to correct row of V
+            all_params = transformed_edgelen_vector + transformed_param_vector
+            V.copyParamVector(row, all_params, lnL_map[treeID][row], lnP_map[treeID][row], lnJ_edge_lengths, lnJ_substitution_model)
+
+            row += 1
+
+        # Standardize samples by subtracting the mean vector and multiplying by the variance-covariance matrix raised to the power -0.5
+        furthest_radius = V.standardizeSamples()
+
+        # Calculate delta_r, which equals half the "thickness" of each of the K shells
+        K = self.opts.shells
+        furthest_radius *= float(self.opts.reach)
+        delta_r = 0.5*furthest_radius/K;
+        print 'furthest_radius =',furthest_radius
+
+        # same as processOneTopologyPaul to here
+
+        # Loop through shells to compute the contribution of this topology to the overall log marginal likelihood
+        # Note that numerator and denominator refer to the formula for 1/c, so these will ultimately need to be swapped to estimate c
+        log_numerator_terms   = []
+        log_denominator_terms = []
         volume_area_k_minus_1 = 0.0
         print '%12s %12s %12s %s' % ('shell','radius','samples','representative log(kernel)')
         for k in range(K):
@@ -746,17 +897,14 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
             # if so, return value will be a list with one element equalling the average log kernel of these samples
             # if not, return value will be a list representing a parameter vector of a representative point
             newick = tree_map[treeID][1]
-            nsamples_this_shell, log_kernel_representative, log_ratio_sum = self.getRepresentativeLogKernel(r_k, delta_r, V, newick, edge_map)
+            nsamples_this_shell, log_kernel_representative, log_ratio_terms = self.getRepresentativeLogKernelMing(r_k, delta_r, V, newick, edge_map)
 
-            log_numerator.append(log_ratio_sum)
-            log_denominator.append(log_kernel_representative + log_volume_shell_k)
+            log_numerator_terms.extend(log_ratio_terms)
+            log_denominator_terms.append(log_kernel_representative + log_volume_shell_k)
 
             print '%12d %12.5f %12d %.5f' % (k+1,r_k,nsamples_this_shell,log_kernel_representative)
 
-        log_numerator_sum = self.calculateSumTermsOnLogScale(log_numerator)
-        log_denominator_sum = self.calculateSumTermsOnLogScale(log_denominator)
-        log_contribution = log_numerator_sum - log_denominator_sum
-        return log_contribution
+        return (log_numerator_terms,log_denominator_terms)
 
     def calculateSumTermsOnLogScale(self, log_terms):
         max_log_term = max(log_terms)
@@ -823,34 +971,115 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
         #
         param_map, lnL_map, lnP_map = self.processParams(params, tree_map, skip)
 
-        # Loop over tree topologies and, for each topology having the minimum number of samples,
-        # compute the term of the denominator of the PWK estimation formula corresponding to this topology
-        log_denom_terms = []
-        num_trees_included = 0
-        for n,treeID in sorted_tree_IDs:
-            if n >= self.opts.minsample:
-                #self.debugCheckKernelOneTopology(lnL_map, lnP_map, param_map, tree_map, treeID)
+        if True:
+            # This version works, but is not as elegant as it could be
 
-                print '\n*** Including topology with %d samples ***' % n
+            open('debug_topology_details.txt', 'w').close()
+            tmpf = open('debug_breakdown.txt', 'w')
+            tmpf.write('%20s %20s %20s %35s\n' % ('trees','log(sum qratio)','log(sum volume)','log(sum qratio) - log(sum volume)'))
+            tmpf.write('%20s %20s %20s %35s\n' % ('-------------------', '-------------------', '-------------------', '----------------------------------'))
+            tmpf.close()
 
-                # Number of trees included equals self.num_trees_considered iff sample size is
-                # at least self.opts.minsample for all tree topologies
-                num_trees_included += n
+            # Loop over tree topologies and, for each topology having the minimum number of samples,
+            # compute the term of the denominator of the PWK estimation formula corresponding to this topology
+            log_denom_terms = []
+            tmp_log_sum_of_ratios_list = []
+            tmp_log_sum_of_volumes_list = []
+            num_trees_included = 0
+            for n,treeID in sorted_tree_IDs:
+                if n >= self.opts.minsample:
+                    #self.debugCheckKernelOneTopology(lnL_map, lnP_map, param_map, tree_map, treeID)
 
-                # Log marginal posterior probability of this tree topology
-                log_posterior_this_topology = math.log(n) - math.log(self.num_trees_considered)
+                    print '\n*** Including topology with %d samples ***' % n
 
-                # Compute contribution of this topology to the marginal likelihood
-                log_topology_contribution = self.processOneTopology(lnL_map, lnP_map, param_map, tree_map, treeID)
-                #log_denom_terms.append(log_posterior_this_topology + log_topology_contribution) # wrong
-                log_denom_terms.append(log_topology_contribution)
+                    # Number of trees included equals self.num_trees_considered iff sample size is
+                    # at least self.opts.minsample for all tree topologies
+                    num_trees_included += n
+
+                    # Log marginal posterior probability of this tree topology
+                    log_posterior_this_topology = math.log(n) - math.log(self.num_trees_considered)
+
+                    # Compute contribution of this topology to the marginal likelihood
+                    log_sum_of_ratios, log_sum_of_volumes, log_topology_contribution = self.processOneTopologyPaul(lnL_map, lnP_map, param_map, tree_map, treeID)
+
+                    # log_sum_of_ratios, log_sum_of_volumes, log_contribution
+
+                    tmp_log_sum_of_ratios_list.append(log_sum_of_ratios)
+                    tmp_log_sum_of_volumes_list.append(log_sum_of_volumes)
+                    log_denom_terms.append(log_topology_contribution)
+                else:
+                    print '\n*** Excluding topology with %d samples ***' % n
+
+            log_sum_of_ratios   = self.calculateSumTermsOnLogScale(tmp_log_sum_of_ratios_list)
+            log_sum_of_volumes  = self.calculateSumTermsOnLogScale(tmp_log_sum_of_volumes_list)
+            log_denominator     = self.calculateSumTermsOnLogScale(log_denom_terms)
+
+            tmpf = open('debug_breakdown.txt', 'a')
+            tmpf.write('%20s %20s %20s %35s\n' % ('-------------------', '-------------------', '-------------------', '----------------------------------'))
+            tmpf.write('%20d %20.5f %20.5f %35.5f\n' % (num_trees_included, log_sum_of_ratios, log_sum_of_volumes, log_denominator))
+            tmpf.write('\ntotal sample size      = %d\n' % self.num_trees_considered)
+            logN = math.log(self.num_trees_considered)
+            tmpf.write('log(total sample size) = %.5f\n' % logN)
+            tmpf.write("sum of ratios method = %.5f = %.5f - %.5f\n" % (logN - log_denominator, logN, log_denominator))
+            tmpf.write("ratio of sums method = %.5f = %.5f - (%.5f - (%.5f))\n" % (logN - (log_sum_of_ratios - log_sum_of_volumes), logN, log_sum_of_ratios, log_sum_of_volumes))
+            tmpf.close()
+
+            print 'self.num_trees_considered =',self.num_trees_considered
+            print 'num_trees_included        =',num_trees_included
+
+            # Note that self.num_trees_considered cancels in the version of the PWK estimator that uses posterior probabilities in the numerator
+            if False:
+                print '@@@@@ Paul (1/{\cal N}) @@@@@'
+                log_numerator = math.log(num_trees_included)
+                log_marginal_likelihood = log_numerator - log_denominator
             else:
-                print '\n*** Excluding topology with %d samples ***' % n
+                print '@@@@@ Paul (1/N) @@@@@'
+                log_numerator = math.log(self.num_trees_considered)
+                log_marginal_likelihood = log_numerator - log_denominator
 
-        # Note that self.num_trees_considered cancels in the version of the PWK estimator that uses posterior probabilities in the numerator
-        log_numerator = math.log(num_trees_included) # - math.log(self.num_trees_considered)
-        log_denominator = self.calculateSumTermsOnLogScale(log_denom_terms) # - math.log(self.num_trees_considered)
-        log_marginal_likelihood = log_numerator - log_denominator
+            #
+
+        else:
+            # This version is more elegant, but may not be as accurate
+
+            # Note that numerator and denominator below apply to the 1/c estimator
+            log_numerator_terms = []
+            log_denominator_terms = []
+            num_trees_included = 0
+            for n,treeID in sorted_tree_IDs:
+                if n >= self.opts.minsample:
+                    print '\n*** Including topology with %d samples ***' % n
+
+                    # Number of trees included equals self.num_trees_considered iff sample size is
+                    # at least self.opts.minsample for all tree topologies
+                    num_trees_included += n
+
+                    # Compute contribution of this topology to the marginal likelihood
+                    numterms, denomterms = self.processOneTopologyMing(lnL_map, lnP_map, param_map, tree_map, treeID)
+                    log_numerator_terms.extend(numterms)
+                    log_denominator_terms.extend(denomterms)
+                else:
+                    print '\n*** Excluding topology with %d samples ***' % n
+
+            #cold_chain = pwk_mcmc_impl.mcmc_manager.getColdChain()
+            #jpm = cold_chain.partition_model.getJointPriorManager()
+            #log_tree_prior_prob = jpm.getLogTopologyPrior()
+
+            log_numerator = self.calculateSumTermsOnLogScale(log_numerator_terms) - math.log(self.num_trees_considered)
+            log_denominator = self.calculateSumTermsOnLogScale(log_denominator_terms)
+
+            # Paul's modification
+            #log_denominator += math.log(num_trees_included) - math.log(self.num_trees_considered)
+
+            # reverse numer. and denom. in order to estimate c rather than 1/c
+            log_marginal_likelihood = log_denominator - log_numerator
+            print '@@@@@ Ming @@@@@'
+
+            print 'self.num_trees_considered =',self.num_trees_considered
+            print 'num_trees_included        =',num_trees_included
+            print 'math.log(self.num_trees_considered) =',math.log(self.num_trees_considered)
+            print 'math.log(num_trees_included)        =',math.log(num_trees_included)
+            print 'log difference            =',math.log(self.num_trees_considered) - math.log(num_trees_included)
 
         return log_marginal_likelihood
 

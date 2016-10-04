@@ -9,6 +9,7 @@ class PWK(PhycasCommand):
                    ("skip",                 1, "Number of lines from the input trees and parameters to skip (first line stores starting parameter values, so this value should normally be at least 1)", IntArgValidate(min=0)),
                    ("minsample",          100, "Minimum number of samples for a topology to be included", IntArgValidate(min=2)),
                    ("params",              "", "Name of file containing sampled parameter values", FileExistsValidate),
+                   ("reach",              1.0, "Radius of outermost hypersphere for any one topology will be the product of this fraction and the radius of the outermost sample", FloatArgValidate(min=0.01)),
                    ("shells",              50, "Number of hyperspherical shells forming the partition", IntArgValidate(min=1)),
                    ("trees", TreeCollection(), "A source of trees (list of trees or the name of the input tree file) to be used", TreeSourceValidate)
                 )

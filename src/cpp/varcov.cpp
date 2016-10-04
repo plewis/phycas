@@ -17,6 +17,8 @@
 |  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                |
 \~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+#include <fstream>
+#include <strstream>
 #include <boost/lambda/lambda.hpp>
 #include <boost/lambda/bind.hpp>
 #include <boost/format.hpp>
@@ -24,16 +26,63 @@
 #include <boost/algorithm/string/join.hpp>
 #include "ncl/nxsallocatematrix.h"
 #include "basic_lot.hpp"
+#include "basic_lot.hpp"
 #include "varcov.hpp"
 #include "xlikelihood.hpp"
 using namespace phycas;
 
 /*----------------------------------------------------------------------------------------------------------------------
+| 	Allocates a two dimensional array of doubles as one contiguous block of memory
+| 	the dimensions are f by s.
+|
+| 	The pointer should be freed by a call to DeleteTwoDArrayDouble
+|
+| 	The array is set up so that:
+|
+|	for (i = 0 ; i < f ; i++)
+|		for (j = 0 ; j < s ; j++)
+|			array[i][j];
+|
+|	would be the same order of access as:
+|
+|  	double * ptr = **array;
+|	for (i = 0 ; i < f*s*t ; i++)
+|		*ptr++;
+|
+|   This is a template specialization for the NewTwoDArray function defined in nxsallocatematrix.h.
+*/
+double * * NewTwoDArrayDouble(unsigned f, unsigned s)
+	{
+	assert(f > 0 && s > 0);
+	double * * ptr;
+	ptr = new double *[f];
+	*ptr = new double [f * s];
+	for (unsigned fIt = 1 ; fIt < f ; fIt ++)
+		ptr[fIt] = ptr[fIt -1] +  s;
+	return ptr;
+	}
+
+/*----------------------------------------------------------------------------------------------------------------------
+|   Deletes a 2-dimensional array of doubles and sets ptr to NULL.
+|
+|   This is a template specialization for the DeleteTwoDArray function defined in nxsallocatematrix.h.
+*/
+void DeleteTwoDArrayDouble(double * *  & ptr)
+	{
+	if (ptr)
+		{
+		delete [] * ptr;
+		delete [] ptr;
+		ptr = NULL;
+		}
+	}
+
+/*----------------------------------------------------------------------------------------------------------------------
 |	Allocates memory for all vectors and matrices: _V, _S, _Sinv, and _z are all p by p; _posterior_samples has length 
 |   n (but each element has a _parameters vector of length p), and _w is of length p.
 */
-VarCovMatrix::VarCovMatrix(unsigned n, unsigned p)
-  : _n(0), _p(0), _V(0), _S(0), _Sinv(0), _Stmp(0), _z(0), _shell_midpoint(0.0), _shell_delta(0.0)
+VarCovMatrix::VarCovMatrix(std::string name, unsigned n, unsigned p)
+  : _n(0), _p(0), _V(0), _S(0), _Stmp(0), _Sinv(0), _z(0), _shell_midpoint(0.0), _shell_delta(0.0)
     , _log_ratio_sum(0.0), _representative_logkernel(0.0), _representative_loglikelihood(0.0), _representative_logprior(0.0)
     , _representative_logjacobian_edgelen(0.0), _representative_logjacobian_substmodel(0.0), _representative_logjacobian_standardization(0.0)
 	{
@@ -41,24 +90,25 @@ VarCovMatrix::VarCovMatrix(unsigned n, unsigned p)
 	PHYCAS_ASSERT(p > 0);
 	_n = n;
 	_p = p;
+    _name = name;
 
 	// Create _V (variance-covariance matrix)
-	_V = NewTwoDArray<double>(_p, _p);
+	_V = NewTwoDArrayDouble(_p, _p);
 
 	// Create _S (square root of variance-covariance matrix)
-	_S = NewTwoDArray<double>(_p, _p);
+	_S = NewTwoDArrayDouble(_p, _p);
 
 	// Create _Sinv (inverse square root of variance-covariance matrix)
-	_Sinv = NewTwoDArray<double>(_p, _p);
+	_Sinv = NewTwoDArrayDouble(_p, _p);
 
 	// Create _Stmp (inverse square root of variance-covariance matrix)
-	_Stmp = NewTwoDArray<double>(_p, _p);
+	_Stmp = NewTwoDArrayDouble(_p, _p);
 
 	// This vector will hold eigenvalues
 	_w .resize(_p);
 
 	// Create _z (two-dimensional array of eigenvectors)
-	_z = NewTwoDArray<double>(_p, _p);
+	_z = NewTwoDArrayDouble(_p, _p);
 
     // This vector will hold the n parameter vectors for one tree topology
     _posterior_samples.resize(n);
@@ -130,6 +180,14 @@ double VarCovMatrix::logJacobianForStandardization() const
 double VarCovMatrix::getLogRatioSum() const
 	{
 	return _log_ratio_sum;
+	}
+
+/*----------------------------------------------------------------------------------------------------------------------
+|   Returns data member `_log_ratio_vect', which is calculated in the member function calcRepresentativeForShell.
+*/
+std::vector<double> VarCovMatrix::getLogRatioVect() const
+	{
+	return _log_ratio_vect;
 	}
 
 /*----------------------------------------------------------------------------------------------------------------------
@@ -259,6 +317,15 @@ void VarCovMatrix::copyParamVector(unsigned row, std::vector<double> v, double l
     }
 
 /*----------------------------------------------------------------------------------------------------------------------
+|
+*/
+void VarCovMatrix::setParamNames(std::vector<std::string> names)
+    {
+    _param_names.resize(names.size());
+    std::copy(names.begin(), names.end(), _param_names.begin());
+    }
+
+/*----------------------------------------------------------------------------------------------------------------------
 |   Calculates mean vector _means, variance-covariance matrix _V, standard deviation matrix _S (and also _Sinv) and uses
 |   these to standardize the parameter vectors stored in `_posterior_samples', returning Euclidian distance from the 
 |   origin to the furthest sample point.
@@ -297,6 +364,46 @@ double VarCovMatrix::standardizeSamples()
             x -= _means[i++];
             }
         }
+
+#if 1
+    // save R file for plotting density of each log-transformed and centered parameter
+    assert(_p == _param_names.size());
+    std::string fn = boost::str(boost::format("%s.R") % _name);
+
+    std::ofstream sh("plots.sh", std::ios::out | std::ios::app);
+    sh << "rscript " << fn << std::endl;
+    sh.close();
+
+    std::ofstream f(fn, std::ios::out);
+    f << "cwd = system('cd \"$( dirname \"$0\" )\" && pwd', intern = TRUE)" << std::endl;
+    f << "setwd(cwd)" << std::endl;
+    f << boost::str(boost::format("pdf(\"%s.pdf\")") % _name) << std::endl;
+
+    for (unsigned i = 0; i < _p; ++i)
+        {
+        f << boost::str(boost::format("p%d = c(") % i);
+        unsigned j = 0;
+        BOOST_FOREACH(sample_ref sample, _posterior_samples)
+            {
+            if (j > 0)
+                f << boost::str(boost::format(",%.5f") % sample._parameters[i]);
+            else
+                f << boost::str(boost::format("%.5f") % sample._parameters[i]);
+            ++j;
+            }
+        f << ")" << std::endl;
+        }
+    unsigned nrows = 4;
+    unsigned ncols = 3;
+    f << boost::str(boost::format("par(mfrow=c(%d,%d))") % nrows % ncols) << std::endl;
+    for (unsigned i = 0; i < _p; ++i)
+        {
+        f << boost::str(boost::format("plot(density(p%d), xlab=\"\", ylab=\"\", main=\"%s\")") % i % _param_names[i]) << std::endl;
+        f << "abline(v=0)" << std::endl;
+        }
+    f << "dev.off()" << std::endl;
+    f.close();
+#endif
 
 #if 0
     // check centering by calculating mean of centered observations
@@ -423,6 +530,53 @@ std::vector<double> VarCovMatrix::destandardizeSample(unsigned row)
     }
 
 /*----------------------------------------------------------------------------------------------------------------------
+|   Returns vector of parameter vectors. The first `n' vectors are chosen, while any after that were sampled.
+*/
+std::vector<double> VarCovMatrix::getRepresentativesForShell(unsigned n, double r, double delta)
+	{
+    std::vector<double> vect_of_vects;
+
+    Lot rng;
+    std::vector<double> Y(_p, 0.0);
+    std::vector<double> random_vector(_p, 0.0);
+    for (unsigned i = 0; i < n; ++i)
+        {
+        // Choose random vector of length r by normalizing and rescaling a vector of random normal deviates
+        double sumsq = 0.0;
+        for (unsigned i = 0; i < _p; ++i)
+            {
+            double x = rng.Normal();
+            random_vector[i] = x;
+            sumsq += x*x;
+            }
+        double vector_length = sqrt(sumsq);
+        std::transform(random_vector.begin(), random_vector.end(), random_vector.begin(), boost::lambda::_1*r/vector_length);
+
+        // Destandardize vector
+        matrixTimesVector(_S, &random_vector[0], &Y[0]);
+        std::vector<double> v(_p, 0.0);
+        vectorPlusVector(&Y[0], &_means[0], &v[0]);
+        std::copy(v.begin(), v.end(), std::back_inserter(vect_of_vects));
+        }
+
+    BOOST_FOREACH(PosteriorSample & p, _posterior_samples)
+        {
+        if (p._radius > r - delta && p._radius <= r + delta)
+            {
+            std::copy(p._standardized.begin(), p._standardized.end(), random_vector.begin());
+
+            // Debugging: destandardize random_vector
+            matrixTimesVector(_S, &random_vector[0], &Y[0]);
+            std::vector<double> v(_p, 0.0);
+            vectorPlusVector(&Y[0], &_means[0], &v[0]);
+            std::copy(v.begin(), v.end(), std::back_inserter(vect_of_vects));
+            }
+        }
+
+    return vect_of_vects;
+	}
+
+/*----------------------------------------------------------------------------------------------------------------------
 |   If there are any samples with radius between `r' - `delta' and `r' + `delta', compute average log kernel for those
 |   samples and store in `_representative_logkernel'. If not, choose random point at radius `r' and fill the vector
 |   `_representative_param_vector' with the destandardized parameter values. Returns the number of samples found in the
@@ -430,8 +584,6 @@ std::vector<double> VarCovMatrix::destandardizeSample(unsigned row)
 */
 unsigned VarCovMatrix::calcRepresentativeForShell(double r, double delta)
 	{
-    //std::cerr << "\ncalcRepresentativeForShell: (" << (r - delta) << ", " << (r + delta) << ")" << std::endl;
-
     _shell_midpoint = r;
     _shell_delta = delta;
     _representative_param_vector.clear();
@@ -445,11 +597,13 @@ unsigned VarCovMatrix::calcRepresentativeForShell(double r, double delta)
     _representative_logjacobian_substmodel = 0.0;
     _representative_logjacobian_standardization = 0.0;
     unsigned num_samples_this_shell = 0;
+    std::vector<double> tmp_logkernelvect;
     BOOST_FOREACH(PosteriorSample & p, _posterior_samples)
         {
         if (p._radius > _shell_midpoint - _shell_delta && p._radius <= _shell_midpoint + _shell_delta)
             {
             //std::cerr << boost::str(boost::format("%6d lnL=%.5f lnP=%.5f lnJe=%.5f lnJp=%.5f lnJs=%.5f") % num_samples_this_shell % p._log_likelihood % p._log_prior % p._log_jacobian_edgelen % p._log_jacobian_substmodel % p._log_jacobian_standardization) << std::endl;
+            tmp_logkernelvect.push_back(p._log_likelihood + p._log_prior + p._log_jacobian_edgelen + p._log_jacobian_substmodel + p._log_jacobian_standardization);
 
             _representative_logkernel += p._log_likelihood + p._log_prior + p._log_jacobian_edgelen + p._log_jacobian_substmodel + p._log_jacobian_standardization;
             num_samples_this_shell++;
@@ -460,10 +614,10 @@ unsigned VarCovMatrix::calcRepresentativeForShell(double r, double delta)
 
     if (num_samples_this_shell > 0)
         {
-        // Representative log kernel value is simple average of log kernal values of samples in this shell
+        // Representative log kernel value is simple average of log kernel values of samples in this shell
         _representative_logkernel /= num_samples_this_shell;
 
-#if 0   
+#if 0
         // Debugging: find element of _posterior_samples closest to _representative_logkernel
         PosteriorSample & closest = _posterior_samples[0];
         BOOST_FOREACH(PosteriorSample & p, _posterior_samples)
@@ -492,12 +646,49 @@ unsigned VarCovMatrix::calcRepresentativeForShell(double r, double delta)
         std::vector<double> Y(_p, 0.0);
         matrixTimesVector(_S, &_representative_param_vector[0], &Y[0]);
         vectorPlusVector(&Y[0], &_means[0], &_representative_param_vector[0]);
+
+        // Spit out closest
+        std::cerr << "*** comparing closest to chosen points ***" << std::endl;
+        std::cerr << boost::str(boost::format("%20s %12.5f ") % "closest" % _representative_logkernel);
+        BOOST_FOREACH(double v, _representative_param_vector)
+            {
+            std::cerr << boost::str(boost::format("%12.5f ") % v);
+            }
+        std::cerr << std::endl;
+
+        // Find index of largest eigenvalue
+        unsigned primary_eigenvalue_index = (unsigned)(std::max_element(_w.begin(), _w.end()) - _w.begin());
+
+        // Copy column from eigenvector matrix representing the primary eigenvector
+        std::vector<double> primary_eigenvector(_p);
+        for (unsigned i = 0; i < _p; ++i)
+            {
+            primary_eigenvector[i] = _z[i][primary_eigenvalue_index];
+            }
+
+        // Scale primary eigenvector to have length _shell_midpoint
+        std::transform(primary_eigenvector.begin(), primary_eigenvector.end(), primary_eigenvector.begin(), boost::lambda::_1*_shell_midpoint);
+#pragma clang diagnostic ignored "-Wunused-variable"
+        double tmp = calcVectorNorm(primary_eigenvector);
+        assert(fabs(tmp - _shell_midpoint) < 1.e8);
+
+        // First, draw point on hypersphere of radius _shell_midpoint along primary eigenvector and destandardize it
+        matrixTimesVector(_S, &primary_eigenvector[0], &Y[0]);
+        vectorPlusVector(&Y[0], &_means[0], &_representative_param_vector[0]);
+
+        // Spit out point
+        std::cerr << boost::str(boost::format("%20s %12s ") % "chosen" % "---");
+        BOOST_FOREACH(double v, _representative_param_vector)
+            {
+            std::cerr << boost::str(boost::format("%12.5f ") % v);
+            }
+        std::cerr << std::endl;
 #endif
 
         }
     else
         {
-        // No samples available for this shell, so pick a random point on the hypersphere at radius _shell_midpoint
+        // No samples available for this shell, so pick a point on the hypersphere at radius _shell_midpoint
         // and store that in _representative_param_vector so that log kernel can be computed by caller
         //double log_prior = 0.0;
         //double log_jacobian = 0.0;
@@ -523,6 +714,7 @@ unsigned VarCovMatrix::calcRepresentativeForShell(double r, double delta)
 
         // Scale primary eigenvector to have length _shell_midpoint
         std::transform(primary_eigenvector.begin(), primary_eigenvector.end(), primary_eigenvector.begin(), boost::lambda::_1*_shell_midpoint);
+#pragma clang diagnostic ignored "-Wunused-variable"
         double tmp = calcVectorNorm(primary_eigenvector);
         assert(fabs(tmp - _shell_midpoint) < 1.e8);
 
@@ -538,18 +730,40 @@ unsigned VarCovMatrix::calcRepresentativeForShell(double r, double delta)
 
     // If num_samples_this_shell > 0, then store representative kernel/sample kernel ratios
     _log_ratio_sum = 0.0;
+    _log_ratio_vect.resize(num_samples_this_shell, 0.0);
     if (num_samples_this_shell > 0)
         {
-        std::vector<double> log_ratios(num_samples_this_shell, 0.0);
+        //std::vector<double> log_ratios(num_samples_this_shell, 0.0);
+        unsigned i = 0;
         BOOST_FOREACH(PosteriorSample & p, _posterior_samples)
             {
             if (p._radius > _shell_midpoint - _shell_delta && p._radius <= _shell_midpoint + _shell_delta)
                 {
                 double log_ratio = _representative_logkernel - p._log_likelihood - p._log_prior - p._log_jacobian_edgelen - p._log_jacobian_substmodel - p._log_jacobian_standardization;
-                log_ratios.push_back(log_ratio);
+                _log_ratio_vect[i++] = log_ratio;
                 }
             }
-        _log_ratio_sum = calcSumTermsOnLogScale(log_ratios);
+        _log_ratio_sum = calcSumTermsOnLogScale(_log_ratio_vect);
+
+#if 0
+        std::cerr << "\ncalcRepresentativeForShell: (" << (r - delta) << ", " << (r + delta) << ")" << std::endl;
+        std::cerr << "log kernel values for this shell:" << std::endl;
+        std::cerr << "logk <- c(";
+        std::copy(tmp_logkernelvect.begin(), tmp_logkernelvect.end(), std::ostream_iterator<double>(std::cerr, ","));
+        std::cerr << ")" << std::endl;
+        std::cerr << "plot(density(logk))" << std::endl;
+        std::cerr << "abline(v=" << _representative_logkernel << ")" << std::endl;
+        std::cerr << "repr, sampled, repr-sampled, exp(repr-sampled)" << std::endl;
+        std::cerr << boost::str(boost::format("%20s %20s %20s %20s") % "repr" % "sampled" % "repr-sampled" % "exp(repr-sampled)") << std::endl;
+        BOOST_FOREACH(double logv, tmp_logkernelvect)
+            {
+            std::cerr << boost::str(boost::format("%20.5f %20.5f %20.5f %20.5f") % _representative_logkernel % logv % (_representative_logkernel - logv) % exp(_representative_logkernel - logv) ) << std::endl;
+            }
+        //std::cerr << "mean log kernel value for this shell:" << _representative_logkernel << std::endl;
+        //std::cerr << "minimum log kernel value for this shell:" << *std::min_element(tmp_logkernelvect.begin(), tmp_logkernelvect.end()) << std::endl;
+        //std::cerr << "maximum log kernel value for this shell:" << *std::max_element(tmp_logkernelvect.begin(), tmp_logkernelvect.end()) << std::endl;
+#endif
+
         }
 
     return num_samples_this_shell;
@@ -583,7 +797,7 @@ void VarCovMatrix::calcSqrtVarCov()
     //    = |                                                                                                                                 |
     //      | _z[1][0] sqrt(_w[0]) _z[0][0] + _z[1][1] sqrt(_w[1]) _z[0][1]     _z[1][0] sqrt(_w[0]) _z[1][0] + _z[1][1] sqrt(_w[1]) _z[1][1] |
 
-	double * * dbl2d = NewTwoDArray<double>(_p, _p);
+	double * * dbl2d = NewTwoDArrayDouble(_p, _p);
     for (unsigned i = 0; i < _p; i++)
         {
         for (unsigned j = 0; j < _p; j++)
@@ -616,19 +830,19 @@ void VarCovMatrix::calcSqrtVarCov()
         {
         // debug check: see if _Sinv equals _Stmp
         std::cerr << "\n_Sinv - _Stmp:" << std::endl;
-        double * * I = NewTwoDArray<double>(_p, _p);
+        double * * I = NewTwoDArrayDouble(_p, _p);
         matrixMinusMatrix(_S, _Sinv, I);
         std::cerr << showMatrix(I, _p) << std::endl;
 
         // debug check: see if _S multipled by _Sinv equals I
         std::cerr << "\n_S * _Sinv:" << std::endl;
-        double * * J = NewTwoDArray<double>(_p, _p);
+        double * * J = NewTwoDArrayDouble(_p, _p);
         matrixTimesMatrix(_S, _Sinv, J);
         std::cerr << showMatrix(J, _p) << std::endl;
 
         // debug check: see if _S multipled by _S equals _V
-        double * * V = NewTwoDArray<double>(_p, _p);
-        double * * Z = NewTwoDArray<double>(_p, _p);
+        double * * V = NewTwoDArrayDouble(_p, _p);
+        double * * Z = NewTwoDArrayDouble(_p, _p);
         matrixTimesMatrix(_S, _S, V);
         matrixMinusMatrix(_V, V, Z);
         std::cerr << "\n_V - _S * _S:" << std::endl;
@@ -716,6 +930,531 @@ void VarCovMatrix::matrixPlusMatrix(double * * u, double * * v, double * * u_plu
     }
 
 /*----------------------------------------------------------------------------------------------------------------------
+|   Raise the matrix `V' to the power `power' and place the result in A, which should have already been allocated. The
+|   eigenvectors and eigenvalues will be returned in the matrix `eigenvectors' and vector `eigenvalues', respectively.
+*/
+void VarCovMatrix::MatrixPow(double * * V, double power, unsigned p, double * * A, double * * eigenvectors, std::vector<double> & eigenvalues)
+	{
+    std::cerr << "\n################## A (start MatrixPow) ##################\n\n" << showMatrix(A, p) << std::endl;
+    std::cerr << "\n################## V (start MatrixPow) ##################\n\n" << showMatrix(V, p) << std::endl;
+    std::cerr << "\n################## eigenvectors (start MatrixPow) ##################\n\n" << showMatrix(eigenvectors, p) << std::endl;
+    std::cerr << "\n################## eigenvalues (start MatrixPow) ##################\n\n" << showVector(eigenvalues, p) << std::endl;
+
+    // Compute eigenvalues and eigenvectors
+    std::vector<double> work(p, 0.0);
+	int err_code = EigenRealSymmetric(p, V, &eigenvalues[0], eigenvectors, &work[0]);
+	if (err_code != 0)
+		{
+		throw XLikelihood("Error in the calculation of eigenvectors and eigenvalues for matrix V in MatrixPow");
+		}
+
+    for (unsigned i = 0; i < p; i++)
+        {
+        for (unsigned j = 0; j < p; j++)
+            {
+            double tmp = 0.0;
+            for (unsigned k = 0; k < p; k++)
+                {
+                tmp += eigenvectors[i][k] * pow(eigenvalues[k], power) * eigenvectors[j][k];
+                }
+            A[i][j] = tmp;
+            }
+        }
+
+    std::cerr << "\n################## A (end MatrixPow) ##################\n\n" << showMatrix(A, p) << std::endl;
+    std::cerr << "\n################## V (end MatrixPow) ##################\n\n" << showMatrix(V, p) << std::endl;
+    std::cerr << "\n################## eigenvectors (end MatrixPow) ##################\n\n" << showMatrix(eigenvectors, p) << std::endl;
+    std::cerr << "\n################## eigenvalues (end MatrixPow) ##################\n\n" << showVector(eigenvalues, p) << std::endl;
+    }
+
+/*----------------------------------------------------------------------------------------------------------------------
+|   Generate random data, compute mean vector and variance-covariance matrix, compute eigenvalues and eigenvectors of
+|   variance-covariance matrix, then draw random points from concentric shells and compare random points with original
+|   data points to demonstrate similarity.
+*/
+void VarCovMatrix::debugTestStandardization()
+	{
+    Lot rng;
+
+    std::cerr << "########## Entering debugTestStandardization() ##########" << std::endl;
+
+    // Random vector length is p
+    // Sample size is n
+    // Each of the p variables will be iid Gamma(shape,scale) (mean = shape*scale)
+    unsigned p = 2;
+    unsigned n = 1000;
+    unsigned shape = 2; // must be positive integer
+    double   scale = 1.0;
+    bool     verbose = true;
+
+    // Output settings and dimensions
+    std::cerr << "### p = " << p << std::endl;
+    std::cerr << "### n = " << n << std::endl;
+    std::cerr << "### shape = " << shape << std::endl;
+    std::cerr << "### scale = " << scale << std::endl;
+    std::cerr << "### verbose = " << (verbose ? "yes" : "no") << std::endl;
+
+    // Generate n p-dimensional random vectors of log-transformed Gamma(shape, scale) deviates
+    std::vector< std::vector<double> > D(n);
+
+    // Allocate memory for eigenvalues and eigenvectors
+    std::vector<double> eigenvalues(p, 0.0);
+    double * * eigenvectors = NewTwoDArrayDouble(p, p);
+    eigenvectors[0][0] = 1.0;
+    eigenvectors[0][1] = 0.0;
+    eigenvectors[1][0] = 0.0;
+    eigenvectors[1][1] = 1.0;
+
+#if 1
+    std::vector<double> true_mean(p, 10.0);
+    std::cerr << "\n################## V ##################\n\n" << showVector(true_mean, p) << std::endl;
+    double * * V = NewTwoDArrayDouble(p, p);
+    assert(V != NULL);
+    V[0][0] = 1.0;
+    V[0][1] = 2.0;
+    V[1][0] = 2.0;
+    V[1][1] = 4.0;
+    std::cerr << "\n################## V ##################\n\n" << showMatrix(V, p) << std::endl;
+
+    double * * A = NewTwoDArrayDouble(p, p);
+    A[0][0] = 0.0;
+    A[0][1] = 0.0;
+    A[1][0] = 0.0;
+    A[1][1] = 0.0;
+
+    MatrixPow(V, 0.5, p, A, eigenvectors, eigenvalues);
+
+    std::cerr << "\n################## A ##################\n\n" << showMatrix(A, p) << std::endl;
+
+    for (unsigned i = 0; i < n; ++i)
+        {
+        D[i].resize(p);
+
+        // Generate a bivariate normal random deviate
+        double z0 = rng.Normal();
+        double z1 = rng.Normal();
+        D[i][0] = true_mean[0] + A[0][0]*z0 + A[0][1]*z1;
+        D[i][1] = true_mean[1] + A[1][0]*z0 + A[1][1]*z1;
+        //std::cerr << "\n################## D[" << i << "] ##################\n\n" << showVector(D[i], p) << std::endl;
+        }
+#endif
+
+#if 0
+    for (unsigned i = 0; i < n; ++i)
+        {
+        D[i].resize(p);
+        for (unsigned j = 0; j < p; ++j)
+            {
+            // Use fact that sum of shape Exponential(1/scale) deviates ~ Gamma(shape, scale)
+            double v = 0.0;
+            for (unsigned k = 0; k < shape; ++k)
+                {
+                double u = rng.Uniform();
+                v += -scale*log(1.0 - u);
+                }
+            D[i][j] = log(v);
+            }
+        }
+#endif
+
+#if 0
+    for (unsigned i = 0; i < n; ++i)
+        {
+        D[i].resize(p);
+        for (unsigned j = 0; j < p; ++j)
+            {
+            // use log-transformed Exponential(1.0) deviates instead of Gamma(shape, scale) deviates
+            double u = rng.Uniform();
+            double v = -1.0*log(1.0 - u);
+            D[i][j] = log(v);
+            }
+        }
+#endif
+
+    if (verbose)
+        {
+        // Output data matrix D
+        std::cerr << "### original data matrix D: " << std::endl;
+        for (unsigned i = 0; i < n; ++i)
+            {
+            std::cerr << boost::str(boost::format("%6d") % i);
+            for (unsigned j = 0; j < p; ++j)
+                {
+                std::cerr << boost::str(boost::format("%12.5f") % D[i][j]);
+                }
+            std::cerr << std::endl;
+            }
+        std::cerr << std::endl;
+        }
+
+    // Compute sample mean vector
+    std::vector<double> mean(p, 0.0);
+    for (unsigned i = 0; i < n; ++i)
+        {
+        for (unsigned j = 0; j < p; ++j)
+            {
+            mean[j] += D[i][j];
+            }
+        }
+    std::transform(mean.begin(), mean.end(), mean.begin(), boost::lambda::_1/n);
+
+    if (verbose)
+        {
+        // Output vector of sample means
+        std::cerr << "### sample means: " << std::endl;
+        std::copy(mean.begin(), mean.end(), std::ostream_iterator<double>(std::cerr, " "));
+        std::cerr << "\n" << std::endl;
+        }
+
+    // Center observations
+    std::vector< std::vector<double> > C(n);
+    for (unsigned i = 0; i < n; ++i)
+        {
+        C[i].resize(p);
+        for (unsigned j = 0; j < p; ++j)
+            {
+            C[i][j] = D[i][j] - mean[j];
+            }
+        }
+
+    if (verbose)
+        {
+        // Output centered data matrix C
+        std::cerr << "### centered data matrix C: " << std::endl;
+        std::vector<double> centered_means(p, 0.0);
+        for (unsigned i = 0; i < n; ++i)
+            {
+            std::cerr << boost::str(boost::format("%6d") % i);
+            for (unsigned j = 0; j < p; ++j)
+                {
+                std::cerr << boost::str(boost::format("%12.5f") % C[i][j]);
+                centered_means[j] += C[i][j];
+                }
+            std::cerr << std::endl;
+            }
+        std::cerr << std::endl;
+        std::transform(centered_means.begin(), centered_means.end(), centered_means.begin(), boost::lambda::_1/n);
+        std::cerr << boost::str(boost::format("%6s") % "mean");
+        for (unsigned j = 0; j < p; ++j)
+            {
+            std::cerr << boost::str(boost::format("%12.5f") % centered_means[j]);
+            }
+        std::cerr << "\n" << std::endl;
+        }
+
+    // Compute sample variance-covariance matrix S = (C' C)/(n-1)
+    double * * S = NewTwoDArrayDouble(p, p);
+    for (unsigned i = 0; i < p; i++)
+        {
+        for (unsigned j = 0; j < p; j++)
+            {
+            double xsum = 0.0;
+            for (unsigned k = 0; k < n; k++)
+                {
+                xsum += C[k][i]*C[k][j];
+                }
+            S[i][j] = xsum/(n-1);
+            }
+        }
+
+    if (verbose)
+        {
+        // Output variance-covariance matrix S
+        std::cerr << "### variance-covariance matrix S: " << std::endl;
+        std::cerr << "      ";
+        for (unsigned i = 0; i < p; ++i)
+            std::cerr << boost::str(boost::format("%12d") % i);
+        std::cerr << std::endl;
+        for (unsigned i = 0; i < p; ++i)
+            {
+            std::cerr << boost::str(boost::format("%6d") % i);
+            for (unsigned j = 0; j < p; ++j)
+                {
+                std::cerr << boost::str(boost::format("%12.5f") % S[i][j]);
+                }
+            std::cerr << std::endl;
+            }
+        std::cerr << std::endl;
+        }
+
+    // Compute eigenvalues and eigenvectors
+    std::vector<double> work(p, 0.0);
+	int err_code = EigenRealSymmetric(p, S, &eigenvalues[0], eigenvectors, &work[0]);
+	if (err_code != 0)
+		{
+		throw XLikelihood("Error in the calculation of eigenvectors and eigenvalues for matrix S in debugTestStandardization");
+		}
+
+    if (verbose)
+        {
+        // Output vector of eigenvalues
+        std::cerr << "### eigenvalues: " << std::endl;
+        std::copy(eigenvalues.begin(), eigenvalues.end(), std::ostream_iterator<double>(std::cerr, " "));
+        std::cerr << "\n" << std::endl;
+
+        // Output matrix of eigenvectors
+        std::cerr << "### eigenvectors: " << std::endl;
+        for (unsigned i = 0; i < p; ++i)
+            {
+            std::cerr << boost::str(boost::format("%6d") % i);
+            for (unsigned j = 0; j < p; ++j)
+                {
+                std::cerr << boost::str(boost::format("%12.5f") % eigenvectors[i][j]);
+                }
+            std::cerr << std::endl;
+            }
+        std::cerr << std::endl;
+        }
+
+    // Compute sqrtS (square root of variance-covariance matrix) and sqrtSinv (inverse square root of var-cov matrix).
+    //
+    //         | z[0][0] z[0][1] | | sqrt(w[0])        0       | | z[0][0] z[1][0] |
+    // sqrtS = |                 | |                           | |                 |
+    //         | z[1][0] z[1][1] | |      0         sqrt(w[1]) | | z[0][1] z[1][1] |
+    //
+    //         | z[0][0] sqrt(w[0]) z[0][0] + z[0][1] sqrt(w[1]) z[0][1]     z[0][0] sqrt(w[0]) z[1][0] + z[0][1] sqrt(w[1]) z[1][1] |
+    //       = |                                                                                                                     |
+    //         | z[1][0] sqrt(w[0]) z[0][0] + z[1][1] sqrt(w[1]) z[0][1]     z[1][0] sqrt(w[0]) z[1][0] + z[1][1] sqrt(w[1]) z[1][1] |
+    //
+    // Note: z,w substituted above for eigenvectors,eigenvalues for clarity.
+	double * * sqrtS = NewTwoDArrayDouble(p, p);
+	double * * sqrtSinv = NewTwoDArrayDouble(p, p);
+    for (unsigned i = 0; i < p; i++)
+        {
+        for (unsigned j = 0; j < p; j++)
+            {
+            double tmp1 = 0.0;
+            double tmp2 = 0.0;
+            for (unsigned k = 0; k < p; k++)
+                {
+                tmp1 += eigenvectors[i][k] * pow(eigenvalues[k], 0.5) * eigenvectors[j][k];
+                tmp2 += eigenvectors[i][k] * pow(eigenvalues[k],-0.5) * eigenvectors[j][k];
+                }
+            sqrtS[i][j]    = tmp1;
+            sqrtSinv[i][j] = tmp2;
+            }
+        }
+
+    if (verbose)
+        {
+        // Output sqrtS matrix
+        std::cerr << "### square root of variance-covariance matrix sqrtS: " << std::endl;
+        for (unsigned i = 0; i < p; ++i)
+            {
+            std::cerr << boost::str(boost::format("%6d") % i);
+            for (unsigned j = 0; j < p; ++j)
+                {
+                std::cerr << boost::str(boost::format("%12.5f") % sqrtS[i][j]);
+                }
+            std::cerr << std::endl;
+            }
+        std::cerr << std::endl;
+
+        // Output sqrtSinv matrix
+        std::cerr << "### inverse of square root of variance-covariance matrix sqrtSinv: " << std::endl;
+        for (unsigned i = 0; i < p; ++i)
+            {
+            std::cerr << boost::str(boost::format("%6d") % i);
+            for (unsigned j = 0; j < p; ++j)
+                {
+                std::cerr << boost::str(boost::format("%12.5f") % sqrtSinv[i][j]);
+                }
+            std::cerr << std::endl;
+            }
+        std::cerr << std::endl;
+
+        // Output sqrtS * sqrtSinv = identity matrix
+        std::cerr << "### sqrtS * sqrtSinv = I (identity matrix): " << std::endl;
+        for (unsigned i = 0; i < p; ++i)
+            {
+            std::cerr << boost::str(boost::format("%6d") % i);
+            for (unsigned j = 0; j < p; ++j)
+                {
+                double xsum = 0.0;
+                for (unsigned k = 0; k < p; ++k)
+                    {
+                    xsum += sqrtS[i][k] * sqrtSinv[k][j];
+                    }
+                std::cerr << boost::str(boost::format("%12.5f") % xsum);
+                }
+            std::cerr << std::endl;
+            }
+        std::cerr << std::endl;
+
+        // Output sqrtS * sqrtS = S (variance covariance matrix)
+        std::cerr << "### sqrtS * sqrtS = S (variance-covariance matrix): " << std::endl;
+        for (unsigned i = 0; i < p; ++i)
+            {
+            std::cerr << boost::str(boost::format("%6d") % i);
+            for (unsigned j = 0; j < p; ++j)
+                {
+                double xsum = 0.0;
+                for (unsigned k = 0; k < p; ++k)
+                    {
+                    xsum += sqrtS[i][k] * sqrtS[k][j];
+                    }
+                std::cerr << boost::str(boost::format("%12.5f") % xsum);
+                }
+            std::cerr << std::endl;
+            }
+        std::cerr << std::endl;
+        }
+
+    // Standardize ith centered observation vector by premultiplying by sqrtSinv
+    //
+    // | Zi0 |   | s00 s01 s02 | | Ci0 |   | s00 Ci0 + s01 Ci1 + s02 Ci2 |
+    // |     |   |             | |     |   |                             |
+    // | Zi1 | = | s10 s11 s12 | | Ci1 | = | s10 Ci0 + s11 Ci1 + s12 Ci2 |
+    // |     |   |             | |     |   |                             |
+    // | Zi2 |   | s20 s21 s22 | | Ci2 |   | s20 Ci0 + s21 Ci1 + s22 Ci2 |
+    //                                        jk  ik    jk  ik    jk  ik
+    std::vector< std::vector<double> > Z(n);
+    for (unsigned i = 0; i < n; i++)
+        {
+        Z[i].resize(p, 0.0);
+        for (unsigned j = 0; j < p; j++)
+            {
+            double xsum = 0.0;
+            for (unsigned k = 0; k < p; k++)
+                {
+                xsum += sqrtSinv[j][k]*C[i][k];
+                }
+            Z[i][j] = xsum;
+            }
+        }
+
+    if (verbose)
+        {
+        // Output standardized data matrix Z
+        std::cerr << "### standardized data matrix Z: " << std::endl;
+        for (unsigned i = 0; i < n; ++i)
+            {
+            std::cerr << boost::str(boost::format("%6d") % i);
+            for (unsigned j = 0; j < p; ++j)
+                {
+                std::cerr << boost::str(boost::format("%12.5f") % Z[i][j]);
+                }
+            std::cerr << std::endl;
+            }
+        std::cerr << std::endl;
+        }
+
+    // Calculate radius for each observed point
+    std::vector<double> radius(n, 0.0);
+    double max_radius = 0.0;
+    for (unsigned i = 0; i < n; i++)
+        {
+        double r = 0.0;
+        for (unsigned j = 0; j < p; j++)
+            {
+            r += pow(Z[i][j], 2.0);
+            }
+        radius[i] = sqrt(r);
+        if (radius[i] > max_radius)
+            max_radius = radius[i];
+        }
+
+    if (verbose)
+        {
+        // Output radius for each point
+        std::cerr << "### vector of radii (maximum = " << max_radius << "): " << std::endl;
+        for (unsigned i = 0; i < n; ++i)
+            {
+            std::cerr << boost::str(boost::format("%6d %12.5f") % i % radius[i]) << std::endl;
+            }
+        std::cerr << std::endl;
+        }
+
+    // For each observed radius, make up a new point having that radius
+    std::vector<double> random_vector(p, 0.0);
+	double * * Q = NewTwoDArrayDouble(n, p);
+    for (unsigned i = 0; i < n; ++i)
+        {
+        // Choose random vector of length radius[i] by normalizing and rescaling a vector of random normal deviates
+        double sumsq = 0.0;
+        for (unsigned j = 0; j < p; ++j)
+            {
+            double x = rng.Normal();
+            random_vector[j] = x;
+            sumsq += x*x;
+            }
+        double vector_length = sqrt(sumsq);
+        std::transform(random_vector.begin(), random_vector.end(), random_vector.begin(), boost::lambda::_1*radius[i]/vector_length);
+
+        // Destandardize using (sqrtS * random_vector + mean) and store in Q[i]
+        for (unsigned j = 0; j < p; ++j)
+            {
+            double tmp = 0.0;
+            for (unsigned k = 0; k < p; ++k)
+                {
+                tmp += sqrtS[j][k]*random_vector[k];
+                }
+            Q[i][j] = tmp + mean[j];
+            }
+        }
+
+    std::cerr << "Saving plot data..." << std::endl;
+
+    // Compare original to chosen points at different radii
+    std::ofstream outf("standardization-test.R", std::ios::out);
+    outf << "# p are the original points" << std::endl;
+    outf << "# q are the simulated points" << std::endl;
+
+    for (unsigned j = 0; j < p; ++j)
+        {
+        // Output the original points as p0, p1, ...
+        outf << "p" << j << " <- c(" << D[0][j];
+        for (unsigned i = 1; i < n; ++i)
+            {
+            outf << "," << D[i][j];
+            }
+        outf << ")\n";
+
+        // Output the simulated points as q0, q1, ...
+        outf << "q" << j << " <- c(" << Q[0][j];
+        for (unsigned i = 1; i < n; ++i)
+            {
+            outf << "," << Q[i][j];
+            }
+        outf << ")\n";
+        }
+
+    // Output the radius of each point
+    outf << "#radius <- c(" << radius[0];
+    for (unsigned i = 1; i < n; ++i)
+        {
+        outf << "," << radius[i];
+        }
+    outf << ")\n";
+
+    outf << "#plot(density(radius),col=\"black\")\n";
+    outf << "#rug(radius)\n";
+    outf << std::endl;
+    outf << "#plot(density(p0),col=\"black\")\n";
+    outf << "#lines(density(q0),col=\"black\")\n";
+    outf << "#lines(density(p1),col=\"red\")\n";
+    outf << "#lines(density(q1),col=\"red\")\n";
+    outf << std::endl;
+    outf << "plot(p0, p1, type=\"p\",col=\"black\")\n";
+    outf << "points(q0, q1, col=\"red\")\n";
+    outf << std::endl;
+    outf.close();
+
+    if (verbose)
+        std::cerr << "Cleaning up..." << std::endl;
+
+    // Clean up
+    //DeleteTwoDArray<double>(V);
+    DeleteTwoDArray<double>(Q);
+    DeleteTwoDArray<double>(S);
+    DeleteTwoDArray<double>(sqrtS);
+    DeleteTwoDArray<double>(sqrtSinv);
+    DeleteTwoDArray<double>(eigenvectors);
+
+    std::cerr << "########## Leaving debugTestStandardization() ##########" << std::endl;
+    }
+
+/*----------------------------------------------------------------------------------------------------------------------
 |	Recomputes eigenvalues and eigenvectors corresponding to the following contrived variance-covariance matrix:
 |
 |       | 2  0  0 |
@@ -764,7 +1503,7 @@ void VarCovMatrix::matrixPlusMatrix(double * * u, double * * v, double * * u_plu
 */
 void VarCovMatrix::debugEigensystem() const
 	{
-    double * * A = NewTwoDArray<double>(3, 3);
+    double * * A = NewTwoDArrayDouble(3, 3);
     A[0][0] = 2.0;
     A[0][1] = 0.0;
     A[0][2] = 0.0;
@@ -780,7 +1519,7 @@ void VarCovMatrix::debugEigensystem() const
 
     std::vector<double> fv(3, 0.0);
     std::vector<double> v(3, 0.0);
-    double * * g = NewTwoDArray<double>(3, 3);
+    double * * g = NewTwoDArrayDouble(3, 3);
 
 	// Calculate eigenvalues (v) and eigenvectors (g) (fv is just workspace)
 	int err_code = EigenRealSymmetric(3, A, &v[0], g, &fv[0]);
@@ -796,7 +1535,7 @@ void VarCovMatrix::debugEigensystem() const
 
 #if 0
     // Now calculate the matrix B, square root of A
-	double * * B = NewTwoDArray<double>(3, 3);
+	double * * B = NewTwoDArrayDouble(3, 3);
     for (unsigned i = 0; i < 3; i++)
         {
         for (unsigned j = 0; j < 3; j++)
@@ -882,6 +1621,20 @@ std::vector<double> VarCovMatrix::getEigenVectors() const
 	std::vector<double> p;
 	flattenTwoDMatrix(p, _z, _p);
 	return p;
+	}
+
+/*----------------------------------------------------------------------------------------------------------------------
+|   Creates a string that, when printed, formats `V' nicely for output.
+*/
+std::string VarCovMatrix::showVector(std::vector<double> & V, unsigned p) const
+	{
+    //std::strstream ss;
+    //std::copy(V.begin(), V.end(), std::ostream_iterator<double>(ss, " "));
+    //return ss.str();
+    std::string s;
+    for (unsigned i = 0; i < p; ++i)
+        s += boost::str(boost::format("%.5f ") % V[i]);
+    return s;
 	}
 
 /*----------------------------------------------------------------------------------------------------------------------

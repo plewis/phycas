@@ -29,7 +29,6 @@ class MarkovChain(LikelihoodCore):
         LikelihoodCore.__init__(self, parent)
 
         self.parent                     = parent    # Note: self.parent is the MCMCImpl object
-        #POLTMP2 self.boldness                   = 0.0
         self.heating_power              = power
         self.chain_manager              = None
         self.tree_scaler_move           = None
@@ -165,24 +164,6 @@ class MarkovChain(LikelihoodCore):
         self.heating_power = power
         for updater in self.chain_manager.getAllUpdaters():
             updater.setPower(power)
-
-    #POLTMP2 def setBoldness(self, boldness):
-    #POLTMP2     #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
-    #POLTMP2     """
-    #POLTMP2     Sets the boldness data member and calls the setBoldness method for
-    #POLTMP2     every updater so that all updaters are immediately informed that the
-    #POLTMP2     boldness for this chain has changed. The boldness is a value from 0 to
-    #POLTMP2     100 that specifies the boldness of Metropolis-Hastings moves. Setting
-    #POLTMP2     the boldness has no effect on slice sampling based updaters. Each
-    #POLTMP2     move class defines what is meant by boldness. The boldness is changed
-    #POLTMP2     during an MCMC run in some circumstances, such as during a path
-    #POLTMP2     sampling analysis where the target distribution changes during the
-    #POLTMP2     run.
-    #POLTMP2
-    #POLTMP2     """
-    #POLTMP2     self.boldness = boldness
-    #POLTMP2     for updater in self.chain_manager.getAllUpdaters():
-    #POLTMP2         updater.setBoldness(boldness)
 
     def setupChain(self):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
@@ -320,15 +301,9 @@ class MarkovChain(LikelihoodCore):
                     sfm.setDimension(61)
                 else:
                     sfm.setDimension(4)
-                #if nmodels > 1:
-                #    sfm.setName("state_freqs_%d" % (i+1,))
-                #else:
-                #    sfm.setName("state_freqs")
                 sfm.setName("%d_state_freqs" % (i+1,))
                 sfm.setWeight(self.parent.opts.state_freq_weight)
-                #POLTMP2  sfm.setPosteriorTuningParam(self.parent.opts.state_freq_psi)
                 sfm.setTuningParameter(self.parent.opts.state_freq_psi)
-                #POLTMP2  sfm.setPriorTuningParam(self.parent.opts.state_freq_psi0)
                 sfm.setTree(self.tree)
                 sfm.setModel(m)
                 sfm.setTreeLikelihood(self.likelihood)
@@ -342,21 +317,13 @@ class MarkovChain(LikelihoodCore):
             if mspec.type == 'gtr' and not mspec.update_relrates_separately:
                 # Create a RelRateMove to update entire relative rates vector
                 rrm = likelihood.RelRatesMove()
-                #if nmodels > 1:
-                #    rrm.setName("relrates_%d" % (i+1,))
-                #else:
-                #    rrm.setName("relrates")
                 rrm.setName("%d_relrates" % (i+1,))
                 rrm.setWeight(self.parent.opts.rel_rate_weight)
-                #POLTMP2  rrm.setPosteriorTuningParam(self.parent.opts.rel_rate_psi)
                 rrm.setTuningParameter(self.parent.opts.rel_rate_psi)
-                #POLTMP2  rrm.setPriorTuningParam(self.parent.opts.rel_rate_psi0)
                 rrm.setTree(self.tree)
                 rrm.setModel(m)
                 rrm.setTreeLikelihood(self.likelihood)
                 rrm.setLot(self.r)
-                #if self.model.relRatesFixed():
-                #    rrm.fixParameter()
                 rrm.setMultivarPrior(mspec.relrate_prior.cloneAndSetLot(self.r))
                 self.chain_manager.addMove(rrm)
                 self.rel_rate_moves.append(rrm)
@@ -375,9 +342,7 @@ class MarkovChain(LikelihoodCore):
             self.tree_scaler_move = likelihood.TreeScalerMove()
             self.tree_scaler_move.setName("tree_scaler")
             self.tree_scaler_move.setWeight(self.parent.opts.tree_scaler_weight)
-            #POLTMP2  self.tree_scaler_move.setPosteriorTuningParam(self.parent.opts.tree_scaler_lambda)
             self.tree_scaler_move.setTuningParameter(self.parent.opts.tree_scaler_lambda)
-            #POLTMP2  self.tree_scaler_move.setPriorTuningParam(self.parent.opts.tree_scaler_lambda0)
             self.tree_scaler_move.setTree(self.tree)
             self.tree_scaler_move.setModel(model0)
             self.tree_scaler_move.setTreeLikelihood(self.likelihood)
@@ -395,14 +360,10 @@ class MarkovChain(LikelihoodCore):
             if self.parent.__class__.__name__ == 'InflatedDensityRatio':
                 # IDR method does not actually run a chain, just uses it to compute likelihoods and priors
                 self.subset_relrates_move.setWeight(0)
-                #POLTMP2  self.subset_relrates_move.setPosteriorTuningParam(1.0)
                 self.subset_relrates_move.setTuningParameter(1.0)
-                #POLTMP2  self.subset_relrates_move.setPriorTuningParam(1.0)
             else:
                 self.subset_relrates_move.setWeight(self.parent.opts.subset_relrates_weight)
-                #POLTMP2  sPOLTMP elf.subset_relrates_move.setPosteriorTuningParam(self.parent.opts.subset_relrates_psi)
                 self.subset_relrates_move.setTuningParameter(self.parent.opts.subset_relrates_psi)
-                #POLTMP2  self.subset_relrates_move.setPriorTuningParam(self.parent.opts.subset_relrates_psi0)
             self.subset_relrates_move.setTree(self.tree)
             self.subset_relrates_move.setModel(None)    # the model data member is ignored in this case; instead, the partition model stores the parameters
             self.subset_relrates_move.setPartitionModel(self.partition_model)
@@ -445,14 +406,11 @@ class MarkovChain(LikelihoodCore):
             self.larget_simon_move = likelihood.LargetSimonMove()
             self.larget_simon_move.setName("larget_simon_local")
             self.larget_simon_move.setWeight(self.parent.opts.ls_move_weight)
-            #POLTMP2  self.larget_simon_move.setPosteriorTuningParam(self.parent.opts.ls_move_lambda)
             self.larget_simon_move.setTuningParameter(self.parent.opts.ls_move_lambda)
-            #POLTMP2  self.larget_simon_move.setPriorTuningParam(self.parent.opts.ls_move_lambda0)
             self.larget_simon_move.setTree(self.tree)
             self.larget_simon_move.setModel(model0)
             self.larget_simon_move.setTreeLikelihood(self.likelihood)
             self.larget_simon_move.setLot(self.r)
-            #POLTMP2  self.larget_simon_move.setLambda(self.parent.opts.ls_move_lambda)
             if model0.edgeLengthsFixed():
                 self.larget_simon_move.fixParameter()
             self.chain_manager.addMove(self.larget_simon_move)
@@ -506,7 +464,6 @@ class MarkovChain(LikelihoodCore):
         # diminished)
         for updater in self.chain_manager.getAllUpdaters():
             updater.setPower(self.heating_power)
-            #POLTMP2 updater.setBoldness(0.0)
             if self.parent.opts.ss_heating_likelihood:
                 updater.setLikelihoodHeating()
             else:

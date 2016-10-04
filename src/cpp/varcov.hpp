@@ -47,8 +47,10 @@ class VarCovMatrix
 	{
 	public:
 
-										VarCovMatrix(unsigned n, unsigned p);
+										VarCovMatrix(std::string name, unsigned n, unsigned p);
 										~VarCovMatrix();
+
+        void                            setParamNames(std::vector<std::string> names);
 
         //void                            copyNewick(std::string newick);
         //void                            copyParamTypes(std::vector<unsigned> & ptypes);
@@ -59,11 +61,13 @@ class VarCovMatrix
 		unsigned						getNumSamples() const;
 		unsigned						getNumParams() const;
         void                            debugEigensystem() const;
+        void                            debugTestStandardization();
         void                            calcEigensystem();
         std::vector<double>             getEigenValues() const;
 		std::vector<double>             getEigenVectors() const;
         std::vector<double>             getVarCovMatrix() const;
 
+        std::string                     showVector(std::vector<double> & V, unsigned p) const;
 		std::string						showMatrix(double * * V, unsigned p) const;
 		std::string						showEigenVectorsAsMatrix() const;
 
@@ -76,11 +80,16 @@ class VarCovMatrix
         double                          getRepresentativeLogJacobianEdgelen() const;
         double                          getRepresentativeLogJacobianSubstmodel() const;
         double                          getRepresentativeLogJacobianStandardization() const;
+
+        std::vector<double>             getLogRatioVect() const;
         std::vector<double>             getRepresentativeParamVect() const;
 
         unsigned                        calcRepresentativeForShell(double r, double delta);
 
         double                          radialErrorDistMean(double sigma) const;
+
+        // for debugging
+        std::vector<double>                 getRepresentativesForShell(unsigned n, double r, double delta);
 
         class PosteriorSample
         {
@@ -116,6 +125,8 @@ class VarCovMatrix
 
         double                          logDet() const;
 
+        void                            MatrixPow(double * * V, double power, unsigned p, double * * A, double * * eigenvectors, std::vector<double> & eigenvalues);
+
         //void                            debugCheckLogLikelihoods();
 
 	private:
@@ -128,10 +139,15 @@ class VarCovMatrix
 		double * *                          _Sinv;  /**< the inverse of the standard deviation matrix stored by this object */
 		double * *                          _z;     /**< matrix of eigenvectors computed by EigenRealSymmetric */
 
+        std::string                         _name;
+		std::vector<std::string>            _param_names;
+
         double                              _shell_midpoint;                /**< midpoint of shell last specified in call to calcRepresentativeForShell */
         double                              _shell_delta;                   /**< half the thickness of shell last specified in call to calcRepresentativeForShell */
 
         double                              _log_ratio_sum;                 /**< holds sum (on log scale) of ratios of representative kernel to sample kernel */
+		std::vector<double>                 _log_ratio_vect;                /**< vector of ratios (on log scale) of representative kernel to sample kernel (`_log_ratio_sum' holds the sum of the elements in this vector) */
+
         double                              _representative_logkernel;      /**< holds last representative log kernel value determined by calcRepresentativeForShell */
         double                              _representative_loglikelihood;  /**< holds last representative log likelihood value determined by calcRepresentativeForShell */
         double                              _representative_logprior;       /**< holds last representative log prior value determined by calcRepresentativeForShell */

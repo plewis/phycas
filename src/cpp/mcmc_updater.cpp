@@ -315,35 +315,6 @@ void MCMCUpdater::setTuningParameter(double x)
     }
 
 /*----------------------------------------------------------------------------------------------------------------------
-|	Sets the value of the move-specific data member used to determine the size of a step when exploring the posterior
-|   distribution. This base class version does nothing; override in derived classes to set the tuning parameter
-|   appropriately.
-*/
-//POLTMP2 void MCMCUpdater::setPosteriorTuningParam(
-//POLTMP2   double x) /**< is the new value of the tuning parameter */
-//POLTMP2 	{
-//POLTMP2 	}
-
-/*----------------------------------------------------------------------------------------------------------------------
-|	Sets the value of the move-specific data member used to determine the size of a step when exploring the prior
-|   distribution. This base class version does nothing; override in derived classes to set the tuning parameter
-|   appropriately.
-*/
-//POLTMP2 void MCMCUpdater::setPriorTuningParam(
-//POLTMP2   double x) /**< is the new value of the tuning parameter */
-//POLTMP2 	{
-//POLTMP2 	}
-
-/*----------------------------------------------------------------------------------------------------------------------
-|	Sets the boldness of proposals. The meaning of boldness is interpreted individually by derived classes.
-*/
-//POLTMP2 void MCMCUpdater::setBoldness(
-//POLTMP2   double b) /**< is the new boldness value */
-//POLTMP2 	{
-//POLTMP2 	//std::cerr << "Calling default (do-nothing) MCMCUpdater::setBoldness for updater named " << name << std::endl;
-//POLTMP2 	}
-
-/*----------------------------------------------------------------------------------------------------------------------
 |	Sets the value of data member `slice_max_units', which is the maximum number of units used for slice sampling
 |	updates. If a slice sampler has been created, calls the setMaxUnits function of `slice_sampler'.
 */

@@ -1,6 +1,7 @@
 from phycas import *
 
-do_long_run = True
+number_of_samples = 10000
+sampling_freq = 1
 
 #if __name__ == '__main__':
 #     pwk.out.log      = 'logfile.txt'
@@ -49,18 +50,11 @@ mcmc.out.params.mode = REPLACE
 
 mcmc.nchains = 1
 mcmc.target_accept_rate = 0.3
-if do_long_run:
-    mcmc.ncycles = 10000
-    mcmc.burnin = 1000
-    mcmc.sample_every = 1
-    mcmc.report_every = 1000
-    mcmc.report_efficiency_every = 1000
-else:
-    mcmc.ncycles = 1000
-    mcmc.burnin = 50
-    mcmc.sample_every = 1
-    mcmc.report_every = 500
-    mcmc.report_efficiency_every = 500
+mcmc.ncycles = number_of_samples*sampling_freq
+mcmc.burnin = number_of_samples*sampling_freq//100
+mcmc.sample_every = sampling_freq
+mcmc.report_every = number_of_samples*sampling_freq//20
+mcmc.report_efficiency_every = number_of_samples*sampling_freq//20
 mcmc.verbose = True
 mcmc.ls_move_weight = 100
 mcmc.tree_scaler_weight = 1
@@ -84,8 +78,15 @@ mcmc()
 pwk.params         = 'pwk_test.p'
 pwk.trees          = 'pwk_test.t'
 pwk.skip           = 1
+#pwk.minsample      = 5000
+#pwk.minsample      = 1525
+#pwk.minsample      = 1500
+#pwk.minsample      = 300
+#pwk.minsample      = 211
+#pwk.minsample      = 200
 pwk.minsample      = 100
 pwk.shells         = 50
+pwk.reach          = 1.0
 pwk.out.log.prefix = 'pwklog'
 pwk.out.log.mode   = REPLACE
 #raw_input('..attach now..')

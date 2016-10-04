@@ -84,61 +84,61 @@ class ParamSummarizer(CommonFunctions):
         cum = term0 - term1 + term2
         return -cum
 
-    def ss_simpsons(self, betas, means):
-        """
-        This approach uses Simpson's method to interpolate between beta values using the
-        interpolation polynomial in Lagrange form. Simpson' method is described in most
-        calculus textbooks, and (as used here) fits a parabola to every three consecutive
-        points, using the area under the parabola as an approximation to the integral.
-        This approach provides two estimates for the integral corresponding to each segment
-        except for the first and last. We use the simple average of the two estimates when
-        they are available.
-
-        """
-        nbetas = len(betas)
-        if nbetas < 3:
-            raise Exception("Must have at least 3 beta values to compute path sampling using Simpson's rule")
-        marginal_like = 0.0
-        for i in range(nbetas - 2):
-            x = [betas[i], betas[i+1], betas[i+2]]
-            y = [means[i], means[i+1], means[i+2]]
-            # print '\ni = %d (dx = %.5f, dy = %.5f)' % (i,x[0] - x[2], y[0] - y[2])
-            # print 'x%d <- c(%s)' % (i,','.join(['%.6f' % z for z in x]))
-            # print 'y%d <- c(%s)' % (i,','.join(['%.6f' % z for z in y]))
-            # print 'plot(x%d,y%d,type="b")' % (i,i)
-            if i == 0:
-                # no averaging on the first segment
-                a = self.cumLagrange(1, x, y)
-                marginal_like += a
-                b = self.cumLagrange(2, x, y)
-                marginal_like += (b - a)/2.0
-            elif i == nbetas - 3:
-                # no averaging on the last segment
-                a = self.cumLagrange(1, x, y)
-                marginal_like += a/2.0
-                b = self.cumLagrange(2, x, y)
-                marginal_like += (b - a)
-            else:
-                # average two estimates for each of the middle segments
-                a = self.cumLagrange(1, x, y)
-                b = self.cumLagrange(2, x, y)
-                marginal_like += b/2.0
-                # if i == 7 or i == 8:
-                #     xxx = []
-                #     yyy = []
-                #     for z in range(21):
-                #         xxx_value = x[0] + (x[2] - x[0])*float(z)/20.0
-                #         yyy_value = self.interpolate(xxx_value, x, y)
-                #         xxx.append(xxx_value)
-                #         yyy.append(yyy_value)
-                #     print 'xx%d <- c(%s)' % (i,','.join(['%.5f' % z for z in xxx]))
-                #     print 'yy%d <- c(%s)' % (i,','.join(['%.5f' % z for z in yyy]))
-                #     print 'plot(xx%d,yy%d,type="b")' % (i,i)
-                #     print 'a     = %.5f' % a
-                #     print 'b - a = %.5f' % (b - a)
-                #     print '(x[0] - x[1])*(y[0] + y[1])/2 = ',(x[0] - x[1])*(y[0] + y[1])/2.0
-                #     print '(x[1] - x[2])*(y[1] + y[2])/2 = ',(x[1] - x[2])*(y[1] + y[2])/2.0
-        self.output(" %.8f Thermodynamic integration method (using Simpson's rule)" % (marginal_like))
+    #def ss_simpsons(self, betas, means):
+    #    """
+    #    This approach uses Simpson's method to interpolate between beta values using the
+    #    interpolation polynomial in Lagrange form. Simpson' method is described in most
+    #    calculus textbooks, and (as used here) fits a parabola to every three consecutive
+    #    points, using the area under the parabola as an approximation to the integral.
+    #    This approach provides two estimates for the integral corresponding to each segment
+    #    except for the first and last. We use the simple average of the two estimates when
+    #    they are available.
+    #
+    #    """
+    #    nbetas = len(betas)
+    #    if nbetas < 3:
+    #        raise Exception("Must have at least 3 beta values to compute path sampling using Simpson's rule")
+    #    marginal_like = 0.0
+    #    for i in range(nbetas - 2):
+    #        x = [betas[i], betas[i+1], betas[i+2]]
+    #        y = [means[i], means[i+1], means[i+2]]
+    #        # print '\ni = %d (dx = %.5f, dy = %.5f)' % (i,x[0] - x[2], y[0] - y[2])
+    #        # print 'x%d <- c(%s)' % (i,','.join(['%.6f' % z for z in x]))
+    #        # print 'y%d <- c(%s)' % (i,','.join(['%.6f' % z for z in y]))
+    #        # print 'plot(x%d,y%d,type="b")' % (i,i)
+    #        if i == 0:
+    #            # no averaging on the first segment
+    #            a = self.cumLagrange(1, x, y)
+    #            marginal_like += a
+    #            b = self.cumLagrange(2, x, y)
+    #            marginal_like += (b - a)/2.0
+    #        elif i == nbetas - 3:
+    #            # no averaging on the last segment
+    #            a = self.cumLagrange(1, x, y)
+    #            marginal_like += a/2.0
+    #            b = self.cumLagrange(2, x, y)
+    #            marginal_like += (b - a)
+    #        else:
+    #            # average two estimates for each of the middle segments
+    #            a = self.cumLagrange(1, x, y)
+    #            b = self.cumLagrange(2, x, y)
+    #            marginal_like += b/2.0
+    #            # if i == 7 or i == 8:
+    #            #     xxx = []
+    #            #     yyy = []
+    #            #     for z in range(21):
+    #            #         xxx_value = x[0] + (x[2] - x[0])*float(z)/20.0
+    #            #         yyy_value = self.interpolate(xxx_value, x, y)
+    #            #         xxx.append(xxx_value)
+    #            #         yyy.append(yyy_value)
+    #            #     print 'xx%d <- c(%s)' % (i,','.join(['%.5f' % z for z in xxx]))
+    #            #     print 'yy%d <- c(%s)' % (i,','.join(['%.5f' % z for z in yyy]))
+    #            #     print 'plot(xx%d,yy%d,type="b")' % (i,i)
+    #            #     print 'a     = %.5f' % a
+    #            #     print 'b - a = %.5f' % (b - a)
+    #            #     print '(x[0] - x[1])*(y[0] + y[1])/2 = ',(x[0] - x[1])*(y[0] + y[1])/2.0
+    #            #     print '(x[1] - x[2])*(y[1] + y[2])/2 = ',(x[1] - x[2])*(y[1] + y[2])/2.0
+    #    self.output(" %.8f Thermodynamic integration method (using Simpson's rule)" % (marginal_like))
 
     def ss_trapezoid(self, betas, means):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
@@ -152,6 +152,14 @@ class ParamSummarizer(CommonFunctions):
         """
         nbetas = len(betas)
         marginal_like = 0.0
+
+        # betas  = [0.8, 0.6, 0.4, 0.2, 0.0] nbetas = 5
+        # i      = [  0,   1,   2,   3,   4]
+        # before = [0.8, 0.8, 0.6, 0.4, 0.2]
+        # after  = [0.6, 0.4, 0.2, 0.0, 0.0]
+        # diff   = [0.2, 0.4, 0.4, 0.4, 0.2]
+        # diff/2 = [0.1, 0.2, 0.2, 0.2, 0.1]
+
         for i in range(nbetas):
             if i == 0:
                 before = betas[0]
@@ -187,12 +195,15 @@ class ParamSummarizer(CommonFunctions):
         seR = 0.0
         nbetas = len(betas)
         if not self._betasSortedCorrectly(betas):
-            #if betas[0] != 1.0 or betas[-1] != 0.0:
-            #raise Exception('Stepping Stone method requires beta values to be ordered from 1.0 (first) to 0.0 (last)')
             raise Exception('Stepping Stone method requires beta values to be sorted from highest to lowest (0.0)')
+
+        self.output('%12s %12s %12s' % ('beta','log(Rk)','cum. log(Rk)'))
+
+        #bug-10Sep2016 i started at 1, not 0, so contribution of first beta value was omitted from the sum
+        # Assumed that beta values started at 1, but that was not true so skipping the first one was a bad idea
+        blarger = 1.0
         for i in range(1,nbetas):
             # find the difference between the two beta values for ratio i
-            blarger = betas[i - 1]
             bsmaller = betas[i]
             beta_incr = blarger - bsmaller
 
@@ -208,6 +219,7 @@ class ParamSummarizer(CommonFunctions):
             tmp /= float(n)
             lnRk = beta_incr*Lmax + math.log(tmp)
             lnR += lnRk
+            self.output('%12.5f %12.5f %12.5f %s' % (bsmaller,lnRk,lnR,bsmaller==0 and '(prior)' or ''))
 
             # standard error calculation
             tmp1 = 0.0
@@ -215,14 +227,16 @@ class ParamSummarizer(CommonFunctions):
                 aa = math.exp(beta_incr*(lnL - Lmax))/tmp
                 tmp1 += math.pow((aa - 1.0),2.0)
             seR += tmp1
+            blarger = bsmaller
+
         seR /= math.pow(float(n), 2.0)
         self.output(' %.8f Stepping-stone (SS) method using prior as reference distribution (se = %.8f)' % (lnR, seR))
         return lnR
 
     def _betasSortedCorrectly(self, betas):
         # beta values should not start at 1 (if so, probably using a file from former version of phycas)
-        if betas[0] == 1.0:
-            return False
+        #if betas[0] == 1.0:
+        #    return False
         # last beta value should equal 0
         if betas[-1] != 0.0:
             return False

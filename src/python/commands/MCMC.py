@@ -54,13 +54,6 @@ class MCMC(PhycasCommand):
                 ("save_sitelikes",           False,    "Saves file of site log-likelihoods (name determined by mcmc.out.sitelikes) that sump command can use in computing conditional predictive ordinates", BoolArgValidate),
                 ])
 
-                #POLTMP2 ("edge_move_lambda0",          0.2,    "Sets the maximum value of the tuning parameter for the EdgeMove Metropolis-Hastings move. This value corresponds to a boldness value of 0.0 and is only used during path sampling analyses.", FloatArgValidate(min=0.01)),
-                #POLTMP2 ("rel_rate_psi0",           2000.0,    "Sets the minimum value of the tuning parameter for the RelRatesMove Metropolis-Hastings move. This value corresponds to a boldness vlaue of 100.0 and is only used during path sampling analyses.", FloatArgValidate(min=1.0)),
-                #POLTMP2 ("subset_relrates_psi0",    2000.0,    "Sets the minimum value of the tuning parameter for the SubsetRelRatesMove Metropolis-Hastings move. This value corresponds to a boldness vlaue of 100.0 and is only used during path sampling analyses.", FloatArgValidate(min=1.0)),
-                #POLTMP2 ("state_freq_psi0",         2000.0,    "Sets the minimum value of the tuning parameter for the RelRatesMove Metropolis-Hastings move. This value corresponds to a boldness vlaue of 100.0 and is only used during path sampling analyses.", FloatArgValidate(min=1.0)),
-                #POLTMP2 ("tree_scaler_lambda0",        0.5,    "Sets the maximum value of the tuning parameter for the TreeScalerMove Metropolis-Hastings move. This value corresponds to a boldness value of 100.0 and is only used during path sampling analyses.", FloatArgValidate(min=0.01)),
-                #POLTMP2 ("ls_move_lambda0",            0.2,    "Sets the maximum value of the tuning parameter for the LargetSimonMove Metropolis-Hastings move. This value corresponds to a boldness value of 100.0 and is only used during path sampling analyses.", FloatArgValidate(min=0.01)),
-
         # Specify output options
         o = PhycasCommandOutputOptions()
 

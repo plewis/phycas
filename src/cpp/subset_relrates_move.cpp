@@ -326,7 +326,6 @@ bool SubsetRelRatesMove::update()
 		accepted = false;
 		}
 
-    //POLTMP
     double inverse_psi = 1.0/psi;
     inverse_psi = p->adaptUpdater(inverse_psi, nattempts, accepted);
     psi = 1.0/inverse_psi;

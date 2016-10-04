@@ -80,9 +80,6 @@ class LargetSimonMove : public MCMCUpdater
 		//
 		double			recalcWorkingPrior() const;
 		bool 			isPriorSteward() const;
-        //POLTMP2 virtual void    setPosteriorTuningParam(double x);
-        //POLTMP2 virtual void    setPriorTuningParam(double x);
-		//POLTMP2 virtual void	setBoldness(double x);
 		virtual bool	update();
 		virtual double	getLnHastingsRatio() const;
 		virtual double	getLnJacobian() const;
@@ -92,12 +89,8 @@ class LargetSimonMove : public MCMCUpdater
 
 	private:
 
-		//POLTMP2 double			    boldness;		            /**< Ranges from 0 to 100 and determines the boldness of the move */
-        //POLTMP2 double              min_lambda;                 /**< The tuning parameter used for exploring the posterior distribution */
-        //POLTMP2 double              max_lambda;                 /**< The tuning parameter used for exploring the prior distribution */
 		double			    lambda;						/**< The tuning parameter for this move (the factor used in modifying backbone length) */
 
-		//TreeNode *		    ndBase;						/**< Most ancestral node involved in the move, used as the center of the likelihood calcuation (and in revert) */
 		TreeNode *		    ndX;						/**< Node at one end of segment involved in move; used by Revert to undo a move */
 		TreeNode *		    ndY;						/**< One of two nodes in the middle of segment involved in move; used by Revert to undo a move */
 		TreeNode *		    ndZ;						/**< Node at other end (from ndX) of segment involved in move; used by Revert to undo a move */

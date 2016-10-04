@@ -40,10 +40,6 @@ DirichletMove::DirichletMove() : MCMCUpdater()
 	{
 	is_move = true;
 	dim = 0;
-	//POLTMP2 boldness = 0.0;
-	//POLTMP2 min_psi = 1.0;
-	//POLTMP2 max_psi = 300.0;
-	//POLTMP2 psi = max_psi;
 	psi = 300.0;
 	reset();
 	}
@@ -67,27 +63,6 @@ void DirichletMove::setTuningParameter(
 	}
 
 /*----------------------------------------------------------------------------------------------------------------------
-|	Sets the value for the data member 'min_psi', which is the minimum value of the tuning parameter for this move.
-|   The minimum value is used whenever boldness comes into play, for example during a path sampling analysis when the
-|   target distribution changes from posterior to prior and boldness is adjusted accordingly.
-*/
-//POLTMP2 void DirichletMove::setPriorTuningParam(
-//POLTMP2   double x) /* is the new value for max_psi */
-//POLTMP2 	{
-//POLTMP2 	min_psi = x;
-//POLTMP2 	}
-
-/*----------------------------------------------------------------------------------------------------------------------
-|	Sets the value for the data member 'max_psi', which is the maximum value of the tuning parameter for this move.
-|   The maximum value is the default value, used for exploring the posterior distribution.
-*/
-//POLTMP2 void DirichletMove::setPosteriorTuningParam(
-//POLTMP2   double x) /* is the new value for max_psi */
-//POLTMP2 	{
-//POLTMP2 	max_psi = x;
-//POLTMP2 	}
-
-/*----------------------------------------------------------------------------------------------------------------------
 |	Sets the value for the data member 'dim', which is the number of parameters updated jointly by this move.
 */
 void DirichletMove::setDimension(
@@ -95,37 +70,6 @@ void DirichletMove::setDimension(
 	{
 	dim = d;
 	}
-
-/*----------------------------------------------------------------------------------------------------------------------
-|	Sets the value for the data member 'psi', which is the tuning parameter for this move, based on a boldness value
-|	that ranges from 0 (least bold) to 100 (most bold). The actual formula used is psi = 3*(100 - x), with minimum of
-|	0 and maximum of `max_psi' enforced after the calculation. Current parameter values are multiplied by the value `psi'
-|	to obtain the parameters of a new Dirichlet distribution used for sampling the proposed new values. The boldest
-|	distribution that can be used for sampling is a flat dirichlet, however, so if any of the parameters are less than
-|	1 after multiplication by `psi', they are simply set to 1.
-*/
-//POLTMP2 void DirichletMove::setBoldness(
-//POLTMP2   double x) /* is the new boldness value */
-//POLTMP2 	{
-//POLTMP2 	boldness = x;
-//POLTMP2 	if (boldness < 0.0)
-//POLTMP2 		boldness = 0.0;
-//POLTMP2 	else if (boldness > 100.0)
-//POLTMP2 		boldness = 100.0;
-//POLTMP2
-//POLTMP2     //  Assume:
-//POLTMP2     //    min_psi = 5
-//POLTMP2     //    max_psi = 300
-//POLTMP2     //
-//POLTMP2     //  psi = min_psi + (max_psi - min_psi)*(100 - boldness)/100
-//POLTMP2     //
-//POLTMP2     //  boldness   psi calculation
-//POLTMP2     //      0      5 + (300 - 5)*(100 - 0)/100   = 300
-//POLTMP2     //    100      5 + (300 - 5)*(100 - 100)/100 = 5
-//POLTMP2     //
-//POLTMP2 	psi = min_psi + (max_psi - min_psi)*(100.0-boldness)/100.0;
-//POLTMP2 	//std::cerr << boost::str(boost::format("####### DirichletMove::setBoldness(%.5f), boldness = %.5f, psi = %.5f, max_psi = %.5f, min_psi = %.5f") % x % boldness % psi % max_psi % min_psi) << std::endl;
-//POLTMP2 	}
 
 /*----------------------------------------------------------------------------------------------------------------------
 |	Provides read access to the data member 'dim', which is the number of parameters updated jointly by this move.
@@ -330,13 +274,9 @@ bool DirichletMove::update()
 		accepted = false;
 		}
 
-    //POLTMP
     double inverse_psi = 1.0/psi;
     inverse_psi = p->adaptUpdater(inverse_psi, nattempts, accepted);
     psi = 1.0/inverse_psi;
-
-    //POLTMP double accept_pct = 100.0*naccepts/nattempts;
-    //POLTMP std::cerr << boost::str(boost::format("~~~> psi = %.5f, accept = %.1f") % psi % accept_pct) << std::endl;
 
     return accepted;
 	}

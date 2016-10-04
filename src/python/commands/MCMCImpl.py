@@ -60,7 +60,6 @@ class MCMCImpl(CommonFunctions):
         self.cycle_start            = None     # used in path sampling to avoid starting over the cycle count for each beta value
         self.cycle_stop             = None     # total number of cycles (used for computing time remaining)
         self.last_adaptation        = 0
-        #POLTMP self.next_adaptation        = 0
         self.ss_beta                = 1.0
         self.ss_beta_index          = 0
         self.ss_sampled_betas       = None
@@ -556,7 +555,6 @@ class MCMCImpl(CommonFunctions):
 
     def beyondBurnin(self, cycle):
         c = cycle + 1
-        #POLTMP return (c > self.burnin)
         return (c > 0)
 
     def doThisCycle(self, cycle, burnin, mod):
@@ -1084,7 +1082,6 @@ class MCMCImpl(CommonFunctions):
         if self.opts.debugging:
             tmpf.close()
 
-    #POLTMP def computeTimeRemaining(self, secs, ndone, ntotal):
     def computeTimeRemaining(self, secs, cycle_start, cycle_stop, cycle):
         if self.opts.doing_steppingstone_sampling:
             num_betas_completed = self.ss_sampled_betas.index(self.ss_beta)
@@ -1151,15 +1148,10 @@ class MCMCImpl(CommonFunctions):
     def mainMCMCLoop(self, explore_prior = False):
         levels_file_created = False #temp!
         nchains = len(self.mcmc_manager.chains)
-        # print '******** nchains =',nchains
         self.last_adaptation = 0
-        #POLTMP self.next_adaptation = self.opts.adapt_first
 
         CPP_UPDATER = True # if False, uses python obsoleteUpdateAllUpdaters
 
-        # self.debugShowTuningParameters()
-
-        #POLTMP for cycle in xrange(self.burnin + self.ncycles):
         cycle = self.cycle_start
         done = False
         burning_in = True
@@ -1169,7 +1161,7 @@ class MCMCImpl(CommonFunctions):
                 # switching from burnin to sampling, tell chains to stop adapting themselves
                 burning_in = False
                 for c in self.mcmc_manager.chains:
-                    c.chain_manager.setAdapting(False) #POLTMP
+                    c.chain_manager.setAdapting(False)
             assert cycle < 0 or burning_in == False, 'should not be adapting chains during sampling phases'
 
             # Update all updaters
@@ -1199,7 +1191,6 @@ class MCMCImpl(CommonFunctions):
 
                 self.stopwatch.normalize()
                 secs = self.stopwatch.elapsedSeconds()
-                #POLTMP time_remaining = self.computeTimeRemaining(secs, self.cycle_start + cycle + 1, self.cycle_stop)
                 time_remaining = self.computeTimeRemaining(secs, self.cycle_start, self.cycle_stop, cycle)
                 if time_remaining != '':
                     time_remaining = '(' + time_remaining + ')'
@@ -1219,7 +1210,6 @@ class MCMCImpl(CommonFunctions):
                 self.output(msg)
 
             # Sample chain if it is time
-            #POLTMP if self.beyondBurnin(cycle) and self.doThisCycle(cycle - self.burnin, self.opts.sample_every):
             if self.beyondBurnin(cycle) and self.doThisCycle(cycle, self.burnin, self.opts.sample_every):
                 # Refresh log-likelihood(s) if necessary
                 if self.ss_beta == 0.0:
@@ -1227,7 +1217,6 @@ class MCMCImpl(CommonFunctions):
                         # is this necessary?
                         c.chain_manager.refreshLastLnLike()
 
-                #POLTMP self.mcmc_manager.recordSample(self.cycle_start + cycle)
                 self.mcmc_manager.recordSample(cycle)
 
                 cold_chain_manager = self.mcmc_manager.getColdChainManager()
@@ -1235,11 +1224,6 @@ class MCMCImpl(CommonFunctions):
                 self.ss_sampled_likes[self.ss_beta_index].append(sampled_lnL)
                 self.stopwatch.normalize()
 
-            # Adapt slice samplers if it is time
-            #POLTMP if self.doThisCycle(cycle, self.burnin, self.next_adaptation):
-            #POLTMP     self.adaptSliceSamplers()
-            #POLTMP     self.next_adaptation += 2*(self.next_adaptation - self.last_adaptation)
-            #POLTMP     self.last_adaptation = cycle + 1
             if cycle < 0:
                 self.adaptSliceSamplers()
             if self.doThisCycle(cycle, self.burnin, self.opts.report_efficiency_every):
@@ -1250,23 +1234,9 @@ class MCMCImpl(CommonFunctions):
             jpm = self.mcmc_manager.getColdChainManager().getJointPriorManager()
             jpm.recalcLogJointPrior()
 
-            cycle += 1  #POLTMP
+            cycle += 1
             if cycle == self.cycle_stop:
                 done = True
-
-        #POLTMP self.cycle_start += self.burnin + self.ncycles
-        #POLTMP self.cycle_start = self.cycle_stop
-        #POLTMP self.cycle_stop = self.cycle_start + self.ncycles
-
-
-    #def _isTreeLengthPriorBeingUsed(self):
-    #    #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
-    #    """
-    #    Returns True if tree length prior is defined, False otherwise.
-    #    """
-    #    cold_chain = self.mcmc_manager.getColdChain()
-    #    m0 = cold_chain.partition_model.getModel(0)
-    #    return bool(m0.getTreeLengthPrior())
 
     def _createRefDistMap(self, fn):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
@@ -1467,8 +1437,8 @@ class MCMCImpl(CommonFunctions):
         # Compute the current log-likelihood and log-prior in case first updater
         # is a move and will thus depend on these quantities being accurate
         for c in self.mcmc_manager.chains:
-            c.chain_manager.setTargetAcceptanceRate(self.opts.target_accept_rate) #POLTMP
-            c.chain_manager.setAdapting(True) #POLTMP
+            c.chain_manager.setTargetAcceptanceRate(self.opts.target_accept_rate)
+            c.chain_manager.setAdapting(True)
             c.chain_manager.refreshLastLnLike()
             if c.heating_power == 1.0:
                 self.output('Starting log-likelihood = %s' % c.chain_manager.getLastLnLike())
@@ -1495,7 +1465,7 @@ class MCMCImpl(CommonFunctions):
             lower_boundary = 0.0
             self.ss_sampled_betas = [0.0]
             betadist = probdist.Beta(self.opts.ssobj.shape1, self.opts.ssobj.shape2)
-            for i in range(self.opts.ssobj.nstones - 1):
+            for i in range(self.opts.ssobj.nstones):    #bug-10Sep2016 was range(nstones-1)
                 cum_area += segment_area
                 upper_boundary = betadist.getQuantile(cum_area)
                 self.ss_sampled_betas.append(upper_boundary)
@@ -1520,24 +1490,13 @@ class MCMCImpl(CommonFunctions):
         for self.ss_beta_index, self.ss_beta in enumerate(self.ss_sampled_betas):
             self.ss_sampled_likes.append([])
             chain.setPower(self.ss_beta)
-            #POLTMP2 boldness = 100.0*(1.0 - self.ss_beta)
-            #POLTMP2 chain.setBoldness(boldness)
-            #POLTMP2 self.output('Setting chain boldness to %g based on beta = %g' % (boldness,self.ss_beta))
-            #POLTMP self.cycle_stop = self.opts.burnin + len(self.ss_sampled_betas)*self.opts.ssobj.ncycles
             self.ncycles = self.opts.ssobj.ncycles
             self.burnin = self.opts.ssobj.burnin
 
-            chain.chain_manager.setTargetAcceptanceRate(self.opts.target_accept_rate) #POLTMP
-            chain.chain_manager.setAdapting(True) #POLTMP
+            chain.chain_manager.setTargetAcceptanceRate(self.opts.target_accept_rate)
+            chain.chain_manager.setAdapting(True)
 
-            #POLTMP if self.ss_beta_index > 0:
-            #POLTMP     self.burnin = 0
-            #POLTMP else:
-            #POLTMP     self.burnin = self.opts.burnin
-            #POLTMP     self.cycle_start = 0
-            #self.burnin = self.opts.burnin
             self.cycle_start = -self.burnin
-            #POLTMP self.cycle_stop = len(self.ss_sampled_betas)*self.opts.ssobj.ncycles
             self.cycle_stop = self.opts.ssobj.ncycles
 
             if self.ss_beta == 0.0:
@@ -1554,8 +1513,8 @@ class MCMCImpl(CommonFunctions):
         # Compute the current log-likelihood and log-prior in case first updater
         # is a move and will thus depend on these quantities being accurate
         for c in self.mcmc_manager.chains:
-            c.chain_manager.setTargetAcceptanceRate(self.opts.target_accept_rate) #POLTMP
-            c.chain_manager.setAdapting(True) #POLTMP
+            c.chain_manager.setTargetAcceptanceRate(self.opts.target_accept_rate)
+            c.chain_manager.setAdapting(True)
             c.chain_manager.refreshLastLnLike()
             if c.heating_power == 1.0:
                 self.output('Starting log-likelihood = %s' % c.chain_manager.getLastLnLike())
@@ -1566,8 +1525,6 @@ class MCMCImpl(CommonFunctions):
         self.ss_sampled_likes.append([])
         self.ss_beta_index = 0
 
-        #POLTMP self.cycle_start = 0
-        #POLTMP self.cycle_stop = self.opts.burnin + self.opts.ncycles
         self.cycle_start = -self.opts.burnin
         self.cycle_stop = self.opts.ncycles
 
@@ -1702,7 +1659,6 @@ class MCMCImpl(CommonFunctions):
         else:
             self.standardMCMC()
 
-        #POLTMP self.adaptSliceSamplers()
         self.resetUpdaterDiagnostics()
         total_evals = self.mcmc_manager.getTotalEvals() #self.likelihood.getNumLikelihoodEvals()
         total_secs = self.stopwatch.elapsedSeconds()
