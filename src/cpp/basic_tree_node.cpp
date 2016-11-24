@@ -201,6 +201,14 @@ double TreeNode::GetEdgeLen() const
 	}
 
 /*----------------------------------------------------------------------------------------------------------------------
+|	Returns the split pattern string associated with this node.
+*/
+const std::string TreeNode::GetSplitPattern() const
+	{
+	return split.CreatePatternRepresentation();
+	}
+
+/*----------------------------------------------------------------------------------------------------------------------
 |	Returns the split associated with this node.
 */
 const Split & TreeNode::GetSplitConst() const

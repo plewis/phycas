@@ -55,6 +55,7 @@ BOOST_PYTHON_MODULE(_PhylogenyExt)
 	const InternalData *	(TreeNode::*GetInternalDataConst)()	const	= &TreeNode::GetInternalData;
 
 	class_<TreeNode, boost::shared_ptr<TreeNode> >("TreeNodeBase")
+		.def("getSplitPattern", &TreeNode::GetSplitPattern)
 		.def("getSplit", &TreeNode::GetSplit, return_internal_reference<>())
 		.def("getSupport", &TreeNode::GetSupport)
 		.def("setSupport", &TreeNode::SetSupport)

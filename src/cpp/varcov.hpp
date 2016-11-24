@@ -157,8 +157,11 @@ class VarCovMatrix
 
 		std::vector<double>                 _w;                             /**< vector of eigenvalues computed by EigenRealSymmetric */
         std::vector<double>                 _means;                         /**< holds means of parameters for use in centering observations */
+        std::vector<double>                 _mode;                          /**< holds mode parameter vector for use in centering observations */
         std::vector<PosteriorSample>        _posterior_samples;             /**< holds sorted, standardized, log-transformed parameter vectors */
         std::vector<double>                 _representative_param_vector;   /**< holds a representative parameter vector that has been destandardized (see calcRepresentativeForShell) */
+
+        bool                                _center_around_mode;            /**< if true, observations are centered around median; if false, observations are centered around mean */
 
 	};
 }	// namespace phycas

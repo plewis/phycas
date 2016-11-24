@@ -40,6 +40,8 @@ class MCMCImpl(CommonFunctions):
         self.paramf                 = None
         self.treef                  = None
         self.sitelikef              = None
+        self.pwkf                   = None  # PWKTMP    # output file
+        self.pwktrees               = None  # PWKTMP    # holds tree ID for each distinct tree topology sampled
         #self.tree_file_name         = ''        # Will hold tree file name (see openParameterAndTreeFiles)
         #self.param_file_name        = ''        # Will hold parameter file name (see openParameterAndTreeFiles)
         #self.tmp_simdata            = SimData()
@@ -70,6 +72,10 @@ class MCMCImpl(CommonFunctions):
         if sitelikef is not None:
             self.sitelikef = sitelikef
 
+    def unsetSiteLikeFile(self):
+        self.sitelikef = None
+        self.siteIndicesForPatternIndex = None
+
     def siteLikeFileSetup(self, coldchain):
         if self.sitelikef is not None:
             # Set up the siteIndicesForPatternIndex, which holds a list of sites for each pattern index
@@ -87,10 +93,6 @@ class MCMCImpl(CommonFunctions):
                     self.siteIndicesForPatternIndex[p].append(i)
                 else:
                     nexcluded += 1;
-
-    def unsetSiteLikeFile(self):
-        self.sitelikef = None
-        self.siteIndicesForPatternIndex = None
 
     def adaptSliceSamplers(self):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
@@ -298,6 +300,33 @@ class MCMCImpl(CommonFunctions):
         self.sitelikef.close()
         self.sitelikef = None
 
+    def pwkFileOpen(self):  # PWKTMP
+        #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
+        """
+        Opens the PWK parameter file.
+
+        """
+        self.phycassert(self.pwkf is None, 'Attempt made to open MCMCImpl.pwkf, but it is already open!')
+        pwk_file_spec = self.opts.out.pwkparams
+        try:
+            self.pwkf = pwk_file_spec.open(self.stdout)
+        except:
+            print '*** Attempt to open PWK parameter file (%s) failed.' % self.opts.out.pwkparams.filename
+
+        if self.pwkf:
+            self.pwktrees = {}
+            print 'PWK parameter file was opened successfully'
+
+    def pwkFileClose(self):  # PWKTMP
+        #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
+        """
+        Closes the PWK parameter file.
+
+        """
+        self.phycassert(self.pwkf is not None, 'Attempt made to close MCMCImpl.pwkf, but it is not open!')
+        self.pwkf.close()
+        self.pwkf = None
+
     def treeFileOpen(self):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
@@ -352,6 +381,8 @@ class MCMCImpl(CommonFunctions):
 
         self.paramFileOpen()
         self.treeFileOpen()
+        if self.opts.save_pwk_file:
+            self.pwkFileOpen()  # PWKTMP
 
     def _loadData(self, matrix):
         self.phycassert(matrix is not None, 'Tried to load data from a non-existant matrix')

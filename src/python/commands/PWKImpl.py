@@ -472,7 +472,13 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
         cold_chain.likelihood.prepareForLikelihood(cold_chain.tree)
 
         # Set edge lengths (log-transformed edge lengths come first in transformed_parameters list)
-        edge_lengths = [math.exp(log_edgelen) for log_edgelen in transformed_parameters[:nedges]]
+        try:
+            edge_lengths = [math.exp(log_edgelen) for log_edgelen in transformed_parameters[:nedges]]
+        except OverflowError:
+            print 'Overflow Error exponentiating log-transformed edge lengths:'
+            for log_edgelen in transformed_parameters[:nedges]:
+                print log_edgelen
+            sys.exit('aborting')
         self.replaceEdgeLengths(cold_chain.tree, edge_lengths, edge_map)
 
         # Send parameters to model (model parameters come last in transformed_parameters list)
@@ -689,9 +695,9 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
         # Create a VarCovBase object to manage the standardization
         V = likelihood.VarCovBase('topo%d' % n, n, p)
 
-        raw_input('..debugTestStandardization starting..')
-        V.debugTestStandardization();
-        raw_input('..debugTestStandardization finished..')
+        #raw_input('..debugTestStandardization starting..')
+        #V.debugTestStandardization();
+        #raw_input('..debugTestStandardization finished..')
 
         edgelen_names = [""]*nedges
         for key in edge_map.keys():
@@ -849,7 +855,7 @@ class PartitionWeightedKernelEstimator(CommonFunctions):
         p = len(untransformed_edgelens[0]) + cold_chain.partition_model.getNumFreeParameters()
 
         # Create a VarCovBase object to manage the standardization
-        V = likelihood.VarCovBase(n, p)
+        V = likelihood.VarCovBase('topo%d' % n, n, p)
 
         # Add all parameter vectors to V
         row = 0

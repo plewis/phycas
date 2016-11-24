@@ -169,6 +169,14 @@ class TreeNode(TreeNodeBase):
         """
         return TreeNodeBase.getEdgeLen(self)
     
+    def getSplitPatternRepresentation(self):
+        #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
+        """
+        Returns the split pattern string corresponding to this node's edge.
+
+        """
+        return TreeNodeBase.getSplitPattern(self)
+    
     def setEdgeLen(self, new_edgelen):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """

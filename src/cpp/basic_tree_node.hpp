@@ -99,6 +99,8 @@ class TreeNode
 		Split &					GetSplit();
 		const Split &			GetSplitConst() const;
 
+        const std::string       GetSplitPattern() const;
+
 		std::vector<TreeNode *> GetChildren() const;
 
 		// Modifiers

@@ -85,6 +85,7 @@ VarCovMatrix::VarCovMatrix(std::string name, unsigned n, unsigned p)
   : _n(0), _p(0), _V(0), _S(0), _Stmp(0), _Sinv(0), _z(0), _shell_midpoint(0.0), _shell_delta(0.0)
     , _log_ratio_sum(0.0), _representative_logkernel(0.0), _representative_loglikelihood(0.0), _representative_logprior(0.0)
     , _representative_logjacobian_edgelen(0.0), _representative_logjacobian_substmodel(0.0), _representative_logjacobian_standardization(0.0)
+    , _center_around_mode(false) // currently _center_around_mode cannot be modified anywhere except here
 	{
 	PHYCAS_ASSERT(n > 0);
 	PHYCAS_ASSERT(p > 0);
@@ -334,6 +335,7 @@ double VarCovMatrix::standardizeSamples()
     {
     // if _means is not empty, then standardization has already been done
     assert(_means.empty());
+    assert(_mode.empty());
 
     // calculate means
     _means.resize(_p, 0.0);
@@ -348,20 +350,59 @@ double VarCovMatrix::standardizeSamples()
         }
     std::transform(_means.begin(), _means.end(), _means.begin(), boost::lambda::_1/_n);
 
-#if 0
+#if 1
     // print _means vector
-    std::cerr << "_means = c(";
+    std::cerr << "\n_means = c(";
     std::copy(_means.begin(), _means.end(), std::ostream_iterator<double>(std::cerr, ","));
     std::cerr << ")" << std::endl;
 #endif
 
-    // center observations
+    // calculate median vector
+    _mode.resize(_p, 0.0);
+    sample_ref best = _posterior_samples[0];
+    double best_log_kernel = best._log_likelihood; // + best._log_prior + best._log_jacobian_edgelen + best._log_jacobian_substmodel + best._log_jacobian_standardization;
     BOOST_FOREACH(sample_ref sample, _posterior_samples)
         {
-        unsigned i = 0;
-        BOOST_FOREACH(double & x, sample._parameters)
+        double log_kernel = sample._log_likelihood; // + sample._log_prior + sample._log_jacobian_edgelen + sample._log_jacobian_substmodel + sample._log_jacobian_standardization;
+        if (log_kernel > best_log_kernel)
             {
-            x -= _means[i++];
+            unsigned i = 0;
+            BOOST_FOREACH(double x, sample._parameters)
+                {
+                _mode[i++] = x;
+                }
+            }
+        }
+
+#if 1
+    // print _mode vector
+    std::cerr << "\n_mode = c(";
+    std::copy(_mode.begin(), _mode.end(), std::ostream_iterator<double>(std::cerr, ","));
+    std::cerr << ")" << std::endl;
+#endif
+
+    if (_center_around_mode)
+        {
+        // center observations around median
+        BOOST_FOREACH(sample_ref sample, _posterior_samples)
+            {
+            unsigned i = 0;
+            BOOST_FOREACH(double & x, sample._parameters)
+                {
+                x -= _mode[i++];
+                }
+            }
+        }
+    else
+        {
+        // center observations around mean
+        BOOST_FOREACH(sample_ref sample, _posterior_samples)
+            {
+            unsigned i = 0;
+            BOOST_FOREACH(double & x, sample._parameters)
+                {
+                x -= _means[i++];
+                }
             }
         }
 
@@ -524,7 +565,10 @@ std::vector<double> VarCovMatrix::destandardizeSample(unsigned row)
     // Y' = S^{-1}*(X - Xmean) (_p x _p)*(_p x 1)
     std::vector<double> Y(_p, 0.0);
     matrixTimesVector(_S, &_representative_param_vector[0], &Y[0]);
-    vectorPlusVector(&Y[0], &_means[0], &_representative_param_vector[0]);
+    if (_center_around_mode)
+        vectorPlusVector(&Y[0], &_mode[0], &_representative_param_vector[0]);
+    else
+        vectorPlusVector(&Y[0], &_means[0], &_representative_param_vector[0]);
 
     return _representative_param_vector;
     }
@@ -555,7 +599,10 @@ std::vector<double> VarCovMatrix::getRepresentativesForShell(unsigned n, double 
         // Destandardize vector
         matrixTimesVector(_S, &random_vector[0], &Y[0]);
         std::vector<double> v(_p, 0.0);
-        vectorPlusVector(&Y[0], &_means[0], &v[0]);
+        if (_center_around_mode)
+            vectorPlusVector(&Y[0], &_mode[0], &v[0]);
+        else
+            vectorPlusVector(&Y[0], &_means[0], &v[0]);
         std::copy(v.begin(), v.end(), std::back_inserter(vect_of_vects));
         }
 
@@ -568,7 +615,10 @@ std::vector<double> VarCovMatrix::getRepresentativesForShell(unsigned n, double 
             // Debugging: destandardize random_vector
             matrixTimesVector(_S, &random_vector[0], &Y[0]);
             std::vector<double> v(_p, 0.0);
-            vectorPlusVector(&Y[0], &_means[0], &v[0]);
+            if (_center_around_mode)
+                vectorPlusVector(&Y[0], &_mode[0], &v[0]);
+            else
+                vectorPlusVector(&Y[0], &_means[0], &v[0]);
             std::copy(v.begin(), v.end(), std::back_inserter(vect_of_vects));
             }
         }
@@ -645,7 +695,10 @@ unsigned VarCovMatrix::calcRepresentativeForShell(double r, double delta)
         // Debugging: destandardize _representative_param_vector
         std::vector<double> Y(_p, 0.0);
         matrixTimesVector(_S, &_representative_param_vector[0], &Y[0]);
-        vectorPlusVector(&Y[0], &_means[0], &_representative_param_vector[0]);
+        if (_center_around_mode)
+            vectorPlusVector(&Y[0], &_mode[0], &_representative_param_vector[0]);
+        else
+            vectorPlusVector(&Y[0], &_means[0], &_representative_param_vector[0]);
 
         // Spit out closest
         std::cerr << "*** comparing closest to chosen points ***" << std::endl;
@@ -674,7 +727,10 @@ unsigned VarCovMatrix::calcRepresentativeForShell(double r, double delta)
 
         // First, draw point on hypersphere of radius _shell_midpoint along primary eigenvector and destandardize it
         matrixTimesVector(_S, &primary_eigenvector[0], &Y[0]);
-        vectorPlusVector(&Y[0], &_means[0], &_representative_param_vector[0]);
+        if (_center_around_mode)
+            vectorPlusVector(&Y[0], &_mode[0], &_representative_param_vector[0]);
+        else
+            vectorPlusVector(&Y[0], &_means[0], &_representative_param_vector[0]);
 
         // Spit out point
         std::cerr << boost::str(boost::format("%20s %12s ") % "chosen" % "---");
@@ -725,7 +781,10 @@ unsigned VarCovMatrix::calcRepresentativeForShell(double r, double delta)
         // and destandardize it
         std::vector<double> Y(_p, 0.0);
         matrixTimesVector(_S, &primary_eigenvector[0], &Y[0]);
-        vectorPlusVector(&Y[0], &_means[0], &_representative_param_vector[0]);
+        if (_center_around_mode)
+            vectorPlusVector(&Y[0], &_mode[0], &_representative_param_vector[0]);
+        else
+            vectorPlusVector(&Y[0], &_means[0], &_representative_param_vector[0]);
         }
 
     // If num_samples_this_shell > 0, then store representative kernel/sample kernel ratios

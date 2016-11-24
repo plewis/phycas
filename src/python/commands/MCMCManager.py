@@ -237,6 +237,55 @@ class MCMCManager:
             self.parent.treef.write('\ttree rep.%d = %s;\n' % (cycle + 1, cold_chain.tree.makeNewick(self.parent.opts.ndecimals)))
             self.parent.treef.flush()
 
+        # Add line to PWK parameter file if it exists
+        if self.parent.pwkf:    # PWKTMP
+            # cycle
+            self.parent.pwkf.write('%d\t' % (cycle + 1))
+
+            # map edge lengths to splits
+            edgelen_map = {}
+            splits = []
+            for nd in cold_chain.tree.nodesWithEdges():
+                # store split representation for nd
+                pattern = nd.getSplitPattern()
+                splits.append(pattern)
+                edgelen = nd.getEdgeLen()
+                edgelen_map[pattern] = edgelen
+            # print 'newick =',cold_chain.tree.makeNewick(self.parent.opts.ndecimals)
+
+            tid = frozenset(splits)
+            if tid in self.parent.pwktrees.keys():
+                splits, topology_index = self.parent.pwktrees[tid]
+            else:
+                topology_index = len(self.parent.pwktrees)
+                self.parent.pwktrees[tid] = (splits,topology_index)  # this is the definitive ordering of edge lengths for tree topology tid
+
+            # topology index
+            self.parent.pwkf.write('%d\t' % topology_index)
+
+            # lnL for cold chain
+            lnl = cold_chain.chain_manager.getLastLnLike()
+            self.parent.pwkf.write(float_format_str % lnl)
+
+            # lnPrior
+            ln_prior = cold_chain.chain_manager.getJointPriorManager().getLogJointPrior()
+            self.parent.pwkf.write(float_format_str % ln_prior)
+
+            # tree length
+            #self.parent.pwkf.write(float_format_str % cold_chain.tree.edgeLenSum())
+
+            # edge lengths
+            for s in splits:
+                self.parent.pwkf.write('%.5f\t' % math.log(edgelen_map[s]))
+
+            fmtstr = '%%.%df' % self.parent.opts.ndecimals
+            #self.parent.pwkf.write('%s' % '\t'.join([fmtstr % x for x in cold_chain.partition_model.getUntransformedParameters()]))
+            #self.parent.pwkf.write('\t')
+            self.parent.pwkf.write('%s' % '\t'.join([fmtstr % x for x in cold_chain.partition_model.getTransformedParameters()]))
+
+            self.parent.pwkf.write('\n')
+            self.parent.pwkf.flush()
+
         # If we are saving site-likelihoods, and if the sitelikes file exists, add line to sitelikes file
         if self.parent.sitelikef:
             cold_chain.likelihood.storeSiteLikelihoods(True)
