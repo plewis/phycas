@@ -76,3 +76,5 @@ build-anaconda.sh
 deploy-anaconda.sh
 deploy-local.sh
 phycas-2.2.0-mac.tar.gz
+tests/pwk/old
+phycas-2.2.1-mac.tar.gz
