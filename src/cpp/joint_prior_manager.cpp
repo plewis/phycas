@@ -100,6 +100,8 @@ void JointPriorManager::skipNextDebugCheck()
 bool JointPriorManager::debugCheckLogJointPrior(
   std::string called_from) const
     {
+    double tol = 1.e-8;
+
     if (_skip_next_debug_check)
         {
         _skip_next_debug_check = false;
@@ -123,7 +125,7 @@ bool JointPriorManager::debugCheckLogJointPrior(
             //std::cerr << "--> " << p->_name;
             double curr_density = p->_current_density;
             double my_density = p->_recalculateLogDensity();
-            if (fabs(my_density - curr_density) > 1.e-10)
+            if (fabs(my_density - curr_density) > tol)
                 _debug_tmp.push_back(p->_name);
             //std::cerr << ": " << my_density << " (curr_density = " << curr_density << ", ";
             //p->debugShowCurrValue(std::cerr);
@@ -132,7 +134,7 @@ bool JointPriorManager::debugCheckLogJointPrior(
             }
         }
     double absolute_difference = fabs(_debug_log_joint_prior - _log_joint_prior);
-    bool good = absolute_difference < 1.e-10 ? true : false;
+    bool good = absolute_difference < tol ? true : false;
     if (!good)
         {
         std::cerr << ">>> bad <<<" << std::endl;
