@@ -29,6 +29,7 @@
 #include "basic_lot.hpp"
 #include "varcov.hpp"
 #include "xlikelihood.hpp"
+#include <boost/math/special_functions/gamma.hpp>   // lgamma
 using namespace phycas;
 
 /*----------------------------------------------------------------------------------------------------------------------
@@ -836,7 +837,7 @@ double VarCovMatrix::radialErrorDistMean(double sigma) const
 	{
 
     // calculate mean of radial error distribution
-    double radial_error_dist_mean = exp(0.5*log(2.0) + std::lgamma((_p+1.0)*0.5) - std::lgamma(_p*0.5));
+    double radial_error_dist_mean = exp(0.5*log(2.0) + boost::math::lgamma<double>((_p+1.0)*0.5) - boost::math::lgamma<double>(_p*0.5));
     return radial_error_dist_mean;
     }
 
