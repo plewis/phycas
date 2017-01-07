@@ -93,10 +93,14 @@ bool TreeScalerMove::update()
 
     bool using_tree_length_prior = jpm->isTreeLengthPrior();
 
-    // If first edge length master param returns false for useWorkingPrior(), then we are using
-    // Mark Holder's variable tree topology reference distribution (see _provideRefDistToUpdaters in MCMCImpl.py)
-    MCMCUpdaterVect::const_iterator it = p->getEdgeLenParams().begin();
-    bool using_vartopol_prior = !(*it)->useWorkingPrior();
+    bool using_vartopol_prior = false;
+    if (!using_tree_length_prior)
+        {
+        // If first edge length master param returns false for useWorkingPrior(), then we are using
+        // Mark Holder's variable tree topology reference distribution (see _provideRefDistToUpdaters in MCMCImpl.py)
+        MCMCUpdaterVect::const_iterator it = p->getEdgeLenParams().begin();
+        using_vartopol_prior = !(*it)->useWorkingPrior();
+        }
 
 	double prev_ln_prior = jpm->getLogJointPrior();
 
