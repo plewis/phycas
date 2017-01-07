@@ -60,6 +60,31 @@ bool DiscreteGammaShapeParam::update()
 
 	slice_sampler->Sample();
 
+    //POLTMP
+    //std::vector<double> v = slice_sampler->DebugSample();
+    //if (fabs(slice_sampler->GetLastSampledXValue() - 0.00034951) < 1.e-8)
+    //    {
+    //    // 0: sampled x
+    //    // 1: x-coord of vertical slice
+    //    // 2: y-coord of top of vertical slice (y-coord of bottom of vertical slice always 0.0)
+    //    // 3: x-coord of left edge of horizontal slice
+    //    // 4: x-coord of right edge of horizontal slice
+    //    // 5: y-coord of horizontal slice
+    //    // 6: horizontal slice interval width
+    //    // 7+: x-coord of failed sampling attempts (y-coord all equal to element 5)
+    //    std::cerr << "********** curr_value = " << slice_sampler->GetLastSampledXValue() << std::endl;
+    //    std::cerr << "********** " << v[0] << " <-- sampled x" << std::endl;
+    //    std::cerr << "********** " << v[1] << " <-- x-coord of vertical slice" << std::endl;
+    //    std::cerr << "********** " << v[2] << " <-- y-coord of top of vertical slice (y-coord of bottom of vertical slice always 0.0)" << std::endl;
+    //    std::cerr << "********** " << v[3] << " <-- x-coord of left edge of horizontal slice" << std::endl;
+    //    std::cerr << "********** " << v[4] << " <-- x-coord of right edge of horizontal slice" << std::endl;
+    //    std::cerr << "********** " << v[5] << " <-- y-coord of horizontal slice" << std::endl;
+    //    std::cerr << "********** " << v[6] << " <-- horizontal slice interval width" << std::endl;
+    //    for (unsigned i = 7; i < v.size(); ++i)
+    //        std::cerr << "********** " << v[i] << " <-- x-coord of failed sampling attempts (y-coord all equal to element 5)" << std::endl;
+    //    std::exit(0);
+    //    }
+
 	ChainManagerShPtr p = chain_mgr.lock();
 
     if (save_debug_info)

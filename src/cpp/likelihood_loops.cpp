@@ -910,7 +910,7 @@ double TreeLikelihood::harvestLnLFromValidEdge(
                 double site_lnL = std::log(siteLike);
                 site_lnL -= log_correction_factor;
 
-				//std::cerr << boost::str(boost::format("--> i = %d, siteLike = %.8f, site_lnL = %.8f") % i % siteLike % site_lnL) << std::endl;
+				//std::cerr << boost::str(boost::format("tip --> pat = %d, count = %10d, siteLike = %.8f, site_lnL = %.8f") % pat % counts[pat] % siteLike % site_lnL) << std::endl;
 
                 if (store_site_likes)
                     {
@@ -1064,7 +1064,7 @@ double TreeLikelihood::harvestLnLFromValidEdge(
                 double site_lnL = std::log(siteLike);
                 site_lnL -= log_correction_factor;
 
-				//std::cerr << boost::str(boost::format("--> i = %d, siteLike = %.8f, site_lnL = %.8f") % i % siteLike % site_lnL) << std::endl;
+				//std::cerr << boost::str(boost::format("int --> pat = %d, count = %10d, siteLike = %.8f, site_lnL = %.8f") % pat % counts[pat] % siteLike % site_lnL) << std::endl;
 
                 if (store_site_likes)
                     {
@@ -1078,6 +1078,8 @@ double TreeLikelihood::harvestLnLFromValidEdge(
             pattern_start += np;
 			cum_cla_pos += nr*np*ns;
         }   // loop over subsets of partition
+
+        //std::cerr << boost::str(boost::format("***** lnLikelihood = %.8f *****\n") % lnLikelihood) << std::endl;
 
         return lnLikelihood;
     }

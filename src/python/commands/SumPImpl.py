@@ -201,6 +201,8 @@ class ParamSummarizer(CommonFunctions):
 
         #bug-10Sep2016 i started at 1, not 0, so contribution of first beta value was omitted from the sum
         # Assumed that beta values started at 1, but that was not true so skipping the first one was a bad idea
+        #comment-02Jan2017 I do not understand my bug note above because i still starts at 1 and beta values do
+        # start at 1!
         blarger = 1.0
         for i in range(1,nbetas):
             # find the difference between the two beta values for ratio i

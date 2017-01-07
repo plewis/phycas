@@ -208,8 +208,8 @@ TreeLikelihood::TreeLikelihood(
 		//std::cerr << std::endl;
     	}
 	cla_pool = CondLikelihoodStorageShPtr(new CondLikelihoodStorage());
-	underflow_manager.setTriggerSensitivity(50);
-	underflow_manager.setCorrectToValue(10000.0);
+	underflow_manager.setTriggerSensitivity(50);    
+	underflow_manager.setCorrectToValue(10000.0);   //POL_BOOKMARK underflow
 	}
 
 
@@ -693,14 +693,19 @@ void TreeLikelihood::recalcRelativeRates()
 		PHYCAS_ASSERT(partition_model->subset_num_rates[i] == partition_model->subset_model[i]->getNRatesTotal());
         partition_model->subset_model[i]->recalcRatesAndProbs(rate_means[i], rate_probs[i]); //POL_BOOKMARK recalcRatesAndProbs call
 
-        //std::cerr << "  pinvar[" << i << "] = " << partition_model->subset_model[i]->getPinvar();
-        //std::cerr << "\n  shape[" << i << "] = " << partition_model->subset_model[i]->getShape();
-        //std::cerr << "\n  rate_means[" << i << "] = ";
-        //std::copy(rate_means[i].begin(), rate_means[i].end(), std::ostream_iterator<double>(std::cerr, " "));
-        //std::cerr << "\n  rate_probs[" << i << "] = ";
-        //std::copy(rate_probs[i].begin(), rate_probs[i].end(), std::ostream_iterator<double>(std::cerr, " "));
-        //std::cerr << "\n";
-
+        //if (partition_model->subset_model[i]->getShape() < 0.001) //POLTMP
+        //    {
+        //    std::cerr << "  pinvar[" << i << "] = " << partition_model->subset_model[i]->getPinvar();
+        //    std::cerr << "\n  shape[" << i << "] = " << partition_model->subset_model[i]->getShape();
+        //    std::cerr << "\n  rate_means[" << i << "] = ";
+        //    for (unsigned j = 0; j < rate_means[i].size(); ++j)
+        //        std::cerr << boost::str(boost::format("%20.8f") % rate_means[i][j]);
+        //    std::cerr << "\n  rate_probs[" << i << "] = ";
+        //    for (unsigned j = 0; j < rate_probs[i].size(); ++j)
+        //        std::cerr << boost::str(boost::format("%20.8f") % rate_probs[i][j]);
+        //    std::cerr << "\n";
+        //    }
+        //
 	    }
     //std::cerr << std::endl;
 	if (!no_data)
