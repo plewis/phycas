@@ -392,7 +392,9 @@ void Model::normalizeFreqs()
 
 /*----------------------------------------------------------------------------------------------------------------------
 |	Returns the total number of rate categories. The total number of rate categories equals the number of discrete
-|	gamma rate categories (i.e. the value returned by the getNGammaRates member function) if `is_pinvar_model' is false.
+|	gamma rate categories (i.e. the value returned by the getNGammaRates member function)...
+|   Part below is no longer true, right?
+|   ...if `is_pinvar_model' is false.
 |	If `is_pinvar_model' is true, however, the total number of rate categories equals the number of discrete gamma rate
 |	categories plus 1 (to accommodate the 0-rate category of which the probability is `pinvar').
 */
@@ -775,7 +777,9 @@ std::string Model::lookupStateRepr(
 
 /*----------------------------------------------------------------------------------------------------------------------
 |	Recalculates all relative rate means and their probabilities, storing these in the `rates' and `probs' vectors
-|	supplied as reference arguments. If using a discrete gamma ("G") model only, the number of elements in both `rates'
+|	supplied as reference arguments. 
+|   Part below is only partially correct now:
+|   If using a discrete gamma ("G") model only, the number of elements in both `rates'
 |	and `probs' equals the number of gamma rate categories. If using a pinvar model ("I") only, the number of elements
 |	in both vectors will be 2, with rates[0] = 0.0, rates[1] = 1.0/(1.0 - pinvar), probs[0] = pinvar and probs[1] =
 |	1.0 - pinvar. If using an "I+G" model, there will be num_gamma_rates + 1 elements in both vectors, with rates[0] =
@@ -816,6 +820,18 @@ void Model::recalcRatesAndProbs( //POL_BOOKMARK Model::recalcRatesAndProbs
 		recalcGammaRatesAndBoundaries(rates, boundaries);
 		probs.resize(num_gamma_rates, 0.0);
 		std::copy(gamma_rate_probs.begin(), gamma_rate_probs.end(), probs.begin());
+
+        //POLTMP
+        //double mean_rate = 0.0;
+        //for (unsigned i = 0; i < num_gamma_rates; ++i)
+        //    {
+        //    mean_rate += (gamma_rate_probs[i]*rates[i]);
+        //    }
+        //if (fabs(mean_rate - 1.0) > 1.e-8)
+        //    {
+        //    std::cerr << "mean_rate (" << boost::str(boost::format("%.8f") % mean_rate) << ") not equal to 1.0" << std::endl;
+        //    std::exit(0);
+        //    }
 		}
 	}
 
@@ -866,6 +882,7 @@ void Model::recalcGammaRatesAndBoundaries(std::vector<double> & rates, std::vect
 
 	//std::cerr << "\nGamma rate category information for shape = " << gamma_shape << std::endl;
 
+#if 0   //POLTMP // This section leads to the "Thanksgiving" bug
 	double cum_upper		= 0.0;
 	double cum_upper_plus	= 0.0;
 	double upper			= 0.0;
@@ -897,6 +914,34 @@ void Model::recalcGammaRatesAndBoundaries(std::vector<double> & rates, std::vect
 
 		//std::cerr << str(boost::format("%6d %12.6f %12.6f") % (i-1) % boundaries[i-1] % rates[i-1]) << std::endl;
 		}
+#else
+	double cum_upper		= 0.0;
+	double cum_upper_plus	= 0.0;
+	double upper			= 0.0;
+	double cum_prob			= 0.0;
+    double category_prob    = 1.0/num_gamma_rates;
+	for (unsigned i = 0; i < num_gamma_rates; ++i)
+		{
+		double lower				= upper;
+		double cum_lower_plus		= cum_upper_plus;
+		double cum_lower			= cum_upper;
+		cum_prob					+= gamma_rate_probs[i];
+
+		if (i < num_gamma_rates-1)
+			{
+			upper					= cdf.SampleGamma(cum_prob, alpha, beta);
+			cum_upper_plus			= cdf.CumGamma(upper, alpha + 1.0, beta);
+			}
+		else
+			{
+			cum_upper_plus			= 1.0;
+			}
+
+		double r_mean				= (cum_upper_plus - cum_lower_plus)/category_prob;
+		rates[i]					= r_mean;
+		boundaries[i]				= lower;
+		}
+#endif
 	}
 
 /*----------------------------------------------------------------------------------------------------------------------
