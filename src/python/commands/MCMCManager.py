@@ -28,7 +28,7 @@ class MCMCManager:
         self.chains = []
         self.swap_table = None
 
-    def paramFileHeader(self, paramf):
+    def paramFileHeader(self, paramf, pwk = False):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
         Simply passes the file object paramf on to the paramFileHeader method
@@ -36,7 +36,7 @@ class MCMCManager:
 
         """
         m = self.getColdChain()
-        m.paramFileHeader(paramf)
+        m.paramFileHeader(paramf, pwk)
 
     #def sssFileHeader(self, sssf):
     #   #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
@@ -154,7 +154,7 @@ class MCMCManager:
             total += c.getNumLikelihoodEvals()
         return total
 
-    def recordSample(self, cycle = -1):
+    def recordSample(self, cycle = -1): #POLPWKTMP
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
         Records the current tree topology and edge lengths by adding a line to

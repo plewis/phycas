@@ -84,6 +84,7 @@ class Codon: public Model
 		virtual std::string			paramReport(unsigned ndecimals, bool include_edgelen_hyperparams) const;
 
         virtual unsigned            getNumFreeParameters() const;
+        virtual void                appendPWKParamNames(std::vector<std::string> & names, std::string prefix = "") const;
         virtual void                appendFreeParamNames(std::vector<std::string> & names, std::string prefix = "") const;
         virtual void                appendParamNames(std::vector<std::string> & names, std::string prefix = "") const;
         virtual void                appendUntransformedParamValues(std::vector<double> & values) const;

@@ -608,6 +608,33 @@ unsigned HKY::getNumFreeParameters() const
 |   should override this function, calling this version before adding the names of parameters specific to the model
 |   encapsulated by the derived class.
 */
+void HKY::appendPWKParamNames(
+  std::vector<std::string> & names, /**< is the vector to which the parameter names should be appended */
+  std::string prefix) const         /**< is the prefix (e.g. partition subset number) that should be applied to each parameter name */
+	{
+    Model::appendPWKParamNames(names, prefix);
+
+    std::string s;
+
+    s = boost::str(boost::format("log(%skappa)") % prefix);
+    names.push_back(s);
+
+    s = boost::str(boost::format("log(%sfreqC/%sfreqA)") % prefix % prefix);
+    names.push_back(s);
+
+    s = boost::str(boost::format("log(%sfreqG/%sfreqA)") % prefix % prefix);
+    names.push_back(s);
+
+    s = boost::str(boost::format("log(%sfreqT/%sfreqA)") % prefix % prefix);
+    names.push_back(s);
+    }
+
+/*----------------------------------------------------------------------------------------------------------------------
+|	Appends the names of the free parameters of this model to the supplied vector `names' in the same order used when
+|   transformed parameter values are appended in the member function appendTransformedParamValues(). Derived classes
+|   should override this function, calling this version before adding the names of parameters specific to the model
+|   encapsulated by the derived class.
+*/
 void HKY::appendFreeParamNames(
   std::vector<std::string> & names, /**< is the vector to which the parameter names should be appended */
   std::string prefix) const         /**< is the prefix (e.g. partition subset number) that should be applied to each parameter name */

@@ -314,6 +314,8 @@ class MCMCImpl(CommonFunctions):
             print '*** Attempt to open PWK parameter file (%s) failed.' % self.opts.out.pwkparams.filename
 
         if self.pwkf:
+            self.mcmc_manager.paramFileHeader(self.pwkf, True)
+            self.pwkf.write('\n')
             self.pwktrees = {}
             print 'PWK parameter file was opened successfully'
 

@@ -79,7 +79,7 @@ class MarkovChain(LikelihoodCore):
         # Note: likelihood data member inherited from LikelihoodCore
         return self.likelihood.getNumLikelihoodEvals()
 
-    def paramFileHeader(self, paramf):
+    def paramFileHeader(self, paramf, pwk = False): #POLPWKTMP
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|
         """
         Writes the header line at the beginning of the parameter file. The
@@ -90,44 +90,69 @@ class MarkovChain(LikelihoodCore):
         information on the subsequent lines.
 
         """
-        # Note: self.parent equals MCMCImpl in this case
-        # Note: r data member inherited from LikelihoodCore
-        paramf.write('[ID: %d]\n' % self.r.getInitSeed())
-        if self.parent.opts.doing_steppingstone_sampling:
-            paramf.write('Gen\tbeta\tlnL\tlnPrior')
-        else:
-            paramf.write('Gen\tlnL\tlnPrior')
+        if pwk:
+            # example:
+            #   iter    tree    log(Like) log(Prior) log(edge1)   log(edge2)   log(edge3)   log(edge4)   log(edge5)   log(edge6)   log(edge7)   log(edge8)   log(edge9)   log(shape)   log(rAG/rAC)   log(rAT/rAC)   log(rCG/rAC)   log(rCT/rAC)   log(rGT/rAC) log(piC/piA) log(piG/piA) log(piT/piA)
+            
+            # cycle
+            self.parent.pwkf.write('iter\t')
 
-        if self.parent.opts.doing_steppingstone_sampling and not self.parent.opts.ss_heating_likelihood:
-            paramf.write('\tlnRefDens')
+            # topology index
+            self.parent.pwkf.write('tree\t')
 
-        # If the user has defined a reference tree, add a column for the Robinson-Foulds
-        # distance between the sampled tree and the reference tree
-        if self.parent.ref_tree is not None:
-            paramf.write('\tdRF')
+            # lnL for cold chain
+            self.parent.pwkf.write('log(Like)\t')
 
-        # If using a model that allows polytomies, include a column indicating the
-        # resolution class of the tree
-        if self.parent.opts.allow_polytomies:
-            paramf.write('\tResClass')
+            # lnPrior
+            self.parent.pwkf.write('log(Prior)\t')
 
-        paramf.write('\tTL')
-        if self.parent.opts.fix_topology:
-            nbrlens = self.tree.getNNodes() - 1
-            for i in range(nbrlens):
-                paramf.write('\tbrlen%d' % (i+1))
-            self.parent.output('\nKey to the edges (preorder traversal):\n%s' % self.tree.keyToEdges())
+            # edge lengths
+            cold_chain = self.parent.mcmc_manager.getColdChain()
+            for i,nd in enumerate(cold_chain.tree.nodesWithEdges()):
+                self.parent.pwkf.write('log(edge%d)\t' % (i+1,))
 
-        param_names = self.partition_model.getAllParameterNames()
-        for nm in param_names:
-            paramf.write('\t%s' % nm)
-        #nmodels = self.partition_model.getNumSubsets()
-        #if nmodels > 1:
-        #    for i in range(nmodels):
-        #        paramf.write('\tm_%d' % (i+1,))
-        #for i in range(nmodels):
-        #    m = self.partition_model.getModel(i)
-        #    paramf.write(m.paramHeader())
+            self.parent.pwkf.write('%s' % '\t'.join([nm for nm in cold_chain.partition_model.getPWKParameterNames()]))
+
+            self.parent.pwkf.flush()
+        else: # not pwk
+            # Note: self.parent equals MCMCImpl in this case
+            # Note: r data member inherited from LikelihoodCore
+            paramf.write('[ID: %d]\n' % self.r.getInitSeed())
+            if self.parent.opts.doing_steppingstone_sampling:
+                paramf.write('Gen\tbeta\tlnL\tlnPrior')
+            else:
+                paramf.write('Gen\tlnL\tlnPrior')
+
+            if self.parent.opts.doing_steppingstone_sampling and not self.parent.opts.ss_heating_likelihood:
+                paramf.write('\tlnRefDens')
+
+            # If the user has defined a reference tree, add a column for the Robinson-Foulds
+            # distance between the sampled tree and the reference tree
+            if self.parent.ref_tree is not None:
+                paramf.write('\tdRF')
+
+            # If using a model that allows polytomies, include a column indicating the
+            # resolution class of the tree
+            if self.parent.opts.allow_polytomies:
+                paramf.write('\tResClass')
+
+            paramf.write('\tTL')
+            if self.parent.opts.fix_topology:
+                nbrlens = self.tree.getNNodes() - 1
+                for i in range(nbrlens):
+                    paramf.write('\tbrlen%d' % (i+1))
+                self.parent.output('\nKey to the edges (preorder traversal):\n%s' % self.tree.keyToEdges())
+
+            param_names = self.partition_model.getAllParameterNames()
+            for nm in param_names:
+                paramf.write('\t%s' % nm)
+            #nmodels = self.partition_model.getNumSubsets()
+            #if nmodels > 1:
+            #    for i in range(nmodels):
+            #        paramf.write('\tm_%d' % (i+1,))
+            #for i in range(nmodels):
+            #    m = self.partition_model.getModel(i)
+            #    paramf.write(m.paramHeader())
 
     def treeFileHeader(self, treef):
         #---+----|----+----|----+----|----+----|----+----|----+----|----+----|

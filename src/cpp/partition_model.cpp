@@ -367,6 +367,30 @@ unsigned PartitionModel::getNumFreeParameters() const
     }
 
 /*----------------------------------------------------------------------------------------------------------------------
+|	Returns a vector of parameter names of log-transformed parameters used in PWK marginal likelihood estimation. The
+|   names are in the same order as the transformed parameter values returned by the member function 
+|   getTransformedParameters().
+*/
+std::vector<std::string> PartitionModel::getPWKParameterNames() const
+    {
+    free_param_names.clear();
+    unsigned num_subsets = (unsigned)subset_model.size();
+    if (num_subsets > 1)
+        {
+        for (unsigned i = 1; i < num_subsets; ++i)
+            {
+            free_param_names.push_back(boost::str(boost::format("log(%d_subset_rate/1_subset_rate)") % (i+1)));
+            }
+        }
+    for (unsigned i = 0; i < num_subsets; ++i)
+        {
+        std::string partition_number_prefix = boost::str(boost::format("%d_") % (i+1));
+        subset_model[i]->appendPWKParamNames(free_param_names, partition_number_prefix);
+        }
+    return free_param_names;
+    }
+
+/*----------------------------------------------------------------------------------------------------------------------
 |	Returns a vector of free parameter names in the same order as the transformed parameter values returned by the member
 |   function getTransformedParameters().
 */

@@ -1329,6 +1329,47 @@ unsigned Model::getNumFreeParameters() const
 |   override this function, calling this version before adding the names of parameters specific to the model
 |   encapsulated by the derived class.
 */
+void Model::appendPWKParamNames(
+  std::vector<std::string> & names, /**< is the vector to which the parameter names should be appended */
+  std::string prefix) const         /**< is the prefix (e.g. partition subset number) that should be applied to each parameter name */
+	{
+    std::string s;
+	if (edgeLenHyperPrior)
+		{
+		if (separate_int_ext_edgelen_priors)    // should replace with test of whether externalEdgeLenPrior == internalEdgeLenPrior
+			{
+            s = boost::str(boost::format("log(%sexternal_hyper)") % prefix);
+            names.push_back(s);
+            s = boost::str(boost::format("log(%sinternal_hyper)") % prefix);
+            names.push_back(s);
+			}
+		else
+			{
+            s = boost::str(boost::format("log(%sedgelen_hyper)") % prefix);
+            names.push_back(s);
+			}
+		}
+
+	if (is_pinvar_model)
+        {
+		s = boost::str(boost::format("logit(%spinvar)") % prefix);
+		names.push_back(s);
+        }
+
+	if (num_gamma_rates > 1)
+		{
+        s = boost::str(boost::format("log(%sgamma_shape)") % prefix);
+        names.push_back(s);
+		}
+    }
+
+/*----------------------------------------------------------------------------------------------------------------------
+|	Appends the names of the free parameters of this model to the supplied vector `names' in the same order used when
+|   transformed parameter values are appended in the member function appendTransformedParamValues(), or untransformed
+|   parameter values are appended in the member function appendUntransformedParamValues(). Derived classes should
+|   override this function, calling this version before adding the names of parameters specific to the model
+|   encapsulated by the derived class.
+*/
 void Model::appendFreeParamNames(
   std::vector<std::string> & names, /**< is the vector to which the parameter names should be appended */
   std::string prefix) const         /**< is the prefix (e.g. partition subset number) that should be applied to each parameter name */

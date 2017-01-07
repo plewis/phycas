@@ -91,6 +91,7 @@ class GTR: public Model
 		double                          calcTRatio();
 
         virtual unsigned                getNumFreeParameters() const;
+        virtual void                    appendPWKParamNames(std::vector<std::string> & names, std::string prefix = "") const;
         virtual void                    appendFreeParamNames(std::vector<std::string> & names, std::string prefix = "") const;
         virtual void                    appendParamNames(std::vector<std::string> & names, std::string prefix = "") const;
         virtual void                    appendUntransformedParamValues(std::vector<double> & values) const;

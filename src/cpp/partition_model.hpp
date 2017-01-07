@@ -48,6 +48,7 @@ public:
     unsigned                        	getTotalNumPatterns() const;
     unsigned                        	getTotalNumSites() const;
     unsigned                            getNumFreeParameters() const;
+    std::vector<std::string>            getPWKParameterNames() const;
     std::vector<std::string>            getFreeParameterNames() const;
     std::vector<std::string>            getAllParameterNames() const;
     std::vector<double>                 getUntransformedParameters() const;

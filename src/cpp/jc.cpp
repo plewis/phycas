@@ -217,6 +217,20 @@ double JC::calcUMat(double * * uMat) const
 |   should override this function, calling this version before adding the names of parameters specific to the model
 |   encapsulated by the derived class.
 */
+void JC::appendPWKParamNames(
+  std::vector<std::string> & names, /**< is the vector to which the parameter names should be appended */
+  std::string prefix) const         /**< is the prefix (e.g. partition subset number) that should be applied to each parameter name */
+	{
+    // JC does not have any parameters not handled by base class Model
+    Model::appendPWKParamNames(names, prefix);
+    }
+
+/*----------------------------------------------------------------------------------------------------------------------
+|	Appends the names of the free parameters of this model to the supplied vector `names' in the same order used when
+|   transformed parameter values are appended in the member function appendTransformedParamValues(). Derived classes
+|   should override this function, calling this version before adding the names of parameters specific to the model
+|   encapsulated by the derived class.
+*/
 void JC::appendFreeParamNames(
   std::vector<std::string> & names, /**< is the vector to which the parameter names should be appended */
   std::string prefix) const         /**< is the prefix (e.g. partition subset number) that should be applied to each parameter name */

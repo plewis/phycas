@@ -852,6 +852,33 @@ unsigned Codon::getNumFreeParameters() const
 |   should override this function, calling this version before adding the names of parameters specific to the model
 |   encapsulated by the derived class.
 */
+void Codon::appendPWKParamNames(
+  std::vector<std::string> & names, /**< is the vector to which the parameter names should be appended */
+  std::string prefix) const         /**< is the prefix (e.g. partition subset number) that should be applied to each parameter name */
+	{
+    Model::appendPWKParamNames(names, prefix);
+    std::string s;
+
+    s = boost::str(boost::format("log(%skappa)") % prefix);
+    names.push_back(s);
+
+    s = boost::str(boost::format("log(%somega)") % prefix);
+    names.push_back(s);
+
+    string_vect_t::const_iterator it = freq_label.begin();
+    for (++it; it != freq_label.end(); ++it)
+        {
+        s = boost::str(boost::format("log(%s%s/%sfreqAAA)") % prefix % (*it).c_str() % prefix);
+        names.push_back(s);
+        }
+    }
+
+/*----------------------------------------------------------------------------------------------------------------------
+|	Appends the names of the parameters of this model to the supplied vector `names' in the same order used when
+|   transformed parameter values are appended in the member function appendTransformedParamValues(). Derived classes
+|   should override this function, calling this version before adding the names of parameters specific to the model
+|   encapsulated by the derived class.
+*/
 void Codon::appendFreeParamNames(
   std::vector<std::string> & names, /**< is the vector to which the parameter names should be appended */
   std::string prefix) const         /**< is the prefix (e.g. partition subset number) that should be applied to each parameter name */
