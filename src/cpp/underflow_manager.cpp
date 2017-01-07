@@ -17,10 +17,14 @@
 |  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.                |
 \~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+#include <iostream>
 #include <fstream>
 #include <vector>
 #include <numeric>
+#include <limits>
 #include "underflow_manager.hpp"
+
+//double tmp_max_log_f = 0.0;
 
 namespace phycas
 {
@@ -29,6 +33,7 @@ namespace phycas
 |	Constructor.
 */
 UnderflowManager::UnderflowManager()
+: total_patterns(0), underflow_num_edges(1), underflow_max_value(10000.0)
 	{
 	}
 
@@ -51,6 +56,7 @@ void UnderflowManager::setTriggerSensitivity(
 	{
 	PHYCAS_ASSERT(nedges > 0);
 	underflow_num_edges = nedges;
+    std::cerr << "********** POL: setting underflow_num_edges = " << nedges << std::endl;
 	}
 
 /*----------------------------------------------------------------------------------------------------------------------
@@ -254,8 +260,8 @@ void UnderflowManager::check(
 		// x = 0.05 and underflow_max_value = 10000, g = 10000/0.05 = 200,000 = e^{12.206}
 		// In this case, we would add the integer component of the exponent (i.e. 12) to
 		// the underflow correction for this pattern and adjust all conditional likelihoods
-		// by a factor f = e^{12} = 22026.46579. So, the conditional likelihood 0.05 now
-		// becomes 0.05*e^{12} = 1101.32329.
+		// by a factor f = e^{12} = 162754.791419. So, the conditional likelihood 0.05 now
+		// becomes 0.05*e^{12} = 8137.739570.
 		cla = cond_like.getCLA();
 		UnderflowType *	uf = cond_like.getUF();
 		UnderflowType const * uf_left  = left_cond_like.getUF();
@@ -274,6 +280,12 @@ void UnderflowManager::check(
 				double ratio = underflow_max_value/underflow_work[curr_pattern];
 				double log_ratio = std::log(ratio);
 				double f = std::floor(log_ratio);
+                PHYCAS_ASSERT(f < std::log(std::numeric_limits<double>::max()));
+                //if (f > tmp_max_log_f)
+                //    {
+                //    tmp_max_log_f = f;
+                //    std::cerr << "********** new tmp_max_log_f = " << tmp_max_log_f << std::endl;
+                //    }
 				double expf = exp(f);
 
 				// 2 patterns, 2 rates for first (DNA) subset
