@@ -234,6 +234,7 @@ double PriorDistribution::_recalculateLogDensity()
         {
         // This object manages the prior on the tree topology
         PHYCAS_ASSERT(_tree);
+        //std::cerr << ">>>>>>>> in PriorDistribution::_recalculateLogDensity" << std::endl;  // POL_BOOKMARK 13-July-2017
         _current_density = _topology_dist->GetLnTopoProb(_tree);
         }
     return _current_density;

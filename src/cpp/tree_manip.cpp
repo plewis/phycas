@@ -96,6 +96,188 @@ void TreeManip::setTree(TreeShPtr t)
   	}
 
 /*----------------------------------------------------------------------------------------------------------------------
+|	Adds new leaf node to a randomly-selected internal vertex. Does not strip conditional likelihoods, so care should be
+|   taken with this function if the likelihood will be calculated on the resulting tree.
+*/
+void TreeManip::addLeafToRandomNode(unsigned leaf_node_number, LotShPtr rng)
+    {
+    // POL_BOOKMARK 11-July-2017
+
+    std::cerr << "\n~~> begin TreeManip::addLeafToRandomNode" << std::endl;
+
+    tree->debugMode(true);
+	tree->DebugCheckTree(false, false, 0);
+
+    // Choose an internal node at random
+	tree->InvalidateNodeCounts();
+    unsigned num_nodes = tree->GetNNodes();
+    PHYCAS_ASSERT(num_nodes > 0);
+    unsigned num_internals = tree->GetNInternals();
+    unsigned num_tips = num_nodes - num_internals;
+    std::cerr << boost::str(boost::format("~~> num_nodes = %d, num_internals = %d, num_tips = %d, leaf_node_number = %d") % num_nodes % num_internals % num_tips % leaf_node_number) << std::endl;
+
+    //temporary!
+    if (num_internals < 1)
+        {
+        std::cerr << "Aborting because num_internals < 1 in TreeManip::addLeafToRandomNode" << std::endl;
+        tree->debugMode(true);
+        tree->DebugCheckTree(false, false, 2);
+        tree->debugMode(false);
+        std::exit(0);
+        }
+
+    PHYCAS_ASSERT(num_internals > 0);
+    TreeNode * nd = tree->GetFirstPreorder();
+    unsigned i = rng->SampleUInt(num_internals);    // returns value from [0, 1, ..., num_internals-1]
+    std::cerr << boost::str(boost::format("~~> adding to node = %d (num_internals = %d)") % i % num_internals) << std::endl;
+    for (; nd != NULL; nd = nd->GetNextPreorder())
+        {
+        if (!nd->IsTip())
+            {
+            if (i == 0)
+                break;
+            else
+                --i;
+            }
+        }
+    std::cerr << boost::str(boost::format("~~> nd->nodeNum = %d") % nd->nodeNum) << std::endl;
+
+    // Add a new leaf node to nd to create a polytomy (or a bigger polytomy if nd is already a polytomy).
+    TreeNode * new_node = tree->GetNewNode();
+    new_node->nodeNum = leaf_node_number;
+
+	InsertSubtree(new_node, nd, TreeManip::kOnRight);
+	tree->InvalidateNodeCounts();
+    tree->preorderDirty = true;
+	tree->RefreshPreorder();
+
+	tree->DebugCheckTree(false, false, 0);
+    tree->debugMode(false);
+
+    std::cerr << "~~> end TreeManip::addLeafToRandomNode" << std::endl;
+    }
+
+/*----------------------------------------------------------------------------------------------------------------------
+|	Adds new leaf node to a randomly-selected edge. Does not strip conditional likelihoods, so care should be taken with
+|   this function if the likelihood will be calculated on the resulting tree.
+*/
+void TreeManip::addLeafToRandomEdge(unsigned leaf_node_number, LotShPtr rng)
+    {
+    // POL_BOOKMARK 11-July-2017
+
+    std::cerr << "\n~~> begin TreeManip::addLeafToRandomEdge" << std::endl;
+
+    tree->debugMode(true);
+	tree->DebugCheckTree(false, false, 0);
+
+    // Choose a node at random
+	tree->InvalidateNodeCounts();
+    unsigned num_nodes = tree->GetNNodes();
+    PHYCAS_ASSERT(num_nodes > 0);
+    unsigned num_internals = tree->GetNInternals();
+    unsigned num_tips = num_nodes - num_internals;
+    std::cerr << boost::str(boost::format("~~> num_nodes = %d, num_internals = %d, num_tips = %d, leaf_node_number = %d") % num_nodes % num_internals % num_tips % leaf_node_number) << std::endl;
+
+    TreeNode * nd = tree->GetFirstPreorder();
+    unsigned i = 1 + rng->SampleUInt(num_nodes-1);
+
+    std::cerr << "~~> adding new node to edge of " << i << (i == 1 ? "st" : (i == 2 ? "nd" : (i == 3 ? "rd" : "th"))) << " node in preorder sequence" << std::endl;
+
+    for (; nd != NULL; nd = nd->GetNextPreorder())
+        {
+        if (i == 0)
+            break;
+        else
+            --i;
+        }
+
+    PHYCAS_ASSERT(nd->GetParent());
+
+    std::cerr << "~~> nd->nodeNum = " << nd->nodeNum << std::endl;
+
+    // Create new internal node
+    TreeNode * new_anc  = tree->GetNewNode();
+    new_anc->nodeNum   = num_nodes;
+
+    // Create new leaf node
+    TreeNode * new_leaf = tree->GetNewNode();
+    new_leaf->nodeNum   = leaf_node_number;
+
+    // Add new leaf to new internal
+    new_anc->lChild     = new_leaf;
+    new_leaf->par       = new_anc;
+
+    // Detach nd from tree
+	TreeNode * nd_parent = nd->GetParent();
+    DetachSubtree(nd);
+
+    // Make nd the right sibling of the new leaf
+    new_leaf->rSib = nd;
+    nd->par        = new_anc;
+
+    // Finally, add new internal to nd's former parent
+	InsertSubtree(new_anc, nd_parent, TreeManip::kOnRight);
+
+    tree->preorderDirty = true;
+	tree->RefreshPreorder();
+	tree->InvalidateNodeCounts();
+
+    num_nodes = tree->GetNNodes();
+    num_internals = tree->GetNInternals();
+
+
+	tree->DebugCheckTree(false, false, 0);
+    tree->debugMode(false);
+
+    std::cerr << "~~> end TreeManip::addLeafToRandomEdge\n" << std::endl;
+    }
+
+/*----------------------------------------------------------------------------------------------------------------------
+|	Labels leaves of tree randomly.
+*/
+void TreeManip::assignLeafNumbersRandomly(LotShPtr rng)
+    {
+    // POL_BOOKMARK 11-July-2017
+    std::cerr << "\n~~> begin TreeManip::assignLeafNumbersRandomly\n" << std::endl;
+
+	tree->InvalidateNodeCounts();
+    unsigned num_nodes = tree->GetNNodes();
+    PHYCAS_ASSERT(num_nodes > 0);
+    unsigned num_internals = tree->GetNInternals();
+    unsigned num_tips = num_nodes - num_internals;
+    std::cerr << boost::str(boost::format("~~> num_nodes = %d, num_internals = %d, num_tips = %d") % num_nodes % num_internals % num_tips) << std::endl;
+
+    // Create pool of available tip node numbers
+    std::set<unsigned> pool;
+    for (unsigned i = 0; i < num_tips; ++i)
+        pool.insert(i);
+
+    TreeNode * nd = tree->GetFirstPreorder();
+    for (; nd != NULL; nd = nd->GetNextPreorder())
+        {
+        if (nd->IsTip())
+            {
+            if (pool.size() < 1)
+                {
+                std::cerr << "Aborting because pool.size() < 1 in TreeManip::assignLeafNumbersRandomly" << std::endl;
+                tree->debugMode(true);
+                tree->DebugCheckTree(false, false, 2);
+                tree->debugMode(false);
+                std::exit(0);
+                }
+
+            unsigned i = rng->SampleUInt((unsigned)pool.size());
+            std::set<unsigned>::iterator it = pool.begin();
+            for (unsigned j = 0; j < i; ++j)
+                it++;
+            nd->nodeNum = *it;
+            pool.erase(it);
+            }
+        }
+    std::cerr << "~~> end TreeManip::assignLeafNumbersRandomly\n" << std::endl;
+    }
+    
+/*----------------------------------------------------------------------------------------------------------------------
 |	Deletes a randomly-selected edge from the tree. Does not strip conditional likelihoods before storing internal
 |   nodes, so care should be taken with this function if the likelihood will be calculated on the resulting tree.
 */
@@ -261,7 +443,7 @@ void TreeManip::InsertSubtreeIntoEdge(
 	//	}
 	PHYCAS_ASSERT(edge_nd->par);
 	InsertSubtree(new_node, edge_nd->par, TreeManip::kOnRight);
-	tree->DebugCheckTree(false, false, 2);
+	//tree->DebugCheckTree(false, false, 2);    // POL_BOOKMARK 14-July-2017
 
     // add subtree to new_node
     InsertSubtree(subtree, new_node, TreeManip::kOnRight);
@@ -1255,7 +1437,7 @@ void TreeManip::DetachSubtree(
 	{
 	PHYCAS_ASSERT(s != NULL);
 	PHYCAS_ASSERT(!s->IsTipRoot());
-	PHYCAS_ASSERT(!s->GetParent()->IsTipRoot());
+	//PHYCAS_ASSERT(!s->GetParent()->IsTipRoot());
 
 	// Save pointers to relevant nodes
 	//

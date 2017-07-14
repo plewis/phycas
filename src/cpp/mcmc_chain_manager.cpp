@@ -566,7 +566,7 @@ MCMCChainManager::MCMCChainManager(JointPriorManagerShPtr jpm)
 	}
 
 /*----------------------------------------------------------------------------------------------------------------------
-|   Informs the object whether the chains are in the burn-in period. This affects the behavior of 
+|   Informs the object whether the chains are in the burn-in period. This affects the behavior of
 |   MCMCChainManager::adaptUpdater, which is called by all Metropolis-Hastings updaters after each proposed step.
 */
 void MCMCChainManager::setAdapting(bool is_burning_in)
@@ -692,13 +692,19 @@ void MCMCChainManager::updateAllUpdaters()
 			if (upEnv && upEnv[0] == '1')
                 {
                 const char * fn = getenv("DEBUG_UPDATERS_SAVE_TO_FILE");
-                if (fn && fn[0] == '0')
+                if (fn && fn[0] == '0') {
+                    //std::cerr << "DEBUG_UPDATE_ALL_UPDATERS=1 and DEBUG_UPDATERS_SAVE_TO_FILE defined" << std::endl;  //temporary!
                     verboseUpdateAllUpdaters();
-                else
+                    }
+                else {
+                    //std::cerr << "DEBUG_UPDATE_ALL_UPDATERS=1 and DEBUG_UPDATERS_SAVE_TO_FILE=0 or undefined" << std::endl;  //temporary!
                     verboseUpdateAllUpdatersToFile(fn);
+                    }
                 }
-			else
+			else {
+                //std::cerr << "DEBUG_UPDATE_ALL_UPDATERS=0 or undefined" << std::endl;  //temporary!
 				quietUpdateAllUpdaters();
+                }
 #		else
 			verboseUpdateAllUpdaters();
 #		endif

@@ -311,12 +311,18 @@ void JointPriorManager::addTopologyDistribution(
         return;
         }
 
-    //std::cerr << "JointPriorManager::addTopologyDistribution: " << keystr << std::endl;
     PriorDistrShPtr p = PriorDistrShPtr(new PriorDistribution());
+
+    // following line calls PriorDistribution::_recalculateLogDensity
     p->initTopologyDistribution(keystr, topo_prior_calculator, tree);
+
     _distr_map[keystr] = p;
     _distr_vect.push_back(p);
+
+    // following line calls PriorDistribution::_recalculateLogDensity
     _log_joint_prior += p->_recalculateLogDensity();
+
+    // following line calls PriorDistribution::_recalculateLogDensity in debug mode
     PHYCAS_ASSERT(debugCheckLogJointPrior("addTopologyDistribution"));
     }
 
@@ -429,7 +435,7 @@ double JointPriorManager::univariateModifiedNoDebugCheck(
     }
 
 /*----------------------------------------------------------------------------------------------------------------------
-|   Replaces current univariate value with supplied vector `v'. Recalculates `_current_density' for the parameter and
+|   Replaces current multivariate value with supplied vector `v'. Recalculates `_current_density' for the parameter and
 |   updates `_log_joint_prior'.
 */
 double JointPriorManager::multivariateModified(

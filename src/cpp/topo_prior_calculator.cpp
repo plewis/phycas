@@ -1873,6 +1873,7 @@ std::vector<double> PolytomyTopoPriorCalculator::GetTopoPriorVect()
 */
 double PolytomyTopoPriorCalculator::GetLnTopoProb(TreeShPtr t)
     {
+    //std::cerr << ">>>>>>>> in PolytomyTopoPriorCalculator::GetLnTopoProb" << std::endl;  //POL_BOOKMARK 13-July-2017
     unsigned n = t->GetNTips();
 	PHYCAS_ASSERT(n > 3);
     if (n != GetNTax())

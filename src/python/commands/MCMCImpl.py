@@ -559,7 +559,10 @@ class MCMCImpl(CommonFunctions):
                     self.phycassert(False, 'chain heating powers must be in decreasing order')
                 self.phycassert(h[-1] > 0.0, 'all chain heating powers must be positive')
 
+        print 'about to call self.mcmc_manager.createChains()' # PO_BOOKMARK 13-July-2017
+        print 'self.heat_vector =',self.heat_vector # PO_BOOKMARK 13-July-2017
         self.mcmc_manager.createChains()
+        print 'finished calling self.mcmc_manager.createChains()' # PO_BOOKMARK 13-July-2017
         self.storeRefTreeIfSupplied()
         if not self.opts.doing_pwk:
             self.openParameterAndTreeFiles()
@@ -858,6 +861,91 @@ class MCMCImpl(CommonFunctions):
 
         ############################ end exploreWorkingPrior ############################
 
+    def growTreeWithPolytomies(self, ntips, tm, chain):
+        # ntips is the number of tips in the unrooted tree (rooted version has ntips-1 leaves plus a root node)
+        # tm is a TreeManipulator that stores a fully-resolved tree
+        # rng is the random number generator for this chain
+
+        # Choose number of internal nodes
+        jpm = self.mcmc_manager.getColdChainManager().getJointPriorManager()
+        topo_prior_calculator = jpm.getTopoProbCalculator()
+        num_internal_nodes = topo_prior_calculator.sample(chain.r)
+
+        # Start with 2-taxon rooted (equal to 3-taxon unrooted) tree topology and add
+        # taxa to either an existing node or an existing edge to achieve tree with proper
+        # number of tips and the target number of internal nodes. If a matrix is envisioned
+        # with m (number of internal nodes) forming rows and n (number of taxa in rooted trees)
+        # forming columns, then adding a taxon to an existing edge can be visualized as a
+        # diagonal relationship (changes both n and m) and adding a taxon to an existing node
+        # is a horizontal relationship (changes n but not m).
+        #
+        # Use dynamic programming to determine probabilities of each binary choice needed.
+        # First step is to create a map that stores these binary choice probabilities.
+        m_target = num_internal_nodes
+        n_target = ntips - 1
+        n = n_target - 1
+        binary_choice_map = {(n_target, m_target):{'diagonal':0.5, 'horizontal':0.5}} # [down, across]
+        while n > 1:
+            ndiff = n_target - (n+1)
+
+            for m in range(1,n):
+                # handle adding new taxon to existing edge (diagonal)
+                mdiff = m_target - (m+1)
+                diagonal = 0.0
+                if m > 0 and mdiff >= 0.0 and mdiff <= ndiff:
+                    num_existing_edges = n+m
+                    initial_value = float(binary_choice_map[(n+1,m+1)]['diagonal'] + binary_choice_map[(n+1,m+1)]['horizontal'])
+                    diagonal = initial_value*num_existing_edges
+                    if (n,m) in binary_choice_map.keys():
+                        binary_choice_map[(n,m)]['diagonal'] = diagonal
+                    else:
+                        binary_choice_map[(n,m)] = {'diagonal':diagonal, 'horizontal':0.0}
+
+                # handle adding new taxon to existing node (horizontal)
+                mdiff = m_target - m
+                horizontal = 0.0
+                if m > 0 and mdiff >= 0.0 and mdiff <= ndiff:
+                    num_existing_internals = m
+                    initial_value = float(binary_choice_map[(n+1,m)]['diagonal'] + binary_choice_map[(n+1,m)]['horizontal'])
+                    horizontal = initial_value*num_existing_internals
+                    if (n,m) in binary_choice_map.keys():
+                        binary_choice_map[(n,m)]['horizontal'] = horizontal
+                    else:
+                        binary_choice_map[(n,m)] = {'diagonal':0.0, 'horizontal':horizontal}
+
+                if (n,m) in binary_choice_map.keys():
+                    print "#####      binary_choice_map[(%d,%d)] = {'diagonal':%.5f, 'horizontal':%.5f}" % (n, m, binary_choice_map[(n,m)]['diagonal'], binary_choice_map[(n,m)]['horizontal'])
+
+            n -= 1
+
+        # Now start with n=2,m=1 (two taxon rooted tree) and use binary_choice_map to
+        # determine probability at each step of moving diagonally or horizontally
+        # POL_BOOKMARK 11-July-2017
+        model = chain.partition_model.getModel(0)
+        tm.equiprobTree(3, chain.r, model.getInternalEdgeLenPrior(), model.getExternalEdgeLenPrior())
+        n = 2
+        m = 1
+        while n <= n_target and m <= m_target:
+            h = binary_choice_map[(n,m)]['horizontal']
+            d = binary_choice_map[(n,m)]['diagonal']
+            p = h/(h+d)
+            u = chain.r.uniform()
+            if u < p:
+                tm.addLeafToRandomNode(n+2, chain.r)
+            else:
+                #raw_input('start debugger')
+                tm.addLeafToRandomEdge(n+2, chain.r)
+                m += 1
+            n += 1
+
+        tm.assignLeafNumbersRandomly(chain.r);
+
+        # Delete edges at random from tree to achieve chosen number of internal nodes
+        #orig_num_internal_nodes = chain.tree.getNInternals()
+        #num_internals_to_delete = orig_num_internal_nodes - num_internal_nodes
+        #for i in range(num_internals_to_delete):
+        #    tm.deleteRandomInternalEdge(chain.r)
+
     def explorePrior(self, cycle):
         chain_index = 0
         chain = self.mcmc_manager.getColdChain()
@@ -865,7 +953,8 @@ class MCMCImpl(CommonFunctions):
         if self.opts.debugging:
             tmpf = file('debug_info.txt', 'a')
             tmpf.write('************** cycle=%d, chain=%d\n' % (cycle,chain_index))
-        edgelens_generated = False
+        #edgelens_generated = False
+        edgelen_hyper = False
 
         nmodels = chain.partition_model.getNumSubsets()
         unpartitioned = (nmodels == 1)
@@ -880,33 +969,34 @@ class MCMCImpl(CommonFunctions):
             name = p.getName()
             if (name.find('edgelen_hyper') > -1) or (name.find('external_hyper') > -1) or (name.find('internal_hyper') > -1):   # C++ class HyperPriorParam
                 self.phycassert(not tree_length_prior_specified, 'Cannot specify edge length hyperpriors and tree length prior simultaneously')
-                if not edgelens_generated:
-                    # Choose hyperparam, then use it to choose new edge lengths for a newly-created tree
-                    m = chain.partition_model.getModel(0)
-                    if m.isSeparateInternalExternalEdgeLenPriors():
-                        # draw an edge length hyperparameter value for external edges
-                        edgelen_hyperparam = m.getEdgeLenHyperPrior().sample()
-                        chain.chain_manager.setEdgeLenHyperparam(0, edgelen_hyperparam)
-                        m.getExternalEdgeLenPrior().setMeanAndVariance(1.0/edgelen_hyperparam, 0.0) # 2nd arg. (variance) ignored for exponential distributions
-                        jpm.edgeLenHyperparamModified('external_hyper', chain.tree, edgelen_hyperparam)
-
-                        # draw an edge length hyperparameter value for internal edges
-                        edgelen_hyperparam = m.getEdgeLenHyperPrior().sample()
-                        chain.chain_manager.setEdgeLenHyperparam(1, edgelen_hyperparam)
-                        m.getInternalEdgeLenPrior().setMeanAndVariance(1.0/edgelen_hyperparam, 0.0) # 2nd arg. (variance) ignored for exponential distributions
-                        jpm.edgeLenHyperparamModified('internal_hyper', chain.tree, edgelen_hyperparam)
-                    else:
-                        # draw an edge length hyperparameter value that applies to all edges
-                        edgelen_hyperparam = m.getEdgeLenHyperPrior().sample()
-                        chain.chain_manager.setEdgeLenHyperparam(0, edgelen_hyperparam)
-                        m.getInternalEdgeLenPrior().setMeanAndVariance(1.0/edgelen_hyperparam, 0.0) # 2nd arg. (variance) ignored for exponential distributions
-                        m.getExternalEdgeLenPrior().setMeanAndVariance(1.0/edgelen_hyperparam, 0.0) # 2nd arg. (variance) ignored for exponential distributions
-                        jpm.edgeLenHyperparamModified('edgelen_hyper', chain.tree, edgelen_hyperparam)
-                    if self.opts.fix_topology:
-                        tm.setRandomInternalExternalEdgeLengths(m.getInternalEdgeLenPrior(), m.getExternalEdgeLenPrior())
-                    else:
-                        tm.equiprobTree(chain.tree.getNTips(), chain.r, m.getInternalEdgeLenPrior(), m.getExternalEdgeLenPrior())
-                    edgelens_generated = True
+                edgelen_hyper = True
+                #if not edgelens_generated:
+                #    # Choose hyperparam, then use it to choose new edge lengths for a newly-created tree
+                #    m = chain.partition_model.getModel(0)
+                #    if m.isSeparateInternalExternalEdgeLenPriors():
+                #        # draw an edge length hyperparameter value for external edges
+                #        edgelen_hyperparam = m.getEdgeLenHyperPrior().sample()
+                #        chain.chain_manager.setEdgeLenHyperparam(0, edgelen_hyperparam)
+                #        m.getExternalEdgeLenPrior().setMeanAndVariance(1.0/edgelen_hyperparam, 0.0) # 2nd arg. (variance) ignored for exponential distributions
+                #        jpm.edgeLenHyperparamModified('external_hyper', chain.tree, edgelen_hyperparam)
+                #
+                #        # draw an edge length hyperparameter value for internal edges
+                #        edgelen_hyperparam = m.getEdgeLenHyperPrior().sample()
+                #        chain.chain_manager.setEdgeLenHyperparam(1, edgelen_hyperparam)
+                #        m.getInternalEdgeLenPrior().setMeanAndVariance(1.0/edgelen_hyperparam, 0.0) # 2nd arg. (variance) ignored for exponential distributions
+                #        jpm.edgeLenHyperparamModified('internal_hyper', chain.tree, edgelen_hyperparam)
+                #    else:
+                #        # draw an edge length hyperparameter value that applies to all edges
+                #        edgelen_hyperparam = m.getEdgeLenHyperPrior().sample()
+                #        chain.chain_manager.setEdgeLenHyperparam(0, edgelen_hyperparam)
+                #        m.getInternalEdgeLenPrior().setMeanAndVariance(1.0/edgelen_hyperparam, 0.0) # 2nd arg. (variance) ignored for exponential distributions
+                #        m.getExternalEdgeLenPrior().setMeanAndVariance(1.0/edgelen_hyperparam, 0.0) # 2nd arg. (variance) ignored for exponential distributions
+                #        jpm.edgeLenHyperparamModified('edgelen_hyper', chain.tree, edgelen_hyperparam)
+                #    if self.opts.fix_topology:
+                #        tm.setRandomInternalExternalEdgeLengths(m.getInternalEdgeLenPrior(), m.getExternalEdgeLenPrior())
+                #    else:
+                #        tm.equiprobTree(chain.tree.getNTips(), chain.r, m.getInternalEdgeLenPrior(), m.getExternalEdgeLenPrior())
+                #    edgelens_generated = True
             elif name.find('master_edgelen') > -1:
                 pass
             elif name.find('external_edgelen') > -1:
@@ -1028,58 +1118,103 @@ class MCMCImpl(CommonFunctions):
             else:
                 self.phycassert(0, 'model uses an updater (%s) that has not yet been added to MCMCImpl.explorePrior (workaround: specify mcmc.draw_directly_from_prior = False)' % name)
 
-        # If no edge length hyperprior was specified, then build the tree with edge lengths now
+        # OBSOLETE CODE BELOW
+        #if not edgelens_generated:
+        #    m = chain.partition_model.getModel(0)
+        #    if self.opts.fix_topology:
+        #        tm.setRandomEdgeLensFromTreeLengthDist(chain.likelihood.getTreeLengthPrior())
+        #    else:
+        #        tm.buildEquiprobTree(chain.tree.getNTips(), chain.r)
+
+        ## Choose number of internal nodes
+        #jpm = self.mcmc_manager.getColdChainManager().getJointPriorManager()
+        #topo_prior_calculator = jpm.getTopoProbCalculator()
+        #num_internal_nodes = topo_prior_calculator.sample(chain.r)
+        #
+        ## Delete edges at random from tree to achieve chosen number of internal nodes
+        #orig_num_internal_nodes = chain.tree.getNInternals()
+        #num_internals_to_delete = orig_num_internal_nodes - num_internal_nodes
+        #for i in range(num_internals_to_delete):
+        #    tm.deleteRandomInternalEdge(chain.r)
+
+        #if not self.opts.fix_topology:
+        #    tm.setRandomEdgeLensFromTreeLengthDist(chain.likelihood.getTreeLengthPrior())
+
+        #else:
+        #    if not edgelens_generated:
+        #        m = chain.partition_model.getModel(0)
+        #        if self.opts.fix_topology:
+        #            tm.setRandomInternalExternalEdgeLengths(m.getInternalEdgeLenPrior(), m.getExternalEdgeLenPrior())
+        #        else:
+        #            tm.equiprobTree(chain.tree.getNTips(), chain.r, m.getInternalEdgeLenPrior(), m.getExternalEdgeLenPrior())
+        #
+        #    if self.opts.allow_polytomies:
+        #        self.growTreeWithPolytomies(chain.tree.getNTips(), tm, chain)
+        #        ## Choose number of internal nodes
+        #        #jpm = self.mcmc_manager.getColdChainManager().getJointPriorManager()
+        #        #topo_prior_calculator = jpm.getTopoProbCalculator()
+        #        #num_internal_nodes = topo_prior_calculator.sample(chain.r)
+        #        #
+        #        ## Delete nodes at random from tree to achieve chosen number of internal nodes
+        #        #orig_num_internal_nodes = chain.tree.getNInternals()
+        #        #num_internals_to_delete = orig_num_internal_nodes - num_internal_nodes
+        #        #for i in range(num_internals_to_delete):
+        #        #    tm.deleteRandomInternalEdge(chain.r)
+        #    else:
+        #
+        #    jpm.allEdgeLensModified(chain.tree)
+        #    #jpm.externalEdgeLensModified('external_edgelen', chain.tree)
+        #    #jpm.internalEdgeLensModified('internal_edgelen', chain.tree)
+        # OBSOLETE CODE ABOVE
+
+        # Build the tree and add edge lengths
+        m = chain.partition_model.getModel(0)
+        if not self.opts.fix_topology:
+            if self.opts.allow_polytomies:
+                self.growTreeWithPolytomies(chain.tree.getNTips(), tm, chain)
+            else:
+                tm.equiprobTree(chain.tree.getNTips(), chain.r, m.getInternalEdgeLenPrior(), m.getExternalEdgeLenPrior())
 
         if tree_length_prior_specified:
-            if not edgelens_generated:
-                m = chain.partition_model.getModel(0)
-                if self.opts.fix_topology:
-                    tm.setRandomEdgeLensFromTreeLengthDist(chain.likelihood.getTreeLengthPrior())
-                else:
-                    tm.buildEquiprobTree(chain.tree.getNTips(), chain.r)
-
-            if self.opts.allow_polytomies and not self.opts.fix_topology:
-                # Choose number of internal nodes
-                jpm = self.mcmc_manager.getColdChainManager().getJointPriorManager()
-                topo_prior_calculator = jpm.getTopoProbCalculator()
-                num_internal_nodes = topo_prior_calculator.sample(chain.r)
-
-                # Delete edges at random from tree to achieve chosen number of internal nodes
-                orig_num_internal_nodes = chain.tree.getNInternals()
-                num_internals_to_delete = orig_num_internal_nodes - num_internal_nodes
-                for i in range(num_internals_to_delete):
-                    tm.deleteRandomInternalEdge(chain.r)
-
-            if not self.opts.fix_topology:
-                tm.setRandomEdgeLensFromTreeLengthDist(chain.likelihood.getTreeLengthPrior())
-
-            jpm.treeLengthModified('tree_length', chain.tree)
+            tm.setRandomEdgeLensFromTreeLengthDist(chain.likelihood.getTreeLengthPrior())
         else:
-            if not edgelens_generated:
-                m = chain.partition_model.getModel(0)
-                if self.opts.fix_topology:
-                    tm.setRandomInternalExternalEdgeLengths(m.getInternalEdgeLenPrior(), m.getExternalEdgeLenPrior())
+            if edgelen_hyper:
+                if m.isSeparateInternalExternalEdgeLenPriors():
+                    # draw an edge length hyperparameter value for external edges
+                    edgelen_hyperparam = m.getEdgeLenHyperPrior().sample()
+                    chain.chain_manager.setEdgeLenHyperparam(0, edgelen_hyperparam)
+                    m.getExternalEdgeLenPrior().setMeanAndVariance(1.0/edgelen_hyperparam, 0.0) # 2nd arg. (variance) ignored for exponential distributions
+                    jpm.edgeLenHyperparamModified('external_hyper', chain.tree, edgelen_hyperparam)
+
+                    # draw an edge length hyperparameter value for internal edges
+                    edgelen_hyperparam = m.getEdgeLenHyperPrior().sample()
+                    chain.chain_manager.setEdgeLenHyperparam(1, edgelen_hyperparam)
+                    m.getInternalEdgeLenPrior().setMeanAndVariance(1.0/edgelen_hyperparam, 0.0) # 2nd arg. (variance) ignored for exponential distributions
+                    jpm.edgeLenHyperparamModified('internal_hyper', chain.tree, edgelen_hyperparam)
                 else:
-                    tm.equiprobTree(chain.tree.getNTips(), chain.r, m.getInternalEdgeLenPrior(), m.getExternalEdgeLenPrior())
+                    # draw an edge length hyperparameter value that applies to all edges
+                    edgelen_hyperparam = m.getEdgeLenHyperPrior().sample()
+                    chain.chain_manager.setEdgeLenHyperparam(0, edgelen_hyperparam)
+                    m.getInternalEdgeLenPrior().setMeanAndVariance(1.0/edgelen_hyperparam, 0.0) # 2nd arg. (variance) ignored for exponential distributions
+                    m.getExternalEdgeLenPrior().setMeanAndVariance(1.0/edgelen_hyperparam, 0.0) # 2nd arg. (variance) ignored for exponential distributions
+                    jpm.edgeLenHyperparamModified('edgelen_hyper', chain.tree, edgelen_hyperparam)
+            tm.setRandomInternalExternalEdgeLengths(m.getInternalEdgeLenPrior(), m.getExternalEdgeLenPrior())
 
-            if self.opts.allow_polytomies:
-                # Choose number of internal nodes
-                jpm = self.mcmc_manager.getColdChainManager().getJointPriorManager()
-                topo_prior_calculator = jpm.getTopoProbCalculator()
-                num_internal_nodes = topo_prior_calculator.sample(chain.r)
+        print 'newick = %s' % chain.tree.makeNewick()
+        raw_input('..')
 
-                # Delete nodes at random from tree to achieve chosen number of internal nodes
-                orig_num_internal_nodes = chain.tree.getNInternals()
-                num_internals_to_delete = orig_num_internal_nodes - num_internal_nodes
-                for i in range(num_internals_to_delete):
-                    tm.deleteRandomInternalEdge(chain.r)
+        # The following line recalculates the entire joint prior. This is necessary because both tree topology and edge lengths
+        # have changed, and flagging one or the other as modified in the JointPriorManager will cause debugCheckLogJointPrior to
+        # choke because the prior for the other is not up-to-date.
+        jpm.recalcLogJointPrior()   # POL_BOOKMARK 14-July-2017
 
-            jpm.allEdgeLensModified(chain.tree)
-            #jpm.externalEdgeLensModified('external_edgelen', chain.tree)
-            #jpm.internalEdgeLensModified('internal_edgelen', chain.tree)
-
+        # Now it is safe to tell the JointPriorManager that the topology and edge lengths have been modified
         if not self.opts.fix_topology:
             jpm.topologyModified('tree_topology', chain.tree)
+        if tree_length_prior_specified:
+            jpm.treeLengthModified("tree_length", chain.tree);
+        else:
+            jpm.allEdgeLensModified(chain.tree);
 
         chain.prepareForLikelihood()
         chain.likelihood.replaceModel(chain.partition_model)
@@ -1201,6 +1336,7 @@ class MCMCImpl(CommonFunctions):
             if explore_prior and self.opts.draw_directly_from_prior:
                 if self.opts.ss_heating_likelihood or not self.opts.doing_steppingstone_sampling:
                     # MCMC without data, TI, or specific SS
+                    print '==================> About to call explorePrior: cycle =',cycle   # POL_BOOKMARK 14-July-2017
                     self.explorePrior(cycle)
                 else:
                     # generalized SS

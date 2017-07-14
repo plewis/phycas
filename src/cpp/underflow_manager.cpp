@@ -56,7 +56,7 @@ void UnderflowManager::setTriggerSensitivity(
 	{
 	PHYCAS_ASSERT(nedges > 0);
 	underflow_num_edges = nedges;
-    std::cerr << "********** POL: setting underflow_num_edges = " << nedges << std::endl;
+    //std::cerr << "********** POL: setting underflow_num_edges = " << nedges << std::endl;
 	}
 
 /*----------------------------------------------------------------------------------------------------------------------

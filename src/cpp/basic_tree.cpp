@@ -1212,17 +1212,46 @@ void Tree::debugMode(bool turn_on)
 	//std::cerr << "@@@@@ debugMode(" << (turn_on ? "True" : "False") << ") @@@@@" << std::endl;
 	}
 
+#define DEBUG_CHECK_TREE_USES_PHYCAS_ASSERT false
 bool Tree::DebugCheckTree(bool allowDegTwo, bool checkDataPointers, int verbosity) const
 	{
-	/**temp*/
-	//if (!Tree::gDebugOutput)
-	//	return true;
     if (!debugOutput)
         return true;
+
 	const TreeNode * root = firstPreorder;
-	PHYCAS_ASSERT(root);
-	PHYCAS_ASSERT(root->par == NULL);
-	PHYCAS_ASSERT(root->lChild != NULL);
+#   if DEBUG_CHECK_TREE_USES_PHYCAS_ASSERT
+        PHYCAS_ASSERT(root);                        // the root node must exist
+        PHYCAS_ASSERT(root->par == NULL);           // root node cannot (by definition) have a parent
+        PHYCAS_ASSERT(root->lChild != NULL);        // root node must have at least one child
+        PHYCAS_ASSERT(root->lChild->rSib == NULL);  // root node must have only one child  POL_BOOKMARK 14-July-2017
+        PHYCAS_ASSERT(root->rSib == NULL);          // root node should not have siblings
+#   else
+        if (root == NULL)
+            {
+            std::cerr << "Tree::DebugCheckTree found a problem: root == NULL (the root node must exist)" << std::endl;
+            return false;
+            }
+        if (root->par != NULL)
+            {
+            std::cerr << "Tree::DebugCheckTree found a problem: root->par != NULL (root node cannot (by definition) have a parent)" << std::endl;
+            return false;
+            }
+        if (root->lChild == NULL)
+            {
+            std::cerr << "Tree::DebugCheckTree found a problem: root->lChild == NULL (root node must have at least one child)" << std::endl;
+            return false;
+            }
+        if (root->lChild->rSib != NULL)
+            {
+            std::cerr << "Tree::DebugCheckTree found a problem: root->lChild->rSib != NULL (root node must have only one child)" << std::endl;
+            return false;
+            }
+        if (root->rSib != NULL)
+            {
+            std::cerr << "Tree::DebugCheckTree found a problem: root->rSib != NULL (root node should not have siblings)" << std::endl;
+            return false;
+            }
+#   endif
 	const TreeNode * currNd = root;
 	const TreeNode * prevNd = NULL;
 	const bool shouldHaveData = root->tipData != NULL;
@@ -1233,10 +1262,10 @@ bool Tree::DebugCheckTree(bool allowDegTwo, bool checkDataPointers, int verbosit
 	unsigned countedNNodes = 0;
 	unsigned countedNLeaves = 1;
 
-#   if !defined(NDEBUG)
+//#   if !defined(NDEBUG)
 	const unsigned expectedNLeaves = nTips; // +tipStorage.size()
 	const unsigned expectedNNodes = expectedNLeaves + nInternals; // + internalNodeStorage.size()
-#   endif
+//#   endif
 	std::string indent;
 	while (currNd)
 		{
@@ -1260,43 +1289,97 @@ bool Tree::DebugCheckTree(bool allowDegTwo, bool checkDataPointers, int verbosit
 		countedNNodes++;
 		if (currNd->lChild)
 			{
-			PHYCAS_ASSERT(currNd->lChild->par == currNd);
+            // currNd has at least one child, so it is an internal node
+
+#           if DEBUG_CHECK_TREE_USES_PHYCAS_ASSERT
+                PHYCAS_ASSERT(currNd->lChild->par == currNd);   // child's parent points to the wrong node
+#           else
+                if (currNd->lChild->par != currNd)
+                    {
+                    std::cerr << "Tree::DebugCheckTree found a problem: currNd->lChild->par != currNd (child's parent points to the wrong node)" << std::endl;
+                    return false;
+                    }
+#           endif
 			nextNd = currNd->lChild;
 			next_level = curr_level + 1;
 			if (!preorderDirty)
 				{
-				PHYCAS_ASSERT(currNd->nextPreorder == currNd->lChild);
+#               if DEBUG_CHECK_TREE_USES_PHYCAS_ASSERT
+                    PHYCAS_ASSERT(currNd->nextPreorder == currNd->lChild);  // next preorder pointer does not point to lchild as it should
+#               else
+                    if (currNd->nextPreorder != currNd->lChild)
+                        {
+                        std::cerr << "Tree::DebugCheckTree found a problem: currNd->nextPreorder != currNd->lChild (next preorder pointer does not point to lchild as it should)" << std::endl;
+                        return false;
+                        }
+#               endif
 				}
 			if (currNd->par)
 				{
 				if ((!allowDegTwo) && currNd->par)
 					{
-					PHYCAS_ASSERT(currNd->lChild->rSib);
+#                   if DEBUG_CHECK_TREE_USES_PHYCAS_ASSERT
+                        PHYCAS_ASSERT(currNd->lChild->rSib);  // this node must have at least 2 children
+#                   else
+                        if (currNd->lChild->rSib == NULL)
+                            {
+                            std::cerr << "Tree::DebugCheckTree found a problem: currNd->lChild->rSib == NULL (this node must have at least 2 children)" << std::endl;
+                            return false;
+                            }
+#                   endif
 					}
 				if (checkDataPointers)
 					{
 					if (shouldHaveData)
 						{
-						PHYCAS_ASSERT(currNd->internalData);
+#                       if DEBUG_CHECK_TREE_USES_PHYCAS_ASSERT
+                            PHYCAS_ASSERT(currNd->internalData);    // this node should have attached data
+#                       else
+                            if (currNd->internalData == NULL)
+                                {
+                                std::cerr << "Tree::DebugCheckTree found a problem: currNd->internalData == NULL (this node should have attached data)" << std::endl;
+                                return false;
+                                }
+#                       endif
 						}
 					else
 						{
-						PHYCAS_ASSERT(currNd->internalData == NULL);
+#                       if DEBUG_CHECK_TREE_USES_PHYCAS_ASSERT
+                            PHYCAS_ASSERT(currNd->internalData == NULL);    // this node should not have attached data
+#                       else
+                            if (currNd->internalData != NULL)
+                                {
+                                std::cerr << "Tree::DebugCheckTree found a problem: currNd->internalData != NULL (this node should not have attached data)" << std::endl;
+                                return false;
+                                }
+#                       endif
 						}
 					}
 				}
 			}
 		else
 			{
+            // currNd has at no children, so it is a leaf node
+
 			countedNLeaves++;
 			if (currNd->rSib == NULL)
 				{
+                // currNd has no siblings on right, so go down a level to find next node in preorder sequence
+
 				if (next_pre_order_stack.empty())
 					{
 					nextNd = NULL;
 					if (!preorderDirty)
                         {
-						PHYCAS_ASSERT(currNd->nextPreorder == NULL);
+#                       if DEBUG_CHECK_TREE_USES_PHYCAS_ASSERT
+                            PHYCAS_ASSERT(currNd->nextPreorder == NULL);    // nextPreorder pointer should be NULL because we are at the end of the preorder sequence
+#                       else
+                            if (currNd->nextPreorder != NULL)
+                                {
+                                std::cerr << "Tree::DebugCheckTree found a problem: currNd->nextPreorder != NULL (nextPreorder pointer should be NULL because we are at the end of the preorder sequence)" << std::endl;
+                                return false;
+                                }
+#                       endif
                         }
 					}
 				else
@@ -1305,7 +1388,15 @@ bool Tree::DebugCheckTree(bool allowDegTwo, bool checkDataPointers, int verbosit
 					next_level = level_stack.top();
 					if (!preorderDirty)
                         {
-						PHYCAS_ASSERT(currNd->nextPreorder == next_pre_order_stack.top());
+#                       if DEBUG_CHECK_TREE_USES_PHYCAS_ASSERT
+                            PHYCAS_ASSERT(currNd->nextPreorder == next_pre_order_stack.top());  // nextPreorder should point to clade root sibling as currNd is at edge of clade cliff
+#                       else
+                            if (currNd->nextPreorder != next_pre_order_stack.top())
+                                {
+                                std::cerr << "Tree::DebugCheckTree found a problem: currNd->nextPreorder != next_pre_order_stack.top() (nextPreorder should point to clade root sibling as currNd is at edge of clade cliff)" << std::endl;
+                                return false;
+                                }
+#                       endif
                         }
 					next_pre_order_stack.pop();
 					level_stack.pop();
@@ -1315,17 +1406,45 @@ bool Tree::DebugCheckTree(bool allowDegTwo, bool checkDataPointers, int verbosit
 				{
 				if (shouldHaveData)
 					{
-					PHYCAS_ASSERT(currNd->tipData);
+#                   if DEBUG_CHECK_TREE_USES_PHYCAS_ASSERT
+                        PHYCAS_ASSERT(currNd->tipData); // this node should have attached data
+#                   else
+                        if (currNd->tipData == NULL)
+                            {
+                            std::cerr << "Tree::DebugCheckTree found a problem: currNd->tipData == NULL (this node should have attached data)" << std::endl;
+                            return false;
+                            }
+#                   endif
 					}
 				else
 					{
-					PHYCAS_ASSERT(currNd->tipData == NULL);
+#                   if DEBUG_CHECK_TREE_USES_PHYCAS_ASSERT
+                        PHYCAS_ASSERT(currNd->tipData == NULL); // this node should not have attached data
+#                   else
+                        if (currNd->tipData != NULL)
+                            {
+                            std::cerr << "Tree::DebugCheckTree found a problem: currNd->tipData != NULL (this node should not have attached data)" << std::endl;
+                            return false;
+                            }
+#                   endif
 					}
 				}
 			}
+
 		if (currNd->rSib)
 			{
-			PHYCAS_ASSERT(currNd->rSib->par == currNd->par);
+            // currNd has a sibling on its right
+
+#           if DEBUG_CHECK_TREE_USES_PHYCAS_ASSERT
+                PHYCAS_ASSERT(currNd->rSib->par == currNd->par);    // right sibling's parent is not the same as currNd's parent
+#           else
+                if (currNd->rSib->par != currNd->par)
+                    {
+                    std::cerr << "Tree::DebugCheckTree found a problem: currNd->rSib->par != currNd->par (right sibling's parent is not the same as currNd's parent)" << std::endl;
+                    return false;
+                    }
+#           endif
+
 			if (currNd->lChild)
 				{
 				next_pre_order_stack.push(currNd->rSib);
@@ -1337,34 +1456,89 @@ bool Tree::DebugCheckTree(bool allowDegTwo, bool checkDataPointers, int verbosit
 				next_level = curr_level;
 				if (!preorderDirty)
                     {
-					PHYCAS_ASSERT(currNd->rSib == currNd->nextPreorder);
+#                   if DEBUG_CHECK_TREE_USES_PHYCAS_ASSERT
+                        PHYCAS_ASSERT(currNd->rSib == currNd->nextPreorder);    // nextPreorder should point to right sibling
+#                   else
+                        if (currNd->rSib != currNd->nextPreorder)
+                            {
+                            std::cerr << "Tree::DebugCheckTree found a problem: currNd->rSib != currNd->nextPreorder (nextPreorder should point to right sibling)" << std::endl;
+                            return false;
+                            }
+#                   endif
                     }
 				}
 			}
-#if 0
-		PHYCAS_ASSERT(&*currNd->tree == this);
-#endif
+
 		if (!preorderDirty)
 			{
-			PHYCAS_ASSERT(currNd->prevPreorder == prevNd);
+#           if DEBUG_CHECK_TREE_USES_PHYCAS_ASSERT
+                PHYCAS_ASSERT(currNd->prevPreorder == prevNd);  // prevPreorder does not point to prevNd
+#           else
+                if (currNd->prevPreorder != prevNd)
+                    {
+                    std::cerr << "Tree::DebugCheckTree found a problem: currNd->prevPreorder != prevNd (prevPreorder does not point to prevNd)" << std::endl;
+                    return false;
+                    }
+#           endif
 			}
+
 		prevNd = currNd;
 		currNd = nextNd;
 		curr_level = next_level;
 		if (nodeCountsValid)
 			{
-			PHYCAS_ASSERT(countedNNodes <= nTips + nInternals);
+#           if DEBUG_CHECK_TREE_USES_PHYCAS_ASSERT
+                PHYCAS_ASSERT(countedNNodes <= nTips + nInternals); // nTips + nInternals is less than the total number of nodes
+#           else
+                if (countedNNodes > nTips + nInternals)
+                    {
+                    std::cerr << "Tree::DebugCheckTree found a problem: countedNNodes > nTips + nInternals (nTips + nInternals is less than the total number of nodes)" << std::endl;
+                    return false;
+                    }
+#           endif
 			}
 		}
-	PHYCAS_ASSERT(level_stack.empty());
+#   if DEBUG_CHECK_TREE_USES_PHYCAS_ASSERT
+        PHYCAS_ASSERT(level_stack.empty()); // expecting level stack to be empty after tree traversed
+#   else
+        if (!level_stack.empty())
+            {
+            std::cerr << "Tree::DebugCheckTree found a problem: !level_stack.empty() (expecting level stack to be empty after tree traversed)" << std::endl;
+            return false;
+            }
+#   endif
 	if (nodeCountsValid)
 		{
-		PHYCAS_ASSERT(countedNLeaves == expectedNLeaves);
-		PHYCAS_ASSERT(countedNNodes == expectedNNodes);
+#       if DEBUG_CHECK_TREE_USES_PHYCAS_ASSERT
+            PHYCAS_ASSERT(countedNLeaves == expectedNLeaves); // expected number of leaves does not equal actual number
+#       else
+            if (countedNLeaves != expectedNLeaves)
+                {
+                std::cerr << "Tree::DebugCheckTree found a problem: countedNLeaves != expectedNLeaves (expected number of leaves does not equal actual number)" << std::endl;
+                return false;
+                }
+#       endif
+#       if DEBUG_CHECK_TREE_USES_PHYCAS_ASSERT
+		PHYCAS_ASSERT(countedNNodes == expectedNNodes); // expected number of nodes does not equal the actual number of nodes
+#       else
+            if (countedNNodes != expectedNNodes)
+                {
+                std::cerr << "Tree::DebugCheckTree found a problem: countedNNodes != expectedNNodes (expected number of nodes does not equal the actual number of nodes)" << std::endl;
+                return false;
+                }
+#       endif
 		}
 	if (!preorderDirty)
 		{
-		PHYCAS_ASSERT(lastPreorder == prevNd);
+#       if DEBUG_CHECK_TREE_USES_PHYCAS_ASSERT
+            PHYCAS_ASSERT(lastPreorder == prevNd);  // lastPreorder does not equal last node visited
+#       else
+            if (lastPreorder != prevNd)
+                {
+                std::cerr << "Tree::DebugCheckTree found a problem: lastPreorder != prevNd (lastPreorder does not equal last node visited)" << std::endl;
+                return false;
+                }
+#       endif
 		}
 	return true;
 	}
@@ -1586,10 +1760,12 @@ void Tree::RefreshNodeCounts()
 	nInternals	= 0;
 	for (TreeNode *nd = GetFirstPreorder(); nd != NULL; nd = nd->GetNextPreorder())
 		{
-		if (nd->IsTip())
+		if (nd->IsTip()) {
 			++nTips;
-		else
+            }
+		else {
 			++nInternals;
+            }
 		}
 
 	nodeCountsValid = true;
@@ -2769,6 +2945,7 @@ unsigned Tree::GetNInternals()
 
 	if (!nodeCountsValid)
 		RefreshNodeCounts();
+
 	return nInternals;
 	}
 

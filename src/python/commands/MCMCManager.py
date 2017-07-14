@@ -68,11 +68,14 @@ class MCMCManager:
 
         """
         # Note: self.parent is the MCMCImpl object
+        #print '^^^^^a createChains' # POL_BOOKMARK 13-July-2017
 
         # Create the chains
         for i, heating_power in enumerate(self.parent.heat_vector):
             markov_chain = MarkovChain(self.parent, heating_power)
             self.chains.append(markov_chain)
+
+        #print '^^^^^b createChains' # POL_BOOKMARK 13-July-2017
 
         n = len(self.parent.heat_vector)
         self.swap_table = [[0]*n for i in range(n)]

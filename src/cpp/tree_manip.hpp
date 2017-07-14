@@ -63,6 +63,9 @@ class TreeManip
 		void		equiprobTree(unsigned ntips, LotShPtr rng, ProbDistShPtr internal_edge_dist, ProbDistShPtr external_edge_dist);
         void        setRandomEdgeLensFromTreeLengthDist(TreeLengthDistributionShPtr tree_length_dist);
 
+        void        addLeafToRandomNode(unsigned leaf_node_number, LotShPtr rng);
+        void        addLeafToRandomEdge(unsigned leaf_node_number, LotShPtr rng);
+        void        assignLeafNumbersRandomly(LotShPtr rng);
         void        deleteRandomInternalEdge(LotShPtr rng);
 
 		void		setRandomEdgeLens(ProbDistShPtr d);

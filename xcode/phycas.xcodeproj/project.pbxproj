@@ -114,6 +114,12 @@
 		D120CAB719DF29FA005322F7 /* state_freq_param.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B82193C14DF000719F1 /* state_freq_param.cpp */; };
 		D120CAB819DF29FA005322F7 /* subset_proportions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B87193C14DF000719F1 /* subset_proportions.cpp */; };
 		D120CAB919DF29FA005322F7 /* subset_relrates_move.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777B89193C14DF000719F1 /* subset_relrates_move.cpp */; };
+		D13DB6C81F1694BB00D42F51 /* libboost_python.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D1BA84A61A696999006C0260 /* libboost_python.dylib */; };
+		D13DB6C91F1694DF00D42F51 /* libboost_python.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D1BA84A61A696999006C0260 /* libboost_python.dylib */; };
+		D13DB6CA1F16950800D42F51 /* libboost_python.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D1BA84A61A696999006C0260 /* libboost_python.dylib */; };
+		D13DB6CB1F16954300D42F51 /* libboost_python.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D1BA84A61A696999006C0260 /* libboost_python.dylib */; };
+		D13DB6CC1F1695D900D42F51 /* libboost_python.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D1BA84A61A696999006C0260 /* libboost_python.dylib */; };
+		D13DB6CD1F1699B800D42F51 /* varcov.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1861F9E1D52B943004BB7CE /* varcov.cpp */; };
 		D1ABC09C19DF33A500E03A8B /* dcdflib.c in Sources */ = {isa = PBXBuildFile; fileRef = D1777B94193C14DF000719F1 /* dcdflib.c */; };
 		D1ABC09D19DF33A500E03A8B /* ipmpar.c in Sources */ = {isa = PBXBuildFile; fileRef = D1777B96193C14DF000719F1 /* ipmpar.c */; };
 		D1ABC09F19DF33A500E03A8B /* tip_data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1777BA4193C14DF000719F1 /* tip_data.cpp */; };
@@ -517,6 +523,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D13DB6CB1F16954300D42F51 /* libboost_python.dylib in Frameworks */,
 				D120CA6119DF25E0005322F7 /* libncl-2.1.18.dylib in Frameworks */,
 				D120CA6019DF25C4005322F7 /* libpython2.7.dylib in Frameworks */,
 			);
@@ -526,6 +533,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D13DB6C81F1694BB00D42F51 /* libboost_python.dylib in Frameworks */,
 				D120CA7519DF2652005322F7 /* libncl-2.1.18.dylib in Frameworks */,
 				D120CA7319DF263B005322F7 /* libpython2.7.dylib in Frameworks */,
 			);
@@ -535,6 +543,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D13DB6CC1F1695D900D42F51 /* libboost_python.dylib in Frameworks */,
 				D1ABC0A819DF359200E03A8B /* libncl-2.1.18.dylib in Frameworks */,
 				D1ABC0A619DF33C600E03A8B /* libpython2.7.dylib in Frameworks */,
 			);
@@ -544,6 +553,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D13DB6C91F1694DF00D42F51 /* libboost_python.dylib in Frameworks */,
 				D1ABC0C719DF369800E03A8B /* libpython2.7.dylib in Frameworks */,
 				D1ABC0C619DF368E00E03A8B /* libncl-2.1.18.dylib in Frameworks */,
 			);
@@ -553,6 +563,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D13DB6CA1F16950800D42F51 /* libboost_python.dylib in Frameworks */,
 				D1ABC0E319DF370F00E03A8B /* libpython2.7.dylib in Frameworks */,
 				D1ABC0E219DF370500E03A8B /* libncl-2.1.18.dylib in Frameworks */,
 			);
@@ -1332,6 +1343,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D13DB6CD1F1699B800D42F51 /* varcov.cpp in Sources */,
 				D1ABC0AA19DF361200E03A8B /* dls_brent.c in Sources */,
 				D1ABC0A919DF35DA00E03A8B /* tree_manip.cpp in Sources */,
 				D1ABC09C19DF33A500E03A8B /* dcdflib.c in Sources */,
@@ -1495,7 +1507,6 @@
 					"$(inherited)",
 					/Users/plewis/Documents/libraries/pydbg/lib,
 					/Users/plewis/Documents/libraries/ncl/lib/ncl,
-					/Users/plewis/Documents/libraries/boostlib/lib,
 					/Users/plewis/Documents/libraries/debugboostlib/lib,
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -1524,7 +1535,6 @@
 					"$(inherited)",
 					/Users/plewis/Documents/libraries/pydbg/lib,
 					/Users/plewis/Documents/libraries/ncl/lib/ncl,
-					/Users/plewis/Documents/libraries/boostlib/lib,
 					/Users/plewis/Documents/libraries/debugboostlib/lib,
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -1554,10 +1564,9 @@
 				LD_DYLIB_INSTALL_NAME = "$(DYLIB_INSTALL_NAME_BASE:standardizepath)/_ProbDistExt";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/plewis/Documents/libraries/boostlib/lib,
+					/Users/plewis/Documents/libraries/debugboostlib/lib,
 					/Users/plewis/Documents/libraries/pydbg/lib,
 					/Users/plewis/Documents/libraries/ncl/lib/ncl,
-					/Users/plewis/Documents/libraries/debugboostlib/lib,
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_NAME = _ProbDistExt;
@@ -1582,10 +1591,9 @@
 				LD_DYLIB_INSTALL_NAME = "$(DYLIB_INSTALL_NAME_BASE:standardizepath)/_ProbDistExt";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/plewis/Documents/libraries/boostlib/lib,
+					/Users/plewis/Documents/libraries/debugboostlib/lib,
 					/Users/plewis/Documents/libraries/pydbg/lib,
 					/Users/plewis/Documents/libraries/ncl/lib/ncl,
-					/Users/plewis/Documents/libraries/debugboostlib/lib,
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = _ProbDistExt;
@@ -1615,9 +1623,8 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/plewis/Documents/libraries/pydbg/lib,
-					/Users/plewis/Documents/libraries/boostlib/lib,
-					/Users/plewis/Documents/libraries/ncl/lib/ncl,
 					/Users/plewis/Documents/libraries/debugboostlib/lib,
+					/Users/plewis/Documents/libraries/ncl/lib/ncl,
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_NAME = _DataMatrixExt;
@@ -1643,9 +1650,8 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/plewis/Documents/libraries/pydbg/lib,
-					/Users/plewis/Documents/libraries/boostlib/lib,
-					/Users/plewis/Documents/libraries/ncl/lib/ncl,
 					/Users/plewis/Documents/libraries/debugboostlib/lib,
+					/Users/plewis/Documents/libraries/ncl/lib/ncl,
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = _DataMatrixExt;
@@ -1675,9 +1681,8 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/plewis/Documents/libraries/pydbg/lib,
-					/Users/plewis/Documents/libraries/boostlib/lib,
-					/Users/plewis/Documents/libraries/ncl/lib/ncl,
 					/Users/plewis/Documents/libraries/debugboostlib/lib,
+					/Users/plewis/Documents/libraries/ncl/lib/ncl,
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_NAME = _LikelihoodExt;
@@ -1703,9 +1708,8 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/plewis/Documents/libraries/pydbg/lib,
-					/Users/plewis/Documents/libraries/boostlib/lib,
-					/Users/plewis/Documents/libraries/ncl/lib/ncl,
 					/Users/plewis/Documents/libraries/debugboostlib/lib,
+					/Users/plewis/Documents/libraries/ncl/lib/ncl,
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = _LikelihoodExt;
@@ -1840,10 +1844,9 @@
 				LD_DYLIB_INSTALL_NAME = "$(DYLIB_INSTALL_NAME_BASE:standardizepath)/_PhylogenyExt";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/plewis/Documents/libraries/boostlib/lib,
+					/Users/plewis/Documents/libraries/debugboostlib/lib,
 					/Users/plewis/Documents/libraries/ncl/lib/ncl,
 					/Users/plewis/Documents/libraries/pydbg/lib,
-					/Users/plewis/Documents/libraries/debugboostlib/lib,
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_NAME = _PhylogenyExt;
@@ -1868,10 +1871,9 @@
 				LD_DYLIB_INSTALL_NAME = "$(DYLIB_INSTALL_NAME_BASE:standardizepath)/_PhylogenyExt";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/plewis/Documents/libraries/boostlib/lib,
+					/Users/plewis/Documents/libraries/debugboostlib/lib,
 					/Users/plewis/Documents/libraries/ncl/lib/ncl,
 					/Users/plewis/Documents/libraries/pydbg/lib,
-					/Users/plewis/Documents/libraries/debugboostlib/lib,
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = _PhylogenyExt;
@@ -1900,10 +1902,9 @@
 				LD_DYLIB_INSTALL_NAME = "$(DYLIB_INSTALL_NAME_BASE:standardizepath)/_ReadNexusExt";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/plewis/Documents/libraries/boostlib/lib,
+					/Users/plewis/Documents/libraries/debugboostlib/lib,
 					/Users/plewis/Documents/libraries/ncl/lib/ncl,
 					/Users/plewis/Documents/libraries/pydbg/lib,
-					/Users/plewis/Documents/libraries/debugboostlib/lib,
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_NAME = _ReadNexusExt;
@@ -1928,10 +1929,9 @@
 				LD_DYLIB_INSTALL_NAME = "$(DYLIB_INSTALL_NAME_BASE:standardizepath)/_ReadNexusExt";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/plewis/Documents/libraries/boostlib/lib,
+					/Users/plewis/Documents/libraries/debugboostlib/lib,
 					/Users/plewis/Documents/libraries/ncl/lib/ncl,
 					/Users/plewis/Documents/libraries/pydbg/lib,
-					/Users/plewis/Documents/libraries/debugboostlib/lib,
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = _ReadNexusExt;

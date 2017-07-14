@@ -407,7 +407,7 @@ double VarCovMatrix::standardizeSamples()
             }
         }
 
-#if 1
+#if 0
     // save R file for plotting density of each log-transformed and centered parameter
     assert(_p == _param_names.size());
     std::string fn = boost::str(boost::format("%s.R") % _name);
