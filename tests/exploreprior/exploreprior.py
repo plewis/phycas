@@ -26,9 +26,9 @@ partition.addSubset(subset(301,1000), m2, 'large')
 partition()
 
 mcmc.data_source                = None
-mcmc.ntax                       = 10
+mcmc.ntax                       = 7
 
-mcmc.starting_tree_source       = randomtree(n_taxa=10)
+mcmc.starting_tree_source       = randomtree(n_taxa=7)
 
 mcmc.out.log.prefix             = 'nodata.nex'
 mcmc.out.log.mode               = REPLACE
@@ -40,9 +40,9 @@ mcmc.out.params.prefix          = 'nodata.nex'
 mcmc.out.params.mode            = REPLACE
 
 mcmc.nchains                    = 1
-mcmc.ncycles                    = 1000
+mcmc.ncycles                    = 2000
 mcmc.burnin                     = 100
-mcmc.sample_every               = 20
+mcmc.sample_every               = 1
 mcmc.report_every               = mcmc.ncycles//100
 mcmc.report_efficiency_every    = mcmc.ncycles//10
 mcmc.verbose                    = True

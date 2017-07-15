@@ -160,6 +160,7 @@ if __name__ == '__main__':
     runTest(outFile, "gtrtest", ["gtr_test.p", "gtr_test.t"])
     runTest(outFile, "nchains", ["nchains_test.p", "nchains_test.t"])
     runTest(outFile, "simulator", ["simulated.nex"])
+    runTest(outFile, "explorepolyprior", ["7taxa-unrooted-params.p","7taxa-unrooted-trees.t"])
     runTest(outFile, "exploreprior", mcmcOutputs(["nodata.nex"]))
     runTest(outFile, "splittest", ["out.txt"])
     runTest(outFile, "pdftree", ["test.pdf"])
