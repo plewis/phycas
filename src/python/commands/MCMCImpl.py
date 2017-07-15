@@ -3,7 +3,7 @@ from phycas import *
 from phycas.utilities.PhycasCommand import *
 from phycas.utilities.CommonFunctions import CommonFunctions
 from MCMCManager import MCMCManager
-from phycas.probdist import StopWatch
+from phycas.probdist import StopWatch, getEffectiveLnZero
 from phycas.readnexus import NexusReader
 
 class MCMCImpl(CommonFunctions):
@@ -861,6 +861,15 @@ class MCMCImpl(CommonFunctions):
 
         ############################ end exploreWorkingPrior ############################
 
+    def logSumOfLogPair(self, loga, logb):
+        # z = max(a,b)
+        # c    = a + b
+        #      = z(a/z + b/z)
+        # logc = logz + log[exp(loga - logz) + exp(logb - logz)]
+        logz = max([loga,logb])
+        logc = logz + math.log(math.exp(loga - logz) + math.exp(logb - logz))
+        return logc
+
     def growTreeWithPolytomies(self, ntips, tm, chain):
         # ntips is the number of tips in the unrooted tree (rooted version has ntips-1 leaves plus a root node)
         # tm is a TreeManipulator that stores a fully-resolved tree
@@ -884,37 +893,44 @@ class MCMCImpl(CommonFunctions):
         m_target = num_internal_nodes
         n_target = ntips - 1
         n = n_target - 1
-        binary_choice_map = {(n_target, m_target):{'diagonal':0.5, 'horizontal':0.5}} # [down, across]
+        binary_choice_map = {(n_target, m_target):{'diagonal':math.log(0.5), 'horizontal':math.log(0.5)}} # [down, across]
         while n > 1:
             ndiff = n_target - (n+1)
 
             for m in range(1,n):
                 # handle adding new taxon to existing edge (diagonal)
                 mdiff = m_target - (m+1)
-                diagonal = 0.0
                 if m > 0 and mdiff >= 0.0 and mdiff <= ndiff:
                     num_existing_edges = n+m
-                    initial_value = float(binary_choice_map[(n+1,m+1)]['diagonal'] + binary_choice_map[(n+1,m+1)]['horizontal'])
-                    diagonal = initial_value*num_existing_edges
+                    assert binary_choice_map[(n+1,m+1)]['diagonal'] is not None
+                    assert binary_choice_map[(n+1,m+1)]['horizontal'] is not None
+                    log_diagonal_input = float(binary_choice_map[(n+1,m+1)]['diagonal'])
+                    log_horizontal_input = float(binary_choice_map[(n+1,m+1)]['horizontal'])
+                    log_initial_value = self.logSumOfLogPair(log_diagonal_input, log_horizontal_input)
+                    log_diagonal = log_initial_value + math.log(num_existing_edges)
                     if (n,m) in binary_choice_map.keys():
-                        binary_choice_map[(n,m)]['diagonal'] = diagonal
+                        binary_choice_map[(n,m)]['diagonal'] = log_diagonal
                     else:
-                        binary_choice_map[(n,m)] = {'diagonal':diagonal, 'horizontal':0.0}
+                        binary_choice_map[(n,m)] = {'diagonal':log_diagonal, 'horizontal':getEffectiveLnZero()}
 
                 # handle adding new taxon to existing node (horizontal)
                 mdiff = m_target - m
-                horizontal = 0.0
                 if m > 0 and mdiff >= 0.0 and mdiff <= ndiff:
                     num_existing_internals = m
-                    initial_value = float(binary_choice_map[(n+1,m)]['diagonal'] + binary_choice_map[(n+1,m)]['horizontal'])
-                    horizontal = initial_value*num_existing_internals
-                    if (n,m) in binary_choice_map.keys():
-                        binary_choice_map[(n,m)]['horizontal'] = horizontal
-                    else:
-                        binary_choice_map[(n,m)] = {'diagonal':0.0, 'horizontal':horizontal}
 
-                if (n,m) in binary_choice_map.keys():
-                    print "#####      binary_choice_map[(%d,%d)] = {'diagonal':%.5f, 'horizontal':%.5f}" % (n, m, binary_choice_map[(n,m)]['diagonal'], binary_choice_map[(n,m)]['horizontal'])
+                    assert binary_choice_map[(n+1,m)]['diagonal'] is not None
+                    assert binary_choice_map[(n+1,m)]['horizontal'] is not None
+                    log_diagonal_input = float(binary_choice_map[(n+1,m)]['diagonal'])
+                    log_horizontal_input = float(binary_choice_map[(n+1,m)]['horizontal'])
+                    log_initial_value = self.logSumOfLogPair(log_diagonal_input, log_horizontal_input)
+                    log_horizontal = log_initial_value + math.log(num_existing_internals)
+                    if (n,m) in binary_choice_map.keys():
+                        binary_choice_map[(n,m)]['horizontal'] = log_horizontal
+                    else:
+                        binary_choice_map[(n,m)] = {'diagonal':getEffectiveLnZero(), 'horizontal':log_horizontal}
+
+                #if (n,m) in binary_choice_map.keys():
+                #    print "#####      binary_choice_map[(%d,%d)] = {'diagonal':%.5f, 'horizontal':%.5f}" % (n, m, binary_choice_map[(n,m)]['diagonal'], binary_choice_map[(n,m)]['horizontal'])
 
             n -= 1
 
@@ -925,26 +941,19 @@ class MCMCImpl(CommonFunctions):
         tm.equiprobTree(3, chain.r, model.getInternalEdgeLenPrior(), model.getExternalEdgeLenPrior())
         n = 2
         m = 1
-        while n <= n_target and m <= m_target:
-            h = binary_choice_map[(n,m)]['horizontal']
-            d = binary_choice_map[(n,m)]['diagonal']
-            p = h/(h+d)
-            u = chain.r.uniform()
-            if u < p:
+        while n < n_target and m <= m_target:
+            logh = binary_choice_map[(n,m)]['horizontal']
+            logd = binary_choice_map[(n,m)]['diagonal']
+            logp = logh - self.logSumOfLogPair(logh, logd)
+            logu = math.log(chain.r.uniform())
+            if logu < logp:
                 tm.addLeafToRandomNode(n+2, chain.r)
             else:
-                #raw_input('start debugger')
                 tm.addLeafToRandomEdge(n+2, chain.r)
                 m += 1
             n += 1
 
         tm.assignLeafNumbersRandomly(chain.r);
-
-        # Delete edges at random from tree to achieve chosen number of internal nodes
-        #orig_num_internal_nodes = chain.tree.getNInternals()
-        #num_internals_to_delete = orig_num_internal_nodes - num_internal_nodes
-        #for i in range(num_internals_to_delete):
-        #    tm.deleteRandomInternalEdge(chain.r)
 
     def explorePrior(self, cycle):
         chain_index = 0
@@ -1200,8 +1209,8 @@ class MCMCImpl(CommonFunctions):
                     jpm.edgeLenHyperparamModified('edgelen_hyper', chain.tree, edgelen_hyperparam)
             tm.setRandomInternalExternalEdgeLengths(m.getInternalEdgeLenPrior(), m.getExternalEdgeLenPrior())
 
-        print 'newick = %s' % chain.tree.makeNewick()
-        raw_input('..')
+        #print 'newick = %s' % chain.tree.makeNewick()
+        #raw_input('..')
 
         # The following line recalculates the entire joint prior. This is necessary because both tree topology and edge lengths
         # have changed, and flagging one or the other as modified in the JointPriorManager will cause debugCheckLogJointPrior to
@@ -1336,7 +1345,6 @@ class MCMCImpl(CommonFunctions):
             if explore_prior and self.opts.draw_directly_from_prior:
                 if self.opts.ss_heating_likelihood or not self.opts.doing_steppingstone_sampling:
                     # MCMC without data, TI, or specific SS
-                    print '==================> About to call explorePrior: cycle =',cycle   # POL_BOOKMARK 14-July-2017
                     self.explorePrior(cycle)
                 else:
                     # generalized SS

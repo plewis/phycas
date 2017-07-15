@@ -103,33 +103,23 @@ void TreeManip::addLeafToRandomNode(unsigned leaf_node_number, LotShPtr rng)
     {
     // POL_BOOKMARK 11-July-2017
 
-    std::cerr << "\n~~> begin TreeManip::addLeafToRandomNode" << std::endl;
+    //std::cerr << "\n~~> begin TreeManip::addLeafToRandomNode" << std::endl;
 
-    tree->debugMode(true);
-	tree->DebugCheckTree(false, false, 0);
+    //tree->debugMode(true);
+	//tree->DebugCheckTree(false, false, 0);
 
     // Choose an internal node at random
 	tree->InvalidateNodeCounts();
     unsigned num_nodes = tree->GetNNodes();
     PHYCAS_ASSERT(num_nodes > 0);
     unsigned num_internals = tree->GetNInternals();
-    unsigned num_tips = num_nodes - num_internals;
-    std::cerr << boost::str(boost::format("~~> num_nodes = %d, num_internals = %d, num_tips = %d, leaf_node_number = %d") % num_nodes % num_internals % num_tips % leaf_node_number) << std::endl;
-
-    //temporary!
-    if (num_internals < 1)
-        {
-        std::cerr << "Aborting because num_internals < 1 in TreeManip::addLeafToRandomNode" << std::endl;
-        tree->debugMode(true);
-        tree->DebugCheckTree(false, false, 2);
-        tree->debugMode(false);
-        std::exit(0);
-        }
+    //unsigned num_tips = num_nodes - num_internals;
+    //std::cerr << boost::str(boost::format("~~> num_nodes = %d, num_internals = %d, num_tips = %d, leaf_node_number = %d") % num_nodes % num_internals % num_tips % leaf_node_number) << std::endl;
 
     PHYCAS_ASSERT(num_internals > 0);
     TreeNode * nd = tree->GetFirstPreorder();
     unsigned i = rng->SampleUInt(num_internals);    // returns value from [0, 1, ..., num_internals-1]
-    std::cerr << boost::str(boost::format("~~> adding to node = %d (num_internals = %d)") % i % num_internals) << std::endl;
+    //std::cerr << boost::str(boost::format("~~> adding to node = %d (num_internals = %d)") % i % num_internals) << std::endl;
     for (; nd != NULL; nd = nd->GetNextPreorder())
         {
         if (!nd->IsTip())
@@ -140,7 +130,7 @@ void TreeManip::addLeafToRandomNode(unsigned leaf_node_number, LotShPtr rng)
                 --i;
             }
         }
-    std::cerr << boost::str(boost::format("~~> nd->nodeNum = %d") % nd->nodeNum) << std::endl;
+    //std::cerr << boost::str(boost::format("~~> nd->nodeNum = %d") % nd->nodeNum) << std::endl;
 
     // Add a new leaf node to nd to create a polytomy (or a bigger polytomy if nd is already a polytomy).
     TreeNode * new_node = tree->GetNewNode();
@@ -151,10 +141,10 @@ void TreeManip::addLeafToRandomNode(unsigned leaf_node_number, LotShPtr rng)
     tree->preorderDirty = true;
 	tree->RefreshPreorder();
 
-	tree->DebugCheckTree(false, false, 0);
-    tree->debugMode(false);
+	//tree->DebugCheckTree(false, false, 0);
+    //tree->debugMode(false);
 
-    std::cerr << "~~> end TreeManip::addLeafToRandomNode" << std::endl;
+    //std::cerr << "~~> end TreeManip::addLeafToRandomNode" << std::endl;
     }
 
 /*----------------------------------------------------------------------------------------------------------------------
@@ -165,7 +155,7 @@ void TreeManip::addLeafToRandomEdge(unsigned leaf_node_number, LotShPtr rng)
     {
     // POL_BOOKMARK 11-July-2017
 
-    std::cerr << "\n~~> begin TreeManip::addLeafToRandomEdge" << std::endl;
+    //std::cerr << "\n~~> begin TreeManip::addLeafToRandomEdge" << std::endl;
 
     tree->debugMode(true);
 	tree->DebugCheckTree(false, false, 0);
@@ -175,13 +165,13 @@ void TreeManip::addLeafToRandomEdge(unsigned leaf_node_number, LotShPtr rng)
     unsigned num_nodes = tree->GetNNodes();
     PHYCAS_ASSERT(num_nodes > 0);
     unsigned num_internals = tree->GetNInternals();
-    unsigned num_tips = num_nodes - num_internals;
-    std::cerr << boost::str(boost::format("~~> num_nodes = %d, num_internals = %d, num_tips = %d, leaf_node_number = %d") % num_nodes % num_internals % num_tips % leaf_node_number) << std::endl;
+    //unsigned num_tips = num_nodes - num_internals;
+    //std::cerr << boost::str(boost::format("~~> num_nodes = %d, num_internals = %d, num_tips = %d, leaf_node_number = %d") % num_nodes % num_internals % num_tips % leaf_node_number) << std::endl;
 
     TreeNode * nd = tree->GetFirstPreorder();
     unsigned i = 1 + rng->SampleUInt(num_nodes-1);
 
-    std::cerr << "~~> adding new node to edge of " << i << (i == 1 ? "st" : (i == 2 ? "nd" : (i == 3 ? "rd" : "th"))) << " node in preorder sequence" << std::endl;
+    //std::cerr << "~~> adding new node to edge of " << i << (i == 1 ? "st" : (i == 2 ? "nd" : (i == 3 ? "rd" : "th"))) << " node in preorder sequence" << std::endl;
 
     for (; nd != NULL; nd = nd->GetNextPreorder())
         {
@@ -193,7 +183,7 @@ void TreeManip::addLeafToRandomEdge(unsigned leaf_node_number, LotShPtr rng)
 
     PHYCAS_ASSERT(nd->GetParent());
 
-    std::cerr << "~~> nd->nodeNum = " << nd->nodeNum << std::endl;
+    //std::cerr << "~~> nd->nodeNum = " << nd->nodeNum << std::endl;
 
     // Create new internal node
     TreeNode * new_anc  = tree->GetNewNode();
@@ -226,10 +216,10 @@ void TreeManip::addLeafToRandomEdge(unsigned leaf_node_number, LotShPtr rng)
     num_internals = tree->GetNInternals();
 
 
-	tree->DebugCheckTree(false, false, 0);
-    tree->debugMode(false);
+	//tree->DebugCheckTree(false, false, 0);
+    //tree->debugMode(false);
 
-    std::cerr << "~~> end TreeManip::addLeafToRandomEdge\n" << std::endl;
+    //std::cerr << "~~> end TreeManip::addLeafToRandomEdge\n" << std::endl;
     }
 
 /*----------------------------------------------------------------------------------------------------------------------
@@ -238,14 +228,14 @@ void TreeManip::addLeafToRandomEdge(unsigned leaf_node_number, LotShPtr rng)
 void TreeManip::assignLeafNumbersRandomly(LotShPtr rng)
     {
     // POL_BOOKMARK 11-July-2017
-    std::cerr << "\n~~> begin TreeManip::assignLeafNumbersRandomly\n" << std::endl;
+    //std::cerr << "\n~~> begin TreeManip::assignLeafNumbersRandomly\n" << std::endl;
 
 	tree->InvalidateNodeCounts();
     unsigned num_nodes = tree->GetNNodes();
     PHYCAS_ASSERT(num_nodes > 0);
     unsigned num_internals = tree->GetNInternals();
     unsigned num_tips = num_nodes - num_internals;
-    std::cerr << boost::str(boost::format("~~> num_nodes = %d, num_internals = %d, num_tips = %d") % num_nodes % num_internals % num_tips) << std::endl;
+    //std::cerr << boost::str(boost::format("~~> num_nodes = %d, num_internals = %d, num_tips = %d") % num_nodes % num_internals % num_tips) << std::endl;
 
     // Create pool of available tip node numbers
     std::set<unsigned> pool;
@@ -257,15 +247,6 @@ void TreeManip::assignLeafNumbersRandomly(LotShPtr rng)
         {
         if (nd->IsTip())
             {
-            if (pool.size() < 1)
-                {
-                std::cerr << "Aborting because pool.size() < 1 in TreeManip::assignLeafNumbersRandomly" << std::endl;
-                tree->debugMode(true);
-                tree->DebugCheckTree(false, false, 2);
-                tree->debugMode(false);
-                std::exit(0);
-                }
-
             unsigned i = rng->SampleUInt((unsigned)pool.size());
             std::set<unsigned>::iterator it = pool.begin();
             for (unsigned j = 0; j < i; ++j)
@@ -274,7 +255,7 @@ void TreeManip::assignLeafNumbersRandomly(LotShPtr rng)
             pool.erase(it);
             }
         }
-    std::cerr << "~~> end TreeManip::assignLeafNumbersRandomly\n" << std::endl;
+    //std::cerr << "~~> end TreeManip::assignLeafNumbersRandomly\n" << std::endl;
     }
     
 /*----------------------------------------------------------------------------------------------------------------------
@@ -1612,7 +1593,7 @@ void TreeManip::buildTreeFromSplitVector(
     std::vector<Split> splits;
     splits.resize(split_vect.size());
     std::vector<std::string>::const_iterator sit = split_vect.begin();
-    unsigned ntips = sit->length();
+    unsigned ntips = (unsigned)sit->length();
     bool is_rooted = tree->IsRooted();
 
     unsigned i = 0;
